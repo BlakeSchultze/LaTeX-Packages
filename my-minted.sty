@@ -1,0 +1,154 @@
+bgcolor, % (string) (default: hnonei)
+%\BeforeBeginEnvironment{minted}{\begin{mdframed}}
+%\AfterEndEnvironment{minted}{\end{mdframed}}
+%\surroundwithmdframed{minted}
+%tcolorbox even provides a built-in framing environment with minted support.
+codetagify % (list of strings) (default: highlight XXX, TODO, BUG, and NOTE) Highlight special code tags in comments and docstrings.
+encoding %(string) (default: system-specific)
+Sets the file encoding that Pygments expects. See also outencoding.
+escapeinside (string) (default: hnonei)
+Escape to LATEX between the two characters specified in (string). All code
+between the two characters will be interpreted as LATEX and typeset accordingly.
+This allows for additional formatting. The escape characters need not be identical.
+Special LATEX characters must be escaped when they are used as the escape
+characters (for example, escapeinside=\#\%). Requires Pygments 2.0+.
+Escaping does not work inside strings and comments (for comments,
+there is texcomments). As of Pygments 2.0.2, this means that escaping
+is “fragile” with some lexers. Due to the way that Pygments implements
+escapeinside, any “escaped” LATEX code that resembles a string or comment for
+the current lexer may break escapeinside. There is a Pygments issue for this
+case. Additional details and a limited workaround for some scenarios are available
+on the minted GitHub site.
+\begin{minted}[escapeinside=||]{py}
+def f(x):
+y = x|\colorbox{green}{**}|2
+return y
+\end{minted}
+def f(x):
+y = x ** 2
+return y
+Note that when math is used inside escapes, in a few cases ligature
+handling may need to be modified. The single-quote character (') is normally
+a shortcut for ^\prime in math mode, but this is disabled in verbatim content as a
+byproduct of ligatures being disabled. For the same reason, any package that relies
+on active characters in math mode (for example, icomma) will produce errors along
+the lines of TeX capacity exceeded and \leavevmode\kern\z@. This may be
+fixed by modifying \@noligs, as described at http://tex.stackexchange.com/
+questions/223876. minted currently does not attempt to patch \@noligs due
+to the potential for package conflicts.
+firstline (integer) (default: 1)
+The first line to be shown. All lines before that line are ignored and do not appear
+in the output.
+firstnumber (auto|integer) (default: auto = 1)
+Line number of the first line.
+fontfamily (family name) (default: tt)
+The font family to use. tt, courier and helvetica are pre-defined.
+fontseries (series name) (default: auto – the same as the current font)
+The font series to use.
+fontsize (font size) (default: auto – the same as the current font)
+20
+The size of the font to use, as a size command, e.g. \footnotesize.
+fontshape (font shape) (default: auto – the same as the current font)
+The font shape to use.
+formatcom (command) (default: hnonei)
+A format to execute before printing verbatim text.
+frame (none|leftline|topline|bottomline|lines|single) (default: none)
+The type of frame to put around the source code listing.
+framerule (dimension) (default: 0.4pt)
+Width of the frame.
+framesep (dimension) (default: \fboxsep)
+Distance between frame and content.
+funcnamehighlighting (boolean) (default: true)
+[For PHP only] If true, highlights built-in function names.
+gobble (integer) (default: 0)
+Remove the first n characters from each input line.
+keywordcase (string) (default: ’lower’)
+Changes capitalization of keywords. Takes ’lower’, ’upper’, or ’capitalize’.
+label (string) (default: empty)
+Add a label to the top, the bottom or both of the frames around the code. See the
+fancyvrb documentation for more information and examples. Note: This does not
+add a \label to the current listing. To achieve that, use a floating environment
+(section 5) instead.
+labelposition (none|topline|bottomline|all) (default: topline, all or none)
+Position where to print the label (see above; default: topline if one label is
+defined, all if two are defined, none else). See the fancyvrb documentation for
+more information.
+lastline (integer) (default: last line of input)
+The last line to be shown.
+linenos (boolean) (default: false)
+Enables line numbers. In order to customize the display style of line numbers, you
+need to redefine the \theFancyVerbLine macro:
+21
+\renewcommand{\theFancyVerbLine}{\sffamily
+\textcolor[rgb]{0.5,0.5,1.0}{\scriptsize
+\oldstylenums{\arabic{FancyVerbLine}}}}
+\begin{minted}[linenos,
+firstnumber=11]{python}
+def all(iterable):
+for i in iterable:
+if not i:
+return False
+return True
+\end{minted}
+11 def all(iterable):
+12 for i in iterable:
+13 if not i:
+14 return False
+15 return True
+numbers (left|right) (default: none)
+Essentially the same as linenos, except the side on which the numbers appear
+may be specified.
+mathescape (boolean) (default: false)
+Enable LATEX math mode inside comments. Usage as in package listings. See the
+note under escapeinside regarding math and ligatures.
+numberblanklines (boolean) (default: true)
+Enables or disables numbering of blank lines.
+numbersep (dimension) (default: 12pt)
+Gap between numbers and start of line.
+obeytabs (boolean) (default: false)
+Treat tabs as tabs instead of converting them to spaces.
+outencoding (string) (default: system-specific)
+Sets the file encoding that Pygments uses for highlighted output. Overrides any
+encoding previously set via encoding.
+python3 (boolean) (default: false)
+[For PythonConsoleLexer only] Specifies whether Python 3 highlighting is applied.
+resetmargins (boolean) (default: false)
+Resets the left margin inside other environments.
+rulecolor (color command) (default: black)
+The color of the frame.
+samepage (boolean) (default: false)
+Forces the whole listing to appear on the same page, even if it doesn’t fit.
+showspaces (boolean) (default: false)
+Enables visible spaces: visible spaces.
+showtabs (boolean) (default: false)
+Enables visible tabs—only works in combination with obeytabs.
+startinline (boolean) (default: false)
+[For PHP only] Specifies that the code starts in PHP mode, i.e., leading <?php is
+omitted.
+22
+style (string) (default: default)
+Sets the stylesheet used by Pygments.
+stepnumber (integer) (default: 1)
+Interval at which line numbers appear.
+stripall (boolean) (default: false)
+Strip all leading and trailing whitespace from the input.
+stripnl (boolean) (default: true)
+Strip leading and trailing newlines from the input.
+tabsize (integer) (default: 8)
+The number of spaces a tab is equivalent to. If obeytabs is not active, tabs will
+be converted into this number of spaces. If obeytabs is active, tab stops will be
+set this number of space characters apart.
+texcl (boolean) (default: false)
+Enables LATEX code inside comments. Usage as in package listings. See the note
+under escapeinside regarding math and ligatures.
+texcomments (boolean) (default: false)
+Enables LATEX code inside comments. The newer name for texcl. See the note
+under escapeinside regarding math and ligatures.
+As of Pygments 2.0.2, texcomments fails with multiline C/C++ preprocessor
+directives, and may fail in some other circumstances. This is because preprocessor
+directives are tokenized as Comment.Preproc, so texcomments causes preprocessor
+directives to be treated as literal LATEX code. An issue has been opened at the
+Pygments site; additional details are also available on the minted GitHub site.
+xleftmargin (dimension) (default: 0)
+Indentation to add before the listing.
+xrightmargin

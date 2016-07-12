@@ -1,0 +1,1037 @@
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------- tcolorbox style colors ---------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+% RULES: titlerule style={black!50,line width=0.5mm}, titlerule, boxrule, toprule,
+		%bottomrule, leftrule, rightrule
+	% SHADOWS: smart shadow arc, drop fuzzy shadow(=), lifted
+		%shadow={1mm}{-2mm}{3mm}{0.1mm}{default-colbacktitle}
+	% SKINS: skin = enhanced
+	% GRAPHICS: every float=\centering, tabular, tabularx(*), tikz upper|lower, tikznode
+		%upper|lower,
+	% OPTIONS: hyphenationfix=true, text fill,
+	% COLORS: coltitle, coltext, colbacktitle, colupper, collower, colframe, colback, title
+		%filled=true|false
+	% FONTS: fontupper, fontlower, fonttitle,
+	% ALIGNMENT: halign = justify | (flush) left | (flush) right | (flush) center,
+		% halign upper, halign lower, halign title,
+	% CORNERS: arc = 6pt,
+	% BOX: boxsep = 2pt,
+	% SPACING: top(|title), middle, bottom(|title), left(|upper|lower|title),
+		%right(|upper|lower|title)
+	% CODE: before (<code>|skip|title|upper(*)|lower), after
+		%(<code>|skip|title|upper(*)|lower(*))
+	% Haven't tried:
+	% ----> borderline horizontal={0.5mm}{0pt}{red!50!white},
+	% ----> arrows = {Hooks[arc=270]-Hooks[arc=270]}}
+	% TIKZ NODES: frame code={...;}, interior titled code={...;}, segmentation code={...;},
+		%title code={...;}
+	%ifpgfkeyssuccess
+	% key/.store in=macro: <key>=<value> -->> \def{\macro}{value}
+	% key/.estore in=macro: <key>=<value> -->> \edef{\macro}{value}
+	% key/.link=hanother keyi
+	%/b/.forward to=/a,
+	%key/.expand once=value.
+	%key/.expand twice=value ~ key/.expand once/.expand once=value
+	% key/.expanded=value
+	%hkeyi/.try=hvaluei
+	%/utils/exec=hcodei
+	%\pgfkeys{/foo/.code=(#1)}
+	%\pgfkeys{/foo/.list={a,b,0,1,...,5}}
+	%\pgfkeysdef{/my key}{#1, #1.}
+	%\pgfkeys{/my key=hello} -->> hello, hello.
+	%hkeyi/.belongs to family={hfamily namei}
+%\catcode`\!=12%\setlength\shadowsize{20pt}
+%\shadowsize 20pt
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%--------------------------------- Tikz/tcolorbox styles/settings ------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\def\@tcb@titlefont{\Large\bfseries}
+\def\@tcb@text@font{\normalsize\bfseries}
+\def\@tcb@solutionVerb@font{\normalsize\bfseries}
+\def\@IBP@arrow@head{Stealth[length = 12pt, fill=green, width=5pt]}
+\def\@IBP@diag@arrow@tail{Latex[length = 11pt, reversed, fill=green, width=3.0pt]}%, inset = 1pt
+\def\@IBP@arrow@lines{draw=IBPstyle-colline, font=\boldmath, line width=0.75pt, text=black}
+%\def\@IBP@diag@arrow@tail{Computer Modern Rightarrow[sharp, fill=green,length=4pt, width=2.5pt, reversed]}
+%\def\liftedshadow{lifted shadow={1mm}{-2mm}{3mm}{0.1mm}{current-colbacktitle}}
+\def\setfillednumcolors#1%
+{
+	\colorlet{fillednumshape-colfill}{#1-colfill}
+	\colorlet{fillednumshape-colfilltext}{#1-colfilltext}
+}
+\DeclareDocumentCommand{\@init@length}{ m O{0pt}}{\newlength#1\setlength#1{#2}}
+\DeclareDocumentCommand{\tcbsetcurrentcolors}{m}
+{
+	\colorlet{fillednumshape-colfill}{#1-colfill}
+	\colorlet{fillednumshape-colfilltext}{#1-colfilltext}
+	\colorlet{current-colback}{#1-colback}
+	\colorlet{current-colbackupper}{#1-colbackupper}
+	\colorlet{current-colbacklower}{#1-colbacklower}
+	\colorlet{current-colbacktitle}{#1-colbacktitle}
+	\colorlet{current-colbackinterior}{#1-colbackinterior}
+	\colorlet{current-colupper}{#1-colupper}
+	\colorlet{current-collower}{#1-collower}
+	\colorlet{current-colframe}{#1-colframe}
+	\colorlet{current-colleftframe}{#1-colleftframe}
+	\colorlet{current-colrightframe}{#1-colrightframe}
+	\colorlet{current-colframeborder}{#1-colframeborder}
+	\colorlet{current-colframeoutline}{#1-colframeoutline}
+	\colorlet{current-colinteriorborder}{#1-colinteriorborder}
+	\colorlet{current-colinterioroutline}{#1-colinterioroutline}
+	\colorlet{current-coltitle}{#1-coltitle}
+	\colorlet{current-coltext}{#1-coltext}
+	\colorlet{current-coltextshadowbase}{#1-coltextshadowbase}
+	\colorlet{current-coldraw}{#1-coldraw}
+	\colorlet{current-colfill}{#1-colfill}
+	\colorlet{current-colfilltext}{#1-colfilltext}
+	\colorlet{current-lightcol}{#1-lightcol}
+	\colorlet{current-darkcol}{#1-darkcol}
+	\colorlet{current-rulecolor}{#1-rulecolor}
+	\colorlet{current-highlightcol}{#1-highlightcol}
+	\colorlet{current-colboxshadow}{#1-colboxshadow}
+	\colorlet{current-coltextshadow}{#1-coltextshadow}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%--------------------------------- Tikz/tcolorbox styles/settings ------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{\@title@interior@sep@linewidth}[2pt]
+\@init@length{\title@sep@xshift}[1pt]
+\@init@length{\title@sep@yshift}[\dimexpr 6.0pt\relax]
+\@init@length{\title@code@xshift}[0pt]
+\@init@length{\title@code@yshift}[0pt]
+% outter/inner x-shift distance of box around title in 'preproblemenv'}
+\@init@length{\@inner@angle@distance}[3mm]
+\@init@length{\@outter@angle@distance}[5mm]
+\@init@length{\@topLeftSectionTitle@double@distance}[0.75pt]
+\@init@length{\@boxed@title@top}[4.0pt]
+\@init@length{\@boxed@title@toprule}[2.0pt]
+\@init@length{\@boxed@title@linewidth}[2pt]
+\@init@length{\@frame@corner@radius}[6pt]
+\@init@length{\@frame@border@linewidth}[2pt]
+\@init@length{\@frame@outline@linewidth}[0.5pt]
+\@init@length{\@frame@double@distance}[1.5pt]
+\@init@length{\@interior@border@linewidth}[2pt]
+\@init@length{\@interior@outline@linewidth}[0.5pt]
+\@init@length{\@interior@corner@radius}[6pt]
+\@init@length{\@interior@double@distance}[1.0pt]
+\@init@length{\@inner@frame@shift@y}[\dimexpr 1mm+2pt\relax]
+\@init@length{\@overlay@xshift}[-0.5pt]
+\@init@length{\@overlay@yshift}[-1pt]
+\@init@length{\@overlay@linewidth}[1pt]
+\@init@length{\@overlay@double@distance}[0.75pt]
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%--------------------------------- Tikz/tcolorbox styles/settings ------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\tikzset
+{	
+	chapterFormatCode/.style=
+   	{%
+   		code={\begin{tikzpicture}[remember picture, overlay]
+	    		\node[xshift=3.15cm, yshift=1cm] at (current page.north west)
+	      	{%
+	      		\begin{tikzpicture}[remember picture, overlay]
+	        			\draw[fill=LightSkyBlue] (0,0) rectangle (\paperwidth,2cm);
+	        			\node
+	        			[
+	        				anchor=east, xshift=.9\paperwidth, rectangle, rounded corners=20pt, inner sep=11pt,
+	        				fill=MidnightBlue
+	        			]
+	              		{\color{white}\chapterlabel#1};
+	       		\end{tikzpicture}
+	     	 	};
+	   	\end{tikzpicture}}
+   	},
+   	% Arc Barb[length=2pt], Diamond[open] , Kite[]
+	%Latex, Stealth, Straight Barb[length=5pt,width=5pt], Straight Barb[angle=60:2pt 3], Kite[]
+   	IBPdiagArrows/.style=
+   	{% 	Arc Barb[length=2pt], Diamond[open] , Kite[]
+		%Latex, Stealth, Straight Barb[length=5pt,width=5pt], Straight Barb[angle=60:2pt 3], Kite[] 	
+   		draw=IBPstyle-colline, font=\boldmath, line width=0.75pt, text=black,
+   		{\@IBP@diag@arrow@tail}-{\@IBP@arrow@head}
+   	},
+   	IBPhorizArrows/.style=
+   	{%
+   		draw=IBPstyle-colline, font=\boldmath, line width=0.75pt, text=black,
+   		{\@IBP@diag@arrow@tail}-{\@IBP@arrow@head}
+   	},
+   	weird fill/.style=
+	{%
+		append after command=
+		{
+   			\pgfextra
+       	 	\draw[sharp corners, fill=#1]%
+    			(\tikzlastnode.west)%
+    			[rounded corners=3pt] |- (frame.north east)%
+    			[rounded corners=1pt] -| (frame.north west)%
+    			[rounded corners=5pt] |- (title.south west)%
+    			[rounded corners=0pt] -| (title.south east);
+   			\endpgfextra%
+   		}
+   	}%
+}		
+%\makeatletter
+%\def\mycommand#1\pgfeov{%
+%    \mycommand@#1++\pgfeov%
+%}
+%\def\mycommand@#1+#2+#3\pgfeov{%
+%    Argument=#1, Option=#2.%
+%}
+%\pgfkeyslet{/example/.@cmd}{\mycommand}
+%\makeatother
+%\pgfkeysdefargs{/my key}{#1+#2}{\def\a{#1}\def\b{#2}}
+%\pgfkeys{/my key=hello+world}
+\pgfkeysdefargs{/my theekey}{(#1)[#2]<#3><#4>}{\edef\a{#1}\edef\b{#2}\edef\c{#3}\edef\f{#4}}
+%\pgfkeys{/my key={(colback=blue)[colframe=red]<coltext=green><enhanced>}}
+\pgfkeys{/akey/.code={colback=#1}}
+\pgfkeys{/bkey/.code={colframe=#1}}
+\pgfkeys{/my style/.style={/akey=green, /bkey=blue}}%,/a=#1}}
+%\pgfkeys{/my style=red}
+%\pgfkeysdefnargs{/my keyB}{2}{#1, #2.}
+%%\pgfkeysdefnargs{/my key}{2}{\def\a{#1}\def\b{#2}}
+%\pgfkeys{/my keyB={hello}{there}}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%--------------------------------- Tikz/tcolorbox styles/settings ------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\tcbset
+{%
+	addtolol/.code={\phantomsection\addcontentsline{lol}{subsection}{\large\kvtcb@title}},
+	%IfNoValueTF/.code args={#1#2#3}{\IfNoValueTF{#1}{\pgfkeysalso{#2}}{\pgfkeysalso{#3}}},
+  	testStyleArgs/.style 2 args={colback=#1,colframe=#2,coltitle=#1},%,coltitle=#3},
+    	testStyleArgsB/.style n args={4}%
+    	{%
+    		code={\pgfkeys{/my theekey={(#1)[#2]<#3><#4>}}},
+    		colback=\a, colframe=\b, coltitle=\c, coltext=\f
+    	},
+    	testStyleArgsB/.default={green}{red}{yellow}{blue},
+    	%testStyleArgs/.default={red}{green},%{green}{green},
+%*************************************************************************************************%
+%******************************************* Title *********************************************%
+%*************************************************************************************************%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------------------------------------------------------------%
+    	save height/.code={%
+    \tcbset{breakable}%
+    \providecommand{#1}{2cm}%
+    \def\tcb@split@start{%
+      \tcb@breakat@init%
+      \tcb@comp@h@page%
+      \def\tcb@ch{%
+        \tcbset{height=\tcb@h@page}%
+        \tcbdimto#1{#1+\tcb@h@page-\tcb@natheight}%
+        \immediate\write\@auxout{\string\gdef\string#1{#1}}%
+        \tcb@ch%
+      }%
+      \tcb@drawcolorbox@standalone%
+    }%
+  },%
+%*************************************************************************************************%
+%******************************************* Title *********************************************%
+%*************************************************************************************************%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-------------------------------------------------------------------------------------------------%
+	subtitleStyle/.style args={#1#2#3}
+	{	
+    		subtitle style=
+    		{
+    			colback=#1-colback, coltext=#1-coltext, boxrule=#2, left=#3,
+    			right=#3
+    		}
+    	},     	
+    	subtitleStyle/.default={current}{-1pt}{4.1pt},
+	%titleSepCode/.style n args={4}
+	titleSepCode/.style=
+	{	
+    		% Horizontal line on title/interior edge connecting north east/west interior border
+        	title code=
+	  	{
+			\path[draw=#1-colinteriorborder, use as bounding box,
+				line width=\@title@interior@sep@linewidth]
+				([xshift=-\title@sep@xshift, yshift=-\title@sep@yshift]title.south west)
+				--([xshift=\title@sep@xshift,yshift=-\title@sep@yshift]title.south east);
+		}
+	},
+	filledTitleSepCode/.style args={#1#2}
+	{
+		% Outline along boundary between title and interior
+        	title code=
+	  	{
+			\filldraw[draw=#1-colinteriorborder, fill=#1-colbacktitle,
+				rounded corners=\@interior@corner@radius, line width=#2]
+				([xshift=0pt, yshift=0pt]title.south west)
+				--([xshift=0pt, yshift=0pt]title.north west)	
+				--([xshift=0pt, yshift=0pt]title.north east)	
+				--([xshift=0pt, yshift=0pt]title.south east);	
+		}		
+	},
+	filledTitleSepCode/.default={current}{\@title@interior@sep@linewidth},	
+%-------------------------------------------------------------------------------------------------%
+	attachBoxedTitleTopCenter/.style=
+	{%attachBoxedTitleTopCenter{yshift=0.25mm}{yshifttext=2mm}
+		attach boxed title to top center=
+			{yshift=-0.25mm-\tcboxedtitleheight/2, yshifttext=2mm-\tcboxedtitleheight/2}
+	},		
+%*************************************************************************************************%
+%******************************************* Interior ******************************************%
+%*************************************************************************************************%
+%-------------------------------------------------------------------------------------------------%
+	%interiorCode/.style n args={4}
+	interiorCode/.style=
+	{	
+		interior titled code=
+        	{% Frame around interior region except for top line under title
+        		\filldraw[draw=#1-colinteriorborder, line width=\@interior@border@linewidth
+        			fill=#1-colbackinterior, rounded corners=\@interior@corner@radius]
+        			([xshift=0pt, yshift =0pt]interior.north east)
+        			--([xshift=0pt, yshift =0pt]interior.south east)
+        			--([xshift=0pt, yshift=0pt]interior.south west)
+        			--([xshift=0pt, yshift=0pt]interior.north west);
+        	},
+        	interior code=
+        	{       		
+        		\filldraw[draw=#1-colinteriorborder, fill=#1-colbackinterior,
+        		rounded corners=\@interior@corner@radius,
+        		line width=\@interior@border@linewidth]
+        			(interior.north east)
+        			--(interior.north west)
+				--(interior.south west)
+				--(interior.south east)
+				-- cycle;
+        	}
+	},
+%-------------------------------------------------------------------------------------------------%
+	%multilineInteriorCode/.style n args={4}
+	multilineInteriorCode/.style=
+	{	
+		boxrule=2pt,
+		interior titled code=
+        	{% Frame around interior region except for top line under title
+        		\filldraw[draw=#1-coldraw, rounded corners=\@interior@corner@radius,
+        			fill=#1-colbackinterior, line width=\@interior@border@linewidth,
+				double=#1-highlightcol, double distance=\@interior@double@distance]
+        			([xshift=0pt, yshift =0pt]interior.north east)
+        			--([xshift=0pt, yshift =0pt]interior.south east)
+        			--([xshift=0pt, yshift=0pt]interior.south west)
+        			--([xshift=0pt, yshift=0pt]interior.north west);
+        	},
+        	interior code=
+        	{       		
+        		\filldraw[draw=#1-coldraw, rounded corners=\@interior@corner@radius,
+        			fill=#1-colbackinterior, line width=\@interior@border@linewidth,
+				double=#1-highlightcol, double distance=\@interior@double@distance]
+        			(interior.north east)
+        			--(interior.north west)
+				--(interior.south west)
+				--(interior.south east)
+				-- cycle;
+        	}
+	},
+%-------------------------------------------------------------------------------------------------%
+	interiorStyle/.style=
+	{
+        	interior style=
+			{draw=#1-colinteriorborder, line width=\@interior@border@linewidth}
+	},
+%-------------------------------------------------------------------------------------------------%
+	interiorMultilineStyle/.style=
+	{
+        	interior style=
+		{
+			draw=#1-coldraw, line width=\@interior@border@linewidth,
+			double=#1-highlightcol, double distance=\@interior@double@distance
+		}
+	},
+%-------------------------------------------------------------------------------------------------%
+    	biColorInteriorStyle/.style=
+    	{
+    		interior style=
+		{
+			draw=#1-colinteriorborder, line width=\@interior@border@linewidth,
+			top color=blue!2!white, middle color=blue!6!white, bottom color=blue!13!white
+		}
+	},
+%-------------------------------------------------------------------------------------------------%
+	biColorMultilineInteriorStyle/.style=
+    	{
+    		interior style=
+		{
+			draw=#1-coldraw, line width=\@interior@border@linewidth,
+			double=#1-highlightcol, double distance=\@interior@double@distance,
+			top color=blue!2!white, middle color=blue!6!white, bottom color=blue!13!white
+		}
+	},
+%*************************************************************************************************%
+%******************************************* Interior ******************************************%
+%*************************************************************************************************%
+%-------------------------------------------------------------------------------------------------%
+	%frameCodeSetup/.style n args={4}
+    	frameCodeSetup/.style=
+    	{
+    		frame code=
+        	{% Outter frame around entire box and title
+        		\filldraw[draw=#1-colframeborder, rounded corners=\@frame@corner@radius,
+        			fill=#1-colfill, line width=\@frame@border@linewidth]
+        			(frame.north east)
+        			--(frame.north west)
+        			--(frame.south west)
+        			--(frame.south east)
+        			-- cycle;
+        	}
+    	},
+%-------------------------------------------------------------------------------------------------%
+	PLDBoxedTitleSetup/.style n args={5}
+	{%{xshift}{yshift}{line width}{rounded corners}{color style} 		
+		%{2pt}{8.5}{4.0pt}{6pt}{pldStyle}
+		titleSepCode, frameCodeSetup, interiorMultilineStyle%, multilineInteriorCode,      	
+	},
+%-------------------------------------------------------------------------------------------------%
+   	topLeftSectionTitleStyle/.style=
+	{
+		boxed title style=
+		{
+			empty, size=minimal, toprule=\@boxed@title@top, top=\@boxed@title@top,
+			overlay=
+			{
+				\draw
+				[
+					#1-coldraw, line width=\@boxed@title@linewidth,
+					double=#1-highlightcol, double distance=\@overlay@double@distance
+				]
+				([yshift=\@overlay@yshift]frame.north west)
+				--([yshift=\@overlay@yshift]frame.north east);
+			}
+		},
+		overlay unbroken=
+		{
+			\draw
+	        	[
+	        		#1-coldraw, line width=\@overlay@linewidth, 			
+	        		double=#1-highlightcol, double distance=\@overlay@double@distance
+	        	]
+	        	([yshift=\@overlay@yshift]title.north east)
+			--([xshift=\@overlay@xshift,yshift=\@overlay@yshift]title.north-|frame.east)
+			--([xshift=\@overlay@xshift]frame.south east)
+			--(frame.south west);
+		},
+		overlay first=
+		{
+	        	\draw
+			[
+			   	#1-coldraw, line width=\@overlay@linewidth,
+				double=#1-highlightcol, double distance=\@overlay@double@distance
+			]
+	        	([yshift=\@overlay@yshift]title.north east)
+	        	--([xshift=\@overlay@xshift,yshift=\@overlay@yshift]title.north-|frame.east)
+	        	--([xshift=\@overlay@xshift]frame.south east);
+		},
+		overlay middle=
+		{
+	        	\draw
+			[
+				#1-coldraw, line width=\@overlay@linewidth,
+				double=#1-highlightcol, double distance=\@overlay@double@distance
+			]
+	        	([xshift=\@overlay@xshift]frame.north east)
+	        	--([xshift=\@overlay@xshift]frame.south east);
+		},
+		overlay last=
+		{
+	        	\draw
+			[
+				#1-coldraw, line width=\@overlay@linewidth,
+				double=#1-highlightcol, double distance=\@overlay@double@distance
+			]
+	        	([xshift=\@overlay@xshift]frame.north east)
+	        	--([xshift=\@overlay@xshift]frame.south east)
+	        	--(frame.south west);
+		}
+	},
+%-------------------------------------------------------------------------------------------------%
+	topCenterBoxedTitleStyle/.style=
+	%topCenterBoxedTitleStyle/.style n args={4}
+	{%
+		boxed title style=
+		{%
+			enhanced, boxrule=0.6mm, bottomtitle=5cm, toptitle=2cm, size=title,
+			frame code=
+			{%
+				\path
+				[
+					draw=#1-colframeborder, use as bounding box,
+					line width=2.0pt, double=#1-highlightcol,
+					double distance=\@frame@double@distance
+				]
+					([xshift=-\@outter@angle@distance - 1mm]frame.west)%
+					-- ([xshift=-1mm]frame.north west)
+					-- ([xshift=1mm]frame.north east)
+					-- ([xshift=\@outter@angle@distance + 1mm]frame.east)%
+					-- ([xshift=1mm]frame.south east)
+					-- ([xshift=-1mm]frame.south west)
+					-- cycle;,
+				\path
+				[
+					tcb fill frame, #1-darkcol, line width=2.0pt,
+					double=#1-highlightcol, double distance=\@frame@double@distance
+				]
+					([xshift=-\@outter@angle@distance - 1mm]frame.west)%
+					-- ([xshift=-1mm]frame.north west)
+					-- ([xshift=1mm]frame.north east)
+					-- ([xshift=\@outter@angle@distance + 1mm]frame.east)%
+					-- ([xshift=1mm]frame.south east)
+					-- ([xshift=-1mm]frame.south west)
+					-- cycle;,
+			},
+			interior code=
+			{
+				\path
+				[
+					draw=red, use as bounding box, #1-colinteriorborder,
+					line width=2.0pt, double=#1-highlightcol,
+					double distance=1.75pt
+				]
+					([xshift=-\@inner@angle@distance]interior.west)
+					-- ([yshift=1.75pt]interior.south west)
+					--  ([yshift=1.75pt]interior.south east)
+					-- ([xshift=\@inner@angle@distance]interior.east)
+					-- ([yshift=-1.75pt]interior.north east)
+					-- ([yshift=-1.75pt]interior.north west)
+					-- cycle;,
+				\path[tcb fill frame, #1-lightcol, double=#1-highlightcol,
+					double distance=0.75pt]
+					([xshift=-\@inner@angle@distance]interior.west)
+					-- ([yshift=-1.75pt]interior.north west)
+					-- ([yshift=-1.75pt]interior.north east)
+					-- ([xshift=\@inner@angle@distance]interior.east)
+					--  ([yshift=1.75pt]interior.south east)
+					-- ([yshift=1.75pt]interior.south west)
+					-- cycle;
+			}
+		}
+	},
+%-------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------%
+	biColorInteriorStyle/.default=current,
+    	biColorMultilineInteriorStyle/.default=current,
+    	frameCodeSetup/.default=current,
+    	interiorCode/.default=current,
+	interiorMultilineStyle/.default=current,
+	interiorStyle/.default=current,
+	multilineInteriorCode/.default=current,
+	terminalSegmentationCode/.default=tcbbashboxblueStyle,
+	subtitleStyle/.default=current,
+	titleSepCode/.default=current,		
+	topCenterBoxedTitleStyle/.default=current,
+	topLeftSectionTitleStyle/.default=current,
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Style Construction Components %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	@BASIC@STYLE/.style =
+    	{
+        	empty, enhanced, breakable, segmentation empty, every float=\centering,
+        	hyphenationfix, drop lifted shadow=default-colbacktitle,
+        	coltitle=black, coltext=black, colframe=black, colback=white,
+        	boxrule=2pt, boxsep=2pt, arc=6pt, top=2mm, bottom=2mm, left=2mm, right=2mm,
+        	before=\par\smallskip, after=\par\smallskip, fonttitle=\large\bfseries,
+        	fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries   	
+   	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	@DEFAULT@STYLE/.style =
+    	{
+        	empty, enhanced, breakable, segmentation empty, every float=\centering,
+        	drop lifted shadow=default-colbacktitle, hyphenationfix, arc = 6pt,
+        	colback= default-colback, colbacktitle=default-colbacktitle,
+        	colframe=default-colframe, coltitle=default-coltitle, coltext=default-coltext,
+        	code={\tikzset{draw=default-coldraw}}, after=\par\smallskip, before=\par\smallskip,
+        	fonttitle=\large\bfseries, fontupper=\normalsize\bfseries,%\liftedshadow,
+        	fontlower=\normalsize\bfseries
+   	},	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbsetcoloringStyle/.style=
+	{
+		colback=#1-colback, colbacklower=#1-colbacklower,
+		colframe=#1-colframe, coltitle=#1-coltitle, coltext=#1-coltext,
+		colupper=#1-colupper, collower=#1-collower, colbacktitle=#1-colbacktitle
+		%left color=#1-colleftframe, right color=#1-colrightframe
+	},
+	tcbsetcoloringStyle/.default=current,	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Composite/Complete Styles %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	angleBoxedTitleStyle/.style=
+	{
+		enhanced, breakable, fonttitle=\bfseries, after=\medskip, top=5mm,
+		title={\shadowText<\anttmcap16pt>(current){Preliminaries:}},
+		before skip=2mm, after skip=3mm, attachBoxedTitleTopCenter,%{0.25mm}{2mm},
+		tcbsetcoloringStyle, biColorInteriorStyle, topCenterBoxedTitleStyle
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	corollaryStyle/.style=
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle=corollaryStyle, toptitle=1mm, bottomtitle=1mm,
+    		before skip=0mm, after=\par\medskip, before title=\bfseries
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	definitionStyle/.style =
+    	{
+        	@BASIC@STYLE, %\liftedshadow,
+        	tcbsetcoloringStyle=definitionStyle, boxsep=3mm, before skip= 3mm, after skip =0mm,
+        	before title=\bfseries, arc=6pt, boxrule=5pt, toptitle=-0.25mm, bottomtitle=-1mm,
+        	lefttitle=2mm, top=3mm, fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
+        	subtitleStyle=definitionStyle, titleSepCode, frameCodeSetup=definitionStyle,
+        	interiorMultilineStyle=definitionStyle
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	equationStyle/.style =
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle=equationStyle,
+    		before skip=0mm, before=\par\smallskip, after=\par\smallskip
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	exampleStyle/.style =
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle=exampleStyle, toptitle=1mm, bottomtitle=1mm,
+    		before title=\bfseries, before=\par\smallskip, after=\par\smallskip
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	figureStyle/.style =
+    	{
+        	@BASIC@STYLE, tcbsetcoloringStyle=figureStyle, center title, toptitle=2mm,
+        	bottom=3mm, boxsep=0mm, before=\vspace{-2cm}%before skip = -8mm%, after skip = 10mm%
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	frontBackMatterStyle/.style n args={3}%
+    	{%frontBackMatterStyle{color style}{bottomtitle}{title}
+		reset, @DEFAULT@STYLE, tcbsetcoloringStyle=#1, title={#3},
+before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries,
+boxsep=2mm, top=1mm, left=2mm, boxrule=3pt, left skip=0mm,
+toptitle=0mm, bottomtitle=#2
+
+colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white,
+    before=\\par\\smallskip, after=\\par, after skip=1mm,
+    boxsep=2mm, boxrule=3pt, top=1mm, left=2mm, left skip=0mm
+ fonttitle=\\Large\\bfseries, toptitle=0mm, bottomtitle=0mm,         	
+    	},
+    frontBackMatterStyle/.default={current}{0mm}{{}},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	glossaryStyle/.style =
+    	{%		
+    		frontBackMatterStyle={\glossaryStyle}{-1mm}%
+		{%	     		
+			\\phantomsection%
+			\\glossarysection[\\glossarytoctitle]{\\anttmcap18pt\\glossarytitle}%
+		}
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	nomenclatureStyle/.style =
+    	{%		
+    		frontBackMatterStyle={\nomenclatureStyle}{2mm}{title={\\anttmcap18pt\\nomname}}
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	indexStyle/.style =
+    	{%		
+    		frontBackMatterStyle={\indexStyle}{0mm}{title={\\anttmcap18pt Index}}, after=\\par
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   	IBPstyle/.style=%, tcbsetcoloringStyle=IBPstyle
+    	{
+        	@DEFAULT@STYLE, hbox, tcbsetcoloringStyle=IBPstyle,
+        	no shadow, arc=6pt, fonttitle=\large\bfseries, boxrule=6pt, toprule=4pt,
+        	before skip=0mm, before title=\bfseries, after title=\vspace{0mm}, top=-1.5mm,
+        	bottom=1mm, toptitle=1mm, bottomtitle=1mm, lefttitle=-1mm, righttitle=1mm,
+        	titlerule=1.0pt, titlerule style=black, %subtitleStyle=IBPstyle,
+        	filledTitleSepCode={IBPstyle}{\@title@interior@sep@linewidth}, frameCodeSetup=IBPstyle, interiorStyle=IBPstyle
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	lemmasStyle/.style =
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle=lemmasStyle, before title=\bfseries, toptitle=1mm,
+    		bottomtitle=1mm, before skip=0mm, before=\par\smallskip, after=\par\smallskip
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	listingsStyle/.style =
+    	{
+    		@BASIC@STYLE, coltext=tcblistingsStyle-coltext,
+    		colback=tcblistingsStyle-backgroundcolor, coltitle=tcblistingsStyle-coltitle,
+    		colbacktitle=tcblistingsStyle-colbacktitle, colframe=tcblistingsStyle-colframe,
+    		before skip=0mm, before=\par\smallskip, after=\par\smallskip
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	MatlabStyle/.style=
+    	{
+    		reset, breakable, enforce breakable, width=\tcblistingswidth,
+    		fonttitle=\Large\bfseries\scshape\color{MatlabStyle-coltitle}, toptitle=1mm,
+		tcbsetcoloringStyle=MatlabStyle,%colbacktitle=stdgray,
+    		bottomtitle=-1mm, title=\lstlistingname\ \arabic{@tcb@listings@title@counter},
+		before skip=2mm, after skip=3mm, left=6mm, right=2mm, top=1.0mm, bottom=0mm, boxrule=3pt,
+		after=\par\smallskip, listing only, listing engine=listings, addtolol,
+		listing remove caption=false
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	pldStyle/.style=
+    	{
+        	@DEFAULT@STYLE, tcbsetcoloringStyle=pldStyle, breakable=false,
+        	fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
+        	before title=\bfseries, lefttitle=2mm, toptitle=0.25mm, bottomtitle=-3mm,
+        	arc=6pt, boxrule=10pt, boxsep=1mm, left=2mm, right=3mm, top=1mm, bottom=1mm,
+        	before skip=3mm, after skip=0mm, after=\par\smallskip, toprule=6pt, bottomrule=7pt,
+        	#1, frameCodeSetup=pldStyle, interiorMultilineStyle=pldStyle
+        	%titleSepCode=pldStyle / filledTitleSepCode=pldStyle (pldTitledStyle)
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	pldTitledStyle/.style =
+    	{
+        	@DEFAULT@STYLE, tcbsetcoloringStyle=pldStyle,
+        	boxsep=1mm, left=2mm, right=3mm, top=1mm, bottom=1mm, %before=\par,
+        	before skip= 3mm, after skip =0mm, before title=\bfseries, arc=6pt, boxrule=10pt, toprule= 6pt, bottomrule= 7pt,
+        	lefttitle = 2mm, toptitle=1.75mm,  bottomtitle=-2mm,
+        	fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
+        	after =\par\smallskip, breakable=false, titleSepCode, frameCodeSetup, interiorMultilineStyle
+        	% Outline along boundary between title and interior
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	pldStyle on Layer 2/.style =
+    	{
+        	reset, @DEFAULT@STYLE, tcbsetcoloringStyle=pldStyle, before skip=-10mm,
+        	after skip=0mm, boxsep=-1mm, boxrule=3pt, left=3mm, right=3mm, top=3mm, bottom=2mm,
+        	title filled, righttitle=3mm, lefttitle=4mm, toptitle=2.5mm, bottomtitle=-2mm,
+        	fontupper=\normalsize\bfseries, fontlower=\bfseries, fonttitle=\bfseries
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	problemsStyle/.style =
+    	{
+    		reset, @DEFAULT@STYLE, tcbsetcoloringStyle=problemsStyle,
+    		width=\linewidth, after skip=1mm, before skip=1mm, no shadow,
+    		boxrule=2pt, boxsep=2pt, arc=6pt, fontupper=\fontsize{11}{\baselinestretch}\bfseries,
+        	before=\par\smallskip, after=\par\smallskip,% before skip = 0mm, after skip = 0mm,
+        	top=2mm, bottom=2mm, left=2mm, right=2mm, before skip=0mm
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	solutionlistsStyle/.style =
+    	{
+        	reset, @BASIC@STYLE, tcbsetcoloringStyle=solutionlistsStyle, top=2mm, toptitle=1.0mm,
+        	bottomtitle=1mm, before skip=0mm, before=\par\smallskip, after=\par\smallskip
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	subproblemsStyle/.style =
+    	{
+    		reset, @DEFAULT@STYLE, tcbsetcoloringStyle=subproblemsStyle, width=\linewidth,
+    		no shadow, boxrule=2pt, boxsep=2pt, arc=6pt, before skip=0mm, after skip=0mm,
+    		fontupper=\fontsize{10}{\baselinestretch}\bfseries, before=\par\smallskip,
+    		after=\par\smallskip, top=2mm, bottom=2mm, left=2mm, right=2mm    	
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	summariesStyle/.style =
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle=summariesStyle, before skip=0mm
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tablesStyle/.style =
+    	{
+    		reset, @DEFAULT@STYLE, tcbsetcoloringStyle=tcbTableStyle,
+    		before skip=0mm, after skip=3mm, boxrule=2pt, boxsep=2mm,
+    		bottom=0mm, left=1mm, right=2mm, every float=\centering,
+    		skin=bicolor, biColorInteriorStyle=tcbTableStyle
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tablesStyle on layer 2/.style = {reset, summariesStyle, top=0mm},
+%-------------------------------------------------------------------------------------------------%
+    	terminalSegmentationCode/.style=
+    	{
+    		segmentation code=
+		{	% Bottom portion of comment section	
+			\filldraw[fill=#1-colbacklower, draw=#1-coldraw, rounded corners=6pt, line width=0.0pt]
+				([xshift=0.5pt, yshift=0.5pt]interior.south west)
+				-- ([xshift=-0.5pt, yshift=0.5pt]interior.south east)
+				-- ([xshift=-0.5pt, yshift=-2pt]segmentation.north east)
+				-- ([xshift=0.5pt, yshift=-2pt]segmentation.north west)
+				-- cycle;,
+			% Top portion of comment section	
+			\filldraw[fill=#1-colbacklower, draw=#1-colbacklower, sharp corners, line width=1.0pt]
+				([xshift=1.25pt, yshift=-2.75pt]segmentation.north west)
+				-- ([xshift=-1.25pt, yshift=-2.75pt]segmentation.north east)
+				-- ([xshift=-1.25pt, yshift=-12pt]segmentation.north east)
+				-- ([xshift=1.25pt, yshift=-12pt]segmentation.north west)
+				-- cycle;,
+			% Line around comment connecting the ends of the line separating terminal and comment sections	
+			\path[draw=#1-coldraw, rounded corners=6pt, line width=1.0pt]
+				([xshift=0.75pt, yshift=-2.2pt]segmentation.north west)
+				-- ([xshift=0.75pt, yshift=0.5pt]interior.south west)
+				-- ([xshift=-0.75pt, yshift=0.5pt]interior.south east)
+				-- ([xshift=-0.75pt, yshift=-2.2pt]segmentation.north east);,
+			% Line separating terminal and comment sections	
+			\path[draw=#1-rulecolor, line width=1.25pt]
+				([xshift=0.2pt, yshift=-2.6pt]segmentation.north west)
+				-- ([xshift=-0.2pt, yshift=-2.6pt]segmentation.north east);,
+			% Line separating terminal and comment sections	
+			\path[draw=#1-segmentationcol, line width=1.5pt]
+				([xshift=0.15pt, yshift=-1.6pt]segmentation.north west)
+				-- ([xshift=-0.15pt, yshift=-1.6pt]segmentation.north east);			
+		}
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbbashboxStyle/.style=
+    	{
+    		reset, skin=bicolor, tcbsetcoloringStyle=tcbbashboxblueStyle, titlerule=1.5pt, lefttitle=7mm,
+    		toptitle=2mm, bottomtitle=2mm, fonttitle=\Large\scshape, fontupper=\ttfamily,
+    		fontlower=\upshape, boxsep=0pt, width=\linewidth, arc=6pt, bottom=1.5mm,
+    		boxrule=0.75pt, leftrule=2.5pt, rightrule=2.5pt, toprule=0.85mm, bottomrule=0.85mm,
+    		bottom=2.5mm, left=2mm, right=0mm, leftupper=2mm, leftlower=1.5mm, before skip=1mm, after skip=2mm,
+    		%after=\addtocounter{@tcb@terminal@listing@counter}{1}\par, before skip=1mm,
+    		after=\stepcounter{@tcb@terminal@listing@counter}\par, after upper pre=\vspace{-5mm},
+    		before lower pre=\vspace{-1.5mm}, listing and comment, listing engine=listings,
+    		%titlerule style={draw=cyan, line width=0.75pt},
+    		%title style={draw=cyan, fill=stdblue, line width=0.75pt},
+    		borderline={0.75mm}{-0.75mm}{tcbbashboxblueStyle-colframeborder}, %tcbbashboxblueStyle-rulecolor,
+    		borderline={0.25mm}{0.25mm}{tcbbashboxblueStyle-colframeoutline,rounded corners=6pt},
+    		titlerule style=
+    		{
+    			draw=tcbbashboxblueStyle-segmentationcol, line width=1.5pt,
+    			double=tcbbashboxblueStyle-coldraw, double distance=1.5pt
+    		},
+    		%frame style={draw=black, rounded corners=6pt, line width=2.5pt},
+		frame style=
+		{
+			draw=tcbbashboxblueStyle-colframe, rounded corners=6pt, line width=2.0pt,
+			left color=tcbbashboxblueStyle-colleftframe,
+			right color=tcbbashboxblueStyle-colrightframe
+		},
+		interior style={draw=tcbbashboxblueStyle-colinteriorborder, solid, line width=0.5pt},
+		terminalSegmentationCode,
+		%comment style={draw=red, solid, line width = 3.5pt},		
+		%listing side comment,righthand width=4.5cm,compilable listing,
+		every listing line*={\textcolor{green}>\ \unskip\ignorespaces },
+    		listing remove caption=false,
+    		listing options={style=terminalStyle, language=bash-extended,  name=bash-extended}		
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbbashboxgoldStyle/.style=
+    	{		    		
+    		reset, enhanced, tcbsetcoloringStyle=tcbbashboxgoldStyle, titlerule=1.5pt, lefttitle=2mm,
+		toptitle=2mm, bottomtitle=2mm, fonttitle=\Large\scshape, fontupper=\ttfamily,
+    		fontlower=\upshape, boxsep=0pt, width=\linewidth, arc=6pt, bottom=1.5mm,
+    		boxrule=2pt, leftrule=2.75pt, rightrule=2.75pt, toprule=0.85mm, bottomtitle=1mm,  		
+    		bottom=1.5mm, leftupper=2mm, rightupper=2mm, leftlower=1.5mm, before skip=1mm, after skip=2mm,
+    		after=\stepcounter{@tcb@terminal@listing@counter}\par, after upper pre=\vspace{-5mm},
+    		before lower pre=\vspace{-1.5mm}, listing and comment, listing engine=listings,    		
+    		titlerule style=
+    		{
+    			draw=tcbbashboxgoldStyle-coldraw, line width=0.75pt,
+    			double=tcbbashboxgoldStyle-rulecolor, double distance=0.75pt
+    		},
+    		%interior style={draw=red, solid, line width=0.5pt},
+		segmentation code=
+		{	% Bottom portion of comment section	
+			\filldraw
+			[
+				fill=tcbbashboxgoldStyle-colbacklower, draw=tcbbashboxgoldStyle-colbacklower,
+				sharp corners, line width=0.0pt
+			]
+				([xshift=1.00pt, yshift=0.0pt]interior.south west)
+				-- ([xshift=-1.00pt, yshift=0.0pt]interior.south east)
+				-- ([xshift=-1.00pt, yshift=-0.0pt]segmentation.north east)
+				-- ([xshift=1.00pt, yshift=-0.0pt]segmentation.north west)
+				-- cycle;,			
+			% Line separating terminal and comment sections	
+			\path[draw=tcbbashboxgoldStyle-segmentationcol, line width=1.0pt]
+				([xshift=0.0pt, yshift=-0.0pt]segmentation.north west)
+				-- ([xshift=-0.0pt, yshift=-0.0pt]segmentation.north east);,
+			\path[draw=tcbbashboxgoldStyle-rulecolor, line width=1.0pt]
+				([xshift=0.25pt, yshift=-1.0pt]segmentation.north west)
+				-- ([xshift=-0.25pt, yshift=-1.0pt]segmentation.north east);%,
+			% Line around comment connecting the ends of the line separating terminal and comment sections	
+			\path[draw=tcbbashboxgoldStyle-colinterioroutline, rounded corners=6pt, line width=1.25pt]
+				([xshift=0.5pt, yshift=-0.5pt]segmentation.north west)
+				-- ([xshift=0.5pt, yshift=0.5pt]interior.south west)
+				-- ([xshift=-0.5pt, yshift=0.5pt]interior.south east)
+				-- ([xshift=-0.5pt, yshift=-0.5pt]segmentation.north east);
+		},
+		frame style=
+		{
+			draw=tcbbashboxgoldStyle-colframeborder, rounded corners=6pt, line width=2.5pt
+		},
+		borderline={0.15mm}{0.25mm}{tcbbashboxgoldStyle-colframeborder,rounded corners=6pt},
+    		%borderline={1.25mm}{0.0mm}{tcbbashboxgoldStyle-colframeborder,rounded corners=6pt},
+    		%borderline={0.15mm}{0.22mm}{tcbbashboxgoldStyle-colframeoutline,rounded corners=6pt},
+    		%borderline={0.5mm}{0.45mm}{tcbbashboxgoldStyle-colinteriorborder,rounded corners=6pt},
+    		every listing line*={\textcolor{green}>\ \unskip\ignorespaces },
+    		listing remove caption=false,
+    		listing options={style=terminalStyle, language=bash-extended, name=bash-extended, belowskip=-3.0mm}
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%	
+	tcbdefinitionlistboxStyle/.style =
+    	{
+        	@BASIC@STYLE, %\liftedshadow,
+        	tcbsetcoloringStyle, before skip=3mm, after skip=0mm, before title=\bfseries,
+        	arc=6pt, boxrule=5pt, toptitle=-0.25mm, bottomtitle=-1mm, lefttitle=2mm, top=3mm,
+        	fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
+		subtitleStyle, titleSepCode, frameCodeSetup, interiorMultilineStyle		
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbEnvironmentInfoBoxStyle/.style =
+    	{
+        	tcbsetcoloringStyle, title={\anttmcap16pt Solution:},
+        	attach boxed title to top left, breakable, pad at break*=0mm,
+        	fonttitle=\Large\bfseries, fontupper=\normalsize\normalfont,
+        	fontlower=\normalsize\normalfont,
+        	boxsep=0pt,left=0pt, right=3mm, top=4pt, before skip=1mm, after skip=-5.5mm,
+        	before upper=\smallskip\par, bottom=2mm,
+        	topLeftSectionTitleStyle
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbequationStyle/.style =
+    	{
+        	@BASIC@STYLE, tcbsetcoloringStyle=tcbequationStyle,
+        	width=\linewidth, box align=center, valign=top, fontupper=\@tcb@solutionVerb@font,
+        	before skip=-3mm, after skip=3mm, left skip=0mm,
+        	biColorMultilineInteriorStyle
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbequationlistboxStyle/.style =
+    	{
+        	@DEFAULT@STYLE, box align=center, valign=top, fontupper=\@tcb@solutionVerb@font,
+        	tcbsetcoloringStyle=tcbequationlistboxStyle, before skip=1mm, after skip=1mm
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfigboxStyle/.style =
+    	{
+        	@DEFAULT@STYLE, capture=hbox, tcbsetcoloringStyle=tcbfigureStyle,
+        	boxsep=0mm, boxrule=3pt, box align=center, valign=top, arc=6pt,
+        	left=0mm, right=0mm, top=1mm, bottom=0mm, before skip=3mm, after skip=3mm,    	
+        	center title, righttitle=1mm, lefttitle=2mm, toptitle=2.5mm, bottomtitle=2mm,
+        	fonttitle=\LARGE\bfseries, filledTitleSepCode
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfigureStyle/.style =
+    	{
+        	@DEFAULT@STYLE, tcbsetcoloringStyle=tcbfigureStyle, title filled, after skip=5mm,
+        	fonttitle=\bfseries, boxsep=-1mm, boxrule=2.5pt, left=1mm, right=1mm, %\liftedshadow,
+        	top=2mm, bottom=3mm, righttitle=3mm, lefttitle=4mm, toptitle=3mm, bottomtitle=2mm
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfunctiondetailboxStyle/.style=
+    	{
+        	@BASIC@STYLE, breakable=unlimited, tcbsetcoloringStyle, colframe=black,
+        	%lifted  shadow={1mm}{-2mm}{3mm}{0.1mm}{current-colbacktitle}, %drop fuzzy shadow=current-colboxshadow,
+        	arc=6pt, boxrule=5pt, boxsep=3mm, before skip=0mm, after skip=0mm,
+        	top=-9mm, bottom=-1mm, before=\vspace{0mm},
+        	toptitle=2.25mm,  bottomtitle=1mm, lefttitle=0mm, before title=\bfseries,
+        	fontupper=\normalsize\bfseries, fonttitle=\LARGE\bfseries,
+    		attachBoxedTitleTopCenter, topCenterBoxedTitleStyle, interiorMultilineStyle
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfunctionenvStyle/.style=
+	{
+		enhanced, breakable=unlimited, fonttitle=\bfseries, tcbsetcoloringStyle, before skip=3mm,
+		after=\medskip, after skip=6mm, top=-3mm, bottom=2.5mm, boxrule=5pt, boxsep=3mm,
+		title=\shadowText{Functions:}, colframe=black, attachBoxedTitleTopCenter,
+		topCenterBoxedTitleStyle, biColorMultilineInteriorStyle	
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfunctionlistboxStyle/.style =
+    	{
+        	enhanced, breakable, tcbsetcoloringStyle, titleSepCode, frameCodeSetup, interiorStyle,
+        	%fuzzy shadow={5mm}{-5mm}{3mm}{0.3mm}{current-colboxshadow},
+        	%lifted shadow={1mm}{-2mm}{2mm}{0.1mm}{current-colboxshadow},
+        	arc=6pt, boxrule=5pt,
+        	before skip=3mm, after skip=0mm, top=-8.5mm, bottom=-2.5mm, left=0.0mm,      	
+        	before title=\bfseries, toptitle=-0.5mm, bottomtitle=-2mm, lefttitle=1mm,
+        	fontupper=\normalsize\bfseries, fonttitle=\large\bfseries, breakable   	
+    	},	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbfunctionlistboxStyle on Layer 2/.style =
+    	{
+        	enhanced, breakable, tcbsetcoloringStyle, titleSepCode, frameCodeSetup, interiorStyle,
+        	%fuzzy shadow={5mm}{-5mm}{3mm}{0.3mm}{current-colboxshadow},
+        	%lifted shadow={1mm}{-2mm}{2mm}{0.1mm}{current-colboxshadow},
+        arc=6pt, boxrule=5pt,
+        	before skip=3mm, after skip=0mm, top=-7.5mm, bottom=-2.5mm, left=0.0mm,      	
+        	before title=\bfseries, toptitle=-0.25mm, bottomtitle=-1mm, lefttitle=1mm,
+        	fontupper=\normalsize\bfseries, fonttitle=\Large\bfseries, breakable   	
+    	},	
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+   	tcbinlinebashboxStyle/.style=
+    	{
+    		reset, reset, verbatim, title={}, arc=2pt, outer arc=3pt, boxrule=1pt, boxsep=0pt,
+    		colupper=white, colback=black, boxrule=1pt, colframe=black, coltext=white, bottom=0pt,
+    		no shadow,
+    		listing options=
+		{
+			language=bash-extended,  name=bash-extended%,, identifierstyle=\textcolor{blue},
+			%commentstyle=\textcolor{green}, stringstyle=\upshape\color{red},
+     			%showstringspaces=true, keywordstyle=\color{blue!35!white}
+		}		
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	tcbinlinebashlistingStyle/.code=	
+    	{
+    		code={\lstinline
+		[
+     			language=bash-extended,  name=bash-extended, identifierstyle=\textcolor{white},
+     			commentstyle=\textcolor{listingsStyle-commentcolor},
+			stringstyle=\upshape\color{listingsStyle-stringcolor},
+     			showstringspaces=true, keywordstyle=\color{listingsStyle-keywordcolor1}
+     		]}
+    	%\lstinline
+		%[
+	     		language=bash-extended,  name=bash-extended, identifierstyle=\textcolor{white},
+			commentstyle=\textcolor{listingsStyle-commentcolor},
+			stringstyle=\upshape\color{listingsStyle-stringcolor},
+     			showstringspaces=true, keywordstyle=\color{listingsStyle-keywordcolor1}
+	     	%]%
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcblistboxStyle/.style =
+    	{
+        	@BASIC@STYLE, left=1.5mm, boxsep=2pt, lefttitle=2mm, toptitle=1.5mm, bottomtitle=1mm, box align=center,
+        	valign=top, before skip=2mm, after skip=2mm, titlerule=1mm, boxrule=1mm,%leftrule=2mm,
+        	tcbsetcoloringStyle=tcblistboxStyle, fontupper=\@tcb@text@font, filledTitleSepCode={current}{0pt},
+        	%titleSepCode, %interiorStyle%, frameCodeSetup
+        	subtitle style={}
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbparagraphStyle/.style=
+	{%\fontsize{10}{\baselinestretch}\selectfont
+		enhanced, breakable=unlimited, drop fuzzy shadow=current-colboxshadow,
+		fonttitle=\bfseries\fontsize{11}{\baselinestretch}\selectfont,
+		fontupper=\bfseries\fontsize{10}{10pt*\baselinestretch}\selectfont,
+		tcbsetcoloringStyle, before skip=3mm, %colframe=black,
+		lefttitle=1mm, toptitle=-3.5mm, bottomtitle=-4.0mm,
+		after=\medskip, after skip=2mm, top=0mm, bottom=0mm, boxrule=5pt,
+		boxsep=3mm,	interiorStyle, frameCodeSetup
+    		%	attachBoxedTitleTopCenter, \shadowText{Functions:}
+		%topCenterBoxedTitleStyle, biColorMultilineInteriorStyle	
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbSectionStyle/.style =
+    	{
+        	empty, no shadow, title={\anttmcap16pt Solution:}, attach boxed title to top left,
+        	breakable, tcbsetcoloringStyle, boxsep=0pt, fonttitle=\Large\bfseries,
+        	fontupper=\normalsize\normalfont, fontlower=\normalsize\normalfont
+        	left=0pt, right=3mm, top=4pt, bottom=2mm, before skip=1mm, after skip=1.5mm,
+        	pad at break*=0mm, before upper=\par\smallskip, topLeftSectionTitleStyle%=#1
+    	},
+    	%tcbSectionStyle/.default=current,
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbsolutionboxStyle/.style =
+    	{
+        	@DEFAULT@STYLE, box align=center, valign=top, before skip=-10mm, after skip=1mm,
+        	tcbsetcoloringStyle=tcbsolutionboxStyle, fontupper=\@tcb@solutionVerb@font
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbsolutionverbStyle/.style =
+    	{
+        	@DEFAULT@STYLE, box align=center, valign=top, fontupper=\@tcb@solutionVerb@font,
+        tcbsetcoloringStyle=tcbsolutionverbStyle, before skip=-3mm, after skip=3mm, left skip=0mm
+	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	theoremStyle/.style =
+    	{
+    		@BASIC@STYLE, tcbsetcoloringStyle, before skip = 3mm, after skip = 3mm,
+    		arc=6pt, boxrule=5pt, fontupper=\normalsize\bfseries, no shadow,
+    		fonttitle=\bfseries, toptitle=-0.25mm, bottomtitle=-1mm, lefttitle=2mm, top=3mm,	
+    		subtitleStyle, titleSepCode, frameCodeSetup, interiorMultilineStyle
+	}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\catcode`\!=\active
+\endinput 

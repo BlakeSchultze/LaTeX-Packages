@@ -1,0 +1,62 @@
+%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\ProvidesPackage{my-latex}
+\newif\if@landscape@option\@landscape@optionfalse
+\newif\if@standaloneoff@option\@standaloneoff@optionfalse
+\newif\if@frontbackmatter@option\@frontbackmatter@optionfalse
+\DeclareOption{landscape}{\@landscape@optiontrue\PassOptionsToClass{landscape}{article}}
+\DeclareOption{standaloneoff}{\@standaloneoff@optiontrue}
+\DeclareOption{frontbackmatter}{\@frontbackmatter@optiontrue}
+\DeclareOption*{\PackageWarning{my-latex}{Unknown ‘\CurrentOption’}}
+\ProcessOptions\relax
+%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\if@landscape@option
+%landscape mode
+	\PassOptionsToClass{landscape}{article}
+	\PassOptionsToPackage{landscape}{my-macros}
+\fi
+%\if@standaloneoff@option
+%	\documentclass[class= article, crop = false]{standalone}
+%\fi
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Document Body %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+% Packages that must be loaded BEFORE hyperref
+\RequirePackage{my-imakeidx}
+%\RequirePackage[xindy]{imakeidx}
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{my-packages}           %Custom set of packages used in my-latex.sty development
+\RequirePackage{dvipsnames}        % Custom color definitionStyle/naming and visual settings
+\RequirePackage{my-colorsets}
+\RequirePackage{my-colors}         % Custom color definitionStyle/naming and visual settings
+\RequirePackage{my-styles}         % Custom color definitionStyle/naming and visual settings
+\RequirePackage{my-polynom}	     % Modified from 'polynom' package: \polylongdiv, \polyfactorize, \poly[add,sub,mul,div], \polygcd: \polyset{vars=ABC..., delims={}, style=A|B|C, stage=<#>, div=<symbol>}
+\RequirePackage{my-math}           % Custom defs, macros, commands, environments, and settings
+\RequirePackage{my-fonts}          % Custom assignment of fonts and math alphabets to established and new font names
+\if@frontbackmatter@option         %landscape mode
+	\RequirePackage{frontbackmatter}     % Custom set of packages used in my-latex.sty development
+	\if@landscape@option
+		\RequirePackage[frontbackmatter, landscape]{my-macros}   % Custom defs, macros, commands, environments, and settings
+	\else
+		\RequirePackage[frontbackmatter]{my-macros}  % Custom defs, macros, commands, environments, and settings
+	\fi
+\else
+	\if@landscape@option
+		\RequirePackage[landscape]{my-macros}    % Custom defs, macros, commands, environments, and settings
+	\else
+		\RequirePackage{my-macros}  % Custom defs, macros, commands, environments, and settings
+	\fi
+\fi
+\RequirePackage{my-listings} % Custom listing/caption appearance of code segments written in different programming language
+%\newacronym{ddye}{D$_{\text{dye}}$}{donor dye, ex. Alexa 488}
+%\newacronym[description={\glslink{r0}{F\"{o}rster distance}}]{R0}{$R_{0}$}{F\"{o}rster distance}
+%\newglossaryentry{r0}{name=\glslink{R0}{\ensuremath{R_{0}}},text=F\"{o}rster distance,description={F\"{o}rster distance, where 50\% ...}, sort=R}
+%\newglossaryentry{kdeac}{name=\glslink{R0}{\ensuremath{k_{DEAC}}},text=$k_{DEAC}$, description={is the rate of deactivation from ... and emission)}, sort=k}
+%\loadglsentries[main]{INP-00-glossary}
+%% or using \input:
+%%\input{INP-00-glossary}
+%\makeFrontMatter
+\catcode`!=\active
+\catcode`\!=\active
+\endinput 

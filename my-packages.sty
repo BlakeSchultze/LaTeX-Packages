@@ -1,0 +1,247 @@
+% Encapsulates all of the package requirements into a single package, which may vary based on the TeX engine used
+% and/or the package options specified (currently no package options exist, but there will be at least some variations
+% to support usage of XeLaTeX/LuaLaTeX
+\ProvidesPackage{my-packages}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Included Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\RequirePackage{pkgloader}				% Automatically loads packages in the correct order and handles conflicts
+% \RequirePackageWithOptions,
+% \Load
+% always/if loaded
+% before/after: e.g. \Load {xltxtra} after {graphicx}
+% early/late: specifies whether package is typically oaded early or late in process, then used for ordering when all else equal
+% error: 	\Load error if {algorithms && pseudocode}
+% because:
+%1 \Load {res-ie-lst} if {inputenc && listings}
+%2 after {inputenc , listings}
+%3 because {it allows the use of 1 byte unicode
+%4 characters in code listings}
+%5
+%6 \Load {fixltx2e} always early
+%7 because {it fixes some imperfections in LaTeX2e}
+%8
+%9 \Load error when {algorithms && pseudocode}
+%10 because {they provide almost identical functionality
+%11 and conflict on many command names}
+%\Load {fancyhdr} before {hyperref}
+%\Load {fncychap} before {hyperref}
+%\Load {float}    before {hyperref}
+%\Load {hyperref} before {algorithm}
+%\Load {amssymb}  before {xunicode}
+%\Load {amssymb}  before {xltxtra}
+%\Load {graphicx} before {xltxtra}
+%\Load {graphicx} before {fontspec}
+%\Load {caption}  before {subfig}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Included Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\PassOptionsToPackage{disallowspaces,fixamsmath}{mathtools}	% Mathematical tools to fix/improve AMSmath position/spacing issues
+%\PassOptionsToPackage{all, float}{hypcap}			% Adjusting the anchors of captions
+%\PassOptionsToPackage{newfloat}{minted}		% Highlighted source code for LATEX
+%\RequirePackage[newFloat]{minted}
+%\PassOptionsToPackage{procnames}{listings}
+%\PassOptionsToPackage{procnames}{listingsutf8}
+%\RequirePackage[svgnames, table,
+%    dvipsnames, usenames,
+%    x11names, cmyk]{xcolor}
+% fixpdftex, hyperref, prologue, , , ,
+\RequirePackage[svgnames, table,
+    dvipsnames, usenames,
+    x11names]{xcolor}
+\PassOptionsToPackage
+{
+    svgnames, table,
+    dvipsnames, usenames,
+    x11names, fixpdftex,
+    hyperref
+}{xcolor, newenviron}                           	% provides access to color tables allowing usage of named colors
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{amsmath}            		% AMS matrix commands
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage{algpseudocode}         	% Algorithmic typesetting environment
+\RequirePackage{aliascnt}				% Create aliases for counters
+\RequirePackage{alltt}				% Create aliases for counters
+%\RequirePackage{amssymb}            	% AMS fonts for reals, complex numbers, etc
+\RequirePackage{accents}           		% fixes dddots, ddddots, ... and other accent issues
+\RequirePackage{amsthm}				% AMS theorem/lemma/etc structures
+\RequirePackage{array}					% Extended array/tabular environments w/ extended column & programmable formatting
+\RequirePackage{booktabs}           		% professional table style
+\RequirePackage{calc}               		% extends types of calculations possible with LaTeXCalc
+\RequirePackage{cancel}             		% line through math
+\RequirePackage{capt-of}          		% Stripped down version of caption
+\RequirePackage{changepage}         	% local margin change environment
+\RequirePackage{cite}					% Improves numerical citation handling
+\RequirePackage{colortbl}				% Allows table rows/columns to be colored
+\RequirePackage{embedfile}             		
+\RequirePackage{empheq}             		% multiline boxes
+\RequirePackage{enumitem}           		% provides more options and greater control of numering/lettering in enumerate environment
+\RequirePackage{environ}           		% \NewEnviron
+\RequirePackage{eqparbox}					% Intermediate package for transition from TEX3 to NTS ('New Typesetting System')
+\RequirePackage{etex}					% Intermediate package for transition from TEX3 to NTS ('New Typesetting System')
+%\RequirePackage{etextools}
+\RequirePackage{etoolbox}				% Package tools especially for use with e-tex
+\RequirePackage{fancyvrb}
+%\RequirePackage{fancybox}			% Box/verbatim macros: \fbox: \shadowbox, \doublebox, \ovalbox, \Ovalbox
+\RequirePackage{fancyhdr}
+%\RequirePackage{fancyref}
+\RequirePackage{filecontents}
+\RequirePackage{float}              		% \newfloat
+%\RequirePackage{floatrow}          		% \DeclareNewFloatType
+\RequirePackage{forloop}				% Add \forLoop and \forloop macros
+%\RequirePackage
+%[
+%    top=0.5in, bottom=1.0in,
+%   left=0.25in, right=1in
+%]
+%{geometry}
+\RequirePackage{graphicx}           		% new way of doing eps files
+\RequirePackage{graphpap}           		% create graph paper in figures.
+\RequirePackage[customcolors,shade]{hf-tikz}
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+% Packages that must be loaded BEFORE hyperref
+%\RequirePackage{imakeidx}
+%\RequirePackage[xindy]{imakeidx}
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage[pdfpagelabels, linktocpage=true]{hyperref}  % url links, hyperlinks to labels with \autoref{}, also loads \nameref (similar to \autoref{})
+\RequirePackage[pdfpagelabels,pdfstartview={FitH},pdffitwindow=false]{hyperref}  % url links, hyperlinks to labels with \autoref{}, also loads \nameref (similar to \autoref{})
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+% Packages that must be loaded AFTER hyperref
+\RequirePackage{bookmark}                		% \bookmarksetup, \bookmarksetupnext, \bookmark; options : depth, dest, color, gotor, level, named, openlevel, page, rawaction, uri, view
+\RequirePackage{cmap}                		% pro­vides character map tables => makes pdfLATEX PDF files search/copy-able in compliant PDF viewers
+\RequirePackage{ellipsis}
+\RequirePackage{footnotebackref}                % hyperlinks from footnotes number to document occurence
+\RequirePackage[all]{hypcap}            		%
+%\RequirePackage[hypcap]{caption}            		%
+\RequirePackage{hypernat}                		% provides capability
+\RequirePackage{ifdraft}                		%
+\RequirePackage{layouts}                		% show document layout configurations, e.g.,
+%\RequirePackage[newfloat]{minted}
+%\RequirePackage{minted}
+%\RequirePackage{robustindex}                	% maintains index page numbers automatically
+%\RequirePackage{showidx}				% mark index entries in text in the right margin
+%\RequirePackage[makeindex]{splitidx}           % maintains index page numbers automatically
+\RequirePackage{uri}                		% uri links (e.g. arXiv)
+%hypdestopt, hypcap, hypbmsec
+%doi, doipubmed, robustindex
+%-----------------------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{ifluatex}           		% modifications for usage of luatex
+\RequirePackage{ifxetex}           			% modifications for usage of xetex
+\RequirePackage{lipsum}					% Random text for MWEs
+%\RequirePackage{letltxmacro}				
+%\RequirePackage[procnames]{listings}      	% nice code layout
+\RequirePackage{listings}           		% nice code layout
+\RequirePackage{longtable}
+%\RequirePackage{ltablex}
+\RequirePackage{ltxdockit}           		
+\RequirePackage{ltxtable}
+\RequirePackage{lstautogobble}
+\RequirePackage{makecell}
+\RequirePackage{makeidx}
+%\RequirePackage{mathabx}
+\RequirePackage{mathcomp}
+\RequirePackage[framemethod=tikz]{mdframed}
+\RequirePackage{minibox}
+\RequirePackage{mleftright}%\mleftright
+\AtEndOfPackage{\mleftright}
+\RequirePackage[12pt]{moresize}
+%\RequirePackage{moreverb}           	% verbatim tab environment --> clashes with minted:new float
+\RequirePackage{morewrites}
+\RequirePackage{multirow}           		% for \multirow
+\RequirePackage{mwe}                		% useful for creating "Minimal Working Examples" (MWEs) including sample images
+\RequirePackage{newenviron}           	% \nicefrac fraction command
+%\RequirePackage{newfloat}           		% \DeclareFloatingEnvironment
+\RequirePackage{nicefrac}           		% \nicefrac fraction command
+\RequirePackage[intoc]{nomencl}           		% nomenclature/abbreviations list similar to acronms/glossary
+%\RequirePackage{pageslts}
+%\RequirePackage{parskip}
+\RequirePackage{pdftexcmds}
+\RequirePackage{pgf}                		% perform calculations
+\RequirePackage{pgffor}                		% perform calculations
+\RequirePackage{pifont}             		% access to dingbat symbols
+%\RequirePackage{polynom}				% \polylongdiv, \polyfactorize, \poly[add,sub,mul,div], \polygcd: \polyset{vars=ABC..., delims={}, style=A|B|C, stage=<#>, div=<symbol>}
+%\RequirePackage{pstricks,pst-node}\let\clipbox\relax
+%\RequirePackage[]{pst-grad}
+\RequirePackage{ragged2e}				% \Centering \RaggedRight \RaggedLeft
+\RequirePackage{refcount}
+%\RequirePackage{robustindex}           		%
+\RequirePackage{rotating}           		% for sideways
+\RequirePackage{scalerel}           		% relative scale/stretch delimiters
+\RequirePackage{setspace}				% Change line spacing locally
+\RequirePackage{shadowtext}			% Shadowed text
+\RequirePackage{siunitx}            		% SI units (\si/Si), number output(\num),
+\RequirePackage{snapshot}
+%\RequirePackage[log]{snapshot}
+\RequirePackage{soul}
+\RequirePackage[subpreambles=true]{standalone}
+\RequirePackage[hypcap]{subcaption}
+%\RequirePackage{subfigure}
+\RequirePackage{subfiles}
+\RequirePackage{suffix}
+\RequirePackage{tabu}
+\RequirePackage{tabularx}
+\RequirePackage[most,skins]{tcolorbox}
+\RequirePackage{textcomp}
+\RequirePackage{textgreek}
+\RequirePackage{tikz}
+\RequirePackage{tikz-cd}
+%\RequirePackage[tiny]{titlesec}
+%\RequirePackage{kpfonts}
+\RequirePackage[explicit]{titlesec}%
+\RequirePackage{tocloft}
+\RequirePackage{trimspaces}
+\RequirePackage[normalem]{ulem}
+%\RequirePackage{unicode-math}
+\RequirePackage{url}                			% insert functional web links
+\RequirePackage{verbatim}           		% multiline comments
+\RequirePackage{xfrac}              		% sfrac fraction command
+\RequirePackage{xspace}             		%
+\RequirePackage{xparse}             		%
+\RequirePackage{xstring}
+\RequirePackage{wrapfig}
+%\RequirePackage{arydshln}
+\RequirePackage{dashrule}
+\usetikzlibrary{calc, decorations.markings, arrows, shadings,shapes.gates.logic.US,trees,positioning,arrows, graphs}
+%\tcbuselibrary{listings, minted,hooks, breakable, skins,xparse}
+\tcbuselibrary{magazine, listingsutf8, hooks, breakable, skins, xparse, raster, fitting, theorems}
+%\tcbset{external/PassOptionsToPackage={newFloat}{minted}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\PassOptionsToPackage{full}{textcomp}
+%\RequirePackage{gensymb}
+%\RequirePackage[Upomega, upmu]{gensymb}
+%\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+%\RequirePackage{yfonts}
+%\RequirePackage{mbboard}
+%\RequirePackage{fix-cm}
+%\RequirePackage[pantyk]{ofs}
+%\usepackage{unixode}
+%\RequirePackage{unicode-math}
+%\RequirePackage{fontmfizz}
+%\RequirePackage[urw-garamond]{mathdesign}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{moredefs}
+%\RequirePackage[mla]{lips} \RequirePackage[scaled=0.85]{beramono} \RequirePackage{bold-extra} %\RequirePackage{fontspec}
+\RequirePackage{amssymb}
+\RequirePackage{newunicodechar}
+%\RequirePackage[acronym,xindy,toc]{glossaries}		% other options: nopostdot, nomain, nonumberlist if glossary defined in file
+%\RequirePackage[acronym,toc, makeindex]{glossaries}		% other options: nopostdot, nomain, nonumberlist if glossary defined in file
+\RequirePackage[acronym,toc]{glossaries}		% other options: nopostdot, nomain, nonumberlist if glossary defined in file
+%\RequirePackage[toc]{glossaries}		% other options: nopostdot, nomain, nonumberlist if glossary defined in file
+%\RequirePackage{spath3}						% manipulating PGF’s soft paths, includes 'Calligraphy' pen and 'knot' drawing packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{newunicodechar}
+\PassOptionsToPackage{hypcap}{caption}		% Customize captions in floating environments
+
+\endinput
+% Newly added packages which have not been fiully vetted as of 07/01/2016
+\RequirePackage{alltt}				% Create aliases for counters
+\RequirePackage{embedfile}             		
+\RequirePackage{eqparbox}					% Intermediate package for transition from TEX3 to NTS ('New Typesetting System')
+%\RequirePackage{etextools}
+%\RequirePackage{letltxmacro}				
+%\RequirePackage{ltablex}
+\RequirePackage{ltxdockit}           		
+\RequirePackage{ltxtable}
+\RequirePackage{setspace}				% Change line spacing locally
+\RequirePackage{dashrule}
