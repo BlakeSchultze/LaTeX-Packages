@@ -1,11 +1,5 @@
 % Uncomment following line to trace macro usage and view expansion details
 %\tracingmacros=2 \tracingcommands=2
-% Delimeter Options: {} [] () <> '' || // ?? -- ** :: !! ;; ,, NOT: `` ^^ @@ ## == __ ..
-% \tcbfontsize\tcbfitdim
-%fit fontsize macros, fit basedim=50pt, fit to=3cm and 2cm, 
-%\newtcolorbox{fitting}[2][]{fit,height=#2,boxsep=1pt,valign=center,opacityupper=0.5,
-%top=0.4\tcbfitdim,bottom=0.4\tcbfitdim,left=0.75\tcbfitdim,right=0.75\tcbfitdim,
-%enhanced,watermark text={\tcbfitsteps},colframe=blue!75!black,colback=white,#1}%
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
 \ProvidesPackage{my-macros}[2013/01/13 Custom Package]
 \newif\if@landscape@option\@landscape@optionfalse
@@ -15,6 +9,7 @@
 \DeclareOption*{\PackageWarning{my-macros}{Unknown ‘\CurrentOption’}}
 \ProcessOptions\relax
 \makeatletter													% Change @ character to \catcode'@=11, i.e. a standard letter, so it can be used in macro names/definitionStyle
+% Delimeter Options: {} [] () <> '' || // ?? -- ** :: !! ;; ,, NOT: `` ^^ @@ ## == __ ..
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Path information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,6 +83,14 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% Image/graphic/coverpage selections and settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chardef\@ne=1
+\chardef\tw@=2
+\chardef\thr@@=3
+\chardef\sixt@@n=16
+\chardef\@cclv=255
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% Image/graphic/coverpage selections and settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\@header@image@height{25pt}
 \def\@header@image{\includegraphics[height=\@header@image@height]{\@uni@rhead@logo}}
 \edef\@uni@logo{Baylor_vert.png}
@@ -114,7 +117,7 @@
 \def\removetonil#1\xx{}
 \def\@nil{}
 \def\dirsep{\scaleobj{1.25}{/}}
-\def\usernamelabel{$<$\emph{user name}$>$ }
+\def\usernamelabel{$<$\emph{user name}$>$}
 \def\@ding@numbers@start{172}
 \def\@filled@ding@numbers@start{182}
 \def\@default@fig@label{fig:fig\the\value{figure}}
@@ -238,7 +241,9 @@
 \newcounter{@tcb@listings@title@counter}
 \newcounter{@current@IBP@row@counter}
 %\newcounter{@eqn@list@counter}
-\@init@counter{@prob@counter}      																	% Number of a problem
+
+\@init@counter{countproblem}[0]    																	% Number of a problem
+\@init@counter{@prob@counter} 																	% Number of a problem
 \@init@counter{@prob@part@counter}      															% Part # of a problem for multipart problems (i.e., (i), (ii),...)
 \@init@counter{@subprob@counter}      																% Subproblem letter (i.e. (a), (b), (c), ...)
 \@init@counter{@eqn@list@counter}      																% Counter used in labeling equation list
@@ -261,6 +266,7 @@
 \@init@counter{@bash@keywords@counter}[3]    																	% Number of a problem
 \@init@counter{@matlab@keywords@counter}[10]      																	% Number of a problem
 \@init@counter{@git@keywords@counter}[3]      																	% Number of a problem
+%\newaliascnt{@prob@counter}{@prob@counter}
 \newaliascnt{@num@tcbfigures}{@macro@counter}
 \newtoggle{@add@sub@TF}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -275,14 +281,11 @@
 %\setlength\dashlinegap{4.5pt}
 \newlength\@macro@shift
 \newdimen\@macro@dimension
-\@init@dimen{\@filledenumshape@min@size}[6mm]
-\@init@dimen{\@filledenumshape@inner@sep}[0.5pt]
-\@init@length{\@list@box@first@column}[3.5cm]
-\@init@length{\@list@box@second@column}[15.5cm]
-\@init@length{\@list@box@column@sep}[0.5cm]
+\@init@dimen{\@filledenumshape@min@size}[5mm]
+\@init@dimen{\@filledenumshape@inner@sep}[0.25pt]
 \@init@dimen{\@function@desc@skip}[-1.0em]
 \@init@dimen{\@function@sep@skip}[-1.65em]
-\@init@dimen{\@function@entry@skip}[-1.85em]
+\@init@dimen{\@function@entry@skip}[-1.995em]
 \@init@length{\labelboxwidth}[2.75cm]
 \@init@length{\colorboxwidth}[1.6cm]
 \@init@length{\colorboxheight}[0.75cm]
@@ -313,17 +316,47 @@
 \@init@length{\@author@dept@image@skip}[-8mm]
 \@init@length{\@author@date@height}[\dimexpr\@author@date@skip+\@author@dept@image@skip\relax]
 \@init@length{\replength}[1.5pt]
+\@init@length{\@chapter@heading@xshift}[3.15cm]
+\@init@length{\@chapter@heading@yshift}[1cm]
+\@init@length{\@chapter@heading@height}[2cm]
+\@init@length{\@chapter@heading@inner@sep}[11pt]
+\@init@length{\@chapter@heading@rounded@corners}[20pt]
+%\@init@length{\@chapter@heading@title@xshift}[.9\paperwidth]
+%\captionsetup[longtable]{labelfont=bf,textfont=it,labelsep=newline}
+%\def\LT@caption{}
+%\def\LT@c@ption#1[#2]#3{}
+%\def\LT@capti@n{}
+\@init@length{\@function@list@box@first@column}[3.0cm]
+\@init@length{\@function@list@box@second@column}[16.5cm]%
+\@init@length{\@function@list@box@column@sep}[0.25cm]
+\@init@length{\@function@detail@box@first@column}[4.0cm]
+\@init@length{\@function@detail@box@second@column}[15.5cm]%
+\@init@length{\@function@detail@box@column@sep}[0.75cm]
+\if@landscape@option
+	%landscape mode
+	%\setlength\@function@list@box@second@column{\dimexpr\linewidth - cm\relax}
+	\@init@length{\@before@author@date@skip}[-10mm]
+	\@init@length{\@chapter@heading@width}[\dimexpr\paperwidth + 2.0in\relax]
+	\@init@length{\@chapter@heading@title@xshift}[\dimexpr.9\paperwidth + 1.5in\relax]
+	%\addtolength\@chapter@heading@width{2in}
+	%\addtolength\@chapter@heading@title@xshift{1.5in}
+\else
+	\@init@length{\@before@author@date@skip}[0mm]
+	\@init@length{\@chapter@heading@width}[\paperwidth]
+	\@init@length{\@chapter@heading@title@xshift}[.9\paperwidth]
+	%\@init@length{\@function@list@box@second@column}[15.5cm]
+\fi
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 % Temporary/default registers for macro development
 \newtoks\do@VerbBox
 \newbox\@fancybox
 \newbox\@Sbox
-\newsavebox\@macro@savebox
-\newsavebox\@macro@saveboxA
-\newsavebox\@macro@saveboxB
-\newsavebox\@macro@saveboxC
-\newsavebox\@macro@saveboxD
-\newsavebox\@macro@saveboxE
+\newsavebox\@macro@savebox@title@contents
+\newsavebox\@macro@savebox@title
+\newsavebox\@macro@savebox@unilogo
+\newsavebox\@macro@savebox@unideptlogo
+\newsavebox\@macro@savebox@description
+\newsavebox\@macro@savebox@built
 \let\@tcbfigbox@width=\@macro@width
 \let\@tcbfigbox@skip=\@macro@length
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -336,19 +369,19 @@
 \setlistdepth{12}
 \newlist{legendList}{enumerate}{1}
 \newlist{deepList}{enumerate}{12}
-\setlist[legendList,1]{label={}, itemsep=-1pt, topsep=2pt, partopsep=0pt, labelindent=1cm}
-\setlist[deepList,1]{label=\textbf{(\arabic*)},labelindent=1pt, leftmargin=* }
-\setlist[deepList,2]{label=\textbf{(\alph*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,3]{label=\textbf{(\roman*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,4]{label=\textbf{(\arabic*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,5]{label=\textbf{(\alph*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,6]{label=\textbf{(\roman*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,7]{label=\textbf{(\arabic*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,8]{label=\textbf{(\alph*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,9]{label=\textbf{(\roman*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,10]{label=\textbf{(\arabic*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,11]{label=\textbf{(\alph*)},labelindent=1pt, leftmargin=*}
-\setlist[deepList,12]{label=\textbf{(\roman*)},labelindent=1pt, leftmargin=*}
+\setlist[legendList,1]{label={}, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt, labelindent=1cm}
+\setlist[deepList,1]{label=\textbf{(\arabic*)},labelindent=-3pt, leftmargin=*, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,2]{label=\textbf{(\alph*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,3]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,4]{label=\textbf{(\arabic*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,5]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,6]{label=\textbf{(\roman*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,7]{label=\textbf{(\arabic*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,8]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,9]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,10]{label=\textbf{(\arabic*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,11]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
+\setlist[deepList,12]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Internal Macro Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -397,29 +430,6 @@
   \\[-\arraystretch\dimexpr\ht\strutbox+\dp\strutbox\relax]%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*\chapterlabel{}
-\titleformat{\chapter}
-{\gdef\chapterlabel{}\normalfont\sffamily\LARGE\bfseries\scshape}
-{\gdef\chapterlabel{\thechapter\ }}
-{0pt}
-%{chapterFormatCode}%
-{
-	\begin{tikzpicture}[remember picture, overlay]
-    		\node[xshift=3.15cm, yshift=1cm] at (current page.north west)
-      	{%
-      		\begin{tikzpicture}[remember picture, overlay]
-        			\draw[fill=LightSkyBlue] (0,0) rectangle (\paperwidth,2cm);
-        			\node
-        			[
-        				anchor=east, xshift=.9\paperwidth, rectangle, rounded corners=20pt, inner sep=11pt,
-        				fill=MidnightBlue
-        			]
-              		{\color{white}\chapterlabel#1};
-       		\end{tikzpicture}
-     	 	};
-   	\end{tikzpicture}
-}
-\titlespacing*{\chapter}{0pt}{-0pt}{-0.0cm}
 %\newcommand{\soln}{\textit{(Sol.) \@solution@shift}}
 %\WithSuffix\newcommand{\soln}*{\textbf{\textit{(Sol.) }}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -486,25 +496,71 @@
     \IfBooleanTF{#1}{\addtocounter{page}{-1}}{}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{chapterHeading-colback}{LightSkyBlue}
-\colorlet{chapterHeading-c}{white}
-\colorlet{chapterHeading-colbacktitle}{MidnightBlue}% Insert a blank page, with (default) or without (starred version) increasing the page #
-\@init@length{\@chapter@heading@xshift}[3.15cm]
-\@init@length{\@chapter@heading@yshift}[1cm]
-\@init@length{\@chapter@heading@height}[2cm]
-\@init@length{\@chapter@heading@xshift}[4mm+12pt]
-
-\DeclareDocumentCommand{\chapterHeading}{s D<>{\@chapter@heading@xshift} D<>{\@chapter@heading@yshift}}
+%\titleformat{command}[shape]{format}{label}{sep}{before-code}[after-code]
+\newcommand*\sectionlabel{}
+\titleformat{\section}
+{\gdef\sectionlabel{}\normalfont\sffamily\LARGE\bfseries\scshape}
+{\gdef\sectionlabel{\thesection\ : }}
+{0pt}
+{\sectionHeading{#1}}
+%{%
+%	\begin{tcbsection}{\sectionlabel#1}%
+%	#2%
+%	\end{tcbsection}%
+%}%\chapterHeading{#1}}%
+%{\chapterHeading{#1}}%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\titlespacing*{\section}{0pt}{-0pt}{-0.0cm}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\sectionHeading}{>{\SplitArgument{1}{+}} m}
+{%
+	%\setcounter{@num@tcbfigures}{0}\ignorespaces%
+    	%\ProcessList{#1}{\@increment@tcbfigure@counter}%
+    	%\setlength{\@tcbfigbox@width}{\dimexpr\@macro@dimension/\value{@num@tcbfigures}\relax}\ignorespaces%
+    	%\ProcessList{#1}{\tcbfigboxfigure}\\%[1.2em]\\[1.2em]%[-0.5em]\\
+    	%\ProcessList{#1}{\sectionHeadingParts}
+    	\sectionHeadingParts #1
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\sectionHeadingParts}{m g}
+{%%\tcbsection[*]'color scheme'[style]<title font>{title text}[tcb options](tcb every layer options)<env font>
+	\IfValueTF{#2}
+	{%
+		\begin{tcbsection}{\sectionlabel#1}[after skip=1mm, before skip=-2mm]%
+			#2%
+		\end{tcbsection}
+	}
+	{%
+		\begin{tcbsection}{\sectionlabel#1}[bottom=0mm, after skip=1mm, before skip=-2mm]%
+		\end{tcbsection}
+	}
+%	\begin{tcbsection}{\sectionlabel#1}[after skip=1mm, before skip=-2mm]%
+%		\IfValueTF{#2}{#2}{\tcbsetforeverylayer{bottom=-2mm}}%
+%	\end{tcbsection}
+}
+%%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*\chapterlabel{}
+\titleformat{\chapter}
+{\gdef\chapterlabel{}\normalfont\sffamily\LARGE\bfseries\scshape}
+{\gdef\chapterlabel{\thechapter\ }}
+{0pt}
+{\chapterHeading{#1}}%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\titlespacing*{\chapter}{0pt}{-0pt}{-0.0cm}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\chapterHeading}{m D<>{\@chapter@heading@xshift} D<>{\@chapter@heading@yshift}}
 {%
 	\begin{tikzpicture}[remember picture, overlay]
-	    	\node[xshift=3.15cm, yshift=1cm] at (current page.north west)
+	    	\node[xshift=#2, yshift=#3] at (current page.north west)
 	      {%
 	      	\begin{tikzpicture}[remember picture, overlay]
-	      		\draw[fill=chapterHeading-colback] (0,0) rectangle (\paperwidth, 2cm);
+	      		\draw[fill=chapterHeading-colback] (0,0) rectangle (\@chapter@heading@width, \@chapter@heading@height);
 	      		\node
 	      		[
-	      			anchor=east, xshift=.9\paperwidth, rectangle, rounded corners=20pt, inner sep=11pt,
-	      			fill=chapterHeading-colbacktitle
+	      			anchor=east, xshift=\@chapter@heading@title@xshift, rectangle, fill=chapterHeading-colbacktitle,
+					rounded corners=\@chapter@heading@rounded@corners, inner sep=\@chapter@heading@inner@sep	      			
 	      		]
 	              	{\color{chapterHeading-coltitle}\chapterlabel#1};
 	       	\end{tikzpicture}
@@ -534,10 +590,20 @@
     \x{\endgroup#1=\dimexpr\got@maxcolwd\relax}\x
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\coloredtext}{m m}
+\DeclareDocumentCommand{\coloredtext}{s t! m m}
 {%
 	\begingroup%
-		\ignorespaces\color{#1}#2%
+		\IfBooleanTF{#1}
+		{%
+				\IfBooleanTF{#2}
+					{\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
+					{\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
+		}
+		{%
+				\IfBooleanTF{#2}
+					{\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
+					{\ignorespaces\color{#3}#4\unskip\ignorespaces}
+		}
 	\endgroup%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -566,8 +632,8 @@
 	\shadowcolor{#4}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\shadowText}{D<>{\anttmcap18pt} D(){current} m}
-{%\shadowText<title font>(color style){title text}
+\DeclareDocumentCommand{\shadowText}{D<>{\anttmcap18pt} D''{current} m}
+{%\shadowText<title font>'color style'{title text}
 
 	#1\color{#2-coltextshadowbase}%
 	\shadowcolor{#2-coltextshadow}%
@@ -726,13 +792,14 @@
 %                                        1 2         3            4            5 6        7
 \DeclareDocumentCommand{\fillednumshape}{s O{circle} D(){\arabic} D(){current} m D(){5mm} D<>{0.5pt}}
 {%\fillednumshape[*<counter on>][shape](counter print format){color style}{character/text or counter}(min size)<inner sep>
-	\setfillednumcolors{#4}
+	%\setfillednumcolors{#4}
+	\tcbsetcurrentcolors{#4}
 	\IfBooleanTF{#1}
 		{\edef\shapecontents{#3{#5}}}
 		{\edef\shapecontents{#5}}
 	\tikz[baseline=(char.base)]%
 	{%
-		\node[shape=#2, fill=fillednumshape-colfill, draw, thick, minimum size=#6, inner sep=#7, align=flush center] %
+		\node[shape=#2, font=\small, fill=fillednumshape-colfill, draw, thick, minimum size=#6, inner sep=#7, align=flush center] %
 		(char) {\textcolor{fillednumshape-colfilltext}{\hspace{0pt}\bfseries\shapecontents}};%
 	}%
 }
@@ -749,6 +816,18 @@
     \endgroup
     \tcbsetforeverylayer{#4}\tcboxmath{\boldsymbol{#2 #3}}
     \IfBooleanTF{#1}{\tcbsetforeverylayer{before skip=0mm}}{}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\def\@currently@inside{section}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\def\@set@currently@inside@indent%
+{%
+    	\gdef\@currently@inside@indent{1.3em}
+    	\ifcsstrequal{\@currently@inside}{problems}{\gdef\@currently@inside@indent{2.1em}}{}%
+    	\ifcsstrequal{\@currently@inside}{subproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
+    	\ifcsstrequal{\@currently@inside}{problemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
+    	\ifcsstrequal{\@currently@inside}{subproblemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
+	\ifcsstrequal{\@currently@inside}{problempartssubproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxlist}{>{\SplitList{\\}} m O{\@tcbfigbox@width}}
@@ -768,16 +847,6 @@
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxfigure}{>{ \SplitList{;}} m}{\tcbfigboximage#1}
-\def\@currently@inside{section}
-\def\@set@currently@inside@indent%
-{%
-    	\gdef\@currently@inside@indent{1.3em}
-    	\ifcsstrequal{\@currently@inside}{problems}{\gdef\@currently@inside@indent{2.1em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-    	\ifcsstrequal{\@currently@inside}{problemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-	\ifcsstrequal{\@currently@inside}{problempartssubproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboximage}{m m G{\@default@fig@label}}
 {%
@@ -865,51 +934,18 @@ linewidth=4pt, linecolor=current-coldraw]
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \newtcolorbox{tcbContentsBox}
 {%
-	enhanced, capture=minipage, colframe=black, boxrule=2pt, colback=stdbackground, breakable, before=\par\vspace{2\bigskipamount}\noindent,
-	code={\setul{1.15pt}{0.5pt}\colorlet{current-coltextshadowbase}{white}\colorlet{current-coltextshadow}{black}},
-	after=\par\bigskip, fonttitle=\sffamily\bfseries,
-	frame code=
-	{
-	  	\node
-		[
-			anchor=south west, inner xsep=8pt, xshift=8pt, rounded corners=5pt,
-			font=\bfseries\color{white}, fill=current-darkcol, draw=current-colframeborder, line width=1.5pt
-		]%
-		at (frame.north west) (tit) {\shadowText<\large\sffamily\bfseries>{\ul{Contents:}}};
-		\draw[line width=8pt, rounded corners=5pt, draw=current-colframeborder]%
-			(tit.west)
-			-| ([yshift=-6pt]frame.south west)
-			-- ([xshift=15pt, yshift=-6pt]frame.south west);
-	  	\draw[line width=2pt, rounded corners=5pt, draw=current-darkcol, double=current-highlightcol, double distance=0.75pt]%
-			(tit.west)
-			-| ([yshift=-6pt]frame.south west)
-			-- ([xshift=15pt, yshift=-6pt]frame.south west);
-	},
-	interior code=
-        	{       		
-        		\draw[draw=current-colinteriorborder, rounded corners=1pt,
-        			fill=current-colinteriorborder, line width=5pt]
-        			([yshift=-1pt]interior.north east)
-        			--([xshift=10pt, yshift=-1pt]interior.north west)
-				--([xshift=10pt, yshift=-1pt]interior.south west)
-				--([yshift=-1pt]interior.south east)
-				-- cycle;
-			\filldraw[draw=current-coldraw, rounded corners=1pt,
-        			fill=current-colbackinterior, line width=1pt,
-				double=current-highlightcol, double distance=0.5pt]
-        			([yshift=-1pt]interior.north east)
-        			--([xshift=10pt, yshift=-1pt]interior.north west)
-				--([xshift=10pt, yshift=-1pt]interior.south west)
-				--([yshift=-1pt]interior.south east)
-				-- cycle;
-        	}, top=0.5pt, bottom=0.5pt, left=6mm, colback=stdbackground
+	enhanced, capture=minipage, colframe=black, boxrule=2pt, colback=stdbackground, breakable,
+	before=\par\medskip\medskip\smallskip\noindent, after=\par\medskip, fonttitle=\sffamily\bfseries,
+	top=0.5pt, bottom=0.5pt, left=6mm, colback=stdbackground,
+	code={\setul{1.15pt}{0.5pt}\colorlet{current-coltextshadowbase}{white}\colorlet{current-coltextshadow}{black}},	
+	titleframeComboInteriorSetup, titleframeComboSetup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareTCBInputListing{\hnamei}{hspecificationi}{hoptionsi}
 \DeclareTotalTCBox{\tcboxVerb}{O{red} v O{}}
 {
-	fontupper=\ttfamily, nobeforeafter, tcbox raise base, arc=0pt, outer arc=0pt, top=0pt, bottom=0pt, 
-	left=0mm, right=0mm, leftrule=0pt, rightrule=0pt, toprule=0.3mm, bottomrule=0.3mm, boxsep=0.5mm, 
+	fontupper=\ttfamily, nobeforeafter, tcbox raise base, arc=0pt, outer arc=0pt, top=0pt, bottom=0pt,
+	left=0mm, right=0mm, leftrule=0pt, rightrule=0pt, toprule=0.3mm, bottomrule=0.3mm, boxsep=0.5mm,
 	colback=#1!10!white, colframe=#1!50!black, #3
 }
 {#2}
@@ -1015,11 +1051,7 @@ linewidth=4pt, linecolor=current-coldraw]
 	\enddocument%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\chardef\@ne=1
-\chardef\tw@=2
-\chardef\thr@@=3
-\chardef\sixt@@n=16
-\chardef\@cclv=255%\DeclareDocumentEnvironment{documentation}{O{Blake Edward Schultze} m m}
+%\DeclareDocumentEnvironment{documentation}{O{Blake Edward Schultze} m m}
 \newenvironment{documentation}[3][Blake Edward Schultze]
 {	
 	\@reset@ul@settings
@@ -1057,9 +1089,9 @@ linewidth=4pt, linecolor=current-coldraw]
 {
    \thispagestyle{empty} \shadowcolor{BaylorGoldCMYK}
     \begin{figure}[h!]
-        \centering\savebox{\@macro@savebox}{\shadowtext{\@title@font#1: #2}}
-        \cshadowbox{\includegraphics[width=\wd\@macro@savebox]{\@uni@logo}}
-        \cshadowbox{\usebox{\@macro@savebox}}
+        \centering\savebox{\@macro@savebox@title@contents}{\shadowtext{\@title@font#1: #2}}
+        \cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@logo}}
+        \cshadowbox{\usebox{\@macro@savebox@title@contents}}
         \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}\\[0.1em]
         \parbox{\textwidth}
         {
@@ -1073,7 +1105,7 @@ linewidth=4pt, linecolor=current-coldraw]
         \begin{minipage}{\textwidth}
         \centering
         \vspace{-11mm}\maketitle\vspace{-4mm}\color{Black}
-        \cshadowbox{\includegraphics[width=\wd\@macro@savebox]{\@uni@dept@logo}}
+        \cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@dept@logo}}
         \end{minipage}\caption{}
     \end{figure}
 }
@@ -1086,33 +1118,42 @@ linewidth=4pt, linecolor=current-coldraw]
    	\shadowcolor{BaylorGoldCMYK}%
    	\@set@coverpage@dimensions%
 	\centering%
-	\savebox{\@macro@savebox}{\shadowtext{\@title@font#1}}%
-	\savebox{\@macro@saveboxA}{\cshadowbox{\shadowtext{\@title@font#1}}}%
-	\savebox{\@macro@saveboxB}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox]{\@uni@logo}}}%
-	\savebox{\@macro@saveboxC}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox]{\@uni@dept@logo}}}%
-	\savebox{\@macro@saveboxD}{\parbox{\textwidth}{\sectionheader{\@description@font{#2}}!}}%
-	\savebox{\@macro@saveboxE}%
+	\savebox{\@macro@savebox@title@contents}{\shadowtext{\@title@font#1}}%
+	\savebox{\@macro@savebox@title}{\cshadowbox{\shadowtext{\@title@font#1}}}%
+	\savebox{\@macro@savebox@unilogo}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@logo}}}%
+	\savebox{\@macro@savebox@unideptlogo}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@dept@logo}}}%
+	\savebox{\@macro@savebox@description}{\parbox{\textwidth}{\sectionheader{\@description@font{#2}}!}}%
+	\savebox{\@macro@savebox@built}%
 	{%
 		\parbox{\textwidth}%
 		{%
 			\centering%
+			\vspace{\@before@author@date@skip}
 			\author{\@author@font\shadowtext{#3}}\title{}%
 			\date{\vspace{\@author@date@skip}\@date@font\shadowtext{\today}}%
 			\vspace{\@author@dept@image@skip}\maketitle%\maketitle\vspace{-4mm}\color{Black}%
-			\usebox{\@macro@saveboxC}%
+			\usebox{\@macro@savebox@unideptlogo}%
 	       }%
 	}%
 	\addtolength{\@author@date@height}{2\baselineskip+2\textsize}%
-	\setlength{\@macro@height}{0.75\baselineskip+\ht\@macro@saveboxA+\ht\@macro@saveboxB+\ht\@macro@saveboxC+\ht\@macro@saveboxD+\@author@date@height+\ht\@macro@saveboxE}%
-	\setlength{\@coverpage@vskip}{\dimexpr0.5\textheight-0.5\@macro@height+0.0\headheight\relax}%
+	\setlength{\@macro@height}{0.75\baselineskip+\ht\@macro@savebox@title+\ht\@macro@savebox@unilogo+\ht\@macro@savebox@unideptlogo+\ht\@macro@savebox@description+\@author@date@height+\ht\@macro@savebox@built}%
+	\setlength{\@coverpage@vskip}{\dimexpr0.25\textheight-0.5\@macro@height+0.0\headheight\relax}%
 	\parbox{\textheight}{\vspace{\@coverpage@vskip}}\\%
-	\usebox{\@macro@saveboxB}\\%
-	\usebox{\@macro@saveboxA}\\[-2mm]%
-	\usebox{\@macro@saveboxD}\\%
-	\usebox{\@macro@saveboxE}%
+	\usebox{\@macro@savebox@unilogo}\\%
+	\usebox{\@macro@savebox@title}\\[-2mm]%
+	\usebox{\@macro@savebox@description}\\%
+	\usebox{\@macro@savebox@built}%
 }
 {\thispagestyle{empty}\setcounter{page}{0}\clearpage}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentEnvironment{tcblegend}{s O{documentation-file}}
+{
+	\parindent=0pt
+	\normalfont%\renewcommand{\baselinestretch}{1.0}%
+	\begin{tcbsection}'tcbBlueStyle'{Key:}
+	\begin{legendList}
+}{\end{legendList}\end{tcbsection}\parindent=0pt\parnoskip\noindent}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\legendentry}{s O{documentation-file} m m}
 {
@@ -1121,14 +1162,6 @@ linewidth=4pt, linecolor=current-coldraw]
 		\IfBooleanTF{#1}{\parnoskip}%
 	\endgroup%
 }
-\DeclareDocumentEnvironment{tcblegend}{s O{documentation-file}}
-{
-	\parindent=0pt
-	\normalfont%\renewcommand{\baselinestretch}{1.0}%
-	\begin{tcbsection}'tcbBlueStyle'{Key:}
-	\begin{legendList}
-}{\end{legendList}\end{tcbsection}\parindent=0pt\parnoskip\noindent} 
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \newenvironment{absolutelynopagebreak}
   {\par\nobreak\vfil\penalty0\vfilneg
    \vtop\bgroup}
@@ -1150,27 +1183,42 @@ linewidth=4pt, linecolor=current-coldraw]
 	{\boldmath\IfBooleanTF{#1}{\csname alignat*\endcsname{2}}{\alignat{2}}}
 	{\IfBooleanTF{#1}{\csname endalignat*\endcsname}{\endalignat}}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%                                         1 2               3                 4                    5 6
+%tcbdescription
+%tcbenvironmentinfobox
+\DeclareDocumentEnvironment{tcbparagraph}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbparagraphStyle} o d()}
+{%tcbfunctionenv[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
+	\tcbset{reset}
+   	\tcbsetcurrentcolors{#3}
+	\tcbsetforeverylayer{#4, width=#2}
+   	\IfValueTF{#5}{\tcbset{#5}}{}
+    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}%, fit height plus=15.25in
+    	\tcolorbox%\vspace{1mm}
+}{\endtcolorbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %                                                  1 2               3          4 5
-\DeclareDocumentEnvironment{tcbenvironmentinfobox}{s D<>{\linewidth} G{current} o d()}
+\DeclareDocumentEnvironment{tcbenvironmentinfobox}{s D<>{\linewidth} G{tcbEnvironmentInfoBoxStyle} o d()}
 {%
-    	\tcbsetcurrentcolors{#3}
-	\tcbset{reset, tcbEnvironmentInfoBoxStyle, width=#2}
+    	%\tcbset{reset}
+   	%\tcbsetcurrentcolors{#3}
+	\tcbset{tcbEnvironmentInfoBoxStyle, width=#2}
     	\IfValueTF{#4}{\tcbsetforeverylayer{#4}}{}
     	\IfValueTF{#5}{\tcbset{#5}}{}
     	\begin{tcolorbox}
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                                1 2               3                 4                           5 6
-\DeclareDocumentEnvironment{tcbparagraph}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbparagraphStyle} o d()}
-{%tcbfunctionenv[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-	\tcbset{reset}
-   	\tcbsetcurrentcolors{#3}
-	\tcbsetforeverylayer{#4, width=#2, #5}
-   	\IfValueTF{#5}{\tcbset{#5, breakable=unlimited}}{}
-    	\IfValueTF{#6}{\tcbsetforeverylayer{#6, breakable=unlimited}}{}%, fit height plus=15.25in
-    	\tcolorbox%\vspace{1mm}
-}{\endtcolorbox}
+%                                       1 2	            3                  4                  5 6 7   8
+\DeclareDocumentEnvironment{tcbsection}{s D''{tcbBlueStyle} O{tcbSectionStyle} D<>{\anttmcap16pt} m o d() D<>{\anttmcap12pt}}
+{%\tcbsection[*]'color scheme'[style]<title font>{title text}[tcb options](tcb every layer options)<env font>
+    	\tcbsetcurrentcolors{#2}
+	%\setfillednumcolors{#2}
+	\tcbset{reset, #3, title={\shadowText<#4>'#2'{#5}}}
+    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
+    	\IfValueTF{#7}{\tcbset{#7}}{}
+    	\begin{tcolorbox}#8
+}
+{\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %% Generates table for the 'tabular method' of 'integration by parts' (IBP), saving the position of each table entry as a tikz node using tikz's
 %% 'remember picture' capability, then connecting the nodes with the appropriate IBP arrows.  The resulting IBP table is then given a color
@@ -1206,24 +1254,12 @@ linewidth=4pt, linecolor=current-coldraw]
     	\patchcmd\fnum@table{\thetable}{\arabic{table}}{}{}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                       1 2	             3                 4 5                  6 7   8
-\DeclareDocumentEnvironment{tcbsection}{s O{tcbSectionStyle} D''{tcbBlueStyle} m D<>{\anttmcap16pt} o d() D<>{\anttmcap12pt}}
-{%\tcbsection[*][style]{title text}<title font>[tcb options](tcb every layer options)<env font>
-    	\tcbsetcurrentcolors{#3}
-	\setfillednumcolors{#3}
-	\tcbset{reset, #2, width=\linewidth, toptitle=0mm, after skip=6mm, title={\shadowText<#5>(#3){#4}}}
-    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
-    	\IfValueTF{#7}{\tcbset{#7}}{}
-    	\begin{tcolorbox}#8
-}
-{\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{preproblemenv}{s G{\linewidth} O{angleBoxedTitleStyle}}
 {%
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{tcbBlueStyle}
-	\setfillednumcolors{tcbBlueStyle}
+	%\setfillednumcolors{tcbBlueStyle}
 	%\setshadowtextprops[0.65pt][-0.2pt]
     	\tcbset{breakable, width=#2, boxrule=2pt, arc=6pt, drop fuzzy shadow, #3}
    	\IfValueTF{#3}
@@ -1237,7 +1273,8 @@ linewidth=4pt, linecolor=current-coldraw]
 {%\problem[</tcb/style>>][*][<ch.>][<problem>][<part>]
 	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
-   	 \IfBooleanTF{#2}
+   	\stepcounter{countproblem}
+   	\IfBooleanTF{#2}
     	{
         	\tcbset{problemsStyle}
         	\setcounter{equation}{1}
@@ -1328,17 +1365,20 @@ linewidth=4pt, linecolor=current-coldraw]
 	}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{solution}{s G{\linewidth} o d() D''{solutionStyle}}
+%                                      1 2             3 4   5
+%\DeclareDocumentEnvironment{solution}{s G{\linewidth} o d() D''{solutionStyle}}
+%                                     1 2                  3 4   5
+\DeclareDocumentEnvironment{solution}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
 {%
-    \@macro@length=\parindent
-    \setlength{\parindent}{0em}
-    \tcbsetcurrentcolors{#5}
-	\setfillednumcolors{#5}
-	\tcbset{reset, tcbSectionStyle, width = #2, title=\shadowText<\anttmcap16pt>(#5){Solution:}}
-    %\tcbsetforeverylayer{tcbSectionStyle}
-    \IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
-    \IfValueTF{#4}{\tcbset{#4}}{}
-    \begin{tcolorbox}
+    	\@macro@length=\parindent
+    	\setlength{\parindent}{0em}
+    	\tcbsetcurrentcolors{#2}
+	%\setfillednumcolors{#5}
+	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Solution:}}
+    	%\tcbsetforeverylayer{tcbSectionStyle}
+    	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
+    	\IfValueTF{#4}{\tcbset{#4}}{}
+    	\begin{tcolorbox}
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -1353,12 +1393,21 @@ linewidth=4pt, linecolor=current-coldraw]
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{proofenv}{s m o}
+%\DeclareDocumentEnvironment{proofenv}{s m o}
+%                                     1 2                  3 4   5
+\DeclareDocumentEnvironment{solution}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
 {%
-    \@macro@length=\parindent
-    %\setlength{\parskip}{0.5em}
-    \tcbset{tcbSectionStyle, width=#2, title=\shadowText<\anttmcap16pt>(tcbSectionStyle){Proof:}}
-    \IfValueTF{#3}{\tcbset{#3}}{}
+%	\@macro@length=\parindent
+%    %\setlength{\parskip}{0.5em}
+%    \tcbset{tcbSectionStyle, width=#2, title=\shadowText<\anttmcap16pt>(tcbSectionStyle){Proof:}}
+%    \IfValueTF{#3}{\tcbset{#3}}{}
+    	\@macro@length=\parindent
+    	\setlength{\parindent}{0em}
+    	\tcbsetcurrentcolors{#2}
+	%\setfillednumcolors{#5}
+	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Proof:}}
+    	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
+    	\IfValueTF{#4}{\tcbset{#4}}{}
     \begin{tcolorbox}\proof[\unskip\nopunct]\bgroup
 }
 {\egroup\endproof\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
@@ -1374,7 +1423,7 @@ linewidth=4pt, linecolor=current-coldraw]
 		{\setcounter{@tcb@eqn@list@counter}{#3}}
     		{\setcounter{@tcb@eqn@list@counter}{1}}
     	\tcbsetcurrentcolors{#4}
-    	\setfillednumcolors{#4}
+    	%\setfillednumcolors{#4}
     	%\tcbset
 %    	{
 %    		every box on layer 2/.style = { #4, breakable, left skip = \dimexpr\linewidth/2 - #1/2\relax, width = #1}
@@ -1402,7 +1451,7 @@ linewidth=4pt, linecolor=current-coldraw]
 		colback=tcblistboxStyle-colbacksubtitle, toptitle=-3mm, bottomtitle=-3mm, %left=2mm, right=2mm,
 		top=-0.25mm, bottom=-0.25mm%, after=\par\medskip, boxsep=0mm,
 	]
-	{
+	{aaaa
 		%\tcblistboxentrylabel[*<counter on>][shape]{color style}{counter print format}{character/text or counter}(min size)<inner sep>
 		%\tcblistboxentrylabel[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
 		%\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
@@ -1424,10 +1473,11 @@ linewidth=4pt, linecolor=current-coldraw]
 \DeclareDocumentCommand{\tcblistboxentrylabel}{s O{circle} D(){\arabic} D(){current}  m D(){6mm} D<>{0.5pt}}
 {%\tcblistboxentrylabel[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
 %\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
-		\setfillednumcolors{#4}
-	\IfBooleanTF{#1}
-		{\fillednumshape*[#2](#3)(#4){#5}(#6)<#7>}
-		{\fillednumshape[#2](#3)(#4){\small#5}(#6)<#7>}
+	%\setfillednumcolors{#4}%
+	\tcbsetcurrentcolors{#4}
+	\IfBooleanTF{#1}%
+		{\fillednumshape*[#2](#3)(#4){#5}(#6)<#7>}%
+		{\fillednumshape[#2](#3)(#4){#5}(#6)<#7>}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -1458,7 +1508,7 @@ linewidth=4pt, linecolor=current-coldraw]
 		{\setcounter{@tcb@eqn@list@counter}{#3}}
     		{\setcounter{@tcb@eqn@list@counter}{1}}
     	\tcbsetcurrentcolors{#4}
-    	\setfillednumcolors{#4}
+    	%\setfillednumcolors{#4}
 	\tcbsetforeverylayer{#4, hbox, before skip = -5mm, after skip=2mm, before = \vspace{-5mm}}
     	\IfValueTF{#5}
     		{\tcbsetforeverylayer{title={#5}}}
@@ -1507,30 +1557,27 @@ linewidth=4pt, linecolor=current-coldraw]
     	\setlength\@filledenumshape@min@size{#8}
     	\setlength\@filledenumshape@inner@sep{#9}
     	\tcbsetcurrentcolors{\@current@tcb@coloring}
-	\setfillednumcolors{\@current@tcb@coloring}
+	%\setfillednumcolors{\@current@tcb@coloring}
 	\IfValueTF{#7}{\setcounter{@tcb@functions@counter}{#7}}{}
 	\IfBooleanTF{#1}
 	{%
-		\parbox[c]{\@list@box@first@column}%
+		\parbox[t]{\@current@list@box@first@column}%
 		{%
-			\large\usefont{T1}{cmr}{bx}{n}\selectfont\hspace{0pt}%
-			\tcblistboxentrylabel*[#2](#3)(\@current@tcb@coloring)%
-				{@tcb@functions@counter}%
-				(\@filledenumshape@min@size)%
-				<\@filledenumshape@inner@sep>%
+			\large\usefont{T1}{cmr}{bx}{n}\selectfont%
+			\tcblistboxentrylabel*[#2](#3)(\@current@tcb@coloring){@tcb@functions@counter}(#8)<#9>%
 		}%
-		&\hspace{\@list@box@column@sep}\parbox[c]{\@list@box@second@column}%
+		&\hspace{\@current@list@box@column@sep}\parbox[c]{\@current@list@box@second@column}%
 		{\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
 		%\text{\hspace{0pt}\tcblistboxentrylabel*[#2](#3)(#4){@tcb@functions@counter}(#8)<#9>}%
 		%&\qquad\text{#6}\\[0.4em]%
 	}
 	{%
-		\parbox[c]{\@list@box@first@column}%
+		\parbox[t]{\@current@list@box@first@column}%
 		{%
-			\large\usefont{T1}{cmr}{bx}{n}\selectfont\hspace{0pt}%
+			\large\usefont{T1}{cmr}{bx}{n}\selectfont%
 			\tcblistboxentrylabel[#2](#3)(\@current@tcb@coloring){#5}(#8)<#9>%
 		}%
-		&\hspace{\@list@box@column@sep}\parbox[c]{\@list@box@second@column}%
+		&\hspace{\@current@list@box@column@sep}\parbox[c]{\@current@list@box@second@column}%
 		{\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
 		%\text{\hspace{0pt}\tcblistboxentrylabel[#2](#3)(#4){#5}(#8)<#9>}%
 		%&\qquad\text{#6}\\[0.4em]%
@@ -1539,21 +1586,21 @@ linewidth=4pt, linecolor=current-coldraw]
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %                                           1      2                                            3                 4                                             5 6                            7                             8                                           8
-\DeclareDocumentCommand{\tcbfunctiondesc}{D''{c} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@list@box@first@column} D<>{\@list@box@second@column} O{0.6em}}
+\DeclareDocumentCommand{\tcbfunctiondesc}{D''{c} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@list@box@first@column} D<>{\@current@list@box@second@column} O{0.6em}}
 {%\tcbfunctiondesc[text formatting]{lst col label}(last col text) <1st col width><last col width>
 	%\renewcommand{\baselinestretch}{3.0}%
 	%\renewcommand{\baselineskip}{3.0}%
 	%\setlength{\baselineskip}{5mm}%
 	\parbox[t!]{#6}{#2\fontsize{12}{5.0mm}\selectfont#3}%
-	&\hspace{\@list@box@column@sep}\parbox[t!]{#7}{#4\fontsize{13}{4.5mm}\selectfont#5}\\[\@function@desc@skip]
+	&\hspace{\@current@list@box@column@sep}\parbox[t!]{#7}{#4\fontsize{13}{4.5mm}\selectfont#5}\\[\@function@desc@skip]
 	%&\qquad\parbox[t]{#7}{#3\linespread{3.5}#5}\\[-0.6em]%\setstretch{1.15}\vspace{-0.65cm}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                          1       2                                 3               4                         5                            6                             7
-\DeclareDocumentCommand{\tcbfunctionsep}{D''{c} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@list@box@first@column} D<>{\@list@box@second@column} O{1.2em}}
+%                                        1      2                                 3                4                         5                                    6                                     7
+\DeclareDocumentCommand{\tcbfunctionsep}{D''{c} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@list@box@first@column} D<>{\@current@list@box@second@column} O{1.2em}}
 {%\tcbfunctionsep[<text formatting>]{<lst col label>}(<last col label) <<1st col width>><<last col width>>
 	\parbox[t]{#5}{#2\selectfont#3}
-	&\hspace{\@list@box@column@sep}\parbox[t]{#6}{#2\selectfont#4}\\[\@function@sep@skip]%
+	&\hspace{\@current@list@box@column@sep}\parbox[t]{#6}{#2\selectfont#4}\\[\@function@sep@skip]%
 	%&\qquad\parbox[t]{#5}{#1\setstretch{1.25}#3}\\[-1.2em]%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -1563,38 +1610,63 @@ linewidth=4pt, linecolor=current-coldraw]
 	#1\\[0.5em]\fontsize{12}{\baselinestretch}\selectfont USAGE: #2%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                                 1 2               3                 4                          5   6 7   8          9
-\DeclareDocumentEnvironment{tcbfunctionlistbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctionlistboxStyle} r[] o d() D<>{4.0cm} D<>{14.5cm}}
+%                                               1 2               3                 4                          5   6 7   8                                     9
+\DeclareDocumentEnvironment{tcbfunctionlistbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctionlistboxStyle} r[] o d() D<>{\@function@list@box@first@column} D<>{\@function@list@box@second@column}}
 {%tcbfunctionlistbox[*]<box width>'color scheme'{style}[title][tcbset options](tcbseteverylayer options)
-	\setlength{\@list@box@first@column}{#8}
-    	\setlength{\@list@box@second@column}{#9}
-    	\tcbsetcurrentcolors{#3}
-	\setfillednumcolors{#3}
-	\edef\@current@tcb@coloring{#3}
+	\setlength{\@function@list@box@first@column}{#8}
+    	\setlength{\@function@list@box@second@column}{#9}
+    	\let\@current@list@box@first@column=\@function@list@box@first@column
+	\let\@current@list@box@second@column=\@function@list@box@second@column
+	\let\@current@list@box@column@sep=\@function@list@box@column@sep
+	\addtocounter{table}{-1}
+    	%\renewcommand{\tablename}{}
+    	%\patchcmd\fnum@table{\thetable}{\@gobble}{}{}
+	\tcbsetcurrentcolors{#3}
+	%\setfillednumcolors{#3}
+	%\edef\@current@tcb@coloring{#3}
 	\tcbsetforeverylayer{#4, width=#2, breakable}
    	\IfValueTF{#6}{\tcbset{#6}}{}
     	\IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}
     	\tcolorbox[#4, title={#5}, breakable]
     	\IfBooleanTF{#1}
-  		{\hspace{0pt}\begin{longtable}{H{\@list@box@first@column} H{\@list@box@second@column}}}
-   		{\hspace{0pt}\begin{longtable}{p{\@list@box@first@column} p{\@list@box@second@column}}}
-}{\end{longtable}\endtcolorbox\vfill}
+  		{\hspace{0pt}\begin{longtable}{H{\@function@list@box@first@column} H{\@function@list@box@second@column}}}
+   		{\hspace{0pt}\begin{longtable}{p{\@function@list@box@first@column} p{\@function@list@box@second@column}}}
+	%\captionof{table}[gegege]{hehe}%
+}{\end{longtable}\endtcolorbox\vfill%
+%\renewcommand{\tablename}{Function Detail Box}%
+%\patchcmd\fnum@table{\tablename\thetable}{\arabic{table}}{}{}%\tcbsetcurrentcolors{#3}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{tcbfunctiondetailbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctiondetailboxStyle} r[] o d() D<>{4.0cm} D<>{15.5cm}}
+%                                                 1 2               3                 4                            5   6 7   8                                       9
+\DeclareDocumentEnvironment{tcbfunctiondetailbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctiondetailboxStyle} r[] o d() D<>{\@function@detail@box@first@column} D<>{\@function@detail@box@second@column}}
 {%tcbfunctiondetailbox[*]<box width>'color scheme'{style}[title][tcbset options](tcbseteverylayer options)
-	\setlength{\@list@box@first@column}{#8}
-    	\setlength{\@list@box@second@column}{#9}
-    	\edef\@current@tcb@coloring{#3}
+	\setlength{\@function@detail@box@first@column}{#8}
+    	\setlength{\@function@detail@box@second@column}{#9}
+    	\addtocounter{table}{-1}
+    	\let\@current@list@box@first@column=\@function@detail@box@first@column
+	\let\@current@list@box@second@column=\@function@detail@box@second@column
+	\let\@current@list@box@column@sep=\@function@detail@box@column@sep
+	%\edef\@current@tcb@coloring{#3}
+	%\renewcommand{\tablename}{}
+    	%\patchcmd\fnum@table{\thetable}{\@gobble}{}{}
 	\tcbsetcurrentcolors{#3}
-	\setfillednumcolors{#3}
+	%\setfillednumcolors{#3}
 	\tcbsetforeverylayer{#4, width=#2, drop fuzzy shadow=#3-colboxshadow}%, colbacktitle=stdblue%}
    	\IfValueTF{#5}{\tcbset{breakable, title=\shadowText(#3){#5}}}{}
     	\IfValueTF{#6}{\tcbset{#6}}{}
     	\IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}
     	\begin{tcolorbox}[#4, left=-10mm, lefttitle=4mm]%, #4, title={#5}, colbacktitle=stdblue
-    	\hspace{0pt}\begin{longtable}{H{\@list@box@first@column} H{\@list@box@second@column}}
-}{\end{longtable}\end{tcolorbox}}
+    	\hspace{0pt}\begin{longtable}{H{\@function@detail@box@first@column} H{\@function@detail@box@second@column}}
+	%\captionof{table}[\tablename\thetable\relax]{hehe}%
+%    	\caption{<Caption Text>}
+%	\endfirsthead
+%	\caption[]{<Caption Text>}
+%	\endhead
+}{\end{longtable}\end{tcolorbox}%
+%\renewcommand{\tablename}{Function Detail Box}%
+%\patchcmd\fnum@table{\tablename\thetable}{\arabic{table}}{}{}%\tcbsetcurrentcolors{#3}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -110,8 +110,8 @@
 \RequirePackage{bookmark}                		% \bookmarksetup, \bookmarksetupnext, \bookmark; options : depth, dest, color, gotor, level, named, openlevel, page, rawaction, uri, view
 \RequirePackage{cmap}                		% pro­vides character map tables => makes pdfLATEX PDF files search/copy-able in compliant PDF viewers
 \RequirePackage{ellipsis}
-\RequirePackage{footnotebackref}                % hyperlinks from footnotes number to document occurence
-\RequirePackage[all]{hypcap}            		%
+\RequirePackage{footnotebackref}                % hyperlinks from footnotes number to document occurence [symbol=..., numberlinked=true/false]
+\RequirePackage[all]{hypcap}            		% Redefine float environments so links to floats point to the beginning of the float, not below the caption
 %\RequirePackage[hypcap]{caption}            		%
 \RequirePackage{hypernat}                		% provides capability
 \RequirePackage{ifdraft}                		%
@@ -135,7 +135,6 @@
 %\RequirePackage{ltablex}
 \RequirePackage{ltxdockit}           		
 \RequirePackage{ltxtable}
-\RequirePackage{lstautogobble}
 \RequirePackage{makecell}
 \RequirePackage{makeidx}
 %\RequirePackage{mathabx}
@@ -149,6 +148,8 @@
 \RequirePackage{morewrites}
 \RequirePackage{multirow}           		% for \multirow
 \RequirePackage{mwe}                		% useful for creating "Minimal Working Examples" (MWEs) including sample images
+%\RequirePackage{lstautogobble}
+\RequirePackage{my-lstautogobble}
 \RequirePackage{newenviron}           	% \nicefrac fraction command
 %\RequirePackage{newfloat}           		% \DeclareFloatingEnvironment
 \RequirePackage{nicefrac}           		% \nicefrac fraction command
@@ -189,6 +190,7 @@
 %\RequirePackage{kpfonts}
 \RequirePackage[explicit]{titlesec}%
 \RequirePackage{tocloft}
+\RequirePackage[figure,table,lstlisting]{totalcount}
 \RequirePackage{trimspaces}
 \RequirePackage[normalem]{ulem}
 %\RequirePackage{unicode-math}
@@ -201,7 +203,7 @@
 \RequirePackage{wrapfig}
 %\RequirePackage{arydshln}
 \RequirePackage{dashrule}
-\usetikzlibrary{calc, decorations.markings, arrows, shadings,shapes.gates.logic.US,trees,positioning,arrows, graphs}
+\usetikzlibrary{calc, decorations.markings, arrows, shadings,shapes.gates.logic.US,trees,positioning,arrows.meta, graphs}
 %\tcbuselibrary{listings, minted,hooks, breakable, skins,xparse}
 \tcbuselibrary{magazine, listingsutf8, hooks, breakable, skins, xparse, raster, fitting, theorems}
 %\tcbset{external/PassOptionsToPackage={newFloat}{minted}}
@@ -210,7 +212,7 @@
 %\RequirePackage{gensymb}
 %\RequirePackage[Upomega, upmu]{gensymb}
 %\RequirePackage[T1]{fontenc}
-\RequirePackage[utf8]{inputenc}
+%\RequirePackage[utf8]{inputenc}
 %\RequirePackage{yfonts}
 %\RequirePackage{mbboard}
 %\RequirePackage{fix-cm}
@@ -245,3 +247,5 @@
 \RequirePackage{ltxtable}
 \RequirePackage{setspace}				% Change line spacing locally
 \RequirePackage{dashrule}
+%\usepackage{sectsty}
+

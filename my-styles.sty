@@ -91,6 +91,7 @@
 	\colorlet{current-highlightcol}{#1-highlightcol}
 	\colorlet{current-colboxshadow}{#1-colboxshadow}
 	\colorlet{current-coltextshadow}{#1-coltextshadow}
+	\edef\@current@tcb@coloring{#1}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 %--------------------------------- Tikz/tcolorbox styles/settings ------------------------------%
@@ -272,6 +273,45 @@
 			{yshift=-0.25mm-\tcboxedtitleheight/2, yshifttext=2mm-\tcboxedtitleheight/2}
 	},		
 %*************************************************************************************************%
+%******************************************* Frame ******************************************%
+%*************************************************************************************************%
+%-------------------------------------------------------------------------------------------------%
+	%frameCodeSetup/.style n args={4}
+    	frameCodeSetup/.style=
+    	{
+    		frame code=
+        	{% Outter frame around entire box and title
+        		\filldraw[draw=#1-colframeborder, rounded corners=\@frame@corner@radius,
+        			fill=#1-colfill, line width=\@frame@border@linewidth]
+        			(frame.north east)
+        			--(frame.north west)
+        			--(frame.south west)
+        			--(frame.south east)
+        			-- cycle;
+        	}
+    	},
+%-------------------------------------------------------------------------------------------------%
+    	titleframeComboSetup/.style=
+    	{
+	    	frame code=
+		{
+		  	\node
+			[
+				anchor=south west, inner xsep=8pt, xshift=8pt, rounded corners=5pt,
+				font=\bfseries\color{white}, fill=current-darkcol, draw=current-colframeborder, line width=1.5pt
+			]%
+			at (frame.north west) (tit) {\shadowText<\large\sffamily\bfseries>{\ul{Contents:}}};
+			\draw[line width=8pt, rounded corners=5pt, draw=current-colframeborder]%
+				(tit.west)
+				-| ([yshift=-6pt]frame.south west)
+				-- ([xshift=15pt, yshift=-6pt]frame.south west);
+		  	\draw[line width=2pt, rounded corners=5pt, draw=current-darkcol, double=current-highlightcol, double distance=0.75pt]%
+				(tit.west)
+				-| ([yshift=-6pt]frame.south west)
+				-- ([xshift=15pt, yshift=-6pt]frame.south west);
+		}
+	},
+%*************************************************************************************************%
 %******************************************* Interior ******************************************%
 %*************************************************************************************************%
 %-------------------------------------------------------------------------------------------------%
@@ -360,24 +400,109 @@
 			top color=blue!2!white, middle color=blue!6!white, bottom color=blue!13!white
 		}
 	},
+%-------------------------------------------------------------------------------------------------%
+	titleframeComboInteriorSetup/.style=
+    	{
+		interior titled code=
+        	{% Frame around interior region except for top line under title
+        		\draw[draw=current-colinteriorborder, rounded corners=1pt,
+	        		fill=current-colinteriorborder, line width=5pt]
+	        		([yshift=-1pt]interior.north east)
+	        		--([xshift=10pt, yshift=-1pt]interior.north west)
+				--([xshift=10pt, yshift=-1pt]interior.south west)
+				--([yshift=-1pt]interior.south east)
+				-- cycle;
+			\filldraw[draw=current-coldraw, rounded corners=1pt,
+	        		fill=current-colbackinterior, line width=1pt,
+				double=current-highlightcol, double distance=0.5pt]
+	        		([yshift=-1pt]interior.north east)
+	        		--([xshift=10pt, yshift=-1pt]interior.north west)
+				--([xshift=10pt, yshift=-1pt]interior.south west)
+				--([yshift=-1pt]interior.south east)
+				-- cycle;
+        	},
+        	interior code=
+	      {       		
+	        	\draw[draw=current-colinteriorborder, rounded corners=1pt,
+	        		fill=current-colinteriorborder, line width=5pt]
+	        		([yshift=-1pt]interior.north east)
+	        		--([xshift=10pt, yshift=-1pt]interior.north west)
+				--([xshift=10pt, yshift=-1pt]interior.south west)
+				--([yshift=-1pt]interior.south east)
+				-- cycle;
+			\filldraw[draw=current-coldraw, rounded corners=1pt,
+	        		fill=current-colbackinterior, line width=1pt,
+				double=current-highlightcol, double distance=0.5pt]
+	        		([yshift=-1pt]interior.north east)
+	        		--([xshift=10pt, yshift=-1pt]interior.north west)
+				--([xshift=10pt, yshift=-1pt]interior.south west)
+				--([yshift=-1pt]interior.south east)
+				-- cycle;
+	      }
+	},
+%-------------------------------------------------------------------------------------------------%
+    	terminalSegmentationCode/.style=
+    	{
+    		segmentation code=
+		{	% Bottom portion of comment section	
+			\filldraw[fill=#1-colbacklower, draw=#1-coldraw, rounded corners=6pt, line width=0.0pt]
+				([xshift=0.5pt, yshift=0.5pt]interior.south west)
+				-- ([xshift=-0.5pt, yshift=0.5pt]interior.south east)
+				-- ([xshift=-0.5pt, yshift=-2pt]segmentation.north east)
+				-- ([xshift=0.5pt, yshift=-2pt]segmentation.north west)
+				-- cycle;,
+			% Top portion of comment section	
+			\filldraw[fill=#1-colbacklower, draw=#1-colbacklower, sharp corners, line width=1.0pt]
+				([xshift=1.25pt, yshift=-2.75pt]segmentation.north west)
+				-- ([xshift=-1.25pt, yshift=-2.75pt]segmentation.north east)
+				-- ([xshift=-1.25pt, yshift=-12pt]segmentation.north east)
+				-- ([xshift=1.25pt, yshift=-12pt]segmentation.north west)
+				-- cycle;,
+			% Line around comment connecting the ends of the line separating terminal and comment sections	
+			\path[draw=#1-coldraw, rounded corners=6pt, line width=1.0pt]
+				([xshift=0.75pt, yshift=-2.2pt]segmentation.north west)
+				-- ([xshift=0.75pt, yshift=0.5pt]interior.south west)
+				-- ([xshift=-0.75pt, yshift=0.5pt]interior.south east)
+				-- ([xshift=-0.75pt, yshift=-2.2pt]segmentation.north east);,
+			% Line separating terminal and comment sections	
+			\path[draw=#1-rulecolor, line width=1.25pt]
+				([xshift=0.2pt, yshift=-2.6pt]segmentation.north west)
+				-- ([xshift=-0.2pt, yshift=-2.6pt]segmentation.north east);,
+			% Line separating terminal and comment sections	
+			\path[draw=#1-segmentationcol, line width=1.5pt]
+				([xshift=0.15pt, yshift=-1.6pt]segmentation.north west)
+				-- ([xshift=-0.15pt, yshift=-1.6pt]segmentation.north east);			
+		}
+	},
+%		segmentation code=
+%		{	% Bottom portion of comment section	
+%			\filldraw
+%			[
+%				fill=tcbbashboxgoldStyle-colbacklower, draw=tcbbashboxgoldStyle-colbacklower,
+%				sharp corners, line width=0.0pt
+%			]
+%				([xshift=1.00pt, yshift=0.0pt]interior.south west)
+%				-- ([xshift=-1.00pt, yshift=0.0pt]interior.south east)
+%				-- ([xshift=-1.00pt, yshift=-0.0pt]segmentation.north east)
+%				-- ([xshift=1.00pt, yshift=-0.0pt]segmentation.north west)
+%				-- cycle;,			
+%			% Line around comment connecting the ends of the line separating terminal and comment sections	
+%			\path[draw=tcbbashboxgoldStyle-colinterioroutline, rounded corners=6pt, line width=1.25pt]
+%				([xshift=0.5pt, yshift=-0.5pt]segmentation.north west)
+%				-- ([xshift=0.5pt, yshift=0.5pt]interior.south west)
+%				-- ([xshift=-0.5pt, yshift=0.5pt]interior.south east)
+%				-- ([xshift=-0.5pt, yshift=-0.5pt]segmentation.north east);
+%			% Line separating terminal and comment sections	
+%			\path[draw=tcbbashboxgoldStyle-segmentationcol, line width=1.0pt]
+%				([xshift=0.0pt, yshift=-0.0pt]segmentation.north west)
+%				-- ([xshift=-0.0pt, yshift=-0.0pt]segmentation.north east);,
+%			\path[draw=tcbbashboxgoldStyle-rulecolor, line width=1.0pt]
+%				([xshift=0.25pt, yshift=-1.0pt]segmentation.north west)
+%				-- ([xshift=-0.25pt, yshift=-1.0pt]segmentation.north east);%,
+%		},
 %*************************************************************************************************%
 %******************************************* Interior ******************************************%
 %*************************************************************************************************%
-%-------------------------------------------------------------------------------------------------%
-	%frameCodeSetup/.style n args={4}
-    	frameCodeSetup/.style=
-    	{
-    		frame code=
-        	{% Outter frame around entire box and title
-        		\filldraw[draw=#1-colframeborder, rounded corners=\@frame@corner@radius,
-        			fill=#1-colfill, line width=\@frame@border@linewidth]
-        			(frame.north east)
-        			--(frame.north west)
-        			--(frame.south west)
-        			--(frame.south east)
-        			-- cycle;
-        	}
-    	},
 %-------------------------------------------------------------------------------------------------%
 	PLDBoxedTitleSetup/.style n args={5}
 	{%{xshift}{yshift}{line width}{rounded corners}{color style} 		
@@ -453,6 +578,7 @@
 		boxed title style=
 		{%
 			enhanced, boxrule=0.6mm, bottomtitle=5cm, toptitle=2cm, size=title,
+			% outter border of angled title box
 			frame code=
 			{%
 				\path
@@ -462,11 +588,11 @@
 					double distance=\@frame@double@distance
 				]
 					([xshift=-\@outter@angle@distance - 1mm]frame.west)%
-					-- ([xshift=-1mm]frame.north west)
-					-- ([xshift=1mm]frame.north east)
+					-- ([xshift=-1mm, yshift= 0.5mm]frame.north west)
+					-- ([xshift=1mm, yshift= 0.5mm]frame.north east)
 					-- ([xshift=\@outter@angle@distance + 1mm]frame.east)%
-					-- ([xshift=1mm]frame.south east)
-					-- ([xshift=-1mm]frame.south west)
+					-- ([xshift=1mm, yshift= -0.5mm]frame.south east)
+					-- ([xshift=-1mm, yshift= -0.5mm]frame.south west)
 					-- cycle;,
 				\path
 				[
@@ -474,13 +600,14 @@
 					double=#1-highlightcol, double distance=\@frame@double@distance
 				]
 					([xshift=-\@outter@angle@distance - 1mm]frame.west)%
-					-- ([xshift=-1mm]frame.north west)
-					-- ([xshift=1mm]frame.north east)
+					-- ([xshift=-1mm, yshift= 0.5mm]frame.north west)
+					-- ([xshift=1mm, yshift= 0.5mm]frame.north east)
 					-- ([xshift=\@outter@angle@distance + 1mm]frame.east)%
-					-- ([xshift=1mm]frame.south east)
-					-- ([xshift=-1mm]frame.south west)
+					-- ([xshift=1mm, yshift= -0.5mm]frame.south east)
+					-- ([xshift=-1mm, yshift= -0.5mm]frame.south west)
 					-- cycle;,
 			},
+			% inner border of angled title box
 			interior code=
 			{
 				\path
@@ -732,40 +859,6 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
 	},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tablesStyle on layer 2/.style = {reset, summariesStyle, top=0mm},
-%-------------------------------------------------------------------------------------------------%
-    	terminalSegmentationCode/.style=
-    	{
-    		segmentation code=
-		{	% Bottom portion of comment section	
-			\filldraw[fill=#1-colbacklower, draw=#1-coldraw, rounded corners=6pt, line width=0.0pt]
-				([xshift=0.5pt, yshift=0.5pt]interior.south west)
-				-- ([xshift=-0.5pt, yshift=0.5pt]interior.south east)
-				-- ([xshift=-0.5pt, yshift=-2pt]segmentation.north east)
-				-- ([xshift=0.5pt, yshift=-2pt]segmentation.north west)
-				-- cycle;,
-			% Top portion of comment section	
-			\filldraw[fill=#1-colbacklower, draw=#1-colbacklower, sharp corners, line width=1.0pt]
-				([xshift=1.25pt, yshift=-2.75pt]segmentation.north west)
-				-- ([xshift=-1.25pt, yshift=-2.75pt]segmentation.north east)
-				-- ([xshift=-1.25pt, yshift=-12pt]segmentation.north east)
-				-- ([xshift=1.25pt, yshift=-12pt]segmentation.north west)
-				-- cycle;,
-			% Line around comment connecting the ends of the line separating terminal and comment sections	
-			\path[draw=#1-coldraw, rounded corners=6pt, line width=1.0pt]
-				([xshift=0.75pt, yshift=-2.2pt]segmentation.north west)
-				-- ([xshift=0.75pt, yshift=0.5pt]interior.south west)
-				-- ([xshift=-0.75pt, yshift=0.5pt]interior.south east)
-				-- ([xshift=-0.75pt, yshift=-2.2pt]segmentation.north east);,
-			% Line separating terminal and comment sections	
-			\path[draw=#1-rulecolor, line width=1.25pt]
-				([xshift=0.2pt, yshift=-2.6pt]segmentation.north west)
-				-- ([xshift=-0.2pt, yshift=-2.6pt]segmentation.north east);,
-			% Line separating terminal and comment sections	
-			\path[draw=#1-segmentationcol, line width=1.5pt]
-				([xshift=0.15pt, yshift=-1.6pt]segmentation.north west)
-				-- ([xshift=-0.15pt, yshift=-1.6pt]segmentation.north east);			
-		}
-	},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbbashboxStyle/.style=
     	{
@@ -865,13 +958,25 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
 		subtitleStyle, titleSepCode, frameCodeSetup, interiorMultilineStyle		
     	},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	tcbenumeratedStyle/.style=
+	{%\fontsize{10}{\baselinestretch}\selectfont
+		enhanced, breakable=unlimited, enforce breakable, drop fuzzy shadow=current-colboxshadow,
+		fonttitle=\bfseries\fontsize{11}{\baselinestretch}\selectfont,
+		fontupper=\bfseries\fontsize{10}{10pt*\baselinestretch}\selectfont,
+		tcbsetcoloringStyle, before skip=2mm, %colframe=black,
+		%lefttitle=1mm, toptitle=-3.5mm, bottomtitle=-4.0mm,
+		left=0mm, left skip=0mm,  toptitle=-3.5mm, bottomtitle=-3.995mm,
+		after skip=3mm, top=-1mm, bottom=0mm, boxrule=5pt,
+		borderline={2.5pt}{-0.5mm}{tcbbashboxgoldStyle-colframeborder,rounded corners=6pt},
+    		boxsep=3mm,	interiorStyle, frameCodeSetup
+    	},
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbEnvironmentInfoBoxStyle/.style =
     	{
-        	tcbsetcoloringStyle, title={\anttmcap16pt Solution:},
-        	attach boxed title to top left, breakable, pad at break*=0mm,
-        	fonttitle=\Large\bfseries, fontupper=\normalsize\normalfont,
-        	fontlower=\normalsize\normalfont,
-        	boxsep=0pt,left=0pt, right=3mm, top=4pt, before skip=1mm, after skip=-5.5mm,
+        	enhanced, breakable=unlimited, tcbsetcoloringStyle, title={\anttmcap16pt Solution:},
+        	attach boxed title to top left, pad at break*=0mm,
+        	fonttitle=\Large\bfseries, fontupper=\normalsize\normalfont, fontlower=\normalsize\normalfont,
+        	boxsep=0pt, left=0pt, right=3mm, top=4pt, before skip=1mm, after skip=-5.5mm,
         	before upper=\smallskip\par, bottom=2mm,
         	topLeftSectionTitleStyle
     	},
@@ -919,10 +1024,11 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbfunctionenvStyle/.style=
 	{
-		enhanced, breakable=unlimited, fonttitle=\bfseries, tcbsetcoloringStyle, before skip=3mm,
-		after=\medskip, after skip=6mm, top=-3mm, bottom=2.5mm, boxrule=5pt, boxsep=3mm,
-		title=\shadowText{Functions:}, colframe=black, attachBoxedTitleTopCenter,
-		topCenterBoxedTitleStyle, biColorMultilineInteriorStyle	
+		enhanced, breakable=unlimited, fonttitle=\bfseries, tcbsetcoloringStyle, before skip=0mm,
+		top=-3mm, bottom=0.0mm, boxrule=5pt, boxsep=3mm, after skip=2mm,%after=\medskip,
+		title=\shadowText{Functions:}, colframe=black, 
+		attachBoxedTitleTopCenter, topCenterBoxedTitleStyle, biColorMultilineInteriorStyle, 
+		enlarge top at break by=1mm, enlarge bottom at break by=2mm%, enlarge bottom finally by=1cm	
 	},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbfunctionlistboxStyle/.style =
@@ -931,14 +1037,14 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
         	%fuzzy shadow={5mm}{-5mm}{3mm}{0.3mm}{current-colboxshadow},
         	%lifted shadow={1mm}{-2mm}{2mm}{0.1mm}{current-colboxshadow},
         	arc=6pt, boxrule=5pt,
-        	before skip=3mm, after skip=0mm, top=-8.5mm, bottom=-2.5mm, left=0.0mm,      	
-        	before title=\bfseries, toptitle=-0.5mm, bottomtitle=-2mm, lefttitle=1mm,
-        	fontupper=\normalsize\bfseries, fonttitle=\large\bfseries, breakable   	
+        	before skip=3mm, after skip=0mm, top=-9.25mm, bottom=-2.5mm, left=4.0mm,      	
+        	before title=\bfseries, toptitle=-0.5mm, bottomtitle=-1.75mm, lefttitle=1mm,
+        	fontupper=\normalsize\bfseries, fonttitle=\LARGE\bfseries, breakable   	
     	},	
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbfunctionlistboxStyle on Layer 2/.style =
     	{
-        	enhanced, breakable, tcbsetcoloringStyle, titleSepCode, frameCodeSetup, interiorStyle,
+        	 breakable, tcbsetcoloringStyle, titleSepCode, frameCodeSetup, interiorStyle,
         	%fuzzy shadow={5mm}{-5mm}{3mm}{0.3mm}{current-colboxshadow},
         	%lifted shadow={1mm}{-2mm}{2mm}{0.1mm}{current-colboxshadow},
         arc=6pt, boxrule=5pt,
@@ -989,15 +1095,14 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbparagraphStyle/.style=
 	{%\fontsize{10}{\baselinestretch}\selectfont
-		enhanced, breakable=unlimited, drop fuzzy shadow=current-colboxshadow,
-		fonttitle=\bfseries\fontsize{11}{\baselinestretch}\selectfont,
+		enhanced, breakable=unlimited, enforce breakable, drop fuzzy shadow=current-colboxshadow,
+		fonttitle=\bfseries\fontsize{12}{\baselinestretch}\selectfont,
 		fontupper=\bfseries\fontsize{10}{10pt*\baselinestretch}\selectfont,
-		tcbsetcoloringStyle, before skip=3mm, %colframe=black,
+		tcbsetcoloringStyle, before skip=2mm, %colframe=black,
 		lefttitle=1mm, toptitle=-3.5mm, bottomtitle=-4.0mm,
-		after=\medskip, after skip=2mm, top=0mm, bottom=0mm, boxrule=5pt,
-		boxsep=3mm,	interiorStyle, frameCodeSetup
-    		%	attachBoxedTitleTopCenter, \shadowText{Functions:}
-		%topCenterBoxedTitleStyle, biColorMultilineInteriorStyle	
+		after skip=3mm, top=0mm, bottom=0mm, boxrule=5pt,
+		%borderline={2pt}{0.0mm}{tcbbashboxgoldStyle-colframeborder,rounded corners=6pt},
+    		boxsep=3mm,	interiorStyle, frameCodeSetup
 	},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	tcbSectionStyle/.style =
@@ -1005,7 +1110,8 @@ colframe=stdDKblue, colback=stdbackground,  colbacktitle=stdgray, coltitle=white
         	empty, no shadow, title={\anttmcap16pt Solution:}, attach boxed title to top left,
         	breakable, tcbsetcoloringStyle, boxsep=0pt, fonttitle=\Large\bfseries,
         	fontupper=\normalsize\normalfont, fontlower=\normalsize\normalfont
-        	left=0pt, right=3mm, top=4pt, bottom=2mm, before skip=1mm, after skip=1.5mm,
+        	left=0pt, right=3mm, top=4pt, bottom=2mm, before skip=0mm, %after skip=1.5mm, % -> initial after skip value probably applied to "solution" environment
+        	width=\linewidth, toptitle=0mm, after skip=2mm,        	
         	pad at break*=0mm, before upper=\par\smallskip, topLeftSectionTitleStyle%=#1
     	},
     	%tcbSectionStyle/.default=current,

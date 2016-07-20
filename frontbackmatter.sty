@@ -8,6 +8,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Path information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTotalCounter{countproblem}
 \renewcommand{\lstlistoflistings}{\listoflistings}
 \renewcommand{\contentsname}{Table of Contents}
 \renewcommand{\listfigurename}{List of Figures}
@@ -37,7 +38,7 @@
 \renewcommand*{\pagedeclaration}[1]{\hyperlink{a#1}{#1}, \thepage}%\hypertarget{#1}{#1}\hyperlink{a#1}{#1}
 \newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
 \renewcommand\numberline[1]{}
-\renewcommand*{\indexspace}{\par\vspace{20pt plus 6pt minus 4pt}}	
+\renewcommand*{\indexspace}{\par\vspace{20pt plus 6pt minus 4pt}}
 %\newcommand{\cftXleader}{\cftdotfill{\cftXdotsep}}
 \renewcommand{\cftaftertoctitle}{\thispagestyle{empty}}
 \renewcommand\cftparskip{2mm}
@@ -185,7 +186,7 @@
     \if@restonecol\twocolumn\fi
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\addFrontMatter}{}
+\DeclareDocumentCommand{\addFrontMatter}{s t~ t! t'}
 {
 	%\ifnumcomp{\value{@glossary@entry@counter}}{>}{0}
 	%\addcontentsline{toc}{chapter}{Bibliography}
@@ -193,10 +194,14 @@
 	\tableofcontents
 	\addtocontents{toc}{~\hfill\textbf{Page}\par}
 	%\listoflistings													% minted
-	\lstlistoflistings
-	\listoffigures
-	\listoftables
-	\listofproblems
+	\iftotalfigures\listoffigures\fi
+	\iftotaltables\listoftables\fi
+	\iftotallstlistings\lstlistoflistings\fi
+	\iftotalcountproblems\listofproblems\fi
+	%\IfBooleanTF{#1}{\lstlistoflistings}{}
+	%\IfBooleanTF{#2}{\listoffigures}{}
+	%\IfBooleanTF{#3}{\listoftables}{}
+	%\IfBooleanTF{#4}{\listofproblems}{}
 	%\makenoidxglossaries
 	%\istofcodes													
 }
