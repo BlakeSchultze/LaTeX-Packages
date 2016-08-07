@@ -511,7 +511,7 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 	\fi
 	\begin{boxedfigboxfigure}[tcbfigureStyle]{#2}{\figurename\ \thefigure\@title@sep #2}[#3]%
 		\includegraphics[width=\@tcbfigbox@width]{#1}%
-	\end{boxedfigboxfigure}\@nil\xspace%\shadowText<\sffamily>[black](white){
+	\end{boxedfigboxfigure}\@nil%\shadowText<\sffamily>[black](white){
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=figures, number within=figbox]{boxedfigboxfigure}{ o m m O{fig:fig\the\value{figure}}}
@@ -526,11 +526,15 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 	    		\def\@title@sep{\space:\space}%
 		\fi
 	},
+	%\setlength\cftfigindent{1.5em}
+	%\setlength\cftfigboxindent{1.5em}
+	%\setlength\cftfigboxfigureindent{1.5em}
 	blend before title={colon},
 	blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
 	label={#4},
 	title={\BreakableShadowText[white](black){#2}},
-	list entry={\normalsize\bfseries\protect\numberline{\hspace{2.0em}\thefigboxfigure}\hspace{2.25em}#3},
+	list entry={\normalsize\bfseries\hspace{\cftfigboxfigureindent}\protect\numberline{\thefigboxfigure}#3},
+	%list entry={\normalsize\bfseries\protect\numberline{\hspace{2.0em}\thefigboxfigure}\hspace{2.25em}#3},
 	every float=\centering
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -605,10 +609,10 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
         \parbox{\textwidth}
         {
             \title{}\centering\LARGE
-            \@subtitle@font{#3, #4}\\[0.2em]
-            \@description@font{#5}
-            \author{\@author@font\shadowtext{Blake Edward Schultze}}
-            \date{\@date@font\shadowtext{\today}}
+            \@coverpage@subtitle@font{#3, #4}\\[0.2em]
+            \@coverpage@description@font{#5}
+            \author{\@coverpage@author@font\shadowtext{Blake Edward Schultze}}
+            \date{\@coverpage@date@font\shadowtext{\today}}
         }
         \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}
         \begin{minipage}{\textwidth}
@@ -626,18 +630,18 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
    	\thispagestyle{empty}%
    	\shadowcolor{BaylorGoldCMYK}%
    	\centering%
-	\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@title@font#1}}%
-	\savebox{\@coverpage@savebox@title}{\cshadowbox{\shadowtext{\@title@font#1}}}%
+	\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@coverpage@title@font#1}}%
+	\savebox{\@coverpage@savebox@title}{\cshadowbox{\shadowtext{\@coverpage@title@font#1}}}%
 	\savebox{\@coverpage@savebox@unilogo}{\cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@logo}}}%
 	\savebox{\@coverpage@savebox@deptlogo}{\cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@dept@logo}}}%
-	\savebox{\@coverpage@savebox@description}{\parbox{\textwidth}{\sectionheader!{\raggedright\@description@font{#2}}}}%	
+	\savebox{\@coverpage@savebox@description}{\parbox{\textwidth}{\sectionheader!{\raggedright\@coverpage@description@font{#2}}}}%	
 	\savebox{\@coverpage@savebox@author@date}%
 	{%
 		\parbox{\textwidth}%
 		{%
 			\centering%
-			\@author@font\shadowtext{#3}\\[0.5em]%
-			\@date@font\shadowtext{\today}\\[-1.0em]%	
+			\@coverpage@author@font\shadowtext{#3}\\[0.5em]%
+			\@coverpage@date@font\shadowtext{\today}\\[-1.0em]%	
 			\vspace{\@coverpage@dept@logo@before@skip}%
 			\usebox{\@coverpage@savebox@deptlogo}\unskip%
 	       }%
@@ -1006,7 +1010,7 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 %	}
 %}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{tcbfigbox}{r<> o}
+\DeclareDocumentEnvironment{tcbfigbox}{r<> O{}}
 {%
     	\par\smallskip%
     	\def\@currently@inside{figbox}%
@@ -1015,20 +1019,31 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
     	\setlength\@tcbfigbox@skip{\dimexpr(\linewidth-\@tcbfigbox@width-2\@tcbfigbox@left@skip)/2\relax}%
     	\tcbsetcurrentcolors{tcbfigboxStyle}%
 	\refstepcounter{@tcb@figbox@counter}%
-	\refstepcounter{figbox}%
 	\def\@tcb@border@linewidth{4.5pt}%
-	\def\@toc@hyperlink%
-	{%
-		\phantomsection\addcontentsline{lof}{figbox}{%
-		\protect\numberline{\thefigbox}%
-		\raisebox{10pt}{%
-			\protect\hypertarget{testingit}{}%
-		}%
-		\figboxname\ \thefigbox}%
-	}%
-	\IfValueTF{#2}%
-    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\@toc@hyperlink\fontsize{14}{\baselinestretch}{\protect\hyperlink{testingit}{\shadowText<\sffamily>[black](white){\LARGE#2}}}}]}%
-    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\@toc@hyperlink}%
+	\if\relax\detokenize{#2}\relax%	
+		\def\@title@sep{}%
+	\else%
+		\def\@title@sep{\space:\space}%
+	\fi%
+	%\refstepcounter{figbox}%
+%	\def\@toc@hyperlink%
+%	{%
+%		\phantomsection\addcontentsline{lof}{figbox}{%
+%		\protect\numberline{\thefigbox}%
+%		\raisebox{10pt}{%
+%			\protect\hypertarget{testingit}{}%
+%		}%
+%		\figboxname\ \thefigbox}%
+%	}%
+	%\IfValueTF{#2}%
+%    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\@toc@hyperlink\fontsize{14}{\baselinestretch}{\protect\hyperlink{testingit}{\shadowText<\sffamily>[black](white){\LARGE#2}}}}]}%
+%    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\@toc@hyperlink}%
+	%\IfValueTF{#2}%
+    	%{%
+    		\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\figbox{\@title@sep#2}\fontsize{14}{\baselinestretch}%
+     			{\protect\hyperlink{figbox\thefigbox}{\shadowText<\sffamily>[black](white){\LARGE\figboxname\ \thefigbox\@title@sep#2}}}}]%
+     	%}%
+    	%{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\figbox{}}%
 }{\endtcolorbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\functionOptionsEntry}{m o}

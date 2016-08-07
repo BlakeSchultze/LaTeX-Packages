@@ -85,27 +85,28 @@
 \renewcommand\cftparskip{1.5mm}									% Vertical skip before Table of Contents title
 \renewcommand\cftparfillskip{1mm}								% Vertical skip before Table of Contents title
 \setlength\cftbeforetoctitleskip{-5mm}							% Vertical skip before Table of Contents title
-\setlength\cftbeforeChapterskip{2.5mm}							% Vertical skip before Table of Contents title
 \setlength\cftbeforeloftitleskip{5.0mm}							% Vertical skip before Table of Contents title
 \setlength\cftbeforelottitleskip{5.0mm}							% Vertical skip before Table of Contents title
 \setlength\cftbeforeloltitleskip{5.0mm}							% Vertical skip before Table of Contents title
 \setlength\cftbeforeprobstitleskip{5.0mm}							% Vertical skip before Table of Contents title
+\setlength\cftbeforeChapterskip{2.5mm}							% Vertical skip before Table of Contents title
 \setlength\cftaftertoctitleskip{-5mm}							% Vertical skip before Table of Contents title
 \setlength\cftafterloftitleskip{2.5mm}							% Vertical skip before Table of Contents title
 \setlength\cftafterlottitleskip{2.5mm}							% Vertical skip before Table of Contents title
-\setlength\cftafterloltitleskip{-12.5mm}							% Vertical skip before Table of Contents title
-\setlength\cftafterprobstitleskip{3.5mm}							% Vertical skip before Table of Contents title
-\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip\xspace}			% Vertical skip before Table of Contents title
-\newcommand*{\@Section@finish@skip}{\par\bigskip\xspace}
-\newcommand*{\@Subsection@finish@skip}{\par\bigskip\xspace}
-\newcommand*{\@Topic@finish@skip}{\par\bigskip\bigskip\xspace}
+\setlength\cftafterloltitleskip{2.5mm}							% Vertical skip before Table of Contents title
+\setlength\cftafterprobstitleskip{2.5mm}							% Vertical skip before Table of Contents title
+\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip}			% Vertical skip before Table of Contents title
+\newcommand*{\@Section@finish@skip}{\par\bigskip}
+\newcommand*{\@Subsection@finish@skip}{\par\bigskip}
+\newcommand*{\@Topic@finish@skip}{\par\bigskip\bigskip}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \setlength\cftChapterindent{0.0em}
 \setlength\cftSectionindent{2.0em}
 \setlength\cftSubsectionindent{4.0em}
 \setlength\cftTopicindent{0.0em}
-\setlength\cftfigindent{13.0em}
+\setlength\cftfigindent{1.5em}
 \setlength\cftfigboxindent{1.5em}
+\setlength\cftfigboxfigureindent{3.0em}
 \setlength\cftproblemsindent{1.5em}
 \setlength\cftsubproblemsindent{3.0em}
 \setlength\cftproblempartsindent{3.0em}
@@ -115,7 +116,7 @@
 \setlength\cftlistingsindent{1.5em}
 \setlength\cftMatlablistingindent{1.5em}
 \setlength\cftTerminallistingindent{1.5em}
-\cftsetindents{figbox}{1.5em}{1.5em}
+%\cftsetindents{figbox}{1.5em}{1.5em}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cftTopicdotsep}{4.5}
 \renewcommand{\cftChapterdotsep}{\cftnodots}
@@ -123,6 +124,11 @@
 \renewcommand{\cftTopicleader}{\nobreak\cftdotfill{\cftTopicdotsep}\ }
 \renewcommand{\cftChapterleader}{\nobreak\cftdotfill{\cftChapterdotsep}\ }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%\renewcommand{\cftfigboxfigurenumwidth}{4.5em}
+%\renewcommand{\cftfigboxfigureaftersnumb}{\hspace{4.5em}}
+%\renewcommand{\cftfigboxfigureaftersnum}{\hspace{4.5em}}
+%\cftXnumwidth \cftXaftersnumb  \cftXaftersnum  
+
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -143,7 +149,7 @@
 \newcommand{\listproblemsname}{\@listof@problems@toctitle}				% List of homework problems/solutions
 \renewcommand{\lstlistoflistings}{\listoflistings}					% ? print list of listings, defined to be an alias for \listoflistings (minted)
 \renewcommand{\lstlistlistingname}{\@listof@listings@toctitle} 			% The header name for the list of listings.
-\renewcommand{\lstlistingname}{\@listings@caption@label}  				% The caption label for listings.
+\renewcommand{\lstlistingname}{\@tcblistings@caption@label}  				% The caption label for listings.
 %\renewcommand{\indexname}{\anttmcap16pt Index}
 %\renewcommand{\indexname}{\lolName}								% Index toc title
 %\renewcommand{\tablename}{\IBPtableName}							% Table toc title
@@ -168,8 +174,8 @@
 	{\renewcommand{\listoflistingscaption}{\@listof@listings@toctitle}}	%
 	{\newcommand{\listoflistingscaption}{\@listof@listings@toctitle}}		%	
 \ifcsdef{listingscaption}									% Caption of listing float entry (minted)
-	{\renewcommand{\listingscaption}{\@listings@caption@label}}			%
-	{\newcommand{\listingscaption}{\@listings@caption@label}}			%
+	{\renewcommand{\listingscaption}{\@tcblistings@caption@label}}			%
+	{\newcommand{\listingscaption}{\@tcblistings@caption@label}}			%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\thelstlisting}{} 					% prints the running number of the caption.
 \renewcommand{\thefigbox}{\arabic{@tcb@figbox@counter}}
@@ -180,6 +186,17 @@
 %\newcommand*{\glspostdescription}{%
 %  \ifglsnopostdot\else.\spacefactor\sfcode`\. \fi
 %}
+\renewcommand{\glsnamefont}[1]{\textbfsf{#1}\normalfont}
+\newcommand*{\@gls@navhyperlink@font}{\anttbcap12pt}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand*\tableofcontents
+{%
+    \if@twocolumn\@restonecoltrue\onecolumn
+    \else\@restonecolfalse\fi
+    \chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}%
+    \@starttoc{toc}%
+    \if@restonecol\twocolumn\fi
+}
 %*************************************************************************************************%
 %********************************************************** Document sectioning command definitions **********************************************************%
 %*************************************************************************************************%
@@ -330,19 +347,32 @@
 	\ignorespaces%\xspace
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\figbox}[1]%
+{%
+	\refstepcounter{figbox}%
+	\gdef\@currently@inside{figbox}%
+	\phantomsection\addcontentsline{lof}{figbox}%
+	{%
+		\protect\numberline{\thefigbox}%
+		\raisebox{\f@size pt}{%
+			\protect\hypertarget{figbox\thefigbox}{}%
+		}%
+		\figboxname\ \thefigbox#1%
+	}%
+	\ignorespaces%\xspace
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\figboxfigure}[1]%
+{%
+	\refstepcounter{figboxfigure}%
+	\gdef\@currently@inside{figboxfigure}%
+	\phantomsection\addcontentsline{lof}{figboxfigure}{\protect\numberline{\thefigboxfigure}#1}%
+	\ignorespaces%\xspace
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %*************************************************************************************************%
 %***************************************************** make/add/print back matter definitions/commands  ******************************************************%
 %*************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand*\tableofcontents
-{%
-    \if@twocolumn\@restonecoltrue\onecolumn
-    \else\@restonecolfalse\fi
-    \chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}%
-    \@starttoc{toc}%
-    \if@restonecol\twocolumn\fi
-}
-
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -394,12 +424,15 @@
 	\setcounter{page}{0}
 	\if@roman@backmatter@option@
 		\pagenumbering{roman}
-	\fi			%-----------------------------------------------------------------------------------------------------------------------------------------%
+	\fi			
+	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\printacronyms[title={\@listof@acronyms@toctitle}, toctitle={\@listof@acronyms@toctitle}]
 	\clearpage
-	\printnomenclature	%-----------------------------------------------------------------------------------------------------------------------------------------%
+	\printnomenclature	
+	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\clearpage
-	\printglossary[title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]		%-----------------------------------------------------------------------------------------------------------------------------------------%
+	\printglossary[title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]					
+	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\clearpage
 	\printindex%
 }

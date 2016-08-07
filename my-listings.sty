@@ -26,20 +26,20 @@
 %\usepackage[procnames]{listingsutf8}
 % \lstname: prints the name of the current listing which is either the file name or the name defined by the name key.
 % \thelstnumber \arabic{lstnumber}: prints the lines numbers.
-\def\@listings@rulesep{0.75pt}							%
-\def\@listings@framerule{2.0pt}							%
-\def\@listings@framesep{1.0mm}
-\def\@listings@numbersep{15.0pt}
-\def\@listings@framexleftmargin{4.0pt}
-\def\@listings@framexrightmargin{-3.0mm}
-\def\@listings@framextopmargin{0.5mm}
-\def\@listings@framexbottommargin{0.5mm}
-\def\@listings@linewidth{17.25cm}
+\def\@tcblistings@rulesep{0.75pt}							%
+\def\@tcblistings@framerule{2.0pt}							%
+\def\@tcblistings@framesep{1.0mm}
+\def\@tcblistings@numbersep{15.0pt}
+\def\@tcblistings@framexleftmargin{4.0pt}
+\def\@tcblistings@framexrightmargin{-3.0mm}
+\def\@tcblistings@framextopmargin{0.5mm}
+\def\@tcblistings@framexbottommargin{0.5mm}
+\def\@tcblistings@linewidth{17.25cm}
 \def\@tcblistings@boxsep{3.0pt}
 \def\@tcblistings@boxrule{2.0pt}
-\def\@tcblistings@width{\dimexpr\@listings@linewidth + \@listings@numbersep + 2\@listings@rulesep + 1.5mm\relax}
-\def\@tcblistings@captionwidth{\dimexpr\@listings@linewidth + \@listings@framexleftmargin + 9.5pt\relax}
-\def\@tcblistings@captionleftskip{\dimexpr\@listings@framerule+\@listings@framerule+\@listings@rulesep+\@listings@framexleftmargin + 1mm\relax}
+\def\@tcblistings@width{\dimexpr\@tcblistings@linewidth + \@tcblistings@numbersep + 2\@tcblistings@rulesep + 1.5mm\relax}
+\def\@tcblistings@captionwidth{\dimexpr\@tcblistings@linewidth + \@tcblistings@framexleftmargin + 9.5pt\relax}
+\def\@tcblistings@captionleftskip{\dimexpr\@tcblistings@framerule+\@tcblistings@framerule+\@tcblistings@rulesep+\@tcblistings@framexleftmargin + 1mm\relax}
 \def\@terminal@style@xleftmargin{6pt}
 \def\@terminal@style@xrightmargin{-\dimexpr 9.75mm - 1.25pt\relax}
 \def\@terminal@style@rulesep{0.25mm}
@@ -88,7 +88,7 @@
 	}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                                   1 2  3 4
-\DeclareTCBListing[blend into=listings]{tcbbashbox}{s t! o d()}
+\DeclareTCBListing[blend into=listings]{tcbbashbox}{s t! O{} d()}
 {%
 	width=\linewidth,
 	blend before title={colon},
@@ -97,21 +97,31 @@
 		{tcbbashboxStyle={stdblue}{green}}
 		{tcbbashboxStyle},	
 	%code={\renewcommand{\lstlistingname}{}},%\setstretch{0.5}%
+	code=
+		{
+			\renewcommand{\lstlistingname}{\@tcblisting@terminal@caption@title}%
+			\if\relax\detokenize{#3}\relax	
+				\def\@title@text{}%\def\@title@sep{}%
+		    	\else
+		    		\def\@title@text{\space:\space#3}%\def\@title@sep{\space:\space}%
+			\fi
+		},
 	IfValueTF={#3}
 	{
-		code={\def\@title@text{\shadowText<\sffamily>[black](white){\space:\space#3}}},
+		%code={\def\@title@text{\shadowText<\sffamily>[black](white){\space:\space#3}}},
 		IfBooleanTF={#2}
-			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }\@title@text}}
-			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }\@title@text}}
+			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
+			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
 	}
 	{
+		%code={\def\@title@text{\shadowText<\sffamily>[black](white){}}},
 		IfBooleanTF={#2}
 			{title={}}
 			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }}}
 	},
 	%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\normalsize\bfseries\@tcblisting@terminal@caption@title\ \theTerminallisting },
 	%list entry={\protect\numberline{\hspace{2.0em}\lstlistingname\ \thelstlisting }},
-	list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminallisting},
+	list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text},
 	IfValueTF={#4}
 		{comment={#4}}
 		{listing only},
@@ -127,16 +137,15 @@
 			\renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
 			\if\relax\detokenize{#1}\relax	
 				\def\@title@sep{}%
-		       	%blend before title code={\@tcblisting@Matlab@caption@title\ \theMatlablisting},
 		    	\else
-		    		\def\@title@sep{\space:\space}%%blend before title code={\@tcblisting@Matlab@caption@title\ \theMatlablisting : #1},
+		    		\def\@title@sep{\space:\space}%
 			\fi
 		},
 		listing file={#7},
 		blend before title={colon},
 		blend before title code={\hspace{-10mm}\sffamily\BreakableShadowText<0.65pt><0.2pt>[white](black){##1\@title@sep}},
 		%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting },
-		list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting},
+		list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting\@title@sep#1},
 		title={\addtocounter{lstlisting}{-1}#1},
 		listing options=
 		{
@@ -230,9 +239,9 @@
 	escapebegin=\color{matlab-extended-escapebegin},
 	escapeend=\color{matlab-extended-escapeend},
 	escapeinside={\%*}{*)},
-	%framesep=\@listings@framesep,					
+	%framesep=\@tcblistings@framesep,					
     	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
-    	%framexleftmargin=\@listings@framesep,
+    	%framexleftmargin=\@tcblistings@framesep,
     	%framexrightmargin=0mm,
     	%escapechar={},
 	%abovecaptionskip=-0.5mm,						% is the vertical space respectively above each caption.
@@ -406,13 +415,13 @@
     	formfeed=\bigbreak, 						% Whenever a listing contains a form feed, <tokens> is executed.
 	frame=TRBL,                        				% adds a frame around the code
     	%frameround=tttt,							%
-    	framerule=\@listings@framerule,					%
-    	framesep=\@listings@framesep,					
+    	framerule=\@tcblistings@framerule,					%
+    	framesep=\@tcblistings@framesep,					
     	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
-    	framexleftmargin=\@listings@framexleftmargin,
-    	framextopmargin=\@listings@framextopmargin,
-    	framexbottommargin=\@listings@framexbottommargin,
-    	framexrightmargin=\@listings@framexrightmargin,
+    	framexleftmargin=\@tcblistings@framexleftmargin,
+    	framextopmargin=\@tcblistings@framextopmargin,
+    	framexbottommargin=\@tcblistings@framexbottommargin,
+    	framexrightmargin=\@tcblistings@framexrightmargin,
     	%framextopmargin=0mm,
     	%framexbottommargin=0mm,
     	%fvcmdparams={},							%=<command1><number1>... \overlay1
@@ -423,19 +432,19 @@
     	keywordstyle={[1]\bfseries\color{codingStyle-keywordcolor1}},% keyword style
     	keywordstyle={[2]\bfseries\color{codingStyle-keywordcolor2}},% keyword style
     	keywordstyle={[3]\bfseries\color{codingStyle-keywordcolor3}},% keyword style
-    	linewidth=\@listings@linewidth,                      	% define width of code listing on page
+    	linewidth=\@tcblistings@linewidth,                      	% define width of code listing on page
     	%linerange={first1-last1 i,first2-last2, ...}         % The given line ranges of the (only for) individual listing are displayed.
 	%lineskip=<dimension>,                      		% species additional space between lines in listings
     	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=left,                           			% where to put the line-numbers
-    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
+    	numbersep=\@tcblistings@numbersep,                          			% how far the line-numbers are from the code
     	numberstyle=\tiny\bfseries\color{codingStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
 	rulecolor=\color{codingStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
     	rulesepcolor=\color{codingStyle-rulesepcolor},		%
-    	rulesep=\@listings@rulesep,					%
+    	rulesep=\@tcblistings@rulesep,					%
     	sensitive=true,							% makes keywords, control sequences, and directives case sensitive
     	showspaces=false,                       			% show spaces adding particular underscores
     	showstringspaces=false,                 			% underline spaces within strings
@@ -504,13 +513,13 @@
     	keywordstyle={[2]\bfseries\color{emptyStyle-keywordcolor2}},% keyword style
     	keywordstyle={[3]\bfseries\color{emptyStyle-keywordcolor3}},% keyword style
     	lineskip=0pt, %nolol=false, %fancyvrb=true,
-	linewidth=\@listings@linewidth,                      	% define width of code listing on page
+	linewidth=\@tcblistings@linewidth,                      	% define width of code listing on page
     	mathescape=false,
 	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=none,                           			% where to put the line-numbers
-    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
+    	numbersep=\@tcblistings@numbersep,                          			% how far the line-numbers are from the code
     	numberstyle=\tiny\bfseries\color{emptyStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
 	rulecolor=\color{emptyStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
@@ -588,13 +597,13 @@
     	keywordstyle={[2]\bfseries\color{terminalStyle-keywordcolor2}},% keyword style
     	keywordstyle={[3]\bfseries\color{terminalStyle-keywordcolor3}},% keyword style
     	lineskip=0pt, %nolol=false, %fancyvrb=true,
-	linewidth=\@listings@linewidth,                      	% define width of code listing on page
+	linewidth=\@tcblistings@linewidth,                      	% define width of code listing on page
     	mathescape=false,
 	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=none,                           			% where to put the line-numbers
-    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
+    	numbersep=\@tcblistings@numbersep,                          			% how far the line-numbers are from the code
     	numberstyle=\tiny\bfseries\color{terminalStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
 	rulecolor=\color{terminalStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))

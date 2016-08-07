@@ -63,7 +63,7 @@
 {%
 	\pagenumbering{arabic}
 	%\setcounter{page}{1}
-	\addtocontents{lol}{\protect\addvspace{10\p@}}
+	%\addtocontents{lol}{\protect\addvspace{10\p@}}
 	%\IfFileExists{\jobname.gls}
 	%	{\AtEndDocument{\foreach \ext in {glsdefs}{\immediate\write18{cmd /c del \jobname.\ext}}}}
 	%	{}
@@ -77,7 +77,10 @@
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AfterEndEnvironment{coverpage}
-{%
+{%	
+	\if@toc@option@
+		\addTOC
+	\fi
 	\if@frontbackmatter@option@
 		\addFrontbackMatter
 	\fi
@@ -189,25 +192,33 @@
 \def\stdemph#1{\normalem{\emph{#1}}}						%
 \def\fakebold#1{\setbox0=\hbox{$#1$}#1\kern-\wd0\kern\bshft#1\kern-\wd0\kern\bshft#1}
 \def\textsize{\dimexpr\f@size pt\relax}
-\def\@title@font{\LARGE\anttbcap17pt}							% Coverpage title (e.g. course #/title) font	
-\def\@subtitle@font{\anttmcap17pt}								% Coverpage subtitle (e.g. semester/instructor) font
-\def\@description@font{\anttmcap17pt}							% Coverpage description (e.g. assignment) font
-\def\@author@font{\anttmcap13pt}								% Coverpage author font
-\def\@date@font{\anttmcap13pt}								% Coverpage date font
-\def\@section@font{\anttmcap14pt}								% Coverpage description (e.g. assignment) font
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\glsnamefont}[1]{\textbfsf{#1}\normalfont}
-\newcommand*{\@gls@navhyperlink@font}{\anttbcap12pt}
+\def\@coverpage@title@font{\LARGE\anttbcap17pt}							% Coverpage title (e.g. course #/title) font	
+\def\@coverpage@subtitle@font{\anttmcap17pt}								% Coverpage subtitle (e.g. semester/instructor) font
+\def\@coverpage@description@font{\anttmcap17pt}							% Coverpage description (e.g. assignment) font
+\def\@coverpage@author@font{\anttmcap13pt}								% Coverpage author font
+\def\@coverpage@date@font{\anttmcap13pt}								% Coverpage date font
+\def\@frontbackmatter@title@font{\anttmcap18pt}
+\def\@frontbackmatter@entry@name@font#1{\textbfsf{#1}}
+\def\@frontbackmatter@entry@text@font{\normalsize\normalfont}
+\def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
+\def\@frontbackmatter@navhyperlink@font{\anttbcap12pt}
+\def\@frontbackmatter@entry@text@sep{$-$\space\space}
+\def\@glossary@entry@name@text@sep{}
+\def\@acronym@entry@name@text@sep{\space$-$\space\space}
 \def\@nom@abbreviation@font{\sffamily\bfseries}
 \def\@nom@long@name@font{\normalsize\normalfont}
+\def\@acronym@font#1{\textnormal{#1}}
+
 \def\@lhead@font{\Large\scshape}								% All set
-\def\@tcb@titlefont{\Large\bfseries}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@tcb@text@font{\normalsize\bfseries}
-\def\@tcb@solutionVerb@font{\normalsize\bfseries}
-\def\@frontbackmatter@title@font{\anttmcap18pt}
-\def\@frontbackmatter@entry@name@font{\anttmcap18pt}
-\def\@frontbackmatter@entry@text@font{\anttmcap18pt}
 \def\@tcb@title@font{\anttmcap18pt}
+\def\@tcb@toctitle@font{\sffamily}
+\def\@tcb@list@entry@font{\normalsize\bfseries}
+\def\@document@text@size{\@fsize pt}
+\def\@tcb@title@font@size{}
+\def\@tcb@solutionVerb@font{\normalsize\bfseries}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -254,7 +265,7 @@
 \def\@listof@abbreviations@lhead@title{List of Abbreviations}					% was \large
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@listings@caption@label{Code Listing}							% Caption of listing float entry (minted)
+\def\@tcblistings@caption@label{Code Listing}							% Caption of listing float entry (minted)
 \def\@terminal@listing@label{\bfseries\@tcblisting@terminal@caption@title\ \arabic{@tcb@terminal@listing@counter}: }
 \def\@tcblisting@caption@title{\lstlistingname\ \arabic{@tcb@listings@counter}}
 \def\@tcblisting@terminal@caption@title{Terminal Listing} 					% The header name for the list of listings.
@@ -437,13 +448,13 @@
 \@init@skip{@idx@before@group@label@skip}{8pt}
 \@init@skip{@idx@after@group@label@skip}{1pt}
 \@init@skip{@idx@top@skip}{-34mm}
-\@init@skip{@gls@before@hypernav@skip}{2pt}
+\@init@skip{@gls@before@hypernav@skip}{6pt}
 \@init@skip{@gls@after@hypernav@skip}{8pt}
 \@init@skip{@gls@before@group@label@skip}{0pt}
-\@init@skip{@gls@after@group@label@skip}{2pt}
-\@init@skip{@gls@before@entry@sep}{0pt}
+\@init@skip{@gls@after@group@label@skip}{6pt}
+\@init@skip{@gls@before@entry@sep}{4pt}
 \@init@skip{@gls@after@entry@sep}{6pt}
-\@init@skip{@gls@group@sep}{4pt}
+\@init@skip{@gls@group@sep}{2pt}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------- Lengths/Dimensions ---------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -705,7 +716,8 @@
 %*****************************************************************************************************************************************%
 %***************************************************************** Define new LaTeX commands *****************************************************************%
 %*****************************************************************************************************************************************%
-\newcommand*{\getlength}[2]{\pgfmathsetmacro#1{#2}}					% Result in `pt`% Or:%\pgfmathsetmacro#1{0.0351459804*#2}%  Result in `cm`
+\newcommand*{\getValue}[2]{\pgfmathsetmacro#1{#2}}					% Create macro \<#1> initialized to the stripped unit value of #2
+\newcommand*{\getLength}[2]{\pgfmathsetlengthmacro#1{#2}}				% Create macro \<#1> initialized to the value of #2 in pt units
 \newcommand*{\printLength}[2][pt]{\uselengthunit{#1}\printlength{#2}}		% Wrapper for \printlength command
 \newcommand{\repfrac}{.33}									% Sets the dot/dash/etc. repetition length as a fraction of defined \replength
 \newcommand{\dashfrac}[1]{\renewcommand\repfrac{#1}}					% Sets the dash length as a fraction of \replength
