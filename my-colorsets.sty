@@ -1,11 +1,40 @@
-%\definecolorset{rgb}{x}{10}{red,1,0,0;green,0,1,0;blue,0,0,1}
-%- would define the colors xred10, xgreen10, and xblue10
-\RequirePackage{colorsAZ}
-\RequirePackage{x11colors}
-\RequirePackage{gvcolors}
-\RequirePackage{pantone-pack}
-\RequirePackage{colorsAZ}
-\RequirePackage{crayola}
+%*************************************************************************************************************************************************************%
+%***************************************************************** `my-colorsets.sty' *********************************************************************%
+%*************************************************************************************************************************************************************%
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
+% \setglossarystyle{indexhypergroup} command
+%*************************************************************************************************************************************************************%
+%*********************************************** Define provided package name and LaTeX/package dependencies **********************************************%
+%*************************************************************************************************************************************************************%
+\ProvidesPackage{my-colorsets}
+%*************************************************************************************************************************************************************%
+%************************************************** Package options and corresponding Boolean variables ***************************************************%
+%*************************************************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%*************************************************************************************************************************************************************%
+%*************************************************************** Processing of package options ************************************************************%
+%*************************************************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\input{colorsAZ.def}
+\input{x11colors.def}
+\input{gvcolors.def}
+\input{pantone.def}		% All PMS<XXX> and PMS<XXXX> named colors, mostly 100-732 and 7401-7547 but some XXX5 e.g. 584,5845,585,...
+\input{pantone-pack.def}
+\input{crayola.def}
+\input{svgcolors.def}
+%\makeatletter
+%\@for \x:=\list \do
+%     {\colorbox {\x }{(\x)} }
+%\end{document}
+
+%\input{dvipsnames.def}
+%\input{x11nam.def}
+%\input{svgnam.def}
+%\input{colorsAZ.def}
+%\input{colors_A-Z.def}
+%\input{colors_A-F.def}
+%\input{colors_G-M.def}
+%\input{colors_N-Z.def}
 %\providecolorset{hsb}{}{}
 %{%
 %	aliceblueB,147,15,255;%
@@ -15,4 +44,27 @@
 \endinput
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newif\ifdefinecolors \definecolorstrue
+%\def\XC@append#1#2%
+% {\ifx#1\@undefined\def#1{#2}\else\ifx#1\relax\def#1{#2}\else
+%  \toks@\expandafter{#1#2}\edef#1{\the\toks@}\fi\fi}
+%
+%\let\XC@@names\relax
+%\providecommand*\paperquality{1}
+%\providecommand*\colornameprefix{XC@}
+%\let\XC@@nameprefix\colornameprefix
+%\def\XC@declarenames#1#2#3%
+% {\DeclareOption{#1}{\XC@append\XC@@names
+%   {#3\definecolorstrue\input{#2.def}\definecolorstrue
+%    \let\colornameprefix\XC@@nameprefix}}
+%  \DeclareOption{#1*}{\XC@append\XC@@names
+%   {#3\definecolorsfalse\input{#2.def}\definecolorstrue
+%    \let\colornameprefix\XC@@nameprefix}}}
+%\XC@declarenames{dvipsnames}{dvipsnam}{\let\colornameprefix\@empty}
+%\XC@declarenames{svgnames}{svgnam}{}
+%\XC@declarenames{x11names}{x11nam}{}
+%\XC@declarenames{hksnames}%
+% {hks\ifcase\paperquality k\or n\or k\or z\else n\fi nam}{}
+%\XC@declarenames{pmsnames}{pmsnam}{}
+%\XC@declarenames{ralnames}{ralnam}{}

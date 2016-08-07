@@ -1,580 +1,93 @@
-% Uncomment following line to trace macro usage and view expansion details
-%\tracingmacros=2 \tracingcommands=2
+%*****************************************************************************************************************************************%
+%*********************************************************** `my-macros.sty' *************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
+% \setglossarystyle{indexhypergroup} command
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define provided package name and LaTeX/package dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{my-macros}[2013/01/13 Custom Package]
-\newif\if@landscape@option\@landscape@optionfalse
-\newif\if@frontbackmatter@option\@frontbackmatter@optionfalse
-\DeclareOption{landscape}{\@landscape@optiontrue\PassOptionsToClass{landscape}{article}}
-\DeclareOption{frontbackmatter}{\@standaloneoff@optiontrue}
-\DeclareOption*{\PackageWarning{my-macros}{Unknown ‘\CurrentOption’}}
+\ProvidesPackage{my-macros}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\DeclareOption*{\PackageWarning{my-macros}{Unknown \CurrentOption}}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Processing of package options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \ProcessOptions\relax
-\makeatletter													% Change @ character to \catcode'@=11, i.e. a standard letter, so it can be used in macro names/definitionStyle
-% Delimeter Options: {} [] () <> '' || // ?? -- ** :: !! ;; ,, NOT: `` ^^ @@ ## == __ ..
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Path information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\graphicspath
-{
-    {./Images/}
-    {C:/Users/Blake/Documents/Education/Baylor/Logos/}
-    {C:/Users/Blake/Documents/LaTeX/}
-    {C:/Users/Blake/Documents/MATLAB/}
-    {C:/Users/Blake/Documents/LaTeX/Testing/}
-    {C:/Users/Blake/Documents/LaTeX/Testing/Test_Images/}
-    {C:/Users/Blake/Documents/LaTeX/Vignetters&Flourishes/}
-}
-%\setlength{\pdfpagewidth}{8.5in}
-%\setlength{\pdfpageheight}{11in}
-% Path to the directory where the Baylor title page and header images are stored
-\if@landscape@option
-%landscape mode
-	\textwidth=9.25in
-  	\hoffset=-2.25in
-  	\textheight=7.25in
-  	\voffset=-1.25in
-\else
-% Article mode
-	\textwidth=7.25in
-	\hoffset=-1.25in
-	\textheight=10.5in
-	\voffset=-1.0in
-	%\vsize=11.25in
-\fi
-%\hsize=hdimeni set width of page
-%\vsize=hdimeni set height of page
-%\displaywidth=hdimeni set width of math displays
-%\hoffset=hdimeni move page horizontally
-%\voffset=hdimeni move page vertically
-\setlength{\parindent}{0em}
-\setlength{\parskip}{3mm}
-\setlength{\headheight}{50pt}
-\renewcommand{\ULdepth}{0.00pt}%
-%\renewcommand{\ULthickness}{0.35pt}%
-\renewcommand{\baselinestretch}{1.2}%
-%\baselineskip=
-%\paperheight
-%\paperwidth
-\shadowoffset{0.5pt}
-\shadowoffsetx{0.65pt}
-\shadowoffsety{-0.2pt}
-\shadowcolor{BaylorGoldCMYK}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Path information %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\mathtoolsset{centercolon, mathic}
-\hypersetup
-{
-	colorlinks=true,% hyperlinks will be coloured
-	linkcolor=blue!33!green,
-	linkbordercolor=blue!33!green,
-	%pdfborder={0 1 .5},%
-	pdfborderstyle=/S/S/W 1,
-	pdfhighlight=/P
-}
-%\pdfpageattr{/Group <</S /Transparency /I true /CS /DeviceRGB>>}
-%\newpsstyle{pagefill}
-%{%
-% 	gradbegin=white,
-% 	gradend=Gray,
-% 	fillstyle=gradient,
-% 	gradlines=10000,
-%	gradmidpoint=1
-%}%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% Image/graphic/coverpage selections and settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chardef\@ne=1
-\chardef\tw@=2
-\chardef\thr@@=3
-\chardef\sixt@@n=16
-\chardef\@cclv=255
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%% Image/graphic/coverpage selections and settings %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@header@image@height{25pt}
-\def\@header@image{\includegraphics[height=\@header@image@height]{\@uni@rhead@logo}}
-\edef\@uni@logo{Baylor_vert.png}
-\edef\@uni@dept@logo{EngineeringLOGOweb.jpg}
-\edef\@uni@rhead@logo{Baylor_IM_horz.png}
-\def\@title@font{\LARGE\anttbcap17pt}																	% Coverpage title (e.g. course #/title) font	
-\def\@subtitle@font{\anttmcap17pt}																		% Coverpage subtitle (e.g. semester/instructor) font
-\def\@description@font{\anttmcap17pt}																	% Coverpage description (e.g. assignment) font
-\def\@author@font{\anttmcap13pt}																		% Coverpage author font
-\def\@date@font{\anttmcap13pt}																		% Coverpage date font
-\def\@section@font{\anttmcap14pt}																	% Coverpage description (e.g. assignment) font
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Internal Macro Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\newpar{\\[-1.5mm]}
-\def\parnoskip{\par\vspace{-\parskip}}
-\def\hrulefill{\leavevmode\leaders\hrule height 4pt\hfill\kern\z@}
-\def\textsize{\dimexpr\f@size pt\relax}
-\def\@reset@ul@settings{\setul{0.75pt}{0.75pt}}
-\def\smashtext#1#2{#1#2}
-\def\removetonil#1\xx{}
-\def\@nil{}
-\def\dirsep{\scaleobj{1.25}{/}}
-\def\usernamelabel{$<$\emph{user name}$>$}
-\def\@ding@numbers@start{172}
-\def\@filled@ding@numbers@start{182}
-\def\@default@fig@label{fig:fig\the\value{figure}}
-\def\@default@table@label{tab\the\value{table}}
-\def\@increment@tcbfigure@counter#1{\addtocounter{@num@tcbfigures}{1}}							% Used to keep track of # of images in each row
-\def\@counter@print#1#2{#1{#2}\relax}																	% Generate string from counter value
-\def\@print@before@increment#1#2{#1{#2}\addtocounter{#2}{1}}										% Print/increment value of counter #2 using format #1 (e.g. \alph)
-\def\@tcblistbox@label{\@theorem@label}
-\def\@definition@label{Definition \the\value{@tcb@definition@counter}\relax: }
-\def\@theorem@label{Theorem \the\value{@tcb@theorem@counter}\relax: }
-\def\@corollary@label{Corollary \the\value{@tcb@corollary@counter}\relax: }
-\def\@equation@label{Equation \the\value{@tcb@equation@counter}\relax: }
-\def\@solution@label{Equation \the\value{@tcb@solution@counter}\relax: }
-\def\@definition@settings
-{
-	\def\@tcblistbox@label{\@definition@label}
-	\addtocounter{@tcb@definition@counter}{1}
-}
-\def\@theorem@settings
-{
-	\def\@tcblistbox@label{\@theorem@label}
-	\addtocounter{@tcb@theorem@counter}{1}
-}
-\def\@corollary@settings
-{
-	\def\@tcblistbox@label{\@corollary@label}
-	\addtocounter{@tcb@corollary@counter}{1}
-}
-\def\@equation@settings
-{
-	\def\@tcblistbox@label{\@equation@label}
-	\addtocounter{@tcb@equation@counter}{1}
-}
-\def\@solution@settings
-{
-	\def\@tcblistbox@label{\@solution@label}
-	\addtocounter{@tcb@solution@counter}{1}
-}
-%\newlength\@tcbfigbox@left@skip\setlength\@tcbfigbox@left@skip{4mm}
-\def\@tcbfigbox@figure@sep{\hskip1em\relax}
-\def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
-\def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
-\def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
-\def\@diag@IBP@arrows@leftXShift{0.0em}
-\def\@diag@IBP@arrows@rightXShift{-0.3em}
-\def\@diag@IBP@arrows@leftYShift{0.4ex}
-\def\@diag@IBP@arrows@rightYShift{0.6ex}
-\def\@horiz@IBP@arrows@leftXShift{0.8em}
-\def\@horiz@IBP@arrows@rightXShift{0.1em}
-\def\@horiz@IBP@arrows@yShift{0.65ex}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%\catcode`\!=12
+%\catcode`|=12
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
 
-% From fancybox package (fancybox.sty)
-\def\begin@VerbBox{\aftergroup\end@VerbBox}															% \VerbBox
-\def\end@VerbBox{\the\do@VerbBox{\box\@fancybox}}													% \VerbBox
-\def\VerbBox#1{\do@VerbBox{#1}\afterassignment\begin@VerbBox\setbox\@fancybox=\hbox}			% \VerbBox
-\def\Sbox{\global\setbox\@Sbox\hbox\bgroup\ignorespaces}											% \Sbox: equivalent to \sbox with global storage
-\def\beginsbox#1{\setbox#1\hbox\bgroup\ignorespaces}													% \Sbox: equivalent to \sbox with global storage
-\def\endsbox{\endSbox}																					% \Sbox: equivalent to \sbox with global storage
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\@terminal@listing@label{\bfseries\lstterminaltitle\ \arabic{@tcb@terminal@listing@counter}: }
-\def\@single@color@hrule#1{\begingroup\color{#1}\hrule\endgroup}
-\def\tcbruleskip{\vskip0.25pt}
-\def\@std@depth@skip{\vskip0.5pt}
-\def\@bicolor@dbl@hrule#1#2%
-{%
-	\color{#1}\hrule\tcbruleskip%
-	\color{#2}\hrule\tcbruleskip%
-	\color{#1}\hrule%
-}
-\def\@tcblisting@title@label{\lstlistingname\ \arabic{@tcb@listings@title@counter}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\@cshadowbox}{ m}
-\def\@cshadowbox#1%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------------- Command Definitions ----------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@document@dimensions}{}
 {
-    \setbox\@fancybox\hbox
-    {%
-        \fcolorbox{White}{BaylorGoldCMYK}
-        {\fboxrule=0.4mm\fcolorbox{BaylorGreenCMYK}{White}{\textcolor{Black}{#1}}}%
-    }
-    \leavevmode\vbox
-    {%
-        \offinterlineskip
-        \dimen@=\shadowsize
-        \advance\dimen@ .5\fboxrule\hbox
-        {%
-            \copy\@fancybox\kern.5\fboxrule\lower\shadowsize
-            \hbox{\color{BaylorGreenCMYK}\vrule\@height\ht\@fancybox\@depth\dp\@fancybox \@width\dimen@}%
-        }
-        \vskip\dimexpr-\dimen@+0.5\fboxrule\relax\moveright\shadowsize
-        \vbox{\color{BaylorGreenCMYK}\hrule\@width\wd\@fancybox\@height\dimen@}
-    }
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\endSbox
-{%
-  	\@testtrue
-  	\ifhmode
-  		\ifinner\@testfalse\fi
-  	\fi
- 	\if@test\@latexerr
- 		{Misplaced \string\endSbox! Should be in LR mode}\@ehd
- 	\fi
-  	\egroup
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\TheSbox
-{%
-  	\ifvoid\@Sbox
-    		\@latexerr{\string\TheSbox\space is empty!}\@ehd
-  	\else
-    		\box\@Sbox
-  	\fi
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@init@counter}{m O{1}}{\newcounter{#1}\setcounter{#1}{#2}}
-\DeclareDocumentCommand{\@init@length}{m O{0pt}}{\newlength#1\setlength#1{#2}}
-\DeclareDocumentCommand{\@init@dimen}{m O{0pt}}{\newdimen#1\setlength#1{#2}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcounter{@macro@counter}
-\newcounter{@chap@counter}																			% Chapter a homework problem is from
-\newcounter{@tcb@listings@title@counter}
-\newcounter{@current@IBP@row@counter}
-%\newcounter{@eqn@list@counter}
-
-\@init@counter{countproblem}[0]    																	% Number of a problem
-\@init@counter{@prob@counter} 																	% Number of a problem
-\@init@counter{@prob@part@counter}      															% Part # of a problem for multipart problems (i.e., (i), (ii),...)
-\@init@counter{@subprob@counter}      																% Subproblem letter (i.e. (a), (b), (c), ...)
-\@init@counter{@eqn@list@counter}      																% Counter used in labeling equation list
-\@init@counter{@thm@list@counter}																	% Counter used in labeling parts of theorem
-\@init@counter{@tcb@eqn@list@counter}															% Counter used in 'tcbeqnlistbox' environment
-\@init@counter{@tcb@functions@counter}															% Counter used in 'tcbeqnlistbox' environment
-\@init@counter{@IBP@instances@counter}      														% Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@rows@counter}[0]      															% Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@nodes@counter}[1]       														% Node # of left column in IBP environment
-\@init@counter{@left@IBP@nodes@counter}       														% Node # of left column in IBP environment
-\@init@counter{@right@IBP@nodes@counter}[2]														% Node # of right column in IBP environment
-\@init@counter{@tcb@corollary@counter}[0]															% Counter used for numbering tcb corollaries
-\@init@counter{@tcb@definition@counter}[0]															% Counter used for numbering tcb definitionStyle
-\@init@counter{@tcb@equation@counter}[0]															% Counter used for numbering tcb equations
-\@init@counter{@tcb@theorem@counter}[0]															% Counter used for numbering tcb theoremStyle
-\@init@counter{@tcb@solution@counter}[0]															% Counter used for numbering tcb solutions
-\@init@counter{@tcb@terminal@listing@counter}[1]													% Counter used for numbering tcb solutions
-\@init@counter{@glossary@entry@counter}[0]														% Counter used for glossary shifting of first group entry tcolorbox box
-\@init@counter{@pld@instances}[0]    																% # of polynomial division tcolorbox tables
-\@init@counter{@bash@keywords@counter}[3]    																	% Number of a problem
-\@init@counter{@matlab@keywords@counter}[10]      																	% Number of a problem
-\@init@counter{@git@keywords@counter}[3]      																	% Number of a problem
-%\newaliascnt{@prob@counter}{@prob@counter}
-\newaliascnt{@num@tcbfigures}{@macro@counter}
-\newtoggle{@add@sub@TF}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\newdimen\shadowsize\shadowsize 4pt
-\newlength{\@coverpage@vskip}
-\newlength\@macro@length
-\newlength\@macro@width
-\newlength\@macro@height
-\newlength\@macro@depth
-%\newlength\replength\setlength\replength{1.5pt}
-%\setlength\dashlinedash{0.2pt}
-%\setlength\dashlinegap{4.5pt}
-\newlength\@macro@shift
-\newdimen\@macro@dimension
-\@init@dimen{\@filledenumshape@min@size}[5mm]
-\@init@dimen{\@filledenumshape@inner@sep}[0.25pt]
-\@init@dimen{\@function@desc@skip}[-1.0em]
-\@init@dimen{\@function@sep@skip}[-1.65em]
-\@init@dimen{\@function@entry@skip}[-1.995em]
-\@init@length{\labelboxwidth}[2.75cm]
-\@init@length{\colorboxwidth}[1.6cm]
-\@init@length{\colorboxheight}[0.75cm]
-\@init@length{\@coverpage@textwidth}[7.25in]
-\@init@length{\@coverpage@hoffset}[-1.25in]
-\@init@length{\@coverpage@textheight}[11in]
-\@init@length{\@coverpage@voffset}[3in]
-\@init@length{\@coverpage@headsep}[3pt]
-\@init@length{\@coverpage@landscape@textwidth}[9.25in]
-\@init@length{\@coverpage@landscape@hoffset}[-2.25in]
-\@init@length{\@coverpage@landscape@textheight}[8.0in]
-\@init@length{\@coverpage@landscape@voffset}[-1.15in]
-\@init@length{\@coverpage@landscape@headsep}[3pt]
-\@init@length{\@document@textwidth}[7.25in]
-\@init@length{\@document@hoffset}[-1.25in]
-\@init@length{\@document@textheight}[9.5in]
-\@init@length{\@document@voffset}[-1.1in]
-\@init@length{\@document@headsep}[3pt]
-\@init@length{\@document@landscape@textwidth}[9.25in]
-\@init@length{\@document@landscape@hoffset}[-2.25in]
-\@init@length{\@document@landscape@textheight}[7.1in]
-\@init@length{\@document@landscape@voffset}[-1.1in]
-\@init@length{\@document@landscape@headsep}[3pt]
-\@init@length{\@tcbfigbox@left@skip}[4mm+12pt]
-\@init@length{\@par@indent}[4ex]
-\@init@length{\shadowsize}[4pt]
-\@init@length{\@author@date@skip}[-2mm]
-\@init@length{\@author@dept@image@skip}[-8mm]
-\@init@length{\@author@date@height}[\dimexpr\@author@date@skip+\@author@dept@image@skip\relax]
-\@init@length{\replength}[1.5pt]
-\@init@length{\@chapter@heading@xshift}[3.15cm]
-\@init@length{\@chapter@heading@yshift}[1cm]
-\@init@length{\@chapter@heading@height}[2cm]
-\@init@length{\@chapter@heading@inner@sep}[11pt]
-\@init@length{\@chapter@heading@rounded@corners}[20pt]
-%\@init@length{\@chapter@heading@title@xshift}[.9\paperwidth]
-%\captionsetup[longtable]{labelfont=bf,textfont=it,labelsep=newline}
-%\def\LT@caption{}
-%\def\LT@c@ption#1[#2]#3{}
-%\def\LT@capti@n{}
-\@init@length{\@function@list@box@first@column}[3.0cm]
-\@init@length{\@function@list@box@second@column}[16.5cm]%
-\@init@length{\@function@list@box@column@sep}[0.25cm]
-\@init@length{\@function@detail@box@first@column}[4.0cm]
-\@init@length{\@function@detail@box@second@column}[15.5cm]%
-\@init@length{\@function@detail@box@column@sep}[0.75cm]
-\if@landscape@option
+	%\setlength{\headheight}{\dimexpr (\@header@image@height)*5/4\relax}
+    	\if@landscape@option@
 	%landscape mode
-	%\setlength\@function@list@box@second@column{\dimexpr\linewidth - cm\relax}
-	\@init@length{\@before@author@date@skip}[-10mm]
-	\@init@length{\@chapter@heading@width}[\dimexpr\paperwidth + 2.0in\relax]
-	\@init@length{\@chapter@heading@title@xshift}[\dimexpr.9\paperwidth + 1.5in\relax]
-	%\addtolength\@chapter@heading@width{2in}
-	%\addtolength\@chapter@heading@title@xshift{1.5in}
-\else
-	\@init@length{\@before@author@date@skip}[0mm]
-	\@init@length{\@chapter@heading@width}[\paperwidth]
-	\@init@length{\@chapter@heading@title@xshift}[.9\paperwidth]
-	%\@init@length{\@function@list@box@second@column}[15.5cm]
-\fi
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Temporary/default registers for macro development
-\newtoks\do@VerbBox
-\newbox\@fancybox
-\newbox\@Sbox
-\newsavebox\@macro@savebox@title@contents
-\newsavebox\@macro@savebox@title
-\newsavebox\@macro@savebox@unilogo
-\newsavebox\@macro@savebox@unideptlogo
-\newsavebox\@macro@savebox@description
-\newsavebox\@macro@savebox@built
-\let\@tcbfigbox@width=\@macro@width
-\let\@tcbfigbox@skip=\@macro@length
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}% see tabularx
-\newcolumntype{T}[1]{>{\RaggedRight\arraybackslash}p{#1}}% see tabularx
-\newcolumntype{H}[1]{>{\justify\arraybackslash}m{#1}}% see tabularx
-\setlistdepth{12}
-\newlist{legendList}{enumerate}{1}
-\newlist{deepList}{enumerate}{12}
-\setlist[legendList,1]{label={}, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt, labelindent=1cm}
-\setlist[deepList,1]{label=\textbf{(\arabic*)},labelindent=-3pt, leftmargin=*, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,2]{label=\textbf{(\alph*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,3]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,4]{label=\textbf{(\arabic*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,5]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,6]{label=\textbf{(\roman*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,7]{label=\textbf{(\arabic*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,8]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,9]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,10]{label=\textbf{(\arabic*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,11]{label=\textbf{(\alph*)},labelindent=-3pt,  itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-\setlist[deepList,12]{label=\textbf{(\roman*)},labelindent=-3pt, itemsep=0pt, topsep=2pt, parsep=0pt, partopsep=0pt}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Internal Macro Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand*{\getlength}[2]{\pgfmathsetmacro#1{#2}}%  Result in `pt`% Or:%\pgfmathsetmacro#1{0.0351459804*#2}%  Result in `cm`
-\newcommand{\checknextarg}{\@ifnextchar\bgroup{\gobblenext}{}}% Check if another "argument" exists
-\newcommand{\csvdel}{}
-\newcommand\repfrac{.33}
-\newcommand\dashfrac[1]{\renewcommand\repfrac{#1}}
-\newcommand\rulewidth{.6pt}
-\newcommand{\gobblenext}[1]{\csvdel#1\@ifnextchar\bgroup{\gobblenext}{}}% Gobble next "argument"
-\newcommand\cshadowbox{\VerbBox\@cshadowbox}									% From fancybox package (fancybox.sty)
-\newcommand{\probtag}[1]{\tag*{\bfseries(#1)}\addtocounter{equation}{-1}}
-\newcommand{\deftag}[1]{\tag*{\bfseries(#1)}\addtocounter{equation}{-1}}
-\newcommand{\@solution@shift}{\hspace{-0.4cm}}
-\newcommand{\stdemph}[1]{\normalem{\emph{#1}}}
-\newcommand{\myLaTeX}{\hbox{\fontencoding{OT1}\fontfamily{txr}\selectfont L\kern-.29em\raisebox{.5ex}{\textsc{a}}\kern-.1em\hbox{\TeX}}}%
-\newcommand{\myLaTeXe}{\hbox{\myLaTeX 2\raisebox{-.4ex}{$\varepsilon$}}}%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\tdashfill[1][\repfrac]
-{%
-	\cleaders\hbox to \replength
-	{%
-  		\smash{\rule[\arraystretch\ht\strutbox]{\repfrac\replength}{\rulewidth}}
-  	}%
-  	\hfill%
+		\setlength{\textwidth}{\@document@landscape@textwidth}
+	  	\setlength{\hoffset}{\@document@landscape@hoffset}
+	  	\setlength{\textheight}{\@document@landscape@textheight}
+	  	\setlength{\voffset}{\@document@landscape@voffset}
+		\setlength{\headsep}{\@document@landscape@headsep}
+		\setlength{\topmargin}{\@document@landscape@topmargin}
+		\setlength{\footskip}{\@document@landscape@footskip}
+		\setlength{\headheight}{\@document@landscape@headheight}
+		\setlength{\linewidth}{\@document@landscape@textwidth}
+		%\setlength{\parskip}{-1em}
+		%\setlength{\parsep}{-1em}
+		%\setlength{\baselineskip}{-1em}
+	\else
+	% Article mode
+		\setlength{\textwidth}{\@document@textwidth}
+	  	\setlength{\hoffset}{\@document@hoffset}
+	  	\setlength{\textheight}{\@document@textheight}
+	  	\setlength{\voffset}{\@document@voffset}
+		\setlength{\headsep}{\@document@headsep}
+		\setlength{\topmargin}{\@document@topmargin}
+		\setlength{\footskip}{\@document@footskip}
+		\setlength{\headheight}{\@document@headheight}
+		\setlength{\linewidth}{\@document@landscape@textwidth}
+		%\setlength{\parskip}{-1em}
+		%\setlength{\parsep}{-1em}
+		%\setlength{\baselineskip}{-1em}
+	\fi
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\tabdashline
-{%
-  \makebox[0pt][r]{\makebox[\tabcolsep]{\tdashfill\hfil}}\tdashfill\hfil%
-  \makebox[0pt][l]{\makebox[\tabcolsep]{\tdashfill\hfil}}%
-  \\[-\arraystretch\dimexpr\ht\strutbox+\dp\strutbox\relax]%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\tdotfill[1][\repfrac]
-{%
-	\cleaders\hbox to \replength{%
-  \smash{\raisebox{\arraystretch\dimexpr\ht\strutbox-.1ex\relax}{.}}}%
-  \hfill%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\tabdotline
-{%
-  \makebox[0pt][r]{\makebox[\tabcolsep]{\tdotfill\hfil}}\tdotfill\hfil%
-  \makebox[0pt][l]{\makebox[\tabcolsep]{\tdotfill\hfil}}%
-  \\[-\arraystretch\dimexpr\ht\strutbox+\dp\strutbox\relax]%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\soln}{\textit{(Sol.) \@solution@shift}}
-%\WithSuffix\newcommand{\soln}*{\textbf{\textit{(Sol.) }}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Redefine Math Accent and Symbol Combination Commands %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%  LaTeX logos use scshape for A
-%\renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}%                                            1 2	      3          4                            5 6  7    8
-\renewcommand{\qedsymbol}{$\blacksquare$}                                           % Change the QED symbol of proof environment to black square
-\renewcommand{\proofname}{\textbf{\textit{(Proof.)}}}                               % Change the text printed at beginning of proof environment
-%\renewcommand\ellipsisgap{1.5\fontdimen3\font}
-
-% Modify math environment tags to include the chapter/problem # w/ equation #s
-\renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Internal Macro Variables %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@coverpage@dimensions}{}
 {
 	%\setlength{\headheight}{150pt}
-    	\if@landscape@option
+    	\if@landscape@option@
 	%landscape mode
-		\textwidth=\@coverpage@landscape@textwidth
-	  	\hoffset=\@coverpage@landscape@hoffset
-	  	%\textheight=7.75in
-	  	\textheight=\@coverpage@landscape@textheight
-	  	\voffset=\@coverpage@landscape@voffset
-		%\headsep=\@coverpage@landscape@headsep
+		\setlength{\textwidth}{\@coverpage@landscape@textwidth}
+	  	\setlength{\hoffset}{\@coverpage@landscape@hoffset}
+	  	\setlength{\textheight}{\@coverpage@landscape@textheight}
+	  	\setlength{\voffset}{\@coverpage@landscape@voffset}
+		\setlength{\topmargin}{\@coverpage@landscape@topmargin}
+		\setlength{\headsep}{\@coverpage@landscape@headsep}
+		\setlength{\footskip}{\@coverpage@landscape@footskip}
+		\setlength{\headheight}{\@coverpage@landscape@headheight}
 	\else
 	% Article mode
-		\textwidth=\@coverpage@textwidth
-		\hoffset=\@coverpage@hoffset
-		%\textheight=11.25in
-		\textheight=\@coverpage@textheight
-		\voffset=\@coverpage@voffset
-		%\headsep=\@coverpage@headsep
+		\setlength{\textwidth}{\@coverpage@textwidth}
+		\setlength{\hoffset}{\@coverpage@hoffset}
+		\setlength{\textheight}{\@coverpage@textheight}
+		\setlength{\voffset}{\@coverpage@voffset}
+		\setlength{\topmargin}{\@coverpage@topmargin}
+		\setlength{\headsep}{\@coverpage@headsep}
+		\setlength{\footskip}{\@coverpage@footskip}
+		\setlength{\headheight}{\@coverpage@headheight}
 	\fi
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@set@document@dimensions}{}
-{
-	\setlength{\headheight}{\dimexpr (\@header@image@height)*5/4\relax}
-    	\if@landscape@option
-	%landscape mode
-		\textwidth=\@document@landscape@textwidth
-	  	\hoffset=\@document@landscape@hoffset
-	  	\textheight=\@document@landscape@textheight
-	  	\voffset=\@document@landscape@voffset
-		\headsep=\@document@landscape@headsep
-	\else
-	% Article mode
-		\textwidth=\@document@textwidth
-	  	\hoffset=\@document@hoffset
-	  	\textheight=\@document@textheight
-	  	\voffset=\@document@voffset
-		\headsep=\@document@headsep
-	\fi
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Insert a blank page, with (default) or without (starred version) increasing the page #
-\DeclareDocumentCommand{\blankpage}{s}
-{
-    \newpage\thispagestyle{empty}\mbox{}\newpage
-    \IfBooleanTF{#1}{\addtocounter{page}{-1}}{}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\titleformat{command}[shape]{format}{label}{sep}{before-code}[after-code]
-\newcommand*\sectionlabel{}
-\titleformat{\section}
-{\gdef\sectionlabel{}\normalfont\sffamily\LARGE\bfseries\scshape}
-{\gdef\sectionlabel{\thesection\ : }}
-{0pt}
-{\sectionHeading{#1}}
-%{%
-%	\begin{tcbsection}{\sectionlabel#1}%
-%	#2%
-%	\end{tcbsection}%
-%}%\chapterHeading{#1}}%
-%{\chapterHeading{#1}}%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\titlespacing*{\section}{0pt}{-0pt}{-0.0cm}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\sectionHeading}{>{\SplitArgument{1}{+}} m}
-{%
-	%\setcounter{@num@tcbfigures}{0}\ignorespaces%
-    	%\ProcessList{#1}{\@increment@tcbfigure@counter}%
-    	%\setlength{\@tcbfigbox@width}{\dimexpr\@macro@dimension/\value{@num@tcbfigures}\relax}\ignorespaces%
-    	%\ProcessList{#1}{\tcbfigboxfigure}\\%[1.2em]\\[1.2em]%[-0.5em]\\
-    	%\ProcessList{#1}{\sectionHeadingParts}
-    	\sectionHeadingParts #1
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\sectionHeadingParts}{m g}
-{%%\tcbsection[*]'color scheme'[style]<title font>{title text}[tcb options](tcb every layer options)<env font>
-	\IfValueTF{#2}
-	{%
-		\begin{tcbsection}{\sectionlabel#1}[after skip=1mm, before skip=-2mm]%
-			#2%
-		\end{tcbsection}
-	}
-	{%
-		\begin{tcbsection}{\sectionlabel#1}[bottom=0mm, after skip=1mm, before skip=-2mm]%
-		\end{tcbsection}
-	}
-%	\begin{tcbsection}{\sectionlabel#1}[after skip=1mm, before skip=-2mm]%
-%		\IfValueTF{#2}{#2}{\tcbsetforeverylayer{bottom=-2mm}}%
-%	\end{tcbsection}
-}
-%%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*\chapterlabel{}
-\titleformat{\chapter}
-{\gdef\chapterlabel{}\normalfont\sffamily\LARGE\bfseries\scshape}
-{\gdef\chapterlabel{\thechapter\ }}
-{0pt}
-{\chapterHeading{#1}}%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\titlespacing*{\chapter}{0pt}{-0pt}{-0.0cm}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\chapterHeading}{m D<>{\@chapter@heading@xshift} D<>{\@chapter@heading@yshift}}
-{%
-	\begin{tikzpicture}[remember picture, overlay]
-	    	\node[xshift=#2, yshift=#3] at (current page.north west)
-	      {%
-	      	\begin{tikzpicture}[remember picture, overlay]
-	      		\draw[fill=chapterHeading-colback] (0,0) rectangle (\@chapter@heading@width, \@chapter@heading@height);
-	      		\node
-	      		[
-	      			anchor=east, xshift=\@chapter@heading@title@xshift, rectangle, fill=chapterHeading-colbacktitle,
-					rounded corners=\@chapter@heading@rounded@corners, inner sep=\@chapter@heading@inner@sep	      			
-	      		]
-	              	{\color{chapterHeading-coltitle}\chapterlabel#1};
-	       	\end{tikzpicture}
-	     	 };
-	\end{tikzpicture}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\autotcbref}{D(){figure} O{1}}
-{%
-    \ifstrequal{#1}{figure}{\autoref{\reffig{#2}}}{}%
-    \ifstrequal{#1}{equation}{\autoref\refeq{#2}}{}%
-    \ifstrequal{#1}{listing}{\autoref{\reflst{#2}}}{}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Calculate length of alignat environment
 \DeclareDocumentCommand{\settowidthofalign}{m m}
 {%
@@ -589,57 +102,92 @@
     \def\or{+}\edef
     \x{\endgroup#1=\dimexpr\got@maxcolwd\relax}\x
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\coloredtext}{s t! m m}
-{%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Insert a blank page, with (default) or without (starred version) increasing the page #
+\DeclareDocumentCommand{\blankpage}{s}
+{
+    \newpage%
+    \thispagestyle{empty}%
+    \mbox{}%
+    \newpage%
+    \IfBooleanTF{#1}{\addtocounter{page}{-1}}{}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\pagelink{1}[FIRSTPAGE]\\
+%\hyperlink{FIRSTPAGE}{hello1st}\\
+\DeclareDocumentCommand{\pagelink}{s m O{}}
+{
 	\begingroup%
-		\IfBooleanTF{#1}
-		{%
-				\IfBooleanTF{#2}
-					{\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
-					{\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
-		}
-		{%
-				\IfBooleanTF{#2}
-					{\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
-					{\ignorespaces\color{#3}#4\unskip\ignorespaces}
-		}
+		\pgfmathsetmacro{\@destination@pagenum}{#2}
+		\pgfmathparse{ifthenelse(\@destination@pagenum==1, 1, 0)}
+		\if\pgfmathresult 1\relax
+			\hyperlink{\@page@one@target@name}{#3}%
+        	\else
+            	\hyperlink{\@page@n@target@name#2}{#3}%
+        	\fi
 	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\colorentry}{m D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\MYhref}[3][blue]{\href{#2}{\color{#1}{#3}}}%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbhypertarget}{o m m}
 {%
-	\mybox{white}{#2}{#4}{#1}%
-	\mybox{#1}{#3}{#4}{}%
+	\begingroup%
+  		\IfValueTF{#1}
+			{\hypertarget{#2}{\color{#1}#3}}%
+			{\hypertarget{#2}{#3}}%
+  	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\colortablerow}
-%1                   2                   3                    4 5 6 7 8
-{D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight} m m m m m }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbhyperlink}{o m m}
 {%
-	\colorentry{#4}<#1><#2><#3>%
-	\colorentry{#5}<#1><#2><#3>%
-	\colorentry{#6}<#1><#2><#3>%
-	\colorentry{#7}<#1><#2><#3>%
-	\colorentry{#8}<#1><#2><#3>\\%
+	\begingroup%
+  		\IfValueTF{#1}
+			{\hyperlink{#2}{\color{#1}#3}}%
+			{\hyperlink{#2}{#3}}%
+  	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setshadowtextprops}{D<>{0.5pt} O{0.65pt} O{-0.2pt} G{BaylorGoldCMYK}}
-{%\setshadowtextprops<offset>[offset x][offset y]{shadow color}
-	\shadowoffset{#1}
-	\shadowoffsetx{#2}
-	\shadowoffsety{#3}
-	\shadowcolor{#4}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@autohyperlink}{m m m}
+{%
+	\begingroup%
+  		\ifcsstrequal{#1}{Chapter}{\unskip\ignorespaces\hyperlink{\@Chapter@link@name#2}{#3}}{}%
+    		\ifcsstrequal{#1}{Section}{\unskip\ignorespaces\hyperlink{\@Section@link@name#2}{#3}}{}%
+    		\ifcsstrequal{#1}{Subsection}{\unskip\ignorespaces\hyperlink{\@Subsection@link@name#2}{#3}}{}%
+  	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\shadowText}{D<>{\anttmcap18pt} D''{current} m}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\autotcbref}{D(){figure} O{1}}
+{%
+    \ifstrequal{#1}{figure}{\autoref{\reffig{#2}}}{}%
+    \ifstrequal{#1}{equation}{\autoref\refeq{#2}}{}%
+    \ifstrequal{#1}{listing}{\autoref{\reflst{#2}}}{}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\colortableentry}{m D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight}}
+{%
+	\colortablebox{white}{#2}{#4}{#1}%
+	\colortablebox{#1}{#3}{#4}{}\unskip\ignorespaces%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                       1                   2                   3                    4 5 6 7 8
+\DeclareDocumentCommand{\colortablerow}{D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight} m m m m m}
+{%
+	\colortableentry{#4}<#1><#2><#3>%
+	\colortableentry{#5}<#1><#2><#3>%
+	\colortableentry{#6}<#1><#2><#3>%
+	\colortableentry{#7}<#1><#2><#3>%
+	\colortableentry{#8}<#1><#2><#3>\\[-2pt]%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\caratenclosed}{s m}
 {%\shadowText<title font>'color style'{title text}
-
-	#1\color{#2-coltextshadowbase}%
-	\shadowcolor{#2-coltextshadow}%
-	\shadowtext{#3}%
+	\IfBooleanTF{#1}%
+		{$<$\emph{#2}$>$}%
+		{$<$#2$>$}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%\def\caratenclosed#1{$<$#1$>$}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Set of 4 horizontal lines enclosed in a box fixing their relative position, with a 1pt space between the
 % top/bottom pair and the color of the outisde/inside pair  specified by arguments #1 and #2 , respectively.
 \DeclareDocumentCommand{\@section@sep}{m m}
@@ -651,36 +199,36 @@
         	\color{#1}\rule{\textwidth}{1pt}\\[\dimexpr-1em-3.5pt\relax]
         	\color{#2}\rule{\textwidth}{1pt}\\[\dimexpr-1em-2.5pt\relax]
         	\color{#2}\rule{\textwidth}{1pt}\\[\dimexpr-1em-3.5pt\relax]
-        	\color{#1}\rule{\textwidth}{1pt}%\\%\par\medskip%\parnoskip\medskip
+        	\color{#1}\rule{\textwidth}{1pt}\par\smallskip%\\%\par\medskip%\parnoskip\medskip
     	}%
     	\endgroup%
 }
-\DeclareDocumentCommand{\baylorsection}{}
-	{\@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\sectionheader}{s O{\anttmcap14pt} m O{BaylorGreenCMYK} O{BaylorGoldCMYK} t!}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\baylorsection}{}{\@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                       1 2  3                4 5                  6
+\DeclareDocumentCommand{\sectionheader}{s t! O{\anttmcap14pt} m O{BaylorGreenCMYK} O{BaylorGoldCMYK}}
 {%	
 	\begingroup%
 	\parindent=\@par@indent
-	%\setlength{\@macro@length}{\parindent}%
 	\setlength{\parindent}{0pt}
-	\settowidth\@macro@width{\shadowtext{#2{#3}}}%
-   	\shadowcolor{#5}\color{#4}\par\vspace{-\parskip}%
+	\settowidth\@macro@width{\shadowtext{#3{#4}}}%
+   	\shadowcolor{#6}\color{#5}\par\vspace{-\parskip}%
 	\unskip\ignorespaces\parbox{\textwidth}%
 	{%
-		\unskip\ignorespaces\@section@sep{#4}{#5}\unskip\ignorespaces%
-		\IfBooleanTF{#6}%
+		\unskip\ignorespaces\@section@sep{#5}{#6}\unskip\ignorespaces%
+		\IfBooleanTF{#2}%
 		{%
 			\\\begin{center}%
 				\pgfmathparse{ifthenelse(\@macro@width>= \linewidth, 1, 0)}%
 				\if\pgfmathresult 1\relax%
 					\vspace{-12.5mm}%
 					\doublespacing%
-					\shadowtext{\parbox{\textwidth}{\centering#2{#3}}}%
+					\shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}%
 					\vspace{1mm}%
 			      \else%
 			            \vspace{-6mm}%
-					\shadowtext{\centering#2{#3}}%
+					\shadowtext{\raggedright#3{#4}}%
 					\vspace{-4mm}%
 				\fi%
 			\end{center}%
@@ -691,21 +239,29 @@
 				\if\pgfmathresult 1\relax%
 					\vspace{-12mm}%
 					\doublespacing%
-					\shadowtext{\parbox{\textwidth}{\centering#2{#3}}}%
+					\shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}%
 					\vspace{-0mm}%
 			      \else%
 			            \vspace{-13mm}%
-					\shadowtext{\parbox{\textwidth}{\centering#2{#3}}}%
+					\shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}%
 					\vspace{-3mm}%
 			        \fi%
 			\end{center}%
 		}%
-		\@section@sep{#4}{#5}%\parnoskip%
+		\@section@sep{#5}{#6}%
 	}%
-	\endgroup\parnoskip\unskip\ignorespaces%\def\parnoskip{\par\vspace{-\parskip}}
+	\endgroup\parnoskip\unskip\ignorespaces%
 	\parindent=\@par@indent%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\legendentry}{s O{documentation-file} m m}
+{
+	\begingroup%
+		\bfseries\color{#2}{\textbf{#3}} \color{Black}: #4%
+		\IfBooleanTF{#1}{\parnoskip}%
+	\endgroup%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\fileentry}{s O{documentation-file} m m}
 {
 	\begingroup%
@@ -713,82 +269,31 @@
 		\IfBooleanTF{#1}{\parnoskip}%
 	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\direntry}{s O{documentation-constdir} m m}
-{
-	\begingroup%
-		\color{#2}{\textbf{#3}} \color{Black}: #4%
-		\IfBooleanTF{#1}{\parnoskip}%
-	\endgroup%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\definitionentry}{s O{documentation-file} m m}
-{
-	\begingroup%
-		\bfseries\color{#2}{\textbf{#3}} \color{Black}: #4%
-		\IfBooleanTF{#1}{\parnoskip}%
-	\endgroup%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@add@IBP@node}{m}
-{\tikz[overlay, remember picture, baseline] \node (#1) {};}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\addIBProw}{m m s}
-{
-    	\IfBooleanTF{#3}
-    	{
-        	\textstyle#1\quad
-        	&\@add@IBP@node{Left \the\numexpr\value{@IBP@rows@counter}+1\relax}
-        	&\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+2\relax}
-        	\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+1\relax}
-        	&\textstyle#2
-    	}
-    	{
-        	\textstyle#1\quad
-        	&\@add@IBP@node{Left \the\numexpr\value{@IBP@rows@counter}+1\relax}
-        	&\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+1\relax}
-		&\textstyle#2
-    	}
-	\addtocounter{@IBP@rows@counter}{1}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@add@arrow@sign}{m}
-{
-	node [#1] \bgroup
-    	\iftoggle{@add@sub@TF}
-    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
-    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@draw@IBP@arrows}{}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\docentry}{s t! O{file} m}
 {%
-	\begin{tikzpicture}[overlay, remember picture]
-		\toggletrue{@add@sub@TF}
-		\forloop[1]{@current@IBP@row@counter}{1}{\value{@current@IBP@row@counter} < \value{@IBP@rows@counter}}
-		{
-		    	\draw[IBPdiagArrows]
-		        	($(Left \the\value{@current@IBP@row@counter}.west)+(\@diag@IBP@arrows@leftXShift, \@diag@IBP@arrows@leftYShift)$)
-		        	--
-		        	($(Right \the\numexpr\value{@current@IBP@row@counter}+1\relax.east)+(-\@diag@IBP@arrows@rightXShift, \@diag@IBP@arrows@rightYShift)$)
-		    	\@add@arrow@sign{above, midway}	
-		}
-		\draw[IBPhorizArrows]
-		    ($(Right \the\numexpr\value{@current@IBP@row@counter}+1\relax.west)+(\@horiz@IBP@arrows@rightXShift, \@horiz@IBP@arrows@yShift)$)
-		    --
-		    ($(Left \the\value{@current@IBP@row@counter}.east)+(-\@horiz@IBP@arrows@leftXShift, \@horiz@IBP@arrows@yShift)$)
-		\@add@arrow@sign{below, pos=0.465}
-    \end{tikzpicture}
+	\begingroup%
+	%\catcode`_=12%
+	\expandafter\def\expandafter\@text@input\expandafter{#4}%
+	\IfBooleanTF{#1}%
+		{\def\@text@entry{``\@text@input''}}%
+		{\def\@text@entry{\@text@input}}%
+	\ifstrequal{#3}{file}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+	\ifstrequal{#3}{fileset}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+	\ifstrequal{#3}{constdir}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+	\ifstrequal{#3}{dir}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+	\ifstrequal{#3}{subcategory}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+	\ifstrequal{#3}{gitrepo}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+	\ifstrequal{#3}{gitaccount}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+	\ifstrequal{#3}{gitbranch}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\texttt{\@text@entry}}}}{}%
+	\ifstrequal{#3}{script}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textup\@text@entry}}}{}%
+	\IfBooleanTF{#2}%
+		{\bfseries``\@Atext@entry''\@end@macro@spacing}%
+		{\bfseries\@Atext@entry\@end@macro@spacing}%
+	%\catcode`_=12
+	\endgroup%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@set@tcblistbox@settings}{m}
-{
-	\ifstrequal{#1}{definition}{\@definition@settings}{}%
-	\ifstrequal{#1}{theorem}{\@theorem@settings}{}%
-   	\ifstrequal{#1}{corollary}{\@corollary@settings}{}
-    	\ifstrequal{#1}{equation}{\@equation@settings}{}
-    	\ifstrequal{#1}{solution}{\@solution@settings}{}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                        1 2         3            4            5 6        7
 \DeclareDocumentCommand{\fillednumshape}{s O{circle} D(){\arabic} D(){current} m D(){5mm} D<>{0.5pt}}
 {%\fillednumshape[*<counter on>][shape](counter print format){color style}{character/text or counter}(min size)<inner sep>
@@ -803,7 +308,7 @@
 		(char) {\textcolor{fillednumshape-colfilltext}{\hspace{0pt}\bfseries\shapecontents}};%
 	}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Encloses equation inside an AMS environment (e.g. align/alignat/eqnarray) in a colored (tcbmath) box, maintaing alignment with preceding equations
 % without using the "&" character. An optional third argument specifies desired style of box, by default it uses the 'solutions' style
 \DeclareDocumentCommand{\tcbequation}{s m m O{tcbequationStyle}}
@@ -817,63 +322,31 @@
     \tcbsetforeverylayer{#4}\tcboxmath{\boldsymbol{#2 #3}}
     \IfBooleanTF{#1}{\tcbsetforeverylayer{before skip=0mm}}{}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\@currently@inside{section}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\@set@currently@inside@indent%
-{%
-    	\gdef\@currently@inside@indent{1.3em}
-    	\ifcsstrequal{\@currently@inside}{problems}{\gdef\@currently@inside@indent{2.1em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-    	\ifcsstrequal{\@currently@inside}{problemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-	\ifcsstrequal{\@currently@inside}{problempartssubproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxlist}{>{\SplitList{\\}} m O{\@tcbfigbox@width}}
 {%
     	\IfValueTF{#2}{\setlength\@macro@dimension{#2}}{}%
-	\begin{tabular}[#2]{c}
+	\begin{tabular}[#2]{c}%
 		\ProcessList{#1}{\tcbfigboxrow}%
-    	\end{tabular}
+    	\end{tabular}\xspace%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxrow}{>{\SplitList{|}} m}
 {%
 	\setcounter{@num@tcbfigures}{0}\ignorespaces%
     	\ProcessList{#1}{\@increment@tcbfigure@counter}%
     	\setlength{\@tcbfigbox@width}{\dimexpr\@macro@dimension/\value{@num@tcbfigures}\relax}\ignorespaces%
-    	\ProcessList{#1}{\tcbfigboxfigure}\\%[1.2em]\\[1.2em]%[-0.5em]\\
+    	\ProcessList{#1}{\tcbfigboxfigure}\\%[1.2em]\\[1.2em]%[-0.5em]\\%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxfigure}{>{ \SplitList{;}} m}{\tcbfigboximage#1}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tcbfigboximage}{m m G{\@default@fig@label}}
-{%
-    	\@set@currently@inside@indent
-    	\begin{boxedfigure}[tcbfigureStyle, colframe=black, colback=Matlab-figcolback]{#2}{Figure \arabic{figure}: #2}[#3]%
-        	\includegraphics[width=\@tcbfigbox@width]{#1}%
-    	\end{boxedfigure}\@nil\phantomsection\addcontentsline{probs}{\@currently@inside}{\protect\numberline{\csname the\@currently@inside\endcsname}\hspace{\@currently@inside@indent}Figure \arabic{figure}: #2}%
-}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom environment definitionStyle %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Add spacing after left brace in dcases environment
-\newcases{sdcases}{\quad}{%
-  $\m@th\displaystyle{\;##}$\hfil}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
-\newcases{sdcases*}{\quad}{%
-  $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
-\renewcases{dcases}{\quad}{%
-  $\m@th\displaystyle{\;##}$\hfil}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
-\renewcases{dcases*}{\quad}{%
-  $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom environment definitionStyle %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************** Custom environment definitionStyle ***************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtheoremstyle{defi}{\topsep}{\topsep}{\normalfont}{}{\bfseries}{:}{.5em}{\thmname{#1}\thmnote{~(#3)}}%
 \theoremstyle{defi}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newmdtheoremenv[hidealllines=true, backgroundcolor=current-colback, innertopmargin=8.5pt,
 linewidth=4pt, linecolor=current-coldraw,
 	singleextra=
@@ -894,12 +367,23 @@ linewidth=4pt, linecolor=current-coldraw,
 	  \draw[line width=3pt,current-coldraw,line cap=rect] (O-|P) -- +(0pt,1cm);
 	}
 ]{definitioni}{Definition}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newmdtheoremenv[hidealllines=true, backgroundcolor=current-colback, innertopmargin=8.5pt,
+linewidth=4pt, linecolor=current-coldraw,
+	singleextra=
+	{
+	  \draw[line width=3pt,current-coldraw,line cap=rect] (P|-O) -- +(-1cm,0pt);
+	  \draw[line width=3pt,current-coldraw,line cap=rect] (P|-O) -- +(0pt,1cm);
+	  \draw[line width=3pt,current-coldraw,line cap=rect] (O) -- +(1cm,0pt);
+	  \draw[line width=3pt,current-coldraw,line cap=rect] (O) -- +(0pt,1cm);
+	}
+]{definitioniBB}{Definition}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newmdtheoremenv
 [roundcorner=5pt, backgroundcolor=current-colback, innertopmargin=7.5pt, innerbottommargin=10pt,
 linewidth=4pt, linecolor=current-coldraw]
 {definitioniii}{Definition}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newmdenv
 [%
 	innertopmargin=0pt, backgroundcolor=current-colback, roundcorner=5pt, linewidth=1pt,
@@ -915,7 +399,7 @@ linewidth=4pt, linecolor=current-coldraw]
 			at (P-|O) {\bfseries\color{current-coltitle}Definition:};
 	}
 ]{definitionBB}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtcolorbox[auto counter, number within=section]{ejemplo}[2][]
 {%
 	before=\bigskip\centering, after=\bigskip, enhanced, arc=15pt, colframe=current-colframe, colback=white,
@@ -931,17 +415,57 @@ linewidth=4pt, linecolor=current-coldraw]
 	overlay unbroken and first={\node[anchor=west,font=\sffamily,color=current-highlightcol] at (title.east) {{\small #2}};},
 	#1
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtcolorbox{tcbContentsBox}
 {%
 	enhanced, capture=minipage, colframe=black, boxrule=2pt, colback=stdbackground, breakable,
-	before=\par\medskip\medskip\smallskip\noindent, after=\par\medskip, fonttitle=\sffamily\bfseries,
-	top=0.5pt, bottom=0.5pt, left=6mm, colback=stdbackground,
+	before=\par\medskip\medskip\noindent, after=\par\medskip\smallskip, fonttitle=\sffamily\bfseries,
+	top=0.5pt, bottom=0.5pt, left=6mm, left skip=1mm, colback=stdbackground,
 	code={\setul{1.15pt}{0.5pt}\colorlet{current-coltextshadowbase}{white}\colorlet{current-coltextshadow}{black}},	
 	titleframeComboInteriorSetup, titleframeComboSetup
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareTCBInputListing{\hnamei}{hspecificationi}{hoptionsi}
+%*****************************************************************************************************************************************%
+%******************************************************** \newkeycommand commands ********************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\autohyperlink
+[enum type={Chapter,Section,Subsection}, textcolor=hyperlinkcolor, label=][1]
+{%
+	\edef\@type@name{#1}
+	\ifcommandkey{label}
+		{\def\hyperlabel{\commandkey{label}}}
+		{\def\hyperlabel{#1}}%
+	\ifcommandkey{textcolor}
+	{%
+		\@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%	
+    	}
+	{%
+		\hypersetup
+		{
+			linkcolor=hyperlinkcolor,
+			linkbordercolor=hyperlinkcolor
+		}%
+		\@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
+    	}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newtcbox{\tcbinlinetextbox}[1][inlineboxgray]{enhanced, arc=2pt, boxsep=1pt, top=2.5pt, bottom=1.5pt, left=4pt, right=4pt, fontupper=\fontfamily{cmss}\selectfont,
+	colback=white, coltext=black, colframe=#1, boxrule=0.5pt,
+	borderline={1.5pt}{1pt}{white}, fuzzy shadow={0.0pt}{-1.5pt}{0.5pt}{0.1mm}{stdgray},%
+	interior code=
+	{       		
+		\filldraw[draw=#1, fill=#1, sharp corners, line width=0pt]
+        		([xshift=-2pt, yshift =-2pt]interior.north east)
+        		--([xshift=2pt, yshift =-2pt]interior.north west)
+			--([xshift=2pt, yshift =2pt]interior.south west)
+			--([xshift=-2pt, yshift =2pt]interior.south east)
+			-- cycle;
+	}%,code=\tcbinlinetextfont{
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newtcboxfit{\colortablebox}[3]{nobeforeafter, sharp corners, colback=#1, width=#2, height=#3, halign=center, valign=center,
+boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\unskip\ignorespaces}%leftrule=0mm,
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcboxVerb}{O{red} v O{}}
 {
 	fontupper=\ttfamily, nobeforeafter, tcbox raise base, arc=0pt, outer arc=0pt, top=0pt, bottom=0pt,
@@ -949,17 +473,16 @@ linewidth=4pt, linecolor=current-coldraw]
 	colback=#1!10!white, colframe=#1!50!black, #3
 }
 {#2}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTotalTCBox{\commandbox}{ s v }{verbatim,colupper=white,colback=black!75!white,colframe=black}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTotalTCBox{\commandbox}{s v}{verbatim,colupper=white,colback=black!75!white,colframe=black}
 {%
 	\IfBooleanTF{#1}{\textcolor{red}{\ttfamily\bfseries > }}{}%
 	\lstinline[language=command.com, keywordstyle=\color{blue!35!white}\bfseries]^#2^%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcbinlinebashbox}{s t! v}{tcbinlinebashboxStyle}
 {%
      	\IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\textsize\relax}{\rule{0pt}{\textsize}}\textcolor{green}{ > }}{}%
-    	%tcbinlinebashlistingStyle^#2^%
     	\IfBooleanTF{#2}
     	{
 	    	\lstinline
@@ -976,50 +499,59 @@ linewidth=4pt, linecolor=current-coldraw]
 	     	]^#3^%
      	}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareTCBListing4[hinit optionsi]{hnamei}{hspecificationi}{hoptionsi}
-\DeclareTCBListing{tcbbashbox}{s o d() t! t`}
-{
-	%\setlength{\parskip}{3mm}
-	%\tcbsetcurrentcolors{#4}
-    	%\setfillednumcolors{#4}
-    	code={\renewcommand{\lstlistlistingname}{Terminal Listing}},%\tcbsetcurrentcolors{#4}
-	width=\linewidth,
-	IfBooleanTF={#1}
-		{tcbbashboxgoldStyle}
-		{tcbbashboxStyle},	
-	IfValueTF={#2}
-	{
-		IfBooleanTF={#5}
-			{title={\lstlistlistingname\ \arabic{@tcb@listings@title@counter} }: #2}
-			{title={\lstlistlistingname\ \arabic{@tcb@listings@title@counter} }: #2}
-	}
-	{
-		IfBooleanTF={#5}
-			{title={}}
-			{title={\lstlistlistingname\ \arabic{@tcb@listings@title@counter} }}
-	},
-	IfValueTF={#3}
-		{comment={#3}}
-		{listing only},
-	IfBooleanTF={#4}
-		{code=\addtocounter{@tcb@listings@title@counter}{1}\par\medskip}
-		{code=\addtocounter{@tcb@listings@title@counter}{1}\par\medskip},
-	IfValueTF={#3}{}{bottom=0mm},
-	%IfValueTF={#4}{bottom=1mm}{},
-	addtolol
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbfigboximage}{m m G{\@default@fig@ref@label}}
+{%
+    	\unskip\ignorespaces\@set@currently@inside@indent%
+    	\refstepcounter{figboxfigure}%
+	\if\relax\detokenize{#2}\relax	
+		\def\@title@sep{}%
+	\else
+		\def\@title@sep{\space:\space}%
+	\fi
+	\begin{boxedfigboxfigure}[tcbfigureStyle]{#2}{\figurename\ \thefigure\@title@sep #2}[#3]%
+		\includegraphics[width=\@tcbfigbox@width]{#1}%
+	\end{boxedfigboxfigure}\@nil\xspace%\shadowText<\sffamily>[black](white){
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox[blend into=figures, number within=figbox]{boxedfigboxfigure}{ o m m O{fig:fig\the\value{figure}}}
+{
+	#1, capture=hbox,
+	code=
+	{
+		%\renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
+		\if\relax\detokenize{#2}\relax	
+			\def\@title@sep{}%
+	    	\else
+	    		\def\@title@sep{\space:\space}%
+		\fi
+	},
+	blend before title={colon},
+	blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
+	label={#4},
+	title={\BreakableShadowText[white](black){#2}},
+	list entry={\normalsize\bfseries\protect\numberline{\hspace{2.0em}\thefigboxfigure}\hspace{2.25em}#3},
+	every float=\centering
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=figures]{boxedfigure}{ o m m O{fig:fig\the\value{figure}}}
-	{#1, capture=hbox, label={#4}, title={#2}, list text={#3}, every float=\centering}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+	{#1, capture=hbox, label={#4}, title={#2}, list text={\normalsize\bfseries#3}, every float=\centering}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=tables]{boxedtable}{ o m m O{h!} O{tab:tab\the\value{table}}}
-	{float=#4, capture=hbox, label={#5}, title={#2}, list text={#3}, every float=\centering, #1}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Custom environment definitionStyle %%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+	{float=#4, every float=\centering, capture=hbox, label={#5}, title={#2}, list entry={\normalsize\bfseries\protect\numberline{\thetable}#3}, #1}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                                     1 2 3 4     5
+\DeclareTColorBox[blend into=listings]{boxedlisting}{ o m m O{h!} O{lst:lst\the\value{lstlisting}}}
+{float=#4, capture=hbox, label={#5}, title={#2}, list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}#3}, every float=\centering, #1}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************** Custom environment definitionStyle ***************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newenvironment{absolutelynopagebreak}
+	{\par\nobreak\vfil\penalty0\vfilneg\vtop\bgroup}
+	{\par\xdef\tpd{\the\prevdepth}\egroup\prevdepth=\tpd}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Replaces 'document' environment and the optional first argument is used to turn on/off the Baylor cover page.  The cover page is displayed
 % if the optional argument is non-empty or absent, since it is non empty (single character 'a') by default. It can be suppressed with an empty
 % optional argument, i.e. '[]'.
@@ -1028,70 +560,47 @@ linewidth=4pt, linecolor=current-coldraw]
 {	
 	\@reset@ul@settings
 	\@set@coverpage@dimensions
-	\document\bgroup\pagestyle{fancy}
-    	\if\relax\detokenize{#1}\relax
-    	\else
-        	\begin{assignment-coverpage}{#2}{#3}{#4}{#5}{#6}\end{assignment-coverpage}%
-        	\@set@document@dimensions%
-    	\fi
+	\document\pagestyle{fancy}
+	\begin{coverpage}{assignment}{#1}{#2}{#3}[#4][#5][#6]\end{coverpage}
     	\@set@document@dimensions%
     	\renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
     	\fancyhead[L]{\rightmark}%
     	\fancyhead[R]{\@header@image}%
 	\cfoot[\thepage]{\thepage}
-    	\if@frontbackmatter@option
-		\addFrontMatter
-	\fi
-}
-{%
-	\egroup%
-	\if@frontbackmatter@option%
-		\printFrontMatter%
-	\fi%
-	\enddocument%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+}{\enddocument}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareDocumentEnvironment{documentation}{O{Blake Edward Schultze} m m}
-\newenvironment{documentation}[3][Blake Edward Schultze]
+\newenvironment{documentation}[3][Blake Schultze]
 {	
-	\@reset@ul@settings
-	\document\bgroup
-    	\@set@coverpage@dimensions
-    	\if\relax\detokenize{#1}\relax
-   	\else	    	
-    		\begin{documentation-coverpage}
-        		{#2}{#3}{#1}%
-        		\@set@document@dimensions%
-        	\end{documentation-coverpage}
-   		\clearpage%
-   		\@set@document@dimensions% 	    	
-    \fi
-	\@set@document@dimensions%
+	\hypersetup
+	{	
+		pdftitle	={#2},
+		pdfauthor	={#1},
+		pdfsubject	={#3},
+		pdfcreator	={#1},
+		pdfproducer	={#1}
+	}
+	\@reset@ul@settings	
+	\document
+	\begin{coverpage}{documentation}{#1}{#2}{#3}\end{coverpage}
+    	\@set@document@dimensions%
 	\pagestyle{fancy}\renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
     	\fancyhead[L]{\rightmark}%
     	\fancyhead[R]{\@header@image}%
 	\cfoot[\thepage]{\thepage}
-    	\if@frontbackmatter@option
-		\addFrontMatter
-	\fi
-}
-{%	
-	\if@frontbackmatter@option%
-		\printFrontMatter%
-	\fi%
-	\egroup\enddocument%
-}%}}%\input{|"./frontmatter.sh"}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+}{\enddocument}%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % The cover page is designed for Baylor associated documents and displays my name/date and the course info, instructor, and assignment, all
 % specified as arguments.  A page header is also added which includes a small Baylor logo in the top right corner.
 \DeclareDocumentEnvironment{assignment-coverpage}{m m m m m}
 %\newenvironment{assignment-coverpage}[5]
 {
-   \thispagestyle{empty} \shadowcolor{BaylorGoldCMYK}
+   \def\coverpage{documentation-coverpage}
+	\thispagestyle{empty} \shadowcolor{BaylorGoldCMYK}
     \begin{figure}[h!]
-        \centering\savebox{\@macro@savebox@title@contents}{\shadowtext{\@title@font#1: #2}}
-        \cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@logo}}
-        \cshadowbox{\usebox{\@macro@savebox@title@contents}}
+        \centering\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@title@font#1: #2}}
+        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@logo}}
+        \cshadowbox{\usebox{\@coverpage@savebox@title@contents}}
         \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}\\[0.1em]
         \parbox{\textwidth}
         {
@@ -1105,175 +614,152 @@ linewidth=4pt, linecolor=current-coldraw]
         \begin{minipage}{\textwidth}
         \centering
         \vspace{-11mm}\maketitle\vspace{-4mm}\color{Black}
-        \cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@dept@logo}}
+        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@dept@logo}}
         \end{minipage}\caption{}
     \end{figure}
 }
 {\thispagestyle{empty}\setcounter{page}{0}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{documentation-coverpage}{m m m}
-%\newenvironment{documentation-coverpage}[5]
-{
+{%
+   	\begingroup
    	\thispagestyle{empty}%
    	\shadowcolor{BaylorGoldCMYK}%
-   	\@set@coverpage@dimensions%
-	\centering%
-	\savebox{\@macro@savebox@title@contents}{\shadowtext{\@title@font#1}}%
-	\savebox{\@macro@savebox@title}{\cshadowbox{\shadowtext{\@title@font#1}}}%
-	\savebox{\@macro@savebox@unilogo}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@logo}}}%
-	\savebox{\@macro@savebox@unideptlogo}{\cshadowbox{\includegraphics[width=\wd\@macro@savebox@title@contents]{\@uni@dept@logo}}}%
-	\savebox{\@macro@savebox@description}{\parbox{\textwidth}{\sectionheader{\@description@font{#2}}!}}%
-	\savebox{\@macro@savebox@built}%
+   	\centering%
+	\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@title@font#1}}%
+	\savebox{\@coverpage@savebox@title}{\cshadowbox{\shadowtext{\@title@font#1}}}%
+	\savebox{\@coverpage@savebox@unilogo}{\cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@logo}}}%
+	\savebox{\@coverpage@savebox@deptlogo}{\cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@dept@logo}}}%
+	\savebox{\@coverpage@savebox@description}{\parbox{\textwidth}{\sectionheader!{\raggedright\@description@font{#2}}}}%	
+	\savebox{\@coverpage@savebox@author@date}%
 	{%
 		\parbox{\textwidth}%
 		{%
 			\centering%
-			\vspace{\@before@author@date@skip}
-			\author{\@author@font\shadowtext{#3}}\title{}%
-			\date{\vspace{\@author@date@skip}\@date@font\shadowtext{\today}}%
-			\vspace{\@author@dept@image@skip}\maketitle%\maketitle\vspace{-4mm}\color{Black}%
-			\usebox{\@macro@savebox@unideptlogo}%
+			\@author@font\shadowtext{#3}\\[0.5em]%
+			\@date@font\shadowtext{\today}\\[-1.0em]%	
+			\vspace{\@coverpage@dept@logo@before@skip}%
+			\usebox{\@coverpage@savebox@deptlogo}\unskip%
 	       }%
 	}%
-	\addtolength{\@author@date@height}{2\baselineskip+2\textsize}%
-	\setlength{\@macro@height}{0.75\baselineskip+\ht\@macro@savebox@title+\ht\@macro@savebox@unilogo+\ht\@macro@savebox@unideptlogo+\ht\@macro@savebox@description+\@author@date@height+\ht\@macro@savebox@built}%
-	\setlength{\@coverpage@vskip}{\dimexpr0.25\textheight-0.5\@macro@height+0.0\headheight\relax}%
-	\parbox{\textheight}{\vspace{\@coverpage@vskip}}\\%
-	\usebox{\@macro@savebox@unilogo}\\%
-	\usebox{\@macro@savebox@title}\\[-2mm]%
-	\usebox{\@macro@savebox@description}\\%
-	\usebox{\@macro@savebox@built}%
-}
-{\thispagestyle{empty}\setcounter{page}{0}\clearpage}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+	\setlength{\@coverpage@uni@logo@height}{\ht\@coverpage@savebox@unilogo}%
+	\setlength{\@coverpage@dept@logo@height}{\ht\@coverpage@savebox@deptlogo}%
+	\setlength{\@coverpage@title@height}{\ht\@coverpage@savebox@title}%
+	\setlength{\@coverpage@description@height}{\ht\@coverpage@savebox@description}%
+	\setlength{\@coverpage@author@date@height}{\ht\@coverpage@savebox@author@date@deptlogo}%
+	\setlength{\@coverpage@free@vspace}{\dimexpr\textheight - \@coverpage@uni@logo@height - \@coverpage@author@date@height - \@coverpage@title@height - \@coverpage@description@height - \@coverpage@title@before@skip - \@coverpage@description@before@skip - 2in - \@coverpage@dept@logo@before@skip - \@coverpage@author@date@sep\relax}%
+	\setlength{\@coverpage@top}{\dimexpr\@coverpage@free@vspace / 2\relax}%
+	\usebox{\@coverpage@savebox@unilogo}\\[-0em]%
+	\vspace{\@coverpage@title@before@skip}%
+	\usebox{\@coverpage@savebox@title}\\[-1em]%
+	\vspace{\@coverpage@description@before@skip}%
+	\usebox{\@coverpage@savebox@description}\\[-1em]%
+	\vspace{\@coverpage@author@date@before@skip}%
+	\usebox{\@coverpage@savebox@author@date}\\[-1em]%
+	\usebox{\@coverpage@savebox@author@date@deptlogo}\\[-1em]%
+	\endgroup\clearpage%
+}{\setcounter{page}{0}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                      1 2 3 4 5 6 7
+\DeclareDocumentEnvironment{coverpage}{m m m m o o o}
+{
+	\ifstrequal{#1}{documentation}
+    	{%
+    		\begingroup
+	    	\if\relax\detokenize{#2}\relax
+	   	\else	    	
+	    		\@set@coverpage@dimensions%
+			\begin{documentation-coverpage}
+	        		{#3}{#4}{#2}%
+	        	\end{documentation-coverpage} 	
+	    	\fi
+	    	\endgroup
+    	}{}
+	\ifstrequal{#1}{assignment}
+    	{%
+    		\if\relax\detokenize{#2}\relax
+	    	\else
+	        	\begin{assignment-coverpage}{#3}{#4}{#5}{#6}{#7}\end{assignment-coverpage}%
+	        	\@set@document@dimensions%
+	    	\fi
+    	}{}
+}{}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{tcblegend}{s O{documentation-file}}
 {
-	\parindent=0pt
-	\normalfont%\renewcommand{\baselinestretch}{1.0}%
-	\begin{tcbsection}'tcbBlueStyle'{Key:}
+	\begin{tcbsection}'tcbBlueScheme'{Key :}(after skip=5mm)
 	\begin{legendList}
-}{\end{legendList}\end{tcbsection}\parindent=0pt\parnoskip\noindent}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\legendentry}{s O{documentation-file} m m}
-{
-	\begingroup%
-		\bfseries\color{#2}{\textbf{#3}} \color{Black}: #4%
-		\IfBooleanTF{#1}{\parnoskip}%
-	\endgroup%
-}
-\newenvironment{absolutelynopagebreak}
-  {\par\nobreak\vfil\penalty0\vfilneg
-   \vtop\bgroup}
-  {\par\xdef\tpd{\the\prevdepth}\egroup
-   \prevdepth=\tpd}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Equivalent to align/align* environment but with math content automatically made bold
-\DeclareDocumentEnvironment{boldAMS}{s O{alignat}}
-	{\boldmath\IfBooleanTF{#1}{\csname #2*\endcsname}{\csname #2\endcsname}}
-	{\IfBooleanTF{#1}{\csname end#2*\endcsname}{\csname end#2\endcsname}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Equivalent to align/align* environment but with math content automatically made bold
-\DeclareDocumentEnvironment{boldalign}{s}
-	{\boldmath\IfBooleanTF{#1}{\csname align*\endcsname}{\align}}
-	{\IfBooleanTF{#1}{\csname endalign*\endcsname}{\endalign}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Equivalent to alignat/alignat* environment but with math content automatically made bold
-\DeclareDocumentEnvironment{boldalignat}{s}
-	{\boldmath\IfBooleanTF{#1}{\csname alignat*\endcsname{2}}{\alignat{2}}}
-	{\IfBooleanTF{#1}{\csname endalignat*\endcsname}{\endalignat}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                         1 2               3                 4                    5 6
-%tcbdescription
-%tcbenvironmentinfobox
-\DeclareDocumentEnvironment{tcbparagraph}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbparagraphStyle} o d()}
-{%tcbfunctionenv[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-	\tcbset{reset}
-   	\tcbsetcurrentcolors{#3}
-	\tcbsetforeverylayer{#4, width=#2}
-   	\IfValueTF{#5}{\tcbset{#5}}{}
-    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}%, fit height plus=15.25in
-    	\tcolorbox%\vspace{1mm}
-}{\endtcolorbox}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                                  1 2               3          4 5
-\DeclareDocumentEnvironment{tcbenvironmentinfobox}{s D<>{\linewidth} G{tcbEnvironmentInfoBoxStyle} o d()}
-{%
-    	%\tcbset{reset}
-   	%\tcbsetcurrentcolors{#3}
-	\tcbset{tcbEnvironmentInfoBoxStyle, width=#2}
-    	\IfValueTF{#4}{\tcbsetforeverylayer{#4}}{}
-    	\IfValueTF{#5}{\tcbset{#5}}{}
-    	\begin{tcolorbox}
-}
-{\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                       1 2	            3                  4                  5 6 7   8
-\DeclareDocumentEnvironment{tcbsection}{s D''{tcbBlueStyle} O{tcbSectionStyle} D<>{\anttmcap16pt} m o d() D<>{\anttmcap12pt}}
+}{\end{legendList}\end{tcbsection}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2               3                  4                      5 6
+\DeclareDocumentEnvironment{tcbenvironment}{s D<>{\textwidth} D''{tcbBlueScheme} G{tcbenvironmentStyle} o d()}
+{%tcbenvironment[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
+	\tcbsetcurrentcolors{#3}%
+	\tcbset{#4, drop fuzzy shadow=#3-colboxshadow, width=#2}%
+   	\IfValueTF{#5}{\tcbset{#5}}{}%
+    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}%
+    	\tcolorbox%
+    	\vspace{1mm}%
+}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                       1 2	             3                  4                  5 6 7   8
+\DeclareDocumentEnvironment{tcbsection}{s D''{tcbBlueScheme} O{tcbSectionStyle} D<>{\anttmcap16pt} m o d() D<>{\anttmcap12pt}}
 {%\tcbsection[*]'color scheme'[style]<title font>{title text}[tcb options](tcb every layer options)<env font>
+    	\@macro@length=\parindent
+    	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	%\setfillednumcolors{#2}
 	\tcbset{reset, #3, title={\shadowText<#4>'#2'{#5}}}
     	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
     	\IfValueTF{#7}{\tcbset{#7}}{}
     	\begin{tcolorbox}#8
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%% Generates table for the 'tabular method' of 'integration by parts' (IBP), saving the position of each table entry as a tikz node using tikz's
-%% 'remember picture' capability, then connecting the nodes with the appropriate IBP arrows.  The resulting IBP table is then given a color
-%% background and enclosing it in a color frame box.
-\newenviron{tcbIBP}[4][]
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\define@boolkey[tcb]{paragraph}{indent}%
 {%
-	\setlength\doublerulesep{0pt}
-	\setlength{\arrayrulewidth}{0.75pt}
-	\renewcommand{\tablename}{}
-    	\setcounter{@IBP@rows@counter}{0}
-    	\renewcommand{\arraystretch}{1.25}%
-    	\arrayrulecolor{IBPstyle-coldraw}%
-	\if\relax\detokenize{#1}\relax	
-       	\def\IBPtitle{: \bmath{\int #2#3#4}}
-    	\else
-    		\ifstrequal{#1}{*}
-    			{\def\IBPtitle{{}}}
-    			{\def\IBPtitle{: \bmath{#1}}}
-	\fi
-	%\captionsetup[table]{name=fdfd, font = {red, bf}, singlelinecheck=false, labelfont={red, bf, large}, textfont={red, bf, large}, belowskip=1mm, justification=RaggedRight}
-    	\patchcmd\fnum@table{\thetable}{\@gobble}{}{}
-	\boxedtable[IBPstyle]{IBP Table \arabic{table} \IBPtitle}{Integration by Parts Table \arabic{table} \IBPtitle}
-		\centering
-		\tabular{>{$}c<{$} c @{\hskip 2.5cm} c  >{$}c<{$}}%
-			\boldsymbol{u} && &\boldsymbol{dv}\\[-0.25em]%
-	            \hline\arrayrulecolor{green}\hline\arrayrulecolor{IBPstyle-coldraw}\hline\\[-1.85em]%
-	            \addIBProw{#2}{#3}\\
-	            \tcbIBPbody%
-		\endtabular%
-}{
-	\endboxedtable%
-    	\@draw@IBP@arrows%
-    	\patchcmd\fnum@table{\thetable}{\arabic{table}}{}{}
+	\iftcb@paragraph@indent%
+		\setlength{\parindent}{\tcbparindent}%
+	\else%
+		\noindent%
+	\fi%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                         1 2               3                 4                    5 6
+\DeclareDocumentEnvironment{tcbparagraph}{s D<>{\linewidth} D''{tcbBlueScheme} G{tcbparagraphStyle} o d()}
+{%tcbparagraph[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
+	\setlength\@macro@length{\parindent}
+    	\tcbset{reset}
+   	\tcbsetcurrentcolors{#3}
+	\tcbsetforeverylayer{#4, width=#2}
+   	\IfValueTF{#5}{\tcbset{#5}}{}
+    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
+    	\tcolorbox%
+    	\IfBooleanTF{#1}{\setkeys[tcb]{paragraph}{indent=true}}{}%
+}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************* Specialized environment definitions ***************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{preproblemenv}{s G{\linewidth} O{angleBoxedTitleStyle}}
 {%
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
-    	\tcbsetcurrentcolors{tcbBlueStyle}
-	%\setfillednumcolors{tcbBlueStyle}
-	%\setshadowtextprops[0.65pt][-0.2pt]
-    	\tcbset{breakable, width=#2, boxrule=2pt, arc=6pt, drop fuzzy shadow, #3}
+    	\tcbsetcurrentcolors{tcbBlueScheme}
+	\tcbset{breakable, width=#2, boxrule=2pt, arc=6pt, drop fuzzy shadow, #3}
    	\IfValueTF{#3}
    		{\tcbset{#3}}
    		{}
     	\begin{tcolorbox}
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                    1   2 3 4 5
 \DeclareDocumentEnvironment{problem}{d() s o o t'}
 {%\problem[</tcb/style>>][*][<ch.>][<problem>][<part>]
 	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
-   	\stepcounter{countproblem}
+   	\stepcounter{@count@problem}
    	\IfBooleanTF{#2}
     	{
         	\tcbset{problemsStyle}
@@ -1296,7 +782,7 @@ linewidth=4pt, linecolor=current-coldraw]
             		\problems{\arabic{@chap@counter}.\arabic{@prob@counter}}%
             	}%
 		}{\problems{\arabic{@prob@counter}}}%    		
-		\unskip\ignorespaces%
+		\@end@macro@spacing%
     	}%
     	{
     		\IfBooleanTF{#5}%
@@ -1351,20 +837,17 @@ linewidth=4pt, linecolor=current-coldraw]
         	}       	
     	}
 }{\end{tcolorbox}\egroup\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% Encloses a subproblem statement in a tcbox which is fitted to its content and adds the subproblem # (e.g. (a), (b), etc.) before the content.  By default
-% the environment's appearance is set based on the 'problems'  style but this can be modified by passing a comma separated list of \tcbset arguments
-% using the environment's optional argument.  This environment can be used for short subproblem statements where enclosing it in a tcbox spanning the
-% width of the page looks strange.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Problem environment with box fitted to content, for short content problems where a fitted box improves appearance over a box width of '\linewidth'
 \newenviron{shortprob}[1][]{\tcbset{problemsStyle,#1}}
-{	
+{%	
 	\tcbox
-	{
-		\textbf{(\@print@before@increment{\alph}{@subprob@counter})}
-		\shortprobbody
+	{%
+		\textbf{(\@print@before@increment{\alph}{@subprob@counter})}%
+		\shortprobbody%
 	}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                      1 2             3 4   5
 %\DeclareDocumentEnvironment{solution}{s G{\linewidth} o d() D''{solutionStyle}}
 %                                     1 2                  3 4   5
@@ -1373,15 +856,13 @@ linewidth=4pt, linecolor=current-coldraw]
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	%\setfillednumcolors{#5}
-	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Solution:}}
-    	%\tcbsetforeverylayer{tcbSectionStyle}
+	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Solution:}}%before skip=,
     	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
     	\IfValueTF{#4}{\tcbset{#4}}{}
     	\begin{tcolorbox}
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{tcbsolutionverb}{s o}
 {%
     \@macro@length=\parindent
@@ -1392,72 +873,66 @@ linewidth=4pt, linecolor=current-coldraw]
     \begin{tcolorbox}
 }
 {\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareDocumentEnvironment{proofenv}{s m o}
 %                                     1 2                  3 4   5
-\DeclareDocumentEnvironment{solution}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
+\DeclareDocumentEnvironment{tcbproof}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
 {%
-%	\@macro@length=\parindent
-%    %\setlength{\parskip}{0.5em}
-%    \tcbset{tcbSectionStyle, width=#2, title=\shadowText<\anttmcap16pt>(tcbSectionStyle){Proof:}}
-%    \IfValueTF{#3}{\tcbset{#3}}{}
+	\@macro@length=\parindent
+    	\setlength{\parskip}{0.5em}
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	%\setfillednumcolors{#5}
 	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Proof:}}
     	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
     	\IfValueTF{#4}{\tcbset{#4}}{}
-    \begin{tcolorbox}\proof[\unskip\nopunct]\bgroup
+    	\begin{tcolorbox}\proof[\unskip\nopunct]\bgroup
 }
 {\egroup\endproof\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
-%%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2               3                 4                      5 6
+\DeclareDocumentEnvironment{tcbcolortable}{s D<>{\textwidth} D''{tcbBlueScheme} G{tcbenvironmentStyle} o d()}
+{%tcbenvironment[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
+	\tcbsetcurrentcolors{#3}
+	\tcbset{#4, drop fuzzy shadow=#3-colboxshadow, top=-1mm, after=\par\bigskip\bigskip\bigskip, pad after break=1.0mm, pad before break*=3.0mm, width=#2, left=0mm}
+   	\IfValueTF{#5}{\tcbset{#5}}{}
+    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
+    	\tcolorbox
+    	\vspace{1mm}
+}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                       1 2          3   4 5
 \DeclareDocumentEnvironment{tcblistbox}{m O{\arabic} d() m d()}
-{%
+{%tcblistbox{env width}[number format](set counter value){color scheme}(title)
 	\let\tcbeqnlistboxentrynumbering=#2
 	\IfValueTF{#3}
 		{\setcounter{@tcb@eqn@list@counter}{#3}}
     		{\setcounter{@tcb@eqn@list@counter}{1}}
     	\tcbsetcurrentcolors{#4}
-    	%\setfillednumcolors{#4}
-    	%\tcbset
-%    	{
-%    		every box on layer 2/.style = { #4, breakable, left skip = \dimexpr\linewidth/2 - #1/2\relax, width = #1}
-%    	}
-    	\tcbsetforeverylayer
-    	{
-    		#4, tcbsetcoloringStyle=tcblistboxStyle, width = #1%, left skip = \dimexpr\linewidth/2 - #1/2\relax
-    	}
+    	\tcbsetforeverylayer{#4, tcbsetcoloringStyle=tcblistboxStyle, width = #1}
     	\IfValueTF{#5}
     		{\tcolorbox[title={#5}]}
     		{\tcolorbox}
 }{\endtcolorbox}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                         1   2 3 4          5   6
 \DeclareDocumentCommand{\tcblistboxentry}{d() m m O{\arabic} d() O{}}
 {%\tcblistboxentry(set count){text}{math}[counter format](counter prepend text)[count append text]
-	\IfValueTF{#1}
-		{\setcounter{@tcb@eqn@list@counter}{#1}}
-		{}
+	\IfValueTF{#1}{\setcounter{@tcb@eqn@list@counter}{#1}}{}
 	\setlength{\@macro@height}{\heightof{$\displaystyle #3$}}
 	\tcbsubtitle
 	[
 		before skip = \dimexpr\@macro@height - 8.5mm\relax,
 		after skip = \dimexpr\@macro@height /3 - 3.5mm\relax,
-		colback=tcblistboxStyle-colbacksubtitle, toptitle=-3mm, bottomtitle=-3mm, %left=2mm, right=2mm,
-		top=-0.25mm, bottom=-0.25mm%, after=\par\medskip, boxsep=0mm,
+		colback=tcblistboxStyle-colbacksubtitle, toptitle=-3mm, bottomtitle=-3mm,
+		top=-0.25mm, bottom=-0.25mm
 	]
-	{aaaa
+	{
 		%\tcblistboxentrylabel[*<counter on>][shape]{color style}{counter print format}{character/text or counter}(min size)<inner sep>
-		%\tcblistboxentrylabel[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
-		%\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
-		%\IfBooleanTF{#1}
-%			{\fillednumshape*[#2](#3)(#4){#5}(#6)<#7>}
-%			{\fillednumshape*[#2](#3)(#4){#5}(#6)<#7>}
 		\IfValueTF{#5}%
 			{\tcblistboxentrylabel{#5}\quad #2}
 			{\tcblistboxentrylabel*{@tcb@eqn@list@counter}\quad #2}
@@ -1468,19 +943,17 @@ linewidth=4pt, linecolor=current-coldraw]
 	\end{alignat*}
     	\addtocounter{@tcb@eqn@list@counter}{1}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                              1 2	     3            4             5 6        7
 \DeclareDocumentCommand{\tcblistboxentrylabel}{s O{circle} D(){\arabic} D(){current}  m D(){6mm} D<>{0.5pt}}
 {%\tcblistboxentrylabel[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
-%\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
-	%\setfillednumcolors{#4}%
 	\tcbsetcurrentcolors{#4}
+	%\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
 	\IfBooleanTF{#1}%
 		{\fillednumshape*[#2](#3)(#4){#5}(#6)<#7>}%
 		{\fillednumshape[#2](#3)(#4){#5}(#6)<#7>}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                            1 2   3         4 5 6 7                     8   9
 \DeclareDocumentCommand{\tcbeqnlistboxentry}{s d() O{arabic} m m s O{solutionlistsStyle} d() O{}}
 {%\@counter@print{\tcbeqnlistboxentrynumbering}{@tcb@eqn@list@counter}
@@ -1503,13 +976,11 @@ linewidth=4pt, linecolor=current-coldraw]
 \DeclareDocumentEnvironment{tcbeqnlistbox}{s O{\arabic} d() m d() o}
 {%
 	\let\tcbeqnlistboxentrynumbering=#2
-	%\def\tcbeqnlistboxentrynumbering{#2}
 	\IfValueTF{#3}
 		{\setcounter{@tcb@eqn@list@counter}{#3}}
     		{\setcounter{@tcb@eqn@list@counter}{1}}
     	\tcbsetcurrentcolors{#4}
-    	%\setfillednumcolors{#4}
-	\tcbsetforeverylayer{#4, hbox, before skip = -5mm, after skip=2mm, before = \vspace{-5mm}}
+    	\tcbsetforeverylayer{#4, hbox, before skip = -5mm, after skip=2mm, before = \vspace{-5mm}}
     	\IfValueTF{#5}
     		{\tcbsetforeverylayer{title={#5}}}
     		{}
@@ -1517,167 +988,162 @@ linewidth=4pt, linecolor=current-coldraw]
     		{\vspace{-5mm}\empheq[box=\tcboxmath]{alignat*=2}}
     		{\vspace{-5mm}\empheq[box=\tcboxmath]{alignat=2}}
 }{\endempheq}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\renewcommand*{\hypcapspace}{\baselineskip}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{tcbfigure}{O{figureStyle, label = fig:fig\the\value{figure}} m m}
 	{\boxedfig[#1]{#2}{#3}}{\endboxedfig}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\setlength\cftfigindent{1.5em}
-\DeclareDocumentEnvironment{tcbfigbox}{m o}
+
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\colortableentry}{m D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight}}
+%{%\addcontentsline{file}{kind}{title}
+%	\phantomsection\addcontentsline{lof}{figbox}
+%	{%
+%		\protect\numberline{\thefigbox}%
+%		\raisebox{10pt}%
+%		{%
+%			\protect\hypertarget{testingit}{}%
+%		}%
+%		\figboxname\ \thefigbox%
+%	}
+%}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentEnvironment{tcbfigbox}{r<> o}
 {%
-    	\setlength\cftfigindent{3.0em}%{figure}{4.5em}{6.0em}
-	\setlength\@tcbfigbox@width{#1}
-    	\setlength\@tcbfigbox@skip{\dimexpr(\linewidth-\@tcbfigbox@width-2\@tcbfigbox@left@skip)/2\relax}
-    	\IfValueTF{#2}
-    		{\tcolorbox[tcbfigboxStyle, left skip=\@tcbfigbox@skip, title={\fontsize{14}{\baselinestretch}{\LARGE#2}}]}
-    		{\tcolorbox[tcbfigboxStyle, left skip=\@tcbfigbox@skip]}
-}{\endtcolorbox\setlength\cftfigindent{1.5em}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+    	\par\smallskip%
+    	\def\@currently@inside{figbox}%
+	\@set@currently@inside@indent%
+    	\setlength\@tcbfigbox@width{#1}%
+    	\setlength\@tcbfigbox@skip{\dimexpr(\linewidth-\@tcbfigbox@width-2\@tcbfigbox@left@skip)/2\relax}%
+    	\tcbsetcurrentcolors{tcbfigboxStyle}%
+	\refstepcounter{@tcb@figbox@counter}%
+	\refstepcounter{figbox}%
+	\def\@tcb@border@linewidth{4.5pt}%
+	\def\@toc@hyperlink%
+	{%
+		\phantomsection\addcontentsline{lof}{figbox}{%
+		\protect\numberline{\thefigbox}%
+		\raisebox{10pt}{%
+			\protect\hypertarget{testingit}{}%
+		}%
+		\figboxname\ \thefigbox}%
+	}%
+	\IfValueTF{#2}%
+    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\@toc@hyperlink\fontsize{14}{\baselinestretch}{\protect\hyperlink{testingit}{\shadowText<\sffamily>[black](white){\LARGE#2}}}}]}%
+    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\@toc@hyperlink}%
+}{\endtcolorbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\functionOptionsEntry}{m o}
 {%\functionOptionsEntry{option}[option argument]
 	\IfValueTF{#2}
     		{{[-#1 #2]}}	
 		{{[-#1]}}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2               3                 4                      5 6
-\DeclareDocumentEnvironment{tcbfunctionenv}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctionenvStyle} o d()}
-{%tcbfunctionenv[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-	\tcbsetcurrentcolors{#3}%height fill=true
-	\tcbset{#4, drop fuzzy shadow=#3-colboxshadow, width=#2}
-   	\IfValueTF{#5}{\tcbset{#5}}{}
-    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}%, fit height plus=15.25in
-    	\tcolorbox%[save height=\MyHeight]
-    	\vspace{1mm}
-}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                            1 2         3            4                  5 6 7 8                               9
-\DeclareDocumentCommand{\tcbfunctionentry}{s O{circle} D(){\arabic} D''{tcbBlueStyle}  m m o D<>{\@filledenumshape@min@size} D<>{\@filledenumshape@inner@sep}}
+\DeclareDocumentCommand{\tcbfunctionentry}{s O{circle} D(){\arabic} D''{tcbBlueScheme}  m m o D<>{\@filledenumshape@min@size} D<>{\@filledenumshape@inner@sep}}
 {%\tcblistboxentrylabel[*<counter on>][shape](counter print format)'color style'{character/text or counter}(min size)<inner sep>
     	\setlength\@filledenumshape@min@size{#8}
     	\setlength\@filledenumshape@inner@sep{#9}
     	\tcbsetcurrentcolors{\@current@tcb@coloring}
-	%\setfillednumcolors{\@current@tcb@coloring}
 	\IfValueTF{#7}{\setcounter{@tcb@functions@counter}{#7}}{}
 	\IfBooleanTF{#1}
 	{%
-		\parbox[t]{\@current@list@box@first@column}%
+		\parbox[t]{\@current@listbox@first@column}%
 		{%
 			\large\usefont{T1}{cmr}{bx}{n}\selectfont%
 			\tcblistboxentrylabel*[#2](#3)(\@current@tcb@coloring){@tcb@functions@counter}(#8)<#9>%
 		}%
-		&\hspace{\@current@list@box@column@sep}\parbox[c]{\@current@list@box@second@column}%
+		&\hspace{\@current@listbox@column@sep}\parbox[c]{\@current@listbox@second@column}%
 		{\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
 		%\text{\hspace{0pt}\tcblistboxentrylabel*[#2](#3)(#4){@tcb@functions@counter}(#8)<#9>}%
 		%&\qquad\text{#6}\\[0.4em]%
 	}
 	{%
-		\parbox[t]{\@current@list@box@first@column}%
+		\parbox[t]{\@current@listbox@first@column}%
 		{%
 			\large\usefont{T1}{cmr}{bx}{n}\selectfont%
 			\tcblistboxentrylabel[#2](#3)(\@current@tcb@coloring){#5}(#8)<#9>%
 		}%
-		&\hspace{\@current@list@box@column@sep}\parbox[c]{\@current@list@box@second@column}%
+		&\hspace{\@current@listbox@column@sep}\parbox[c]{\@current@listbox@second@column}%
 		{\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
 		%\text{\hspace{0pt}\tcblistboxentrylabel[#2](#3)(#4){#5}(#8)<#9>}%
 		%&\qquad\text{#6}\\[0.4em]%
 	}
 %	\IfBooleanTF{#2}{}{\\[-0.8em]}	
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                           1      2                                            3                 4                                             5 6                            7                             8                                           8
-\DeclareDocumentCommand{\tcbfunctiondesc}{D''{c} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@list@box@first@column} D<>{\@current@list@box@second@column} O{0.6em}}
+\DeclareDocumentCommand{\tcbfunctiondesc}
+{D''{c} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{0.6em}}
 {%\tcbfunctiondesc[text formatting]{lst col label}(last col text) <1st col width><last col width>
 	%\renewcommand{\baselinestretch}{3.0}%
 	%\renewcommand{\baselineskip}{3.0}%
 	%\setlength{\baselineskip}{5mm}%
 	\parbox[t!]{#6}{#2\fontsize{12}{5.0mm}\selectfont#3}%
-	&\hspace{\@current@list@box@column@sep}\parbox[t!]{#7}{#4\fontsize{13}{4.5mm}\selectfont#5}\\[\@function@desc@skip]
+	&\hspace{\@current@listbox@column@sep}\parbox[t!]{#7}{#4\fontsize{13}{4.5mm}\selectfont#5}\\[\@function@desc@skip]
 	%&\qquad\parbox[t]{#7}{#3\linespread{3.5}#5}\\[-0.6em]%\setstretch{1.15}\vspace{-0.65cm}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                        1      2                                 3                4                         5                                    6                                     7
-\DeclareDocumentCommand{\tcbfunctionsep}{D''{c} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@list@box@first@column} D<>{\@current@list@box@second@column} O{1.2em}}
+\DeclareDocumentCommand{\tcbfunctionsep}{D''{c} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{1.2em}}
 {%\tcbfunctionsep[<text formatting>]{<lst col label>}(<last col label) <<1st col width>><<last col width>>
 	\parbox[t]{#5}{#2\selectfont#3}
-	&\hspace{\@current@list@box@column@sep}\parbox[t]{#6}{#2\selectfont#4}\\[\@function@sep@skip]%
+	&\hspace{\@current@listbox@column@sep}\parbox[t]{#6}{#2\selectfont#4}\\[\@function@sep@skip]%
 	%&\qquad\parbox[t]{#5}{#1\setstretch{1.25}#3}\\[-1.2em]%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfunctionlistboxTitle}{m o}
 {%
-	#1\\[0.5em]\fontsize{12}{\baselinestretch}\selectfont USAGE: #2%
+	\IfValueTF{#2}%
+		{#1\\[0.5em]\fontsize{12}{2.5mm}\selectfont USAGE: #2}%
+		{#1}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                               1 2               3                 4                          5   6 7   8                                     9
-\DeclareDocumentEnvironment{tcbfunctionlistbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctionlistboxStyle} r[] o d() D<>{\@function@list@box@first@column} D<>{\@function@list@box@second@column}}
+\DeclareDocumentEnvironment{tcbfunctionlistbox}{s D<>{\linewidth} D''{tcbBlueScheme} G{tcbfunctionlistboxStyle} r[] o d() D<>{\@function@listbox@first@column} D<>{\@function@listbox@second@column}}
 {%tcbfunctionlistbox[*]<box width>'color scheme'{style}[title][tcbset options](tcbseteverylayer options)
-	\setlength{\@function@list@box@first@column}{#8}
-    	\setlength{\@function@list@box@second@column}{#9}
-    	\let\@current@list@box@first@column=\@function@list@box@first@column
-	\let\@current@list@box@second@column=\@function@list@box@second@column
-	\let\@current@list@box@column@sep=\@function@list@box@column@sep
+	\setlength{\@function@listbox@first@column}{#8}
+    	\setlength{\@function@listbox@second@column}{#9}
+    	\let\@current@listbox@first@column=\@function@listbox@first@column
+	\let\@current@listbox@second@column=\@function@listbox@second@column
+	\let\@current@listbox@column@sep=\@function@listbox@column@sep
 	\addtocounter{table}{-1}
-    	%\renewcommand{\tablename}{}
-    	%\patchcmd\fnum@table{\thetable}{\@gobble}{}{}
-	\tcbsetcurrentcolors{#3}
-	%\setfillednumcolors{#3}
-	%\edef\@current@tcb@coloring{#3}
+    	\tcbsetcurrentcolors{#3}
 	\tcbsetforeverylayer{#4, width=#2, breakable}
    	\IfValueTF{#6}{\tcbset{#6}}{}
     	\IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}
     	\tcolorbox[#4, title={#5}, breakable]
     	\IfBooleanTF{#1}
-  		{\hspace{0pt}\begin{longtable}{H{\@function@list@box@first@column} H{\@function@list@box@second@column}}}
-   		{\hspace{0pt}\begin{longtable}{p{\@function@list@box@first@column} p{\@function@list@box@second@column}}}
-	%\captionof{table}[gegege]{hehe}%
-}{\end{longtable}\endtcolorbox\vfill%
-%\renewcommand{\tablename}{Function Detail Box}%
-%\patchcmd\fnum@table{\tablename\thetable}{\arabic{table}}{}{}%\tcbsetcurrentcolors{#3}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+  		{\hspace{0pt}\begin{longtable}{H{\@function@listbox@first@column} H{\@function@listbox@second@column}}}
+   		{\hspace{0pt}\begin{longtable}{p{\@function@listbox@first@column} p{\@function@listbox@second@column}}}
+}{\end{longtable}\endtcolorbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                                 1 2               3                 4                            5   6 7   8                                       9
-\DeclareDocumentEnvironment{tcbfunctiondetailbox}{s D<>{\linewidth} D''{tcbBlueStyle} G{tcbfunctiondetailboxStyle} r[] o d() D<>{\@function@detail@box@first@column} D<>{\@function@detail@box@second@column}}
+\DeclareDocumentEnvironment{tcbfunctiondetailbox}{s D<>{\linewidth} D''{tcbBlueScheme} G{tcbfunctiondetailboxStyle} r[] o d() D<>{\@function@detail@box@first@column} D<>{\@function@detail@box@second@column}}
 {%tcbfunctiondetailbox[*]<box width>'color scheme'{style}[title][tcbset options](tcbseteverylayer options)
 	\setlength{\@function@detail@box@first@column}{#8}
     	\setlength{\@function@detail@box@second@column}{#9}
     	\addtocounter{table}{-1}
-    	\let\@current@list@box@first@column=\@function@detail@box@first@column
-	\let\@current@list@box@second@column=\@function@detail@box@second@column
-	\let\@current@list@box@column@sep=\@function@detail@box@column@sep
-	%\edef\@current@tcb@coloring{#3}
-	%\renewcommand{\tablename}{}
-    	%\patchcmd\fnum@table{\thetable}{\@gobble}{}{}
+    	\let\@current@listbox@first@column=\@function@detail@box@first@column
+	\let\@current@listbox@second@column=\@function@detail@box@second@column
+	\let\@current@listbox@column@sep=\@function@detail@box@column@sep
 	\tcbsetcurrentcolors{#3}
-	%\setfillednumcolors{#3}
-	\tcbsetforeverylayer{#4, width=#2, drop fuzzy shadow=#3-colboxshadow}%, colbacktitle=stdblue%}
-   	\IfValueTF{#5}{\tcbset{breakable, title=\shadowText(#3){#5}}}{}
+	\tcbsetforeverylayer{#4, width=#2, drop fuzzy shadow=#3-colboxshadow}
+   	\IfValueTF{#5}{\tcbset{breakable, title=\shadowText'#3'{#5}}}{}
     	\IfValueTF{#6}{\tcbset{#6}}{}
     	\IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}
-    	\begin{tcolorbox}[#4, left=-10mm, lefttitle=4mm]%, #4, title={#5}, colbacktitle=stdblue
+    	\begin{tcolorbox}[#4, left=-10mm, lefttitle=4mm]
     	\hspace{0pt}\begin{longtable}{H{\@function@detail@box@first@column} H{\@function@detail@box@second@column}}
-	%\captionof{table}[\tablename\thetable\relax]{hehe}%
-%    	\caption{<Caption Text>}
-%	\endfirsthead
-%	\caption[]{<Caption Text>}
-%	\endhead
-}{\end{longtable}\end{tcolorbox}%
-%\renewcommand{\tablename}{Function Detail Box}%
-%\patchcmd\fnum@table{\tablename\thetable}{\arabic{table}}{}{}%\tcbsetcurrentcolors{#3}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Currently in development %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End of definitionStyle/settings and development %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used
-% in macro names/definitionStyle
+
+}{\end{longtable}\end{tcolorbox}}%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%***************************************************** Currently in development **********************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%**************************************************** End of 'my-macros.sty' package *****************************************************%
+%*****************************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
 \endinput
-%%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%%-----------------------------------------------------------------------------------------------------------------------------------------%

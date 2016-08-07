@@ -1,21 +1,56 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Programming Language Listing Formats %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%*****************************************************************************************************************************************%
+%********************************************************* `my-listings.sty' *************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
+% \setglossarystyle{indexhypergroup} command
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
+\ProvidesPackage{my-listings}
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{my-listings}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\catcode`\!=12
+%\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
 %\usepackage[procnames]{listingsutf8}
 % \lstname: prints the name of the current listing which is either the file name or the name defined by the name key.
-% \thelstnumber \arabic{lstnumber}: prints the lines’ numbers.
-\def\listingsrulesep{0.75pt}							%
-\def\listingsframerule{2.0pt}							%
-\def\listingsframesep{0.0pt}
-\def\listingsnumbersep{9.0pt}
-\def\tcblistingsboxsep{1.0pt}
-\def\tcblistingsboxrule{2.0pt}
-\def\listingsframexleftmargin{2.0pt}
-
-\def\listingslinewidth{17.25cm}
-\def\tcblistingswidth{\dimexpr\listingslinewidth + \listingsnumbersep + 2\listingsrulesep + 1.5mm\relax}
-\def\tcblistingscaptionwidth{\dimexpr\listingslinewidth + \listingsframexleftmargin + 9.5pt\relax}
-\def\tcblistingscaptionleftskip{\dimexpr\listingsframerule+\listingsframerule+\listingsrulesep+\listingsframexleftmargin\relax}
+% \thelstnumber \arabic{lstnumber}: prints the lines numbers.
+\def\@listings@rulesep{0.75pt}							%
+\def\@listings@framerule{2.0pt}							%
+\def\@listings@framesep{1.0mm}
+\def\@listings@numbersep{15.0pt}
+\def\@listings@framexleftmargin{4.0pt}
+\def\@listings@framexrightmargin{-3.0mm}
+\def\@listings@framextopmargin{0.5mm}
+\def\@listings@framexbottommargin{0.5mm}
+\def\@listings@linewidth{17.25cm}
+\def\@tcblistings@boxsep{3.0pt}
+\def\@tcblistings@boxrule{2.0pt}
+\def\@tcblistings@width{\dimexpr\@listings@linewidth + \@listings@numbersep + 2\@listings@rulesep + 1.5mm\relax}
+\def\@tcblistings@captionwidth{\dimexpr\@listings@linewidth + \@listings@framexleftmargin + 9.5pt\relax}
+\def\@tcblistings@captionleftskip{\dimexpr\@listings@framerule+\@listings@framerule+\@listings@rulesep+\@listings@framexleftmargin + 1mm\relax}
+\def\@terminal@style@xleftmargin{6pt}
+\def\@terminal@style@xrightmargin{-\dimexpr 9.75mm - 1.25pt\relax}
+\def\@terminal@style@rulesep{0.25mm}
+\def\@terminal@style@framesep{0.25mm}
+\def\@terminal@style@framerule{0.25mm}
+\def\@terminal@style@framexleftmargin{5pt}
+\def\@terminal@style@framexrightmargin{1pt}
+\def\@terminal@style@framextopmargin{3mm}
+\def\@terminal@style@framexbottommargin{3mm}
+\def\@terminal@style@aboveskip{0.95pt}
+\def\@terminal@style@belowskip{-\dimexpr 6.25mm - 0.5pt\relax}
 
 %\DeclareCaptionType{code}[Code Listing][List of Code Listings]
 \DeclareCaptionFont{white}{ \color{white} }
@@ -30,70 +65,110 @@
 	\begin{tcolorbox}
 	[
 		colback=listingsStyle-colbackcaption, colframe=listingsStyle-colframecaption, coltext=listingsStyle-coltextcaption,
-		before skip=1mm, after skip=-8.5mm, left skip=-\tcblistingscaptionleftskip, right skip=0mm,
-		boxsep=2pt, boxrule=2pt, arc=6pt, width=\tcblistingscaptionwidth,
-		left=2mm, right=3mm, top=1mm, bottom=0mm
+		before skip=1mm, after skip=-8.5mm, left skip=-\@tcblistings@captionleftskip, right skip=0mm,
+		boxsep=2pt, boxrule=2pt, arc=6pt, width=\@tcblistings@captionwidth, before=\par\smallskip,
+		left=2mm, right=3mm, top=0mm, bottom=0mm, fontupper=\normalsize\bfseries
 	]
 	\unskip\ignorespaces\parbox{\textwidth}{#1#2#3}
 	\end{tcolorbox}
 }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\captionsetup[lstlisting]{format=listing, labelfont=white, textfont=white, singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm}, justification=justified}
 %\captionsetup[lstlisting]{ format=listing, labelfont=white, textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize} }
-%\lstinputlisting[caption=My caption]{sourcefile.lang}
 %\lstset{fancyvrb}
 %\lstset{moredelim=[is][\ttfamily]{(}{)}}
-%\lstset{moredelim=[is][\ttfamily]{[}{]}}
-\captionsetup[lstlisting]{format=listing, labelfont=white, textfont=white, singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm}, justification=justified}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Programming Language Listing Formats %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \Matlab{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 %\newcommand{\Matlab}[6]{
-\DeclareDocumentCommand{\Matlab}{m m m m m m}
-{
-	\renewcommand{\lstlistingname}{Matlab Listing}
-	\setcounter{@tcb@listings@title@counter}{\numexpr\value{lstlisting}+1\relax}
-	\captionsetup[lstlisting]
+%                                1 2 3 4 5 6
+\captionsetup[lstlisting]
 	{%
-		format=listing, labelfont=white, textfont=white, singlelinecheck=false, width=\linewidth,
-		margin={0.0cm,-1.0cm}, justification=justified
+		format=listing, labelfont={sf,white}, textfont={white,sf}, singlelinecheck=false, width=\linewidth,
+		margin={0.0cm,-1.0cm}, justification=justified, aboveskip=-2.5mm, belowskip=0.5mm
 	}
-	\tcbinputlisting		
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                                   1 2  3 4
+\DeclareTCBListing[blend into=listings]{tcbbashbox}{s t! o d()}
+{%
+	width=\linewidth,
+	blend before title={colon},
+	blend before title code={\hspace{-2.5mm}},
+	IfBooleanTF={#1}
+		{tcbbashboxStyle={stdblue}{green}}
+		{tcbbashboxStyle},	
+	%code={\renewcommand{\lstlistingname}{}},%\setstretch{0.5}%
+	IfValueTF={#3}
 	{
-		MatlabStyle, listing file={#6}, listing options=
-		{
-	   		style=codingStyle, language=matlab-extended, caption={#4}, label={#5},
-			firstnumber={#1}, firstline={#2}, lastline={#3}					%			
-		}
+		code={\def\@title@text{\shadowText<\sffamily>[black](white){\space:\space#3}}},
+		IfBooleanTF={#2}
+			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }\@title@text}}
+			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }\@title@text}}
 	}
+	{
+		IfBooleanTF={#2}
+			{title={}}
+			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }}}
+	},
+	%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\normalsize\bfseries\@tcblisting@terminal@caption@title\ \theTerminallisting },
+	%list entry={\protect\numberline{\hspace{2.0em}\lstlistingname\ \thelstlisting }},
+	list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminallisting},
+	IfValueTF={#4}
+		{comment={#4}}
+		{listing only},
+	IfValueTF={#3}{}{top=3.0mm, colback=black},
+	code={\refstepcounter{Terminallisting}\par\medskip}
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newtcbinputlisting[blend into=listings]{\Matlab}[7][]
+	{
+		MatlabStyle,
+		code=
+		{
+			\renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
+			\if\relax\detokenize{#1}\relax	
+				\def\@title@sep{}%
+		       	%blend before title code={\@tcblisting@Matlab@caption@title\ \theMatlablisting},
+		    	\else
+		    		\def\@title@sep{\space:\space}%%blend before title code={\@tcblisting@Matlab@caption@title\ \theMatlablisting : #1},
+			\fi
+		},
+		listing file={#7},
+		blend before title={colon},
+		blend before title code={\hspace{-10mm}\sffamily\BreakableShadowText<0.65pt><0.2pt>[white](black){##1\@title@sep}},
+		%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting },
+		list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting},
+		title={\addtocounter{lstlisting}{-1}#1},
+		listing options=
+		{
+	   		style=codingStyle, language=matlab-extended, caption={#5}, label={#6},
+			firstnumber={#2}, firstline={#3}, lastline={#4}					%			
+		},
+		code={\refstepcounter{Matlablisting}}
+	}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \cplusplus{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\cpluspluscode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
     \lstinputlisting[style=codingStyle, language=C++, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \ccode{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\ccode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
     \lstinputlisting[style=codingStyle, language=C, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \Verilog{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\Verilogcode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
     \lstinputlisting[style=codingStyle, language=Verilog, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \Java{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\Javacode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
     \lstinputlisting[style=codingStyle, language=Java, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Programming Language Listing Formats %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \lstdefinelanguage{bash-extended}
 {
 	%language={command.com},
@@ -101,7 +176,7 @@
 	%morekeywords={cp, rm, mv, git},
     	morekeywords=                           % if you want to add more keywords to the set
     	{[1]
-        	cp, rm, mv, git
+        	cp, rm, mv, git, mkdir, rmdir
     	},
     	keywordstyle={[1]\bfseries\color{bash-extended-keywordcolor1}},						% keyword style
    	morekeywords=                           % if you want to add more keywords to the set
@@ -115,7 +190,7 @@
     	},
     	keywordstyle={[3]\bfseries\color{bash-extended-keywordcolor3}},	
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinelanguage{git}
 {
 	%language={command.com},
@@ -143,7 +218,7 @@
    	keywordstyle={\bfseries\color{git-keywordcolor4}},	
     	classoffset=0
 }
-%------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinelanguage{matlab-extended}
 {
 	language=Matlab,
@@ -155,8 +230,14 @@
 	escapebegin=\color{matlab-extended-escapebegin},
 	escapeend=\color{matlab-extended-escapeend},
 	escapeinside={\%*}{*)},
-	%escapechar={},
-	aboveskip=2mm,
+	%framesep=\@listings@framesep,					
+    	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
+    	%framexleftmargin=\@listings@framesep,
+    	%framexrightmargin=0mm,
+    	%escapechar={},
+	%abovecaptionskip=-0.5mm,						% is the vertical space respectively above each caption.
+	%belowcaptionskip=0mm,						% is the vertical space respectively below each caption.	
+	aboveskip=1.5mm,
 	belowskip=0mm,
 	lineskip=0pt,
 	%nolol=false,
@@ -173,19 +254,22 @@
 		evalin, assignin, saveas, save, load, delete
 	},
 	%classoffset=1,
-	morekeywords=                           % if you want to add more keywords to the set
+	keywordstyle={[1]\bfseries\color{matlab-extended-keywordcolor1}},						% keyword style
+   	morekeywords=                           % if you want to add more keywords to the set
 	{[2]
     		plotspec, tf, feedback, step, double, solve, ss, ss2tf, pzmap, lsim, xlim, ylim, sgrid, stepinfo, stepplot, sym, damp, texlabel, rlocus,
 		rlocusplot, linmod, tfdata, stepDataOptions, mtit, fir1, freqz, srrc, plotspec2, myeye, interpsinc, quantalph, letters2pam, pam2letters,
 		simplify, expand, syms, bode, bodeplot, string, strcat, int8, uint8, jinc, cell, randi, randn, normpdf, normcdf, inputParser,
 		parsecreateDatatip, datacursormode, findall, saveas, save, addRequired, addOptional, addParameter, Datatips, parse
     	},
-    	morekeywords=                           % if you want to add more keywords to the set
+    	keywordstyle={[2]\bfseries\color{matlab-extended-keywordcolor2}},						% keyword style
+   	morekeywords=                           % if you want to add more keywords to the set
     	{[3]
         	PlotProps, SDA, optimum_filter, NewtonAlg, run_init, print2PNG, model2PSD, add_hline, add_tick, add_valline, add_xyline, check4exception,
         	genfig, initVals2VarsMap, mapArgs2Vals, mapStrs2Vars, mapVals2Vars, model2spectrum
     	},
-    	morekeywords=                           % if you want to add more keywords to the set
+    	keywordstyle={[3]\bfseries\color{matlab-extended-keywordcolor3}},						% keyword style
+   	morekeywords=                           % if you want to add more keywords to the set
     	{[4]
         	MyConstants, latex, LaTeX, Latex, 'latex', 'LaTeX', 'Latex', gcf, gca
     	},
@@ -293,17 +377,14 @@
 %\}=\newline\noindent\string\newline,%
 %;=[\ ]\string\space}
 %\lstMakeShortInline[[options]]hharacter
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Programming Language Listing Formats %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \lstdefinestyle{codingStyle}
 {
     	abovecaptionskip=-0.5mm,						% is the vertical space respectively above each caption.
-	backgroundcolor=\color{MatlabStyle-backgroundcolor},	% choose the background color. You must add \RequirePackage{color}
+	backgroundcolor=\color{codingStyle-backgroundcolor},	% choose the background color. You must add \RequirePackage{color}
 	basewidth={0.575em,0.45em}, 					% default: {fixed,flexible mode}={0.6em,0.45em}
 	basicstyle=\normalsize,               			% the size of the fonts that are used for the code
     	belowcaptionskip=0mm,						% is the vertical space respectively below each caption.	
-	%boxpos=<=b|c|t>						%bottom baseline, centered or top baseline				% 
+	%boxpos=<=b|c|t>						%bottom baseline, centered or top baseline				%
 	breakatwhitespace=false,                			% sets if automatic breaks should only happen at whitespace
     	breakautoindent=true,
     	%breakindent=20pt,
@@ -311,12 +392,12 @@
   	% caption=\lstname,                       		% can be used instead of title
     	captionpos=b,                           			% sets the caption-position to bottom
     	columns=[c]fixed,						%=[c|l|r]<alignment > (fixed, flexible, spaceflexible, or fullflexible)
-    	commentstyle=\color{MatlabStyle-commentcolor}\textit,    % comment style
+    	commentstyle=\color{codingStyle-commentcolor}\textit,    % comment style
     	%deletekeywords={...},                   			% if you want to delete keywords from the given language
     	%emptylines=[*]number						% max printed empty lines, * retains line numbering
     	extendedchars=true,                     			% lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
     	fancyvrb=true,
-    	fillcolor=\color{MatlabStyle-fillcolor},			%
+    	fillcolor=\color{codingStyle-fillcolor},			%
     	firstnumber=auto,
     	flexiblecolumns=false,
     	float,								% tbph
@@ -325,45 +406,47 @@
     	formfeed=\bigbreak, 						% Whenever a listing contains a form feed, <tokens> is executed.
 	frame=TRBL,                        				% adds a frame around the code
     	%frameround=tttt,							%
-    	framerule=\listingsframerule,					%
-    	framesep=\listingsframesep,					
+    	framerule=\@listings@framerule,					%
+    	framesep=\@listings@framesep,					
     	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
-    	framexleftmargin=\listingsframexleftmargin,
-    	%framexrightmargin=0mm,
+    	framexleftmargin=\@listings@framexleftmargin,
+    	framextopmargin=\@listings@framextopmargin,
+    	framexbottommargin=\@listings@framexbottommargin,
+    	framexrightmargin=\@listings@framexrightmargin,
     	%framextopmargin=0mm,
     	%framexbottommargin=0mm,
     	%fvcmdparams={},							%=<command1><number1>... \overlay1
     	%gobble=#								% # characters gobbled each line
-    	identifierstyle=\color{MatlabStyle-identifiercolor},	% define style used in printing non-keyword/cs/directive text in code
+    	identifierstyle=\color{codingStyle-identifiercolor},	% define style used in printing non-keyword/cs/directive text in code
     	%index=[1][keywords],
     	keepspaces=true,                        			% keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-    	keywordstyle={[1]\bfseries\color{MatlabStyle-keywordcolor1}},% keyword style
-    	keywordstyle={[2]\bfseries\color{MatlabStyle-keywordcolor2}},% keyword style
-    	keywordstyle={[3]\bfseries\color{MatlabStyle-keywordcolor3}},% keyword style
-    	linewidth=\listingslinewidth,                      	% define width of code listing on page
+    	keywordstyle={[1]\bfseries\color{codingStyle-keywordcolor1}},% keyword style
+    	keywordstyle={[2]\bfseries\color{codingStyle-keywordcolor2}},% keyword style
+    	keywordstyle={[3]\bfseries\color{codingStyle-keywordcolor3}},% keyword style
+    	linewidth=\@listings@linewidth,                      	% define width of code listing on page
     	%linerange={first1-last1 i,first2-last2, ...}         % The given line ranges of the (only for) individual listing are displayed.
 	%lineskip=<dimension>,                      		% species additional space between lines in listings
     	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=left,                           			% where to put the line-numbers
-    	numbersep=\listingsnumbersep,                          			% how far the line-numbers are from the code
-    	numberstyle=\tiny\bfseries\color{MatlabStyle-numbercolor},% the style that is used for the line-numbers
+    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
+    	numberstyle=\tiny\bfseries\color{codingStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
-	rulecolor=\color{MatlabStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
-    	rulesepcolor=\color{MatlabStyle-rulesepcolor},		%
-    	rulesep=\listingsrulesep,					%
+	rulecolor=\color{codingStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+    	rulesepcolor=\color{codingStyle-rulesepcolor},		%
+    	rulesep=\@listings@rulesep,					%
     	sensitive=true,							% makes keywords, control sequences, and directives case sensitive
     	showspaces=false,                       			% show spaces adding particular underscores
     	showstringspaces=false,                 			% underline spaces within strings
     	showtabs=false,                         			% show tabs within strings adding particular underscores
     	stepnumber=1,                           			% the step between two line-numbers. If it's 1, each line will be numbered
-    	stringstyle=\upshape\color{MatlabStyle-stringcolor},     % string literal style
+    	stringstyle=\upshape\color{codingStyle-stringcolor},     % string literal style
     	tab=$\to$,								%
     	tabsize=2,                             			% sets default tabsize to 2 spaces
     	%texcl=false,							% Activate/deactivate TeX comment lines inside code after escapeinside activated
     	%title=\lstname,                        			% show the filename of files included with \lstinputlisting; also try caption instead of title
-    	upquote=true							% determines whether the left and right quote are printed ‘’ or `' (requires 'textcomp' package if true		
+    	upquote=true							% determines whether the left and right quote are printed  or `' (requires 'textcomp' package if true		
     	%xleftmargin=2mm,
     	%xrightmargin=-0.25cm
     	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -373,7 +456,7 @@
     	%usekeywordsintag=true,						% ERROR
     	%markfirstintag=false, 						% ERROR
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{emptyStyle}
 {
     	abovecaptionskip=0mm,						% is the vertical space respectively above each caption.
@@ -421,13 +504,13 @@
     	keywordstyle={[2]\bfseries\color{emptyStyle-keywordcolor2}},% keyword style
     	keywordstyle={[3]\bfseries\color{emptyStyle-keywordcolor3}},% keyword style
     	lineskip=0pt, %nolol=false, %fancyvrb=true,
-	linewidth=\listingslinewidth,                      	% define width of code listing on page
+	linewidth=\@listings@linewidth,                      	% define width of code listing on page
     	mathescape=false,
 	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=none,                           			% where to put the line-numbers
-    	numbersep=\listingsnumbersep,                          			% how far the line-numbers are from the code
+    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
     	numberstyle=\tiny\bfseries\color{emptyStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
 	rulecolor=\color{emptyStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
@@ -443,7 +526,7 @@
     	tabsize=1,                             			% sets default tabsize to 2 spaces
     	%texcl=false,							% Activate/deactivate TeX comment lines inside code after escapeinside activated
     	%title=\lstname,                        			% show the filename of files included with \lstinputlisting; also try caption instead of title
-    	upquote=true							% determines whether the left and right quote are printed ‘’ or `' (requires 'textcomp' package if true		
+    	upquote=true							% determines whether the left and right quote are printed  or `' (requires 'textcomp' package if true		
     	%xleftmargin=2mm,
     	%xrightmargin=-0.25cm
     	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -453,17 +536,28 @@
     	%usekeywordsintag=true,						% ERROR
     	%markfirstintag=false, 						% ERROR
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{terminalStyle}
 {
-    	abovecaptionskip=0mm,						% is the vertical space respectively above each caption.
-	aboveskip=3.5mm,
+	xleftmargin=\@terminal@style@xleftmargin,							%
+    	xrightmargin=\@terminal@style@xrightmargin,
+    	framerule=\@terminal@style@framerule,							%   .25 inv
+    	rulesep=\@terminal@style@rulesep,							%   .25 inv
+    	framesep=\@terminal@style@framesep,					
+    	fillcolor=\color{terminalStyle-fillcolor},			%terminalStyle-fillcolor
+    	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
+    	framexleftmargin=\@terminal@style@framexleftmargin,
+    	framexrightmargin=\@terminal@style@framexrightmargin,
+    	%framextopmargin=\@terminal@style@framextopmargin,
+    	%framexbottommargin=\@terminal@style@framexbottommargin,
+    	aboveskip=\@terminal@style@aboveskip,							% skip ABOVE floating listing content box		
+	belowskip=\@terminal@style@belowskip,							% skip BELOW floating listing content box
+	abovecaptionskip=0mm,						% is the vertical space respectively above each caption.
 	alsodigit={-},							% add the minus sign '-' to the list of identifier digits so they will be printed
 	backgroundcolor=\color{terminalStyle-backgroundcolor},% choose the background color. You must add \RequirePackage{color}
 	basewidth={0.575em,0.45em}, 					% default: {fixed,flexible mode}={0.6em,0.45em}
 	basicstyle=\ttfamily,               			% the size of the fonts that are used for the code
     	belowcaptionskip=0mm,						% is the vertical space respectively below each caption.	
-	belowskip=-3mm,
 	breakatwhitespace=false,                			% sets if automatic breaks should only happen at whitespace
     	breakautoindent=true,
     	breakindent=20pt,
@@ -478,7 +572,6 @@
 	escapeinside={\%*}{*)}, %escapechar={},
 	extendedchars=true,                     			% lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
     	fancyvrb=true,
-    	fillcolor=\color{terminalStyle-fillcolor},			%
     	firstnumber=auto,
     	flexiblecolumns=false,
     	float,
@@ -487,13 +580,6 @@
     	formfeed=\bigbreak, 						% Whenever a listing contains a form feed, <tokens> is executed.
 	frame=TRBL,                        				% adds a frame around the code
     	%frameround=tttt,							%
-    	framerule=0mm,					%
-    	framesep=0mm,					
-    	%frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
-    	framexleftmargin=0mm,
-    	framexrightmargin=0mm,
-    	%framextopmargin=0mm,
-    	%framexbottommargin=0mm,
     	%fvcmdparams={},							%=<command1><number1>... \overlay1
     	identifierstyle=\color{terminalStyle-identifiercolor},	% define style used in printing non-keyword/cs/directive text in code
     	%index=[1][keywords],
@@ -502,18 +588,17 @@
     	keywordstyle={[2]\bfseries\color{terminalStyle-keywordcolor2}},% keyword style
     	keywordstyle={[3]\bfseries\color{terminalStyle-keywordcolor3}},% keyword style
     	lineskip=0pt, %nolol=false, %fancyvrb=true,
-	linewidth=\listingslinewidth,                      	% define width of code listing on page
+	linewidth=\@listings@linewidth,                      	% define width of code listing on page
     	mathescape=false,
 	%morefvcmdparams={},						%=<command1><number1>... \overlay1
     	numberblanklines=true,						% If this is set to false, blank lines get no printed line number.
     	numberfirstline=false,						% Sets numbering of first line of code:=<auto|last|number>
     	numbers=none,                           			% where to put the line-numbers
-    	numbersep=\listingsnumbersep,                          			% how far the line-numbers are from the code
+    	numbersep=\@listings@numbersep,                          			% how far the line-numbers are from the code
     	numberstyle=\tiny\bfseries\color{terminalStyle-numbercolor},% the style that is used for the line-numbers
     	resetmargins=false,
 	rulecolor=\color{terminalStyle-rulecolor},                 % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
     	rulesepcolor=\color{terminalStyle-rulesepcolor},		%
-    	rulesep=0mm,					%
     	sensitive=true,							% makes keywords, control sequences, and directives case sensitive
     	showspaces=false,                       			% show spaces adding particular underscores
     	showstringspaces=false,                 			% underline spaces within strings
@@ -524,14 +609,19 @@
     	tabsize=1,                             			% sets default tabsize to 2 spaces
     	%texcl=false,							% Activate/deactivate TeX comment lines inside code after escapeinside activated
     	%title=\lstname,                        			% show the filename of files included with \lstinputlisting; also try caption instead of title
-    	upquote=true							% determines whether the left and right quote are printed ‘’ or `' (requires 'textcomp' package if true		
-    	xleftmargin=-1pt,
-    	xrightmargin=-0.75cm
-    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    	upquote=true							% determines whether the left and right quote are printed  or `' (requires 'textcomp' package if true		
+    	%xleftmargin=-1pt,
+%    	xrightmargin=-0.75cm
+%    	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     	%directives={},							% ERROR list of compiler directives
 	%inputencoding=t1enc,						% ERROR determines the input encoding; requires 'inputenc' package if true
 	%texcs={},								% ERROR list of control sequences
     	%usekeywordsintag=true,						% ERROR
     	%markfirstintag=false, 						% ERROR
 }
-\endinput 
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%*************************************************** End of 'my-listings.sty' package ****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\endinput

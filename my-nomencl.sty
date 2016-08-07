@@ -1,0 +1,219 @@
+%*****************************************************************************************************************************************%
+%*********************************************************** `my-nomencl.sty' ************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'nomencl' package, used to generate a "List of Abbreviations" and add it to a document's back matter in addition to the
+% 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{my-nomencl}
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newif\if@printeqref
+\newif\if@printpageref
+\newif\if@intoc
+\newif\if@compatibilitymode
+\newif\if@loadcfg
+\DeclareOption{refeq}{\@printeqreftrue}
+\DeclareOption{norefeq}{\@printeqreffalse}
+\DeclareOption{refpage}{\@printpagereftrue}
+\DeclareOption{norefpage}{\@printpagereffalse}
+\DeclareOption{intoc}{\@intoctrue}
+\DeclareOption{notintoc}{\@intocfalse}
+\DeclareOption{compatible}{\@compatibilitymodetrue}
+\DeclareOption{noncompatible}{\@compatibilitymodefalse}
+\DeclareOption{prefix}{\def\nomprefix{a}}
+\DeclareOption{noprefix}{\def\nomprefix{}}
+\DeclareOption{cfg}{\@loadcfgtrue}
+\DeclareOption{nocfg}{\@loadcfgfalse}
+\DeclareOption{croatian}{%
+      \def\eqdeclaration#1{, vidi jednad\v{z}bu\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, stranica\nobreakspace#1}%
+      \def\nomname{Popis simbola}}
+\DeclareOption{danish}{%
+	\def\eqdeclaration#1{, se ligning\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, side\nobreakspace#1}%
+      \def\nomname{Symbolliste}}
+\DeclareOption{english}{%
+      \def\eqdeclaration#1{, see equation\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, page\nobreakspace#1}%
+      \def\nomname{Nomenclature}}
+\DeclareOption{french}{%
+      \def\eqdeclaration#1{, voir \'equation\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, page\nobreakspace#1}%
+      \def\nomname{Liste des symboles}}
+\DeclareOption{german}{%
+      \def\eqdeclaration#1{, siehe Gleichung\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, Seite\nobreakspace#1}%
+      \def\nomname{Symbolverzeichnis}}
+\DeclareOption{italian}{%
+	\def\eqdeclaration#1{, vedi equazione\nobreakspace(#1)}%
+	\def\pagedeclaration#1{, pagina\nobreakspace#1}%
+	\def\nomname{Elenco dei simboli}}
+\DeclareOption{polish}{%
+  	\def\eqdeclaration#1{, porownaj rownanie\nobreakspace(#1)}%
+  	\def\pagedeclaration#1{, strona\nobreakspace#1}%
+  	\def\nomname{Lista symboli}}
+\DeclareOption{portuguese}{%
+  	\def\eqdeclaration#1{, veja equa\c{c}\~ao\nobreakspace(#1)}%
+  	\def\pagedeclaration#1{, p\'agina\nobreakspace#1}%
+  	\def\nomname{Nomenclatura}}
+\DeclareOption{russian}{%
+      \def\eqdeclaration#1{, \cyrs\cyrm.\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, \cyrs\cyrt\cyrr.\nobreakspace#1}%
+      \def\nomname{\CYRS\cyrp\cyri\cyrs\cyro\cyrk%
+    \ \cyro\cyrb\cyro\cyrz\cyrn\cyra\cyrch\cyre\cyrn\cyri%
+    \cyrishrt}}
+\DeclareOption{spanish}{%
+      \def\eqdeclaration#1{, v\'ease la ecuaci\'on\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, p\'agina\nobreakspace#1}%
+      \def\nomname{Nomenclatura}}
+\DeclareOption{ukrainian}{%
+      \def\eqdeclaration#1{, \cyrd\cyri\cyrv.\nobreakspace(#1)}%
+      \def\pagedeclaration#1{, \cyrs\cyrt\cyro\cyrr.\nobreakspace#1}%
+      \def\nomname{\CYRP\cyre\cyrr\cyre\cyrl\cyrii\cyrk%
+         \ \cyrp\cyro\cyrz\cyrn\cyra\cyrch\cyre\cyrn\cyrsftsn}}
+\DeclareOption*{\PackageWarning{my-nomencl}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
+\ExecuteOptions{noncompatible,notintoc,norefeq,norefpage,prefix,cfg,english}
+\ProcessOptions\relax
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\catcode`\!=12
+%\catcode`|=12
+%\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition %-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
+\newdimen\nomlabelwidth
+\nomlabelwidth1cm\relax
+\newdimen\nom@tempdim
+\newskip\nomitemsep
+\nomitemsep\itemsep
+\if@compatibilitymode%
+      \def\@outputfileextension{.glo}%
+      \def\@inputfileextension{.gls}%
+\else%
+      \def\@outputfileextension{.nlo}%
+      \def\@inputfileextension{.nls}%
+\fi%
+\def\makenomenclature{%
+  \newwrite\@nomenclaturefile
+  \immediate\openout\@nomenclaturefile=\jobname\@outputfileextension
+  \def\@nomenclature{%
+    \@bsphack
+    \begingroup
+    \@sanitize
+    \@ifnextchar[%
+      {\@@@nomenclature}{\@@@nomenclature[\nomprefix]}}%
+  \typeout{Writing nomenclature file \jobname\@outputfileextension}%
+  \let\makenomenclature\@empty}
+\if@compatibilitymode\let\makeglossary\makenomenclature\fi%
+\def\nom@verb{\expandafter\strip@prefix\meaning}
+\def\nomenclature{\protect\@nomenclature}
+\def\@nomenclature{%
+  \@bsphack
+  \begingroup
+  \@sanitize
+  \@ifnextchar[%
+    {\@@nomenclature}{\@@nomenclature[\nomprefix]}}
+\def\@@nomenclature[#1]#2#3{\endgroup\@esphack}
+\def\@@@nomenclature[#1]#2#3{%
+ \def\@tempa{#2}\def\@tempb{#3}%
+ \protected@write\@nomenclaturefile{}%
+  {\string\nomenclatureentry{#1\nom@verb\@tempa @[{\nom@verb\@tempa}]%
+      \begingroup\nom@verb\@tempb\protect\nomeqref{\theequation}%
+        |nompageref}{\thepage}}%
+ \endgroup
+ \@esphack}
+\def\nomgroup#1{}
+\def\printnomenclature{%
+  %\renewcommand{\baselinestretch}{\@nomecl@baselinestretch}%
+  \setstretch{\@nomecl@baselinestretch}%**************************************************************************************************
+	\thispagestyle{fancy}%
+  \fancyhead[L]{\@lhead@font\@listof@abbreviations@lhead@title\xspace}%*******************************************************************
+	%\phantomsection\addcontentsline{toc}{chapter}{\nomname}
+  \@ifnextchar[%
+    {\@printnomenclature}{\@printnomenclature[\nomlabelwidth]}}
+\def\@printnomenclature[#1]{\pagestyle{fancy}%********************************************************************************************
+  \nom@tempdim#1\relax
+  \@input@{\jobname\@inputfileextension}}
+\if@compatibilitymode\let\printglossary\printnomenclature\fi%
+\def\nomlabel#1{#1}
+\def\nompreamble{}
+\def\nompostamble{}
+\def\nomentryend{}
+\def\thenomenclature{%
+	%\if@intoc\phantomsection\addcontentsline{toc}{chapter}{\nomname}\fi
+  \nompreamble
+  \list{}{%
+    \labelwidth\nom@tempdim
+    \leftmargin\labelwidth
+    \advance\leftmargin\labelsep
+    \itemsep\nomitemsep
+    \let\makelabel\nomlabel}}
+\def\endthenomenclature{%
+  \endlist
+  \nompostamble}
+\def\nomrefeq{\@printeqreftrue}
+\def\nomrefpage{\@printpagereftrue}
+\def\nomrefeqpage{\@printeqreftrue\@printpagereftrue}
+\def\nomnorefeq{\@printeqreffalse}
+\def\nomnorefpage{\@printpagereffalse}
+\def\nomnorefeqpage{\@printeqreffalse\@printpagereffalse}
+\def\nomeqref#1{\if@printeqref\eqdeclaration{#1}\fi\ignorespaces}
+\def\nompageref#1{\if@printpageref\pagedeclaration{#1}\fi%
+  \nomentryend\endgroup}
+\if@loadcfg
+  \InputIfFileExists{nomencl.cfg}{%
+    \typeout{Using the configuration file nomencl.cfg}}{}
+\fi
+\def\nomhypertitle{\phantomsection\addcontentsline{toc}{chapter}{\nomname}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\abbreviation}{o m m m}
+{
+	\unskip\ignorespaces\ifcsdef{page#2}
+	{%
+		\addtocounter{@num@this@acronym@#2}{1}%
+		\edef\thispagenum{\the\value{@num@this@acronym@#2}}%
+		\newcounter{@num@this@acronym@#2#4}%
+		\setcounter{@num@this@acronym@#2#4}{\thepage}%
+		\hyperlink{page#2}{#2}%
+		\csappto{page#2}{, \hyperlink{#2totext#4}{\the\value{@num@this@acronym@#2#4}}}%
+		\raisebox{\textsize}{\hypertarget{#2totext#4}{\unskip}}%
+	}%
+	{%
+		\newcounter{@num@this@acronym@#2}%
+		\setcounter{@num@this@acronym@#2}{1}%%
+		\edef\thispagenum{\the\value{@num@this@acronym@#2}}%
+		\newcounter{@num@this@acronym@#2#4}%
+		\setcounter{@num@this@acronym@#2#4}{\thepage}%
+		\csdef{page#2}{\hyperlink{#2totext}{\the\value{@num@this@acronym@#2#4}}}%
+		\raisebox{\textsize}{\hypertarget{#2totext}{\unskip}}%
+		\hyperlink{page#2}{#2}%
+		\IfValueTF{#1}%
+		{%
+			\nomenclature%
+			[#1]{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+			{\protect\normalsize\protect\normalfont{#3}\frontbackmatterhfill\csname page#2\endcsname}%
+		}%
+		{%
+			\nomenclature%
+			{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+			{\protect\normalsize\protect\normalfont{#3},\,\frontbackmatterhfill\csname page#2\endcsname}%
+		}%
+	}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%*************************************************** End of 'my-nomencl.sty' package *****************************************************%
+%*****************************************************************************************************************************************%
+\makeatother
+\endinput
+%% End of file `my-nomencl.sty'.

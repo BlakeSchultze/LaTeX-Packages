@@ -1,22 +1,65 @@
-%\makeatletter
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Math Fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newdimen\sizeoffont
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************************ `my-fonts.sty' *************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
+% \setglossarystyle{indexhypergroup} command
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{my-fonts}
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{my-fonts}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
+
+%*****************************************************************************************************************************************%
+%************************************************** Text/Unicode Character Definitions ***************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\chardef\@ne=1
+%\chardef\tw@=2
+%\chardef\thr@@=3
+%\chardef\sixt@@n=16
+%\chardef\@cclv=255
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareUnicodeCharacter{00A0}{\dashb}
+%\DeclareUnicodeCharacter{211D}{\mathexclamb}%
+%\DeclareUnicodeCharacter{2713}{\checkmarkup}%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\UnicodeMathSymbol{"00024}{\mathdollar               }{\mathord}{dollar sign}%
+%\newunicodechar{ℝ}{\mathbb{R}}
+%\newunicodechar{∗}{\myast}
+%\newunicodechar{§}{\mymath}
+%*****************************************************************************************************************************************%
+%******************************************* make/add/print back matter definitions/commands *********************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\DoLongFutureLet #1#2#3#4{%
 	\def\@FutureLetDecide{#1#2\@FutureLetToken
 		\def\@FutureLetNext{#3}\else
         \def\@FutureLetNext{#4}\fi\@FutureLetNext}
 		\futurelet\@FutureLetToken\@FutureLetDecide}
 		\def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@EachCharacter{\DoFutureLet{\ifx}{\@EndEachCharacter}%
     {\@EachCharacterDone}{\@PickUpTheCharacter}}
 \def\m@keCharacter#1{\csname\F@ntPrefix#1\endcsname}
 \def\@PickUpTheCharacter#1{\m@keCharacter{#1}\@EachCharacter}
 \def\@EachCharacterDone \@EndEachCharacter{}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\declarefont#1#2{% #1: TeX name; #2: TFM file name
 	\expandafter\def\csname #1\endcsname
 	{\expandafter\afterassignment\csname #1_\endcsname
@@ -25,108 +68,200 @@
 	{\font\currfont #2 at \sizeoffont\relax \currfont}%
 	\baselineskip=\sizeoffont
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \edef\currentseries{\f@series}
 \edef\normitnow{\f@series}
-\newcommand\theseries{\f@series}
 \def\seriesb{\bfseries b}
 \def\seriesbx{\bfseries bx}
 \def\seriesbxb{\bfseries\ignorespaces bx}
 \def\seriesm{m}
-\newtoggle{bxon}
-\newtoggle{bon}
-%\renewcommand{\bfseries}{\toggletrue{bxon}\bfseries}
+\def\Bbbsum{\DOTSI\Bbbsumop\slimits@}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\theseries{\f@series}
 \newcommand\bmmax{20}
 \newcommand\hmmax{20}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Math Fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Serif Fonts
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Abbreviation	Font Name
-%	cmr				Computer Modern Roman (default)
-% 	txr 				Times Roman
-%	lmr				Latin Modern Roman
-%	pbk				Bookman
-%	bch				Charter
-%	pnc				New Century Schoolbook
-%	ppl				Palatino
-%	ptm				Times
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Sans Serif Fonts
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Abbreviation	Font Name
-%	cmss			Computer Modern Sans Serif (default)
-%	txss			Times Roman
-%	lmss			Latin Modern Sans Serif
-%	pag				Avant Garde
-%	phv				Helvetica
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Typewriter Fonts
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Abbreviation	Font Name
-%	cmtt			Computer Modern Typewriter (default)
-%	txtt				Times Roman
-%	lmtt				Latin Modern
-%	pcr				Courier
-% 	emtt 			European Modern Typewriter
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Cursive Fonts (Since LaTeX has no generic family group for cursive fonts, these fonts are usually assigned to the roman family.)
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Abbreviation	Font Name
-%	pzc				Zapf Chancery
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Mathematical Formula Fonts
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Abbreviation		Font Name
-%	cmm				Computer Modern (math italic)
-%	cmsy				Computer Modern (math symbols)
-%	zplm				Palatino (math)
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	Furthermore, the Bera Mono (BitStream Vera Mono) and LuxiMono fonts were designed to look good when used in conjunction with the Computer Modern serif font.
-%	\usepackage[scaled=0.85]{beramono}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	\mdseries 	regular
-%	\bfseries 	bold
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	and the “shape” (i.e., the form of the letters):
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%	\upshape 	upright
-%	\slshape 	slanted
-%	\itshape 	italic
-%	\scshape 	Caps and Small Caps
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% 	\setmainfont{Arial}
-%\fontencoding{T1}\fontfamily{anttlc}\fontseries{m}\fontshape{n}\selectfont
-% \fontdimen13 																		% + whitespace above/below super/subscripts of math operators
-%	\usefont{<encoding>}{<family>}{<series>}{<shape>}
-%	\fontsize{<size>}{<line space>}
-% txrc, txryc
+\newcommand{\bboldfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
+\newcommand{\textbbold}[1]{{\bbfamily#1}}
+\DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
+%\DeclareRobustCommand\bboardfamily
+%        {\not@math@alphabet\bboardfamily\mathbboard
+%        \fontfamily{mbb}\selectfont}
+\DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\@EachCharacter #1\@EndEachCharacter}
+%*****************************************************************************************************************************************%
+%********************************************************** Text Font Commands ***********************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\renewcommand{\defaultfamily}{cmr}
 \renewcommand{\rmdefault}{lmr}
 \renewcommand{\sfdefault}{lmss}
 \renewcommand{\ttdefault}{lmtt}
 %\renewcommand{\sldefault}{cmsl}
+%\renewcommand{\bfseries}{\toggletrue{bxon}\bfseries}
+%\renewcommand{\scshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont}
+\newcommand{\scslshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont}
+%\renewcommand{\textsc}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont#1}}
+\newcommand{\textscsl}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont#1}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\large{\fontsize{12}{\baselinestretch}}
 \renewcommand\Large{\fontsize{14}{\baselinestretch}}
 \renewcommand\LARGE{\fontsize{16}{\baselinestretch}}
 \renewcommand\huge{\fontsize{18}{\baselinestretch}}
 \renewcommand\Huge{\fontsize{20}{\baselinestretch}}
 \renewcommand{\HUGE}{\fontsize{22}{\baselinestretch}}
-%\renewcommand{\scshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont}
-%\renewcommand{\textsc}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont#1}}
-\newcommand{\scslshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont}
-\newcommand{\textscsl}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont#1}}
-% \sum\fracslash\divslash\circledast\circledequal\circleddash\star
-%\DeclareUnicodeCharacter{00A0}{\dashb}
-%\DeclareUnicodeCharacter{211D}{\mathexclamb}%
-%\DeclareUnicodeCharacter{2713}{\checkmarkup}%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\coloredtext}{s t! m m}
+{%
+	\begingroup%
+	\IfBooleanTF{#1}
+	{%
+		\IfBooleanTF{#2}
+			{\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
+			{\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
+	}
+	{%
+		\IfBooleanTF{#2}
+			{\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
+			{\ignorespaces\color{#3}#4\unskip\ignorespaces}
+	}
+	\endgroup%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setshadowtextprops}{D<>{0.5pt} O{0.65pt} O{-0.2pt} G{BaylorGoldCMYK}}
+{%\setshadowtextprops<offset>[offset x][offset y]{shadow color}
+	\shadowoffset{#1}%
+	\shadowoffsetx{#2}%
+	\shadowoffsety{#3}%
+	\shadowcolor{#4}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\shadowoffset{0.5pt}
+%\shadowoffsetx{0.65pt}
+%\shadowoffsety{-0.2pt}
+%\shadowcolor{BaylorGoldCMYK}
+%{
+%\fontencoding{T1}\fontfamily{anttlc}\fontseries{m}\fontshape{n}\selectfont
+%Some text in anttlc...
+%}
+%\usefont{T1}{cmr}{m}{n}
+%                                    1 2                  3            4 5   6
+\DeclareDocumentCommand{\shadowText}{s D<>{\anttmcap18pt} D''{current} o d() m}
+{%\shadowText<title font>'color style'{title text}
+	%\IfBooleanTF{#1}%
+	%{%
+	%	\setshadowtextprops
+	\IfValueTF{#4}
+		{\shadowcolor{#4}}
+		{\shadowcolor{#3-coltextshadow}}
+	\IfValueTF{#5}
+		{\ignorespaces\unskip#2\color{#5}}
+		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
+	\shadowtext{#6}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*{\RaisedText}[1]{%
+  \begingroup
+    \leavevmode
+    \rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
+    \rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
+    \hbox{#1}%
+  \endgroup
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*{\BeveledText}[1]{%
+  \begingroup
+    \leavevmode
+    \rlap{\kern-.3pt\raise.15pt\hbox{%
+      \pdfrender{
+        TextRenderingMode=Stroke,
+        LineWidth=.2pt,
+        StrokeColor=white,
+      }#1%
+    }}%
+    \rlap{\kern.3pt\raise-.15pt\hbox{%
+      \pdfrender{
+        TextRenderingMode=Stroke,
+        LineWidth=.2pt,
+        StrokeColor=black,
+      }#1%
+    }}%
+    \rlap{%
+      \pdfrender{
+        TextRenderingMode=Stroke,
+        LineWidth=.2pt,
+        StrokeColor=DarkSlateGrey,
+      }#1%
+    }%
+    \hbox{#1}%
+  \endgroup
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbinlinetextfont}{m}
+{%
+    	\shadowoffset{2pt}
+	\shadowtext
+	{%
+		\color{navy}%
+		\fontencoding{T1}%
+		\fontfamily{pag}%
+		\fontseries{b}%
+		\fontsize{32}{32}%
+		\selectfont%
+		#1%
+	}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
+\long\def\shadowfypars#1\par#2\relax{%
+  \ifx#1\relax\else%
+    \shadowfywords#1 \relax\relax%
+  \fi%
+  \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip\xspace%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\shadowfywords#1 #2\relax{%
+  \ifx#1\relax\else%
+    \shadowfyletters#1\relax\relax%
+  \fi%
+  \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip\xspace%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\shadowfyletters#1#2\relax{%
+  \shadow{#1}%
+  \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip\xspace}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\shadow#1{\kern\shadowHoffset%
+  \raisebox{\shadowVoffset}{%
+  \stackinset{c}{-\shadowHoffset}{c}{-\shadowVoffset}%
+  {\color{\primarycolor}{#1}}{\color{\secondarycolor}{#1}}}%
+  \kern-\shadowHoffset%
+\unskip\ignorespaces%
+}
+\def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%Breakable
+%                                             1 2         3          4        5          6
+\DeclareDocumentCommand{\BreakableShadowText}{s D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
+{%\BreakableShadowText<horizontal offset><vertical offset>[text color](shadow color){text}
+	\setlength\shadowHoffset{#2}%
+	\setlength\shadowVoffset{#3}%
+	\def\primarycolor{#4}%
+	\def\secondarycolor{#5}%
+%	\IfValueTF{#4}
+%		{\shadowcolor{#4}}
+%		{\shadowcolor{#3-coltextshadow}}
+%	\IfValueTF{#5}
+%		{\ignorespaces\unskip#2\color{#5}}
+%		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
+	\shadowfy{#6}\unskip\xspace%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%************************************************************** Text Fonts ***************************************************************%
+%*****************************************************************************************************************************************%
 \DeclareTextCommand{\Digamma}{LGR}{\char"C3\relax}
 \DeclareTextCommand{\ddigamma}{LGR}{\char"93\relax}
 \DeclareTextCommand{\tao}{LGR}{\char"01\relax}
@@ -139,7 +274,11 @@
 \DeclareTextCommand{\VarQoppa}{LGR}{\textlatin{\char"47\relax}}
 \DeclareTextCommand{\euro}{LGR}{\char"18\relax}
 \DeclareTextCommand{\Euro}{LGR}{\char"18\relax}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareTextFontCommand{\textbboard}{\bboardfamily}						%\RequirePackage{mbboard}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Standard encodings: ec, cs, t5, qx or texnansi
 % Cyrillic encodings: wncy, t2a, t2b or t2c
 % Greek encodings: wncy, t2a, t2b or t2c
@@ -159,12 +298,94 @@
 \declarefont{anttcap}{\antt@encoding-anttrcap}
 \declarefont{anttmcap}{\antt@encoding-anttmcap}
 \declarefont{anttbcap}{\antt@encoding-anttbcap}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Math Fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\font\rm qx-anttr \rm \baselineskip 14pt
+\font\rmsm qx-anttr at 9.5pt
+\font\rmc qx-anttcr at9pt
+\font\bf qx-anttm
+\font\it qx-anttri
+\font\kat qx-anttm at 12pt
+\font\titlefont qx-anttr at 24pt
+\font\exp exp-anttr
+\font\atnsmall qx-anttr at 7.5pt
+\font\its qx-anttri at 7.5pt
+\font\bfs qx-anttb at 7pt
+\font\scs qx-anttrcap at 7pt
+\font\scbs qx-anttbcap at 7pt
+\font\ttv qx-lmtt10 at7pt
+\font\oryrm qx-lmr10 at 11pt
+\font\sc qx-anttrcap
+\font\ttsmall qx-lmtt8
+\font\ttn qx-lmvtt10 at10.5pt
+\font\ttb qx-lmvtt10 at11pt
+\font\sec qx-anttm at12pt
+\font\tcblistboxtext qx-anttb at 12pt
+\font\tcblistboxlabel qx-anttb at 14pt
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\czc#1#2#3{
+  \def#1{\afterassignment#2\rozmiar=}
+     \def#2{\font\currfont #3 at \rozmiar\relax \currfont}}
+\czc{\atl}{\xatl}{qx-anttl}
+\czc{\atn}{\xatn}{qx-anttr}
+\czc{\atm}{\xatm}{qx-anttm}
+\czc{\atb}{\xatb}{qx-anttb}
+\czc{\ati}{\xati}{qx-anttri}
+\czc{\atbi}{\xatbi}{qx-anttbi}
+\czc{\atli}{\xatli}{qx-anttli}
+\czc{\atmi}{\xatmi}{qx-anttmi}
+\czc{\atlc}{\xatlc}{qx-anttcl}
+\czc{\atlci}{\xatlci}{qx-anttcli}
+\czc{\atnc}{\xatc}{qx-anttcr}
+\czc{\atnci}{\xatci}{qx-anttcri}
+\czc{\atmc}{\xatmc}{qx-anttcm}
+\czc{\atmci}{\xatmci}{qx-anttcmi}
+\czc{\atbc}{\xatbc}{qx-anttcb}
+\czc{\atbci}{\xatbci}{qx-anttcbi}
+\czc{\atncapl}{\xatncapl}{qx-anttlcap}
+\czc{\atncapm}{\xatncapm}{qx-anttmcap}
+\czc{\atncapr}{\xatncapr}{qx-anttrcap}
+\czc{\atncapb}{\xatncapb}{qx-anttbcap}
+\czc{\atncapli}{\xatncapli}{qx-anttlicap}
+\czc{\atncapmi}{\xatncapmi}{qx-anttmicap}
+\czc{\atncapri}{\xatncapri}{qx-anttricap}
+\czc{\atncapbi}{\xatncapbi}{qx-anttbicap}
+\czc{\atnccapl}{\xatnccapl}{qx-anttclcap}
+\czc{\atnccapm}{\xatnccapm}{qx-anttcmcap}
+\czc{\atnccapr}{\xatnccapr}{qx-anttcrcap}
+\czc{\atnccapb}{\xatnccapb}{qx-anttcbcap}
+\czc{\atntexnansi}{\xatntexnansi}{texnansi-anttr}
+\czc{\atnexpcap}{\xatnexpcap}{expcap-anttr}
+\czc{\atnexp}{\xatnexp}{exp-anttr}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\czc{\atncyrl}{\xatncyrl}{wncy-anttl}
+\czc{\atncyrn}{\xatncyrn}{wncy-anttr}
+\czc{\atncyrm}{\xatncyrm}{wncy-anttm}
+\czc{\atncyrb}{\xatncyrb}{wncy-anttb}
+\czc{\atncyrli}{\xatncyrli}{wncy-anttli}
+\czc{\atncyrni}{\xatncyrni}{wncy-anttri}
+\czc{\atncyrmi}{\xatncyrmi}{wncy-anttmi}
+\czc{\atncyrbi}{\xatncyrbi}{wncy-anttbi}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\czc{\atngrel}{\xatngrel}{greek-anttl}
+\czc{\atngrer}{\xatngrer}{greek-anttr}
+\czc{\atngrem}{\xatngrem}{greek-anttm}
+\czc{\atngreb}{\xatngreb}{greek-anttb}
+\czc{\atngreli}{\xatngreli}{greek-anttli}
+\czc{\atngreri}{\xatngreri}{greek-anttri}
+\czc{\atngremi}{\xatngremi}{greek-anttmi}
+\czc{\atngrebi}{\xatngrebi}{greek-anttbi}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\czc{\apn}{\xapn}{antpr}
+\czc{\api}{\xapi}{antpri}
+\czc{\apb}{\xapb}{antpb}
+\czc{\apbi}{\xapbi}{antpbi}
+%*****************************************************************************************************************************************%
+%************************************************************** Math Fonts ***************************************************************%
+%*****************************************************************************************************************************************%
 \DeclareMathVersion{extended}
 \DeclareMathVersion{variations}
 \DeclareMathVersion{doublestruck}
@@ -172,60 +393,9 @@
 \DeclareMathVersion{calligraphy}
 \DeclareMathVersion{script}
 \DeclareMathVersion{fraktur}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Math Fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Normal = 13:9
-%\mathrm			AMS?
-%\mathit			AMS?
-%\mathsf			AMS?
-%\mathbf			AMS?
-%\mathrms			stix
-%\mathits			stix
-%\mathbfs			stix
-%\mathbfit			stix
-%\mathsfs			stixsf
-%\mathsfit			stixsf
-%\mathbfsf			stixsf
-%\mathbfsfit		stixsf
-%\mathtt			stixtt
-
-% Script = 4:4
-%\mathscript			stixscr
-%\mathbfscr		stixscr
-%\mathrsfs			rsfs
-%\mathrsfso 		rsfso
-%\mathbick			bickham
-%\mathbickx		bickham
-
-% Calligraphy = 4:3
-%\mathcal			AMS?
-%\mathcalst		stixcal	
-%\mathpzc			pzc
-%\mathtxsy			txsy
-
-% Double Struck = 12:11
-%\mathbb			AMS?
-%\mathbbst			stixbb
-%\mathbbstit			stixbb
-%\mathbfbb			stixbb
-%\mathbfbbit		stixbb
-%\mathbbold		bbold
-%\mathbbm 		bbm
-%\mathbbs 			bbmss
-%\mathbbt  			bbmtt
-%\mathds			dsrom
-%\mathpxysb  		pxfonts: pxsyb
-%\varmathbb  		txfonts: {lettersA}129-154
-
-% Fraktur fonts = 4:3
-%\mathfrak			AMS?
-%\mathbffrak		stixfrak
-%\mathfraks 		stixfrak
-%\mathtxmia		txmia
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define font family/shape and font/math symbols %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------- Define font family/shape and font/math symbols ---------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareFontFamily{U}{mathb}{\hyphenchar\font45}
 %\DeclareFontShape{U}{mathb}{m}{n}{
 %      <5> <6> <7> <8> <9> <10> gen * mathb
@@ -233,204 +403,103 @@
 %      }{}
 %\DeclareSymbolFont{mathb}{U}{mathb}{m}{n}
 %\DeclareMathSymbol{\phaseang}{0}{mathb}{"3E}                                   % Define subset characters from mathabx.dcl
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{stix}<stix.sty>
-\DeclareFontEncoding				{LS1}{}{}
-\DeclareFontEncoding				{LS2}{}{\noaccents@}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\bickham@@scale
+\expandafter\ifx\csname bickham@scale\endcsname\relax
+\let\bickham@@scale\@empty\else\edef\bickham@@scale{s*[\csname bickham@scale\endcsname]}\fi
+\DeclareFontFamily{T1}{bickham}{\skewchar \font =45}
+%\DeclareFontFamily{OT1}{mbb}{\hyphenchar\font45}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareFontShape{OT1}{mbb}{m}{n}{
+%      <5> <6> <7> <8> <9> <10> gen * mbb
+%      <10.95> mbb10 <12> <14.4> mbb12 <17.28> <20.74> <24.88> mbb17
+%      }{}
+%\DeclareFontShape{OT1}{mbb}{bx}{n}{
+%      <5> <6> <7> <8> <9> <10> gen * mbb
+%      <10.95> mbb10 <12> <14.4> mbb12 <17.28> <20.74> <24.88> mbb17
+%      }{}
+%\expandafter\ifx\csname rsfso@scale\endcsname\relax
+%\let\rsfso@@scale\@empty\else\edef\rsfso@@scale{s*[\csname rsfso@scale\endcsname]}\fi
+%\DeclareFontFamily{U}{rsfso}{\skewchar \font =45}
+%
+%\DeclareFontShape{U}{rsfso}{m}{n}{
+%   <-6> \rsfso@@scale  rsfso5
+%   <6-8> \rsfso@@scale  rsfso7
+%   <8-> \rsfso@@scale  rsfso10
+%}{}
+\DeclareFontShape{T1}{bickham}{m}{n}{  <-> \bickham@@scale  bickham-r}{}
+\DeclareFontShape{T1}{bickham}{b}{n}{  <-> \bickham@@scale  bickham-b}{}
+\DeclareFontShape{T1}{bickham}{sb}{n}{  <-> \bickham@@scale  bickham-s}{}
+\DeclareFontShape{T1}{bickham}{bx}{n}{   <-> ssub * bickham/b/n}{}
+\DeclareFontShape{T1}{bickham}{b}{it}{   <-> ssub * bickham/b/n}{}
+\DeclareFontShape{T1}{bickham}{sb}{it}{   <-> ssub * bickham/sb/n}{}
+\DeclareFontShape{T1}{bickham}{m}{it}{   <-> ssub * bickham/m/n}{}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareFontEncoding				{LS1}{}{}						%\RequirePackage{stix}<stix.sty>
+\DeclareFontEncoding				{LS2}{}{\noaccents@}				%\RequirePackage{stix}<stix.sty>
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareFontSubstitution			{LS1}{stix}{m}{n}
 \DeclareFontSubstitution			{LS2}{stix}{m}{n}
-\DeclareMathAlphabet{\mathitst}   	{LS1}{stix}     {m} {it}
-\DeclareMathAlphabet{\mathrmst}   	{LS1}{stix}     {m} {n}
-\DeclareMathAlphabet{\mathscript}  	{LS1}{stixscr}  {m} {n}
-\DeclareMathAlphabet{\mathfrakst} 	{LS1}{stixfrak} {m}{n}
-\DeclareMathAlphabet{\mathbbst}   	{LS1}{stixbb}   {m} {n}
-\DeclareMathAlphabet{\mathbbstit} 	{LS1}{stixbb}   {m} {it}
-\DeclareMathAlphabet{\mathcalst}  	{LS2}{stixcal}  {m} {n}
-\DeclareMathAlphabet{\mathsfst}   	{LS1}{stixsf}   {m} {n}
-\DeclareMathAlphabet{\mathsfstit} 	{LS1}{stixsf}   {m} {it}
-\DeclareMathAlphabet{\mathttst}   	{LS2}{stixtt}   {m} {n}
-\DeclareMathAlphabet{\mathbfst}   	{LS1}{stix}     {b} {n}
-
+%\DeclareFontSubstitution{OT1}{mbb}{m}{n}								%\RequirePackage{mbboard}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareMathAlphabet{\mathitst}   	{LS1}{stix}     {m} {it}				%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathrmst}   	{LS1}{stix}     {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathscript}  	{LS1}{stixscr}  {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathfrakst} 	{LS1}{stixfrak} {m}{n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbst}   	{LS1}{stixbb}   {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbstit} 	{LS1}{stixbb}   {m} {it}				%\RequirePackage{stix}<stix.sty>	
+\DeclareMathAlphabet{\mathcalst}  	{LS2}{stixcal}  {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathsfst}   	{LS1}{stixsf}   {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathsfstit} 	{LS1}{stixsf}   {m} {it}				%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathttst}   	{LS2}{stixtt}   {m} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfst}   	{LS1}{stix}     {b} {n}					%\RequirePackage{stix}<stix.sty>
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Bold font versions of selected fonts above, each font name preceeded by 'bf' followed by the font name
-\DeclareMathAlphabet{\mathbfitst}  	{LS1}{stix}    {b}{it}
-\DeclareMathAlphabet{\mathbfsfst}  	{LS1}{stixsf}  {b} {n}
-\DeclareMathAlphabet{\mathbfsfitst}	{LS1}{stixsf}  {b}{it}
-\DeclareMathAlphabet{\mathbfbbst}  	{LS1}{stixbb}  {b} {n}
-\DeclareMathAlphabet{\mathbfbbitst}	{LS1}{stixbb}  {b}{it}
-\DeclareMathAlphabet{\mathbfscript} 	{LS1}{stixscr} {b} {n}
-\DeclareMathAlphabet{\mathbffrakst}	{LS1}{stixfrak}{b} {n}
-
-\def\stix@undefine#1{%
-    \if\relax\noexpand#1\let#1=\@undefined\fi}
-\def\stix@MathSymbol#1#2#3#4{%
-    \stix@undefine#1%
-    \DeclareMathSymbol{#1}{#2}{#3}{#4}}
-%\DeclareSymbolFont{operatorsstix}     {LS1}{stix}     {m} {n}
-%%\DeclareSymbolFont{symbols2stix}      {LS1}{stixfrak} {m} {n}
-%%\DeclareSymbolFont{largesymbolsstix}  {LS2}{stixex}   {m} {n}
-%%\DeclareSymbolFont{arrows3stix}       {LS2}{stixtt}   {m} {n}
-%\SetSymbolFont{operatorsstix}   {bold}{LS1}{stix}     {b} {n}
-%%\SetSymbolFont{symbols2stix}    {bold}{LS1}{stixfrak} {b}{n}
-%%\SetSymbolFont{largesymbolsstix}{bold}{LS2}{stixex}   {b} {n}
-%%\SetSymbolFont{arrows3stix}     {bold}{LS2}{stixtt}   {b} {n}
-%\DeclareSymbolFontAlphabet{\mathrmst}  {operatorsstix}
-%%\DeclareSymbolFontAlphabet{\mathfrakst}{symbols2stix}
-%%\DeclareSymbolFontAlphabet{\mathttst}  {arrows3stix}
-%
-%\stix@MathSymbol{\neg}                      {\mathord}{operatorsstix}{"9B} \let\lnot=\neg
-%\stix@MathSymbol{\cdotp}                    {\mathbin}{operatorsstix}{"9C} \let\centerdot=\cdotp
-%\stix@MathSymbol{\times}                    {\mathbin}{operatorsstix}{"9D}
-%\stix@MathSymbol{\preceq}                   {\mathrel}{operatorsstix}{"9E}
-%\stix@MathSymbol{\div}                      {\mathbin}{operatorsstix}{"9F}
-%
-%\stix@MathSymbol{\Zbar}                     {\mathord}{operatorsstix}{"A0}
-%\stix@MathSymbol{\notchar}                  {\mathrel}{operatorsstix}{"A1}
-%\stix@MathSymbol{\upbackepsilon}            {\mathord}{operatorsstix}{"A2}
-%\stix@MathSymbol{\dagger}                   {\mathbin}{operatorsstix}{"A3}
-%\stix@MathSymbol{\ddagger}                  {\mathbin}{operatorsstix}{"A4}
-%\stix@MathSymbol{\smblkcircle}              {\mathbin}{operatorsstix}{"A5}
-%\stix@MathSymbol{\enleadertwodots}          {\mathord}{operatorsstix}{"A6}
-%\stix@MathSymbol{\unicodeellipsis}          {\mathord}{operatorsstix}{"A7} \def\mathellipsis{\mathinner{\unicodeellipsis}}
-%\stix@MathSymbol{\prime}                    {\mathord}{operatorsstix}{"A8}
-%\stix@MathSymbol{\dprime}                   {\mathord}{operatorsstix}{"A9}
-%\stix@MathSymbol{\trprime}                  {\mathord}{operatorsstix}{"AA}
-%\stix@MathSymbol{\backprime}                {\mathord}{operatorsstix}{"AB}
-%\stix@MathSymbol{\backdprime}               {\mathord}{operatorsstix}{"AC}
-%\stix@MathSymbol{\backtrprime}              {\mathord}{operatorsstix}{"AD}
-%\stix@MathSymbol{\caretinsert}              {\mathord}{operatorsstix}{"AE}
-%\stix@MathSymbol{\Exclam}                   {\mathord}{operatorsstix}{"AF}
-%
-%\stix@MathSymbol{\hyphenbullet}             {\mathord}{operatorsstix}{"B0}
-%\stix@MathSymbol{\fracslash}                {\mathbin}{operatorsstix}{"B1}
-%\stix@MathSymbol{\Question}                 {\mathord}{operatorsstix}{"B2}
-%\stix@MathSymbol{\closure}                  {\mathrel}{operatorsstix}{"B3}
-%\stix@MathSymbol{\qprime}                   {\mathord}{operatorsstix}{"B4}
-%\stix@MathSymbol{\vertoverlay}              {\mathrel}{operatorsstix}{"B5}
-%\stix@MathSymbol{\enclosecircle}            {\mathord}{operatorsstix}{"B6}
-%\stix@MathSymbol{\enclosesquare}            {\mathord}{operatorsstix}{"B7}
-%\stix@MathSymbol{\enclosediamond}           {\mathord}{operatorsstix}{"B8}
-%\stix@MathSymbol{\enclosetriangle}          {\mathord}{operatorsstix}{"B9}
-%\stix@MathSymbol{\Eulerconst}               {\mathord}{operatorsstix}{"BA}
-%\stix@MathSymbol{\mho}                      {\mathord}{operatorsstix}{"BB}
-%\stix@MathSymbol{\turnediota}               {\mathord}{operatorsstix}{"BC}
-%\stix@MathSymbol{\Angstrom}                 {\mathord}{operatorsstix}{"BD}
-%\stix@MathSymbol{\Finv}                     {\mathord}{operatorsstix}{"BE}
-%\stix@MathSymbol{\Game}                     {\mathord}{operatorsstix}{"BF}
-%
-%\stix@MathSymbol{\sansLturned}              {\mathord}{operatorsstix}{"C0}
-%\stix@MathSymbol{\sansLmirrored}            {\mathord}{operatorsstix}{"C1}
-%\stix@MathSymbol{\Yup}                      {\mathord}{operatorsstix}{"C2}
-%\stix@MathSymbol{\PropertyLine}             {\mathord}{operatorsstix}{"C3}
-%\stix@MathSymbol{\upand}                    {\mathbin}{operatorsstix}{"C4}
-%\stix@MathSymbol{\forall}                   {\mathord}{operatorsstix}{"C5}
-%\stix@MathSymbol{\complement}               {\mathord}{operatorsstix}{"C6}
-%\stix@MathSymbol{\exists}                   {\mathord}{operatorsstix}{"C7}
-%\stix@MathSymbol{\nexists}                  {\mathord}{operatorsstix}{"C8}
-%\stix@MathSymbol{\varnothing}               {\mathord}{operatorsstix}{"C9}
-%\stix@MathSymbol{\increment}                {\mathord}{operatorsstix}{"CA}
-%\stix@MathSymbol{\in}                       {\mathrel}{operatorsstix}{"CB}
-%\stix@MathSymbol{\notin}                    {\mathrel}{operatorsstix}{"CC}
-%\stix@MathSymbol{\smallin}                  {\mathrel}{operatorsstix}{"CD}
-%\stix@MathSymbol{\ni}                       {\mathrel}{operatorsstix}{"CE} \let\owns=\ni
-%\stix@MathSymbol{\nni}                      {\mathrel}{operatorsstix}{"CF}
-%
-%\stix@MathSymbol{\smallni}                  {\mathrel}{operatorsstix}{"D0}
-%\stix@MathSymbol{\QED}                      {\mathord}{operatorsstix}{"D1}
-%\stix@MathSymbol{\dotplus}                  {\mathbin}{operatorsstix}{"D2}
-%\stix@MathSymbol{\succeq}                   {\mathrel}{operatorsstix}{"D3}
-%\stix@MathSymbol{\smallsetminus}            {\mathbin}{operatorsstix}{"D4}
-%\stix@MathSymbol{\vysmwhtcircle}            {\mathbin}{operatorsstix}{"D5}
-%\stix@MathSymbol{\vysmblkcircle}            {\mathbin}{operatorsstix}{"D6} \let\bullet=\vysmblkcircle
-%\stix@MathSymbol{\propto}                   {\mathrel}{operatorsstix}{"D7}
-%\stix@MathSymbol{\infty}                    {\mathord}{operatorsstix}{"D8}
-%\stix@MathSymbol{\rightangle}               {\mathord}{operatorsstix}{"D9}
-%\stix@MathSymbol{\angle}                    {\mathord}{operatorsstix}{"DA}
-%\stix@MathSymbol{\measuredangle}            {\mathord}{operatorsstix}{"DB}
-%\stix@MathSymbol{\sphericalangle}           {\mathord}{operatorsstix}{"DC}
-%\stix@MathSymbol{\mid}                      {\mathrel}{operatorsstix}{"DD}
-%\stix@MathSymbol{\nmid}                     {\mathrel}{operatorsstix}{"DE}
-%\stix@MathSymbol{\parallel}                 {\mathrel}{operatorsstix}{"DF}
-%
-%\stix@MathSymbol{\nparallel}                {\mathrel}{operatorsstix}{"E0}
-%\stix@MathSymbol{\wedge}                    {\mathbin}{operatorsstix}{"E1} \let\land=\wedge
-%\stix@MathSymbol{\vee}                      {\mathbin}{operatorsstix}{"E2} \let\lor=\vee
-%\stix@MathSymbol{\cap}                      {\mathbin}{operatorsstix}{"E3}
-%\stix@MathSymbol{\cup}                      {\mathbin}{operatorsstix}{"E4}
-%\stix@MathSymbol{\therefore}                {\mathord}{operatorsstix}{"E5}
-%\stix@MathSymbol{\because}                  {\mathord}{operatorsstix}{"E6}
-%\stix@MathSymbol{\emptyset}                 {\mathord}{operatorsstix}{"E7}
-%\stix@MathSymbol{\Colon}                    {\mathrel}{operatorsstix}{"E8}
-%\stix@MathSymbol{\dotminus}                 {\mathbin}{operatorsstix}{"E9}
-%\stix@MathSymbol{\dashcolon}                {\mathrel}{operatorsstix}{"EA}
-%\stix@MathSymbol{\dotsminusdots}            {\mathrel}{operatorsstix}{"EB}
-%\stix@MathSymbol{\kernelcontraction}        {\mathrel}{operatorsstix}{"EC}
-%\stix@MathSymbol{\sim}                      {\mathrel}{operatorsstix}{"ED}
-%\stix@MathSymbol{\backsim}                  {\mathrel}{operatorsstix}{"EE}
-%\stix@MathSymbol{\invlazys}                 {\mathbin}{operatorsstix}{"EF}
-%
-%\stix@MathSymbol{\sinewave}                 {\mathord}{operatorsstix}{"F0}
-%\stix@MathSymbol{\wr}                       {\mathbin}{operatorsstix}{"F1}
-%\stix@MathSymbol{\nsim}                     {\mathrel}{operatorsstix}{"F2}
-%\stix@MathSymbol{\eqsim}                    {\mathrel}{operatorsstix}{"F3}
-%\stix@MathSymbol{\simeq}                    {\mathrel}{operatorsstix}{"F4}
-%\stix@MathSymbol{\nsime}                    {\mathrel}{operatorsstix}{"F5}
-%\stix@MathSymbol{\cong}                     {\mathrel}{operatorsstix}{"F6}
-%\stix@MathSymbol{\simneqq}                  {\mathrel}{operatorsstix}{"F7}
-%\stix@MathSymbol{\ncong}                    {\mathrel}{operatorsstix}{"F8}
-%\stix@MathSymbol{\approx}                   {\mathrel}{operatorsstix}{"F9}
-%\stix@MathSymbol{\napprox}                  {\mathrel}{operatorsstix}{"FA}
-%\stix@MathSymbol{\approxeq}                 {\mathrel}{operatorsstix}{"FB}
-%\stix@MathSymbol{\approxident}              {\mathrel}{operatorsstix}{"FC}
-%\stix@MathSymbol{\backcong}                 {\mathrel}{operatorsstix}{"FD}
-%\stix@MathSymbol{\asymp}                    {\mathrel}{operatorsstix}{"FE}
-%\stix@MathSymbol{\Bumpeq}                   {\mathrel}{operatorsstix}{"FF}
-%
-%%
-%%\DeclareMathSymbol{\typecolon}                {\mathbin}  {symbols2stix}{"25}
-%%\DeclareMathSymbol{\tplus}                    {\mathbin}  {symbols2stix}{"EB}
-%%\DeclareMathSymbol{\tminus}                   {\mathbin}  {symbols2stix}{"EC}
-%%\DeclareMathSymbol{\fcmp}                     {\mathbin}{arrows3stix}{"AF}
-%%\DeclareMathSymbol{\checkmarkmath}            {\mathord}{arrows3stix}{"82}
-%%\DeclareMathRadical{\longdivision}{largesymbols}{"FA}{largesymbols}{"FA}
-%%\DeclareMathDelimiter{\lBrack}    {\mathopen} {largesymbols}{"E0}{largesymbols}{"06}
-%%\DeclareMathDelimiter{\rBrack}    {\mathclose}{largesymbols}{"E1}{largesymbols}{"07}
-%%\DeclareMathSymbol{\Bbbsumop}               {\mathop}{largesymbols}{"B0}
-
-\def\Bbbsum{\DOTSI\Bbbsumop\slimits@}
-\DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
-
-% Symbols
-% stix: \dagger, \ddagger, \fcmp (circled semicolon}, \threedotcolon, \invlazys (horiz 's') , \tminus, \tplus\fracslash\typecolon
-%boisik: \convolution\coAsterisk\fatsemi
-% mathabx: \convolution\Asterisk\coAsterisk\coasterisk
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareFontFamily{OT1}{mbb}{\hyphenchar\font45}
-%
-\DeclareFontShape{OT1}{mbb}{m}{n}{
-      <5> <6> <7> <8> <9> <10> gen * mbb
-      <10.95> mbb10 <12> <14.4> mbb12 <17.28> <20.74> <24.88> mbb17
-      }{}
-\DeclareSymbolFont{mbb}{OT1}{mbb}{m}{n}
-%
-\DeclareFontShape{OT1}{mbb}{bx}{n}{
-      <5> <6> <7> <8> <9> <10> gen * mbb
-      <10.95> mbb10 <12> <14.4> mbb12 <17.28> <20.74> <24.88> mbb17
-      }{}
-\DeclareSymbolFont{mbb}{OT1}{mbb}{bx}{n}
-
-\DeclareSymbolFontAlphabet{\mathbboard}{mbb}
-\DeclareFontSubstitution{OT1}{mbb}{m}{n}
-\DeclareRobustCommand\bboardfamily
-        {\not@math@alphabet\bboardfamily\mathbboard
-         \fontfamily{mbb}\selectfont}
-\DeclareTextFontCommand{\textbboard}{\bboardfamily}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\RequirePackage{bbold}<bbold.sty>
-\newcommand{\bboldfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
-\newcommand{\textbbold}[1]{{\bbfamily#1}}
-\DeclareMathAlphabet{\mathbbold}{U}{bbold}{m}{n}
-\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}
-
+\DeclareMathAlphabet{\mathbfitst}  	{LS1}{stix}    {b}{it}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfsfst}  	{LS1}{stixsf}  {b} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfsfitst}	{LS1}{stixsf}  {b}{it}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfbbst}  	{LS1}{stixbb}  {b} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfbbitst}	{LS1}{stixbb}  {b}{it}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfscript} {LS1}{stixscr} {b} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbffrakst}	{LS1}{stixfrak}{b} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbold}{U}{bbold}{m}{n}						%\RequirePackage{bbold}<bbold.sty>
+\DeclareMathAlphabet{\mathbbm}{U}{bbm}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
+%\DeclareMathAlphabet{\mathbbs}{U}{bbmss}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
+%\DeclareMathAlphabet{\mathbbt}{U}{bbmtt}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
+\DeclareMathAlphabet{\mathrsfso}{U}{rsfso}{m}{n}						%\RequirePackage{rsfso}<rsfso.sty>
+%\DeclareMathAlphabet{\mathds}{U}{dsrom}{m}{n}							%\RequirePackage{dsfont}<dsfont.sty>
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}							%\RequirePackage{?}<?.sty>
+\DeclareMathAlphabet{\mathbick}{T1}{bickham}{m}{n}
+%\DeclareMathAlphabet{\mathbickx} {T1}{bickham}{sb}{n}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\SetMathAlphabet\mathbbold{bold}{U}{bbold}{bx}{n}						%\RequirePackage{bbold}<bbold.sty>
+\SetMathAlphabet\mathbbm{bold}{U}{bbm}{bx}{n}							%\RequirePackage{bbm}<bbm.sty>
+%\SetMathAlphabet\mathbbs{bold}{U}{bbmss}{bx}{n}							%\RequirePackage{bbm}<bbm.sty>
+\SetMathAlphabet{\mathbick}{bold}{T1}{bickham}{b}{n}
+%\SetMathAlphabet{\mathbickx}{bold}{T1}{bickham}{bx}{n}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareSymbolFont{mbb}{OT1}{mbb}{m}{n}
+%\DeclareSymbolFont{mbb}{OT1}{mbb}{bx}{n}								%\RequirePackage{mbboard}
+%\DeclareSymbolFontAlphabet{\mathbboard}{mbb}							%\RequirePackage{mbboard}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}								%\RequirePackage{bbold}<bbold.sty>
+%\DeclareSymbolFont{symbolsA}{OMS}{txsy}{m}{n}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+\DeclareSymbolFont{lettersA}{U}{txmia} {m}{it}							%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+\DeclareSymbolFont{lettersP}{OML}{antt}{m}{it}							%\RequirePackage{antt}<antt.sty>
+%\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}								%\RequirePackage{mathrsfs}<mathrsfs.sty>
+%\DeclareSymbolFont{AMSbb}{U}{pxsyb}{m}{n}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareSymbolFontAlphabet{\mathtxsy}{symbolsA}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+%\DeclareSymbolFontAlphabet{\mathtxmia}{lettersA}						%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+%\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}							%\RequirePackage{mathrsfs}<mathrsfs.sty>
+%\DeclareSymbolFontAlphabet{\mathpxsyb}{AMSbb}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\SetSymbolFont{symbolsA}{bold}{OMS}{txsy}{bx}{n}						%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+\SetSymbolFont{lettersA}{bold}{U}{txmia}{bx}{it}						%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+\SetSymbolFont{lettersP}{bold}{OML}{antt}{bx}{it}						%\RequirePackage{antt}<antt.sty>
+%\SetSymbolFont{AMSbb}{bold}{U}{pxsyb}{bx}{n}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathSymbol{\bbGamma}{\mathord}{bbold}{"00}
 \DeclareMathSymbol{\bbDelta}{\mathord}{bbold}{"01}
 \DeclareMathSymbol{\bbTheta}{\mathord}{bbold}{"02}
@@ -442,7 +511,7 @@
 \DeclareMathSymbol{\bbPhi}{\mathord}{bbold}{"08}
 \DeclareMathSymbol{\bbPsi}{\mathord}{bbold}{"09}
 \DeclareMathSymbol{\bbOmega}{\mathord}{bbold}{"0A}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathSymbol{\bbalpha}{\mathord}{bbold}{"0B}
 \DeclareMathSymbol{\bbbeta}{\mathord}{bbold}{"0C}
 \DeclareMathSymbol{\bbgamma}{\mathord}{bbold}{"0D}
@@ -466,59 +535,7 @@
 \DeclareMathSymbol{\bbchi}{\mathord}{bbold}{"1F}
 \DeclareMathSymbol{\bbpsi}{\mathord}{bbold}{"20}
 \DeclareMathSymbol{\bbomega}{\mathord}{bbold}{"7F}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{bbm}<bbm.sty>
-\DeclareMathAlphabet{\mathbbm}{U}{bbm}{m}{n}
-\SetMathAlphabet\mathbbm{bold}{U}{bbm}{bx}{n}
-\DeclareMathAlphabet{\mathbbs}{U}{bbmss}{m}{n}
-\SetMathAlphabet\mathbbs{bold}{U}{bbmss}{bx}{n}
-\DeclareMathAlphabet{\mathbbt}{U}{bbmtt}{m}{n}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
-%\DeclareSymbolFont{AMSbb}{U}{pxsyb}{m}{n}
-%\SetSymbolFont{AMSbb}{bold}{U}{pxsyb}{bx}{n}
-%\DeclareSymbolFontAlphabet{\mathpxsyb}{AMSbb}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{mathrsfs}<mathrsfs.sty>
-\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}
-\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{rsfso}<rsfso.sty>
-\DeclareMathAlphabet{\mathrsfso}    {U}  {rsfso}    {m} {n}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\bickham@@scale
-\expandafter\ifx\csname bickham@scale\endcsname\relax
-\let\bickham@@scale\@empty\else\edef\bickham@@scale{s*[\csname bickham@scale\endcsname]}\fi
-\DeclareFontFamily{T1}{bickham}{\skewchar \font =45}
-\DeclareFontShape{T1}{bickham}{m}{n}{  <-> \bickham@@scale  bickham-r}{}
-\DeclareFontShape{T1}{bickham}{b}{n}{  <-> \bickham@@scale  bickham-b}{}
-\DeclareFontShape{T1}{bickham}{sb}{n}{  <-> \bickham@@scale  bickham-s}{}
-\DeclareFontShape{T1}{bickham}{bx}{n}{   <-> ssub * bickham/b/n}{}
-\DeclareFontShape{T1}{bickham}{b}{it}{   <-> ssub * bickham/b/n}{}
-\DeclareFontShape{T1}{bickham}{sb}{it}{   <-> ssub * bickham/sb/n}{}
-\DeclareFontShape{T1}{bickham}{m}{it}{   <-> ssub * bickham/m/n}{}
-\DeclareMathAlphabet{\mathbick}{T1}{bickham}{m}{n}
-\SetMathAlphabet{\mathbick}{bold}{T1}{bickham}{b}{n}
-\DeclareMathAlphabet{\mathbickx} {T1}{bickham}{sb}{n}
-\SetMathAlphabet{\mathbickx}{bold}{T1}{bickham}{bx}{n}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathAlphabet{\mathds}{U}{dsrom}{m}{n}
-\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%% = txsy = cmsy
-\DeclareSymbolFont{symbolsA}{OMS}{txsy}{m}{n}
-\SetSymbolFont{symbolsA}{bold}{OMS}{txsy}{bx}{n}
-\DeclareSymbolFontAlphabet{\mathtxsy}{symbolsA}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% %\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
-\DeclareSymbolFont          {lettersA}{U}           {txmia} {m}{it}
-\SetSymbolFont              {lettersA}{bold}{U}     {txmia}{bx}{it}
-\DeclareSymbolFontAlphabet  {\mathtxmia}{lettersA}
-\DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\@EachCharacter #1\@EndEachCharacter}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareSymbolFont{lettersP}{OML}{antt}{m}{it}
-\SetSymbolFont{lettersP}{bold}{OML}{antt}{bx}{it}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathSymbol{\GammaB}{\mathord}{lettersP}{00}
 \DeclareMathSymbol{\DeltaB}{\mathord}{lettersP}{01}
 \DeclareMathSymbol{\ThetaB}{\mathord}{lettersP}{02}
@@ -559,7 +576,7 @@
 \DeclareMathSymbol{\varrhoB}{\mathord}{lettersP}{37}
 \DeclareMathSymbol{\varsigmaB}{\mathord}{lettersP}{38}
 \DeclareMathSymbol{\varphiB}{\mathord}{lettersP}{39}
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %"01-"0A: upright uppercase Greek (= operators pxr)
 \DeclareMathSymbol{\alphaup}{\mathord}{lettersA}{11}
 \DeclareMathSymbol{\betaup}{\mathord}{lettersA}{12}
@@ -621,9 +638,9 @@
 \DeclareMathSymbol{\m@thbbch@rY}{\mathord}{lettersA}{153}
 \DeclareMathSymbol{\m@thbbch@rZ}{\mathord}{lettersA}{154}
 \DeclareMathSymbol{\varBbbk}{\mathord}{lettersA}{171}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End my-fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\re@DeclareTextSymbol#1#2#3{%
    \let#1=\undefined
    \DeclareTextSymbol{#1}{#2}{#3}}
@@ -775,96 +792,149 @@
 \re@DeclareMathSymbol{\lhd}{\mathbin}{AMSa}{67} % LaTeX symbol
 \re@DeclareMathSymbol{\unrhd}{\mathbin}{AMSa}{68} % LaTeX symbol
 \re@DeclareMathSymbol{\unlhd}{\mathbin}{AMSa}{69} % LaTeX symbol
-
-%\UnicodeMathSymbol{"00024}{\mathdollar               }{\mathord}{dollar sign}%
-%\newunicodechar{ℝ}{\mathbb{R}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End my-fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\font\rm qx-anttr \rm \baselineskip 14pt
-\font\rmsm qx-anttr at 9.5pt
-\font\rmc qx-anttcr at9pt
-\font\bf qx-anttm
-\font\it qx-anttri
-\font\kat qx-anttm at 12pt
-\font\titlefont qx-anttr at 24pt
-\font\exp exp-anttr
-\font\atnsmall qx-anttr at 7.5pt
-\font\its qx-anttri at 7.5pt
-\font\bfs qx-anttb at 7pt
-\font\scs qx-anttrcap at 7pt
-\font\scbs qx-anttbcap at 7pt
-\font\ttv qx-lmtt10 at7pt
-\font\oryrm qx-lmr10 at 11pt
-\font\sc qx-anttrcap
-\font\ttsmall qx-lmtt8
-\font\ttn qx-lmvtt10 at10.5pt
-\font\ttb qx-lmvtt10 at11pt
-\font\sec qx-anttm at12pt
-\font\tcblistboxtext qx-anttb at 12pt
-\font\tcblistboxlabel qx-anttb at 14pt
-
-\newdimen\rozmiar
-\def\czc#1#2#3{
-  \def#1{\afterassignment#2\rozmiar=}
-     \def#2{\font\currfont #3 at \rozmiar\relax \currfont}}
-\czc{\atl}{\xatl}{qx-anttl}
-\czc{\atn}{\xatn}{qx-anttr}
-\czc{\atm}{\xatm}{qx-anttm}
-\czc{\atb}{\xatb}{qx-anttb}
-\czc{\ati}{\xati}{qx-anttri}
-\czc{\atbi}{\xatbi}{qx-anttbi}
-\czc{\atli}{\xatli}{qx-anttli}
-\czc{\atmi}{\xatmi}{qx-anttmi}
-\czc{\atlc}{\xatlc}{qx-anttcl}
-\czc{\atlci}{\xatlci}{qx-anttcli}
-\czc{\atnc}{\xatc}{qx-anttcr}
-\czc{\atnci}{\xatci}{qx-anttcri}
-\czc{\atmc}{\xatmc}{qx-anttcm}
-\czc{\atmci}{\xatmci}{qx-anttcmi}
-\czc{\atbc}{\xatbc}{qx-anttcb}
-\czc{\atbci}{\xatbci}{qx-anttcbi}
-\czc{\atncapl}{\xatncapl}{qx-anttlcap}
-\czc{\atncapm}{\xatncapm}{qx-anttmcap}
-\czc{\atncapr}{\xatncapr}{qx-anttrcap}
-\czc{\atncapb}{\xatncapb}{qx-anttbcap}
-\czc{\atncapli}{\xatncapli}{qx-anttlicap}
-\czc{\atncapmi}{\xatncapmi}{qx-anttmicap}
-\czc{\atncapri}{\xatncapri}{qx-anttricap}
-\czc{\atncapbi}{\xatncapbi}{qx-anttbicap}
-\czc{\atnccapl}{\xatnccapl}{qx-anttclcap}
-\czc{\atnccapm}{\xatnccapm}{qx-anttcmcap}
-\czc{\atnccapr}{\xatnccapr}{qx-anttcrcap}
-\czc{\atnccapb}{\xatnccapb}{qx-anttcbcap}
-\czc{\atntexnansi}{\xatntexnansi}{texnansi-anttr}
-\czc{\atnexpcap}{\xatnexpcap}{expcap-anttr}
-\czc{\atnexp}{\xatnexp}{exp-anttr}
-
-\czc{\atncyrl}{\xatncyrl}{wncy-anttl}
-\czc{\atncyrn}{\xatncyrn}{wncy-anttr}
-\czc{\atncyrm}{\xatncyrm}{wncy-anttm}
-\czc{\atncyrb}{\xatncyrb}{wncy-anttb}
-\czc{\atncyrli}{\xatncyrli}{wncy-anttli}
-\czc{\atncyrni}{\xatncyrni}{wncy-anttri}
-\czc{\atncyrmi}{\xatncyrmi}{wncy-anttmi}
-\czc{\atncyrbi}{\xatncyrbi}{wncy-anttbi}
-
-\czc{\atngrel}{\xatngrel}{greek-anttl}
-\czc{\atngrer}{\xatngrer}{greek-anttr}
-\czc{\atngrem}{\xatngrem}{greek-anttm}
-\czc{\atngreb}{\xatngreb}{greek-anttb}
-\czc{\atngreli}{\xatngreli}{greek-anttli}
-\czc{\atngreri}{\xatngreri}{greek-anttri}
-\czc{\atngremi}{\xatngremi}{greek-anttmi}
-\czc{\atngrebi}{\xatngrebi}{greek-anttbi}
-
-\czc{\apn}{\xapn}{antpr}
-\czc{\api}{\xapi}{antpri}
-\czc{\apb}{\xapb}{antpb}
-\czc{\apbi}{\xapbi}{antpbi}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End my-fonts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------------------------- stix Symbol Fonts -----------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareSymbolFont{operatorsstix}     {LS1}{stix}     {m} {n}
+%%\DeclareSymbolFont{symbols2stix}      {LS1}{stixfrak} {m} {n}
+%%\DeclareSymbolFont{largesymbolsstix}  {LS2}{stixex}   {m} {n}
+%%\DeclareSymbolFont{arrows3stix}       {LS2}{stixtt}   {m} {n}
+%\DeclareSymbolFontAlphabet{\mathrmst}  {operatorsstix}
+%%\DeclareSymbolFontAlphabet{\mathfrakst}{symbols2stix}
+%%\DeclareSymbolFontAlphabet{\mathttst}  {arrows3stix}
+%\SetSymbolFont{operatorsstix}   {bold}{LS1}{stix}     {b} {n}
+%%\SetSymbolFont{symbols2stix}    {bold}{LS1}{stixfrak} {b}{n}
+%%\SetSymbolFont{largesymbolsstix}{bold}{LS2}{stixex}   {b} {n}
+%%\SetSymbolFont{arrows3stix}     {bold}{LS2}{stixtt}   {b} {n}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%--------------------------------------------------- stix Symbols/Delimiters/Radicals ----------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\stix@undefine#1{%
+    \if\relax\noexpand#1\let#1=\@undefined\fi}
+\def\stix@MathSymbol#1#2#3#4{%
+    \stix@undefine#1%
+    \DeclareMathSymbol{#1}{#2}{#3}{#4}}
+%\stix@MathSymbol{\neg}                      {\mathord}{operatorsstix}{"9B} \let\lnot=\neg
+%\stix@MathSymbol{\cdotp}                    {\mathbin}{operatorsstix}{"9C} \let\centerdot=\cdotp
+%\stix@MathSymbol{\times}                    {\mathbin}{operatorsstix}{"9D}
+%\stix@MathSymbol{\preceq}                   {\mathrel}{operatorsstix}{"9E}
+%\stix@MathSymbol{\div}                      {\mathbin}{operatorsstix}{"9F}
+%
+%\stix@MathSymbol{\Zbar}                     {\mathord}{operatorsstix}{"A0}
+%\stix@MathSymbol{\notchar}                  {\mathrel}{operatorsstix}{"A1}
+%\stix@MathSymbol{\upbackepsilon}            {\mathord}{operatorsstix}{"A2}
+%\stix@MathSymbol{\dagger}                   {\mathbin}{operatorsstix}{"A3}
+%\stix@MathSymbol{\ddagger}                  {\mathbin}{operatorsstix}{"A4}
+%\stix@MathSymbol{\smblkcircle}              {\mathbin}{operatorsstix}{"A5}
+%\stix@MathSymbol{\enleadertwodots}          {\mathord}{operatorsstix}{"A6}
+%\stix@MathSymbol{\unicodeellipsis}          {\mathord}{operatorsstix}{"A7} \def\mathellipsis{\mathinner{\unicodeellipsis}}
+%\stix@MathSymbol{\prime}                    {\mathord}{operatorsstix}{"A8}
+%\stix@MathSymbol{\dprime}                   {\mathord}{operatorsstix}{"A9}
+%\stix@MathSymbol{\trprime}                  {\mathord}{operatorsstix}{"AA}
+%\stix@MathSymbol{\backprime}                {\mathord}{operatorsstix}{"AB}
+%\stix@MathSymbol{\backdprime}               {\mathord}{operatorsstix}{"AC}
+%\stix@MathSymbol{\backtrprime}              {\mathord}{operatorsstix}{"AD}
+%\stix@MathSymbol{\caretinsert}              {\mathord}{operatorsstix}{"AE}
+%\stix@MathSymbol{\Exclam}                   {\mathord}{operatorsstix}{"AF}
+%
+%\stix@MathSymbol{\hyphenbullet}             {\mathord}{operatorsstix}{"B0}
+%\stix@MathSymbol{\fracslash}                {\mathbin}{operatorsstix}{"B1}
+%\stix@MathSymbol{\Question}                 {\mathord}{operatorsstix}{"B2}
+%\stix@MathSymbol{\closure}                  {\mathrel}{operatorsstix}{"B3}
+%\stix@MathSymbol{\qprime}                   {\mathord}{operatorsstix}{"B4}
+%\stix@MathSymbol{\vertoverlay}              {\mathrel}{operatorsstix}{"B5}
+%\stix@MathSymbol{\enclosecircle}            {\mathord}{operatorsstix}{"B6}
+%\stix@MathSymbol{\enclosesquare}            {\mathord}{operatorsstix}{"B7}
+%\stix@MathSymbol{\enclosediamond}           {\mathord}{operatorsstix}{"B8}
+%\stix@MathSymbol{\enclosetriangle}          {\mathord}{operatorsstix}{"B9}
+%\stix@MathSymbol{\Eulerconst}               {\mathord}{operatorsstix}{"BA}
+%\stix@MathSymbol{\mho}                      {\mathord}{operatorsstix}{"BB}
+%\stix@MathSymbol{\turnediota}               {\mathord}{operatorsstix}{"BC}
+%\stix@MathSymbol{\Angstrom}                 {\mathord}{operatorsstix}{"BD}
+%\stix@MathSymbol{\Finv}                     {\mathord}{operatorsstix}{"BE}
+%\stix@MathSymbol{\Game}                     {\mathord}{operatorsstix}{"BF}
+%
+%\stix@MathSymbol{\sansLturned}              {\mathord}{operatorsstix}{"C0}
+%\stix@MathSymbol{\sansLmirrored}            {\mathord}{operatorsstix}{"C1}
+%\stix@MathSymbol{\Yup}                      {\mathord}{operatorsstix}{"C2}
+%\stix@MathSymbol{\PropertyLine}             {\mathord}{operatorsstix}{"C3}
+%\stix@MathSymbol{\upand}                    {\mathbin}{operatorsstix}{"C4}
+%\stix@MathSymbol{\forall}                   {\mathord}{operatorsstix}{"C5}
+%\stix@MathSymbol{\complement}               {\mathord}{operatorsstix}{"C6}
+%\stix@MathSymbol{\exists}                   {\mathord}{operatorsstix}{"C7}
+%\stix@MathSymbol{\nexists}                  {\mathord}{operatorsstix}{"C8}
+%\stix@MathSymbol{\varnothing}               {\mathord}{operatorsstix}{"C9}
+%\stix@MathSymbol{\increment}                {\mathord}{operatorsstix}{"CA}
+%\stix@MathSymbol{\in}                       {\mathrel}{operatorsstix}{"CB}
+%\stix@MathSymbol{\notin}                    {\mathrel}{operatorsstix}{"CC}
+%\stix@MathSymbol{\smallin}                  {\mathrel}{operatorsstix}{"CD}
+%\stix@MathSymbol{\ni}                       {\mathrel}{operatorsstix}{"CE} \let\owns=\ni
+%\stix@MathSymbol{\nni}                      {\mathrel}{operatorsstix}{"CF}
+%
+%\stix@MathSymbol{\smallni}                  {\mathrel}{operatorsstix}{"D0}
+%\stix@MathSymbol{\QED}                      {\mathord}{operatorsstix}{"D1}
+%\stix@MathSymbol{\dotplus}                  {\mathbin}{operatorsstix}{"D2}
+%\stix@MathSymbol{\succeq}                   {\mathrel}{operatorsstix}{"D3}
+%\stix@MathSymbol{\smallsetminus}            {\mathbin}{operatorsstix}{"D4}
+%\stix@MathSymbol{\vysmwhtcircle}            {\mathbin}{operatorsstix}{"D5}
+%\stix@MathSymbol{\vysmblkcircle}            {\mathbin}{operatorsstix}{"D6} \let\bullet=\vysmblkcircle
+%\stix@MathSymbol{\propto}                   {\mathrel}{operatorsstix}{"D7}
+%\stix@MathSymbol{\infty}                    {\mathord}{operatorsstix}{"D8}
+%\stix@MathSymbol{\rightangle}               {\mathord}{operatorsstix}{"D9}
+%\stix@MathSymbol{\angle}                    {\mathord}{operatorsstix}{"DA}
+%\stix@MathSymbol{\measuredangle}            {\mathord}{operatorsstix}{"DB}
+%\stix@MathSymbol{\sphericalangle}           {\mathord}{operatorsstix}{"DC}
+%\stix@MathSymbol{\mid}                      {\mathrel}{operatorsstix}{"DD}
+%\stix@MathSymbol{\nmid}                     {\mathrel}{operatorsstix}{"DE}
+%\stix@MathSymbol{\parallel}                 {\mathrel}{operatorsstix}{"DF}
+%
+%\stix@MathSymbol{\nparallel}                {\mathrel}{operatorsstix}{"E0}
+%\stix@MathSymbol{\wedge}                    {\mathbin}{operatorsstix}{"E1} \let\land=\wedge
+%\stix@MathSymbol{\vee}                      {\mathbin}{operatorsstix}{"E2} \let\lor=\vee
+%\stix@MathSymbol{\cap}                      {\mathbin}{operatorsstix}{"E3}
+%\stix@MathSymbol{\cup}                      {\mathbin}{operatorsstix}{"E4}
+%\stix@MathSymbol{\therefore}                {\mathord}{operatorsstix}{"E5}
+%\stix@MathSymbol{\because}                  {\mathord}{operatorsstix}{"E6}
+%\stix@MathSymbol{\emptyset}                 {\mathord}{operatorsstix}{"E7}
+%\stix@MathSymbol{\Colon}                    {\mathrel}{operatorsstix}{"E8}
+%\stix@MathSymbol{\dotminus}                 {\mathbin}{operatorsstix}{"E9}
+%\stix@MathSymbol{\dashcolon}                {\mathrel}{operatorsstix}{"EA}
+%\stix@MathSymbol{\dotsminusdots}            {\mathrel}{operatorsstix}{"EB}
+%\stix@MathSymbol{\kernelcontraction}        {\mathrel}{operatorsstix}{"EC}
+%\stix@MathSymbol{\sim}                      {\mathrel}{operatorsstix}{"ED}
+%\stix@MathSymbol{\backsim}                  {\mathrel}{operatorsstix}{"EE}
+%\stix@MathSymbol{\invlazys}                 {\mathbin}{operatorsstix}{"EF}
+%
+%\stix@MathSymbol{\sinewave}                 {\mathord}{operatorsstix}{"F0}
+%\stix@MathSymbol{\wr}                       {\mathbin}{operatorsstix}{"F1}
+%\stix@MathSymbol{\nsim}                     {\mathrel}{operatorsstix}{"F2}
+%\stix@MathSymbol{\eqsim}                    {\mathrel}{operatorsstix}{"F3}
+%\stix@MathSymbol{\simeq}                    {\mathrel}{operatorsstix}{"F4}
+%\stix@MathSymbol{\nsime}                    {\mathrel}{operatorsstix}{"F5}
+%\stix@MathSymbol{\cong}                     {\mathrel}{operatorsstix}{"F6}
+%\stix@MathSymbol{\simneqq}                  {\mathrel}{operatorsstix}{"F7}
+%\stix@MathSymbol{\ncong}                    {\mathrel}{operatorsstix}{"F8}
+%\stix@MathSymbol{\approx}                   {\mathrel}{operatorsstix}{"F9}
+%\stix@MathSymbol{\napprox}                  {\mathrel}{operatorsstix}{"FA}
+%\stix@MathSymbol{\approxeq}                 {\mathrel}{operatorsstix}{"FB}
+%\stix@MathSymbol{\approxident}              {\mathrel}{operatorsstix}{"FC}
+%\stix@MathSymbol{\backcong}                 {\mathrel}{operatorsstix}{"FD}
+%\stix@MathSymbol{\asymp}                    {\mathrel}{operatorsstix}{"FE}
+%\stix@MathSymbol{\Bumpeq}                   {\mathrel}{operatorsstix}{"FF}
+%
+%%
+%%\DeclareMathSymbol{\typecolon}                {\mathbin}  {symbols2stix}{"25}
+%%\DeclareMathSymbol{\tplus}                    {\mathbin}  {symbols2stix}{"EB}
+%%\DeclareMathSymbol{\tminus}                   {\mathbin}  {symbols2stix}{"EC}
+%%\DeclareMathSymbol{\fcmp}                     {\mathbin}{arrows3stix}{"AF}
+%%\DeclareMathSymbol{\checkmarkmath}            {\mathord}{arrows3stix}{"82}
+%%\DeclareMathRadical{\longdivision}{largesymbols}{"FA}{largesymbols}{"FA}
+%%\DeclareMathDelimiter{\lBrack}    {\mathopen} {largesymbols}{"E0}{largesymbols}{"06}
+%%\DeclareMathDelimiter{\rBrack}    {\mathclose}{largesymbols}{"E1}{largesymbols}{"07}
+%%\DeclareMathSymbol{\Bbbsumop}               {\mathop}{largesymbols}{"B0}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------ mficon Symbols -------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\usepackage{fontspec}
 %\newcommand*{\mficon}[1]{%
 %  {FA\csname mficon@#1\endcsname}}
@@ -959,5 +1029,9 @@
 %\expandafter\def\csname mficon@google-code\endcsname {\symbol{"F158}} \def\mfGoogleCode {{\MF\csname mficon@google-code\endcsname}}
 %\expandafter\def\csname mficon@kde\endcsname {\symbol{"F159}} \def\mfKde {{\MF\csname mficon@kde\endcsname}}
 %\expandafter\def\csname mficon@grails-alt\endcsname {\symbol{"F15A}} \def\mfGrailsAlt {{\MF\csname mficon@grails-alt\endcsname}}
-
-\endinput
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%***************************************************** End of 'my-fonts.sty' package *****************************************************%
+%*****************************************************************************************************************************************%
+\makeatother
+\endinput 

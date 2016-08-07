@@ -1,68 +1,34 @@
+%*****************************************************************************************************************************************%
+%************************************************************ `my-math.sty' **************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
+% \setglossarystyle{indexhypergroup} command
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[1994/06/01]
-\ProvidesPackage{my-math}[2013/01/13 Custom Package]
-\newif\if@landscape@option\@landscape@optionfalse
-\DeclareOption{landscape}{\@landscape@optiontrue}
-\DeclareOption*{\PackageWarning{my-math}{Unknown ‘\CurrentOption’}}
+\ProvidesPackage{my-math}
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{my-math}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
-\makeatletter													% Change @ character to \catcode'@=11, i.e. a standard letter, so it can be used in macro names/definitionStyle
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`\:=\active
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\def\@text@operator#1{\@pre@text@operator@kern#1\@post@text@operator@kern}
-%\def\@text@operator#1
-%{%
-%	\@pre@text@operator@kern
-%	#1
-%	\@post@text@operator@kern
-%}
-%\UnicodeMathSymbol{"0007B}{\lbrace                   }{\mathopen}{left curly bracket}%
-%%%%%%%%%%%\lfloor \ldots \rceil \!\,													% Nearest integer
-% \aleph 							% Cardinality of infinite sets
-% \aleph _{0} (aleph-naught, also aleph zero or the German term Aleph-null) is the cardinality of the set of all natural numbers, and is an infinite cardinal. Countably infinite
-% here "∘" denotes function composition
-% e identity matrix In,
-% linear span
-% Iverson bracket
-% ℙ(X) means the probability of the event X occurring.
-% V \otimes U means the tensor product of V and U.[12] V \otimes_R U means the tensor product of modules V and U over the ring R.
-% Laplacian \Delta
-% \pi projection Projection of
-%\coprod \!\,	coproduct
-%\def\mathraise#1#2{\raisebox{#1}{$#2$}}
-% \mathop
-%\complement\intercal
-% tcxttsl 	B5		another mu slanted
-% tcxttsl 	2A		star var
-% tcxtt 		B5		another mu up
-% tcxtt 		2A		star var
-% tcxsssl	2A		comp conj star var
-% tcxsssl 	B5		another mu slanted
-% tcxsssl 	9D		alternative exp 'e'
-% U+207B superscript minus
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareSymbolFont{symbols}     {OMS}{cmsy}{m}{n}
-%\SetSymbolFont{symbols}  {bold}{OMS}{cmsy}{b}{n}
-%\DeclareMathSymbol{\ddagger}{\mathbin}{symbols}{"7A}
-%\DeclareMathSymbol{\dagger}{\mathbin}{symbols}{"79}
-%\DeclareMathSymbol{\gg}{\mathrel}{symbols}{"1D}
-%\DeclareMathSymbol{\ll}{\mathrel}{symbols}{"1C}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareSymbolFont{operators}   {OT1}{cmr} {m}{n}
-%\SetSymbolFont{operators}{bold}{OT1}{cmr} {bx}{n}
+\makeatletter						% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
 
-%\DeclareMathDelimiter{(}{\mathopen} {operators}{"28}{largesymbols}{"00}
-%[\![
-%\DeclareMathDelimiter{\lgroup} % extensible ( with sharper tips
-%     {\mathopen}{largesymbols}{"3A}{largesymbols}{"3A}
-%\DeclareMathDelimiter{\rgroup} % extensible ) with sharper tips
-%     {\mathclose}{largesymbols}{"3B}{largesymbols}{"3B}
-%\showthe\delcode`(
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\renewcommand{\in}{\raisemath{0.15pt}{\in}}
-%\let\in=\raisemath{0.15pt}{\in}
-%\DeclareMathOperator{\in}{\raisemath{0.15pt}{\in}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@pre@text@operator@kern{\kern-2.0pt}
 \def\@post@text@operator@kern{\kern-2.5pt}
 \def\@text@operator@surrounding#1{\kern-1.5pt#1\kern-2.0pt}
@@ -71,63 +37,65 @@
 \def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
 \def\@tcb@pld@title@label{\flushleft\setul{1.5pt}{2.0pt} \setulcolor{black}\ul{Polynomial Division:} \\[0.3em]\centering\normalsize\normalfont}
 \def\d#1{\kern1ptd#1}
-%\newunicodechar{§}{\mymath}
+%\def\myastb{\myast}
 %\def\mymath#1§{$\boldsymbol{#1}$}
-%\catcode`\!=\active
-%\catcode`\:=11
 \catcode`|=\active
 \def|#1|{\bmath{#1}}
 %\catcode`!=\active
 %\catcode`\!=\active
-%\let\mathexclam=!
-%\def!#1!{hello}
-%\newunicodechar{∗}{\myast}
-%\def\myastb{\myast}
-
-%
+%\catcode`\:=11
 %\catcode`\$=\active
 %\gdef\mathdollar$#1${\[\boldsymbol{#1}\]}
+%\let\mathexclam=!
+%\def!#1!{hello}
+%\gdef$#1${\[\mathbf{#1}\]}
 \newlength\@pld@tcb@width
-\newlength\@top@binom@height																		% Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@bottom@binom@height																	% Height of 'k' in "n choose k" environment \nchoosek
-\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}								% Height of math character 'X' in current font
-\newlength{\@height@math@symbols}\settoheight{\@height@math@symbols}{$\displaystyle X$}
-\newlength{\@height@math@comma}\settoheight{\@height@math@comma}{$\displaystyle ,$}
-\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}								% Height of math character 'X' in current font
-\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}								% Height of math character 'X' in current font
-\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$}								% Height of math character 'X' in current font
-\newlength\@total@heght																% Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@dbl@verted@shift																	% Height of 'n' in "n choose k" environment \nchoosek
-\newcount\gpten % (global) power-of-ten -- tells which digit we are doing
-\countdef\rtot2 % running total -- remainder so far
-\countdef\LDscratch4 % scratch
-%\newtoggle{@add@sub@TF}
+\newlength\@top@binom@height													% Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@bottom@binom@height												% Height of 'k' in "n choose k" environment \nchoosek
+\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}						% Height of math character 'X' in current font
+\newlength\@height@math@symbols\settoheight{\@height@math@symbols}{$\displaystyle X$}
+\newlength\@height@math@comma\settoheight{\@height@math@comma}{$\displaystyle ,$}
+\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}					% Height of math character 'X' in current font
+\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}							% Height of math character 'X' in current font
+\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$}						% Height of math character 'X' in current font
+\newlength\@total@heght														% Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@dbl@verted@shift													% Height of 'n' in "n choose k" environment \nchoosek
+\newcount\gpten 															% (global) power-of-ten -- tells which digit we are doing
+\countdef\rtot2 															% running total -- remainder so far
+\countdef\LDscratch4 														% scratch
+\newcounter{@current@IBP@row@counter}
+\@init@counter{@IBP@instances@counter}      										% Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@rows@counter}[0]      										% Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@nodes@counter}[1]       										% Node # of left column in IBP environment
+\@init@counter{@left@IBP@nodes@counter}       										% Node # of left column in IBP environment
+\@init@counter{@right@IBP@nodes@counter}[2]										% Node # of right column in IBP environment
+\newtoggle{@add@sub@TF}
 \let\@ss@style=\scriptscriptstyle
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%*****************************************************************************************************************************************%
+%*************************************************************** Declare/Define Math Operators ***************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Define math symbols
 \DeclareMathOperator{\exponentialSym}{\mathit{e}}                                    			% exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\inss}{\raisemath{0.75pt}{\scriptstyle\in}}                                   	% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}								% Directional vector corresponding to 1st dimension e1 (e.g. commonly referred to as x-axis)
-\DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}								% Directional vector corresponding to 2nd dimension e2 (e.g. commonly referred to as y)
-\DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}			% Directional vector corresponding to 3rd dimension e3 (e.g. commonly referred to as z)
+\DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}								% Directional vector for 1st dimension e1 (i.e. x-axis)
+\DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}								% Directional vector for 1st dimension e1 (i.e. y-axis)
+\DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}			% Directional vector for 1st dimension e1 (i.e. z-axis)
 \DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}								% Degrees symbol
 \DeclareMathOperator{\dB}{\mathrm{dB}}                                  					% decibels, dB
 \DeclareMathOperator{\degF}{\si{\degree} \mathsf{F}}									% Degrees Fahrenheit
 \DeclareMathOperator{\convolutionSym}{\ast}										% Convolution symbol
 \DeclareMathOperator{\correlationSym}{\star}										% Correlation symbol
 \DeclareMathOperator{\hence}{\raisebox{-1.5pt}{\hstretch{1.25}{\scaleobj{1.5}{\Rightarrow}}}\;\;}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathOperator{\superscriptPlus}{\raisebox{0.55pt}{\scaleobj{0.55}{\boldsymbol{+}}}}
 \DeclareMathOperator{\superscriptMinus}{\raisebox{-1.25pt}{\hstretch{0.55}{\boldsymbol{--}}}}
 \DeclareMathOperator{\negSign}{\scriptstyle-\kern-2.0pt}                                    		% negative sign
 \DeclareMathOperator{\inverseSym}{\negSign\scriptscriptstyle 1}
 \DeclareMathOperator{\eqdefas}{\overset{\underset{\mathsfs{def}}{}}{=}}        				% The "defined as" symbol written as equal sign w/ def above it
 \DeclareMathOperator{\setor}{\mathop{\lvert}}
-\DeclareMathOperator{\rectSym}{\sqcap}										% Rectangular function symbol
-\DeclareMathOperator{\triSym}{\wedge}										% Rectangular function symbol
+\DeclareMathOperator{\rectSym}{\sqcap}											% Rectangular function symbol
+\DeclareMathOperator{\triSym}{\wedge}											% Rectangular function symbol
 \DeclareMathOperator{\combSym}{\mathrms{III}}										% Rectangular function symbol
 \DeclareMathOperator{\meanSym}{\mu}                                    						% exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\meanSymUp}{\muup}                                    					% exponential function, exp(x): \e{<arg>}
@@ -135,7 +103,7 @@
 \DeclareMathOperator{\stddevSymUp}{\sigmaup}                                    				% exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\identity}{\mathord{\mathalpha{\mathbbm{I}}}}                            		% Identity matrix symbol
 \DeclareMathOperator{\indicator}{\mathbbs{1}\kern\z@}         							% Indicator function symbol
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
 \DeclareMathOperator{\AlgnumSet}{\numset{A}}                               					% Set of Algebraic #s
 \DeclareMathOperator{\NaturalSet}{\numset{N}}                              					% Set of natural #s
@@ -152,94 +120,93 @@
 \DeclareMathOperator{\RationalSet}{\numset{Q}}                            					% Set of Rational #s
 \DeclareMathOperator{\PosRationalSet}{\numset{Q}[\kern-0.5pt\superscriptPlus]}               		% Set of positive Rational #s
 \DeclareMathOperator{\NegRationalSet}{\numset{Q}[\superscriptMinus]}                         		% Set of negative Rational #s
-
-\DeclareMathOperator{\PowerSet}{\@numset@surrounding{\wp}}                    				% Power set is the set of all subsets of S, including the empty set and S itselfm, Weirstrass				
+\DeclareMathOperator{\PowerSet}{\@numset@surrounding{\wp}}                    				% Set of all subsets of S, including empty and S itself, Weirstrass
 \DeclareMathOperator{\AlphabetSet}{\@numset@surrounding{\bbSigma}}                    			% Alphabet used in constructing words of a (formal) language
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
 \DeclareMathOperator{\Algnums}{\numset{A}}                              					% Set of Algebraic #s
 \DeclareMathOperator{\Naturals}{\numset{N}}                              					% Set of natural #s
 \DeclareMathOperator{\PosNaturals}{\numset{N}[\kern-0.5pt\superscriptPlus]}                   		% Set of positive natural #s
 \DeclareMathOperator{\NegNaturals}{\numset{N}[\superscriptMinus]}                 				% Set of negative natural #s
 \DeclareMathOperator{\Integers}{\mathord{\numset{Z}}}                              				% Set of integer #s
-\DeclareMathOperator{\PosIntegers}{\mathord{\numset{Z}[\kern-0.5pt\superscriptPlus]}}                % Set of positive integer #s
-\DeclareMathOperator{\NegIntegers}{\mathord{\numset{Z}[\superscriptMinus]}}                    	% Set of negative integer #s
+\DeclareMathOperator{\PosIntegers}{\mathord{\numset{Z}[\kern-0.5pt\superscriptPlus]}}                	% Set of positive integer #s
+\DeclareMathOperator{\NegIntegers}{\mathord{\numset{Z}[\superscriptMinus]}}                    		% Set of negative integer #s
 \DeclareMathOperator{\ModIntegers}{\mathord{\numset*{Z}[\scriptstyle\kern-0.5pt\mathrm{n}]}}		% Set of integer #s (mod) n, i.e., {[0], [1], [2], ...[n−1]}
 \DeclareMathOperator{\Complexs}{\mathord{\numset{C}}}                    					% Set of rational #s
 \DeclareMathOperator{\Reals}{\mathord{\numset{R}}}                                 				% Set of Real #s
 \DeclareMathOperator{\PosReals}{\mathord{\numset{R}[\kern-0.5pt\superscriptPlus]}}      			% Set of positive Real #s
 \DeclareMathOperator{\NegReals}{\mathord{\numset{R}[\superscriptMinus]}}                      		% Set of negative Real #s
 \DeclareMathOperator{\Rationals}{\mathord{\numset{Q}}}                            				% Set of Rational #s
-\DeclareMathOperator{\PosRationals}{\mathord{\numset{Q}[\kern-0.5pt\superscriptPlus]}}               % Set of positive Rational #s
+\DeclareMathOperator{\PosRationals}{\mathord{\numset{Q}[\kern-0.5pt\superscriptPlus]}}               	% Set of positive Rational #s
 \DeclareMathOperator{\NegRationals}{\mathord{\numset{Q}[\superscriptMinus]}}                  		% Set of negative Rational #s
 \DeclareMathOperator{\Alphabet}{\mathord{\bbSigma}}                    						% Alphabet used in constructing words of a (formal) language
-\DeclareMathOperator{\Language}{\mathord{\numset{\bbSigma}[\kern1.25pt\@math@super@script{\ast}]}}	% (Formal) Language which contains words constructed from elements of the alphabet (Sigma)
+\DeclareMathOperator{\Language}{\mathord{\numset{\bbSigma}[\kern1.25pt\@math@super@script{\ast}]}}	% (Formal) Language: words built from elements of the alphabet (Sigma)
 \DeclareMathOperator{\ProjSpace}{\mathord{\numset{P}}}                    					% Projective space					
 \DeclareMathOperator{\Quaternions}{{\mathbb{H}}}                   						% Quaternions
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Define math operators given as text
-\DeclareMathOperator{\exponentialText}{exp}                                             		% exponential function written as text symbol: exp(x)
-\DeclareMathOperator{\trText}{Tr}                                             			% The 'trace' of a matrix
-\DeclareMathOperator{\varText}{var}                                           			% 'Variance' of a random variable/vector written as "var A"
-\DeclareMathOperator{\detText}{det}                                           			% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\supText}{sup}                                           			% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\infText}{inf}                                           			% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\erfText}{erf}                                           			% 'Error function' written as "erf(x)"
-\DeclareMathOperator{\erfiText}{erfi}                                           			% 'Imaginary error function' written as "erf(x)"
+\DeclareMathOperator{\exponentialText}{exp}                                             			% exponential function written as text symbol: exp(x)
+\DeclareMathOperator{\trText}{Tr}                                             				% The 'trace' of a matrix
+\DeclareMathOperator{\varText}{var}                                           				% 'Variance' of a random variable/vector written as "var A"
+\DeclareMathOperator{\detText}{det}                                           				% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\supText}{sup}                                           				% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\infText}{inf}                                           				% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\erfText}{erf}                                           				% 'Error function' written as "erf(x)"
+\DeclareMathOperator{\erfiText}{erfi}                                           				% 'Imaginary error function' written as "erf(x)"
 \DeclareMathOperator{\rectText}{rect}											% Rectangular function text symbol
 \DeclareMathOperator{\sincText}{sinc}											% Sinc function text symbol
 \DeclareMathOperator{\jincText}{jinc}											% Jinc function text symbol
-\DeclareMathOperator{\signumText}{signum}										% Signum function text symbol
+\DeclareMathOperator{\signumText}{signum}											% Signum function text symbol
 \DeclareMathOperator{\signText}{sign}											% Sign function text symbol
-\DeclareMathOperator{\sgnText}{sgn}											% Alternative sign function text symbol
-\DeclareMathOperator{\lcmText}{lcm}											% Lowest common multiple (LCM)
-\DeclareMathOperator{\lcdText}{lcd}											% Lowest common denominator (LCD)
-
+\DeclareMathOperator{\sgnText}{sgn}												% Alternative sign function text symbol
+\DeclareMathOperator{\lcmText}{lcm}												% Lowest common multiple (LCM)
+\DeclareMathOperator{\lcdText}{lcd}												% Lowest common denominator (LCD)
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Forward/Inverse linear transformation operators
-\DeclareMathOperator{\Fourier}{\mathbick{F}}                                 				% Fourier transform symbol
-\DeclareMathOperator{\DFourier}{\Fourier\@ss@style\kern-4pt_D}						% Discrete Fourier transform symbol
-\DeclareMathOperator{\DTFourier}{\Fourier\@ss@style\kern-4pt_{DT}}					% Discrete Time Fourier transform symbol
-\DeclareMathOperator{\FourierSlant}{\mathrsfso{F}}                            			% Alternative Fourier transform symbol
-\DeclareMathOperator{\FTpairSym}{\overset{\Fourier}{\longleftrightarrow}}				% Fourier transform pair symbol
-\DeclareMathOperator{\Laplace}{\mathbick{L}}                                 				% Laplace transform symbol
-\DeclareMathOperator{\LaplaceSlant}{\mathrsfso{L}}                            			% Alternative Laplace transform symbol
-\DeclareMathOperator{\Radon}{\mathbick{R}}									% Radon transform symbol
-\DeclareMathOperator{\ZTsym}{\mathcalst{Z}}                                 				% z-transform symbol
-\DeclareMathOperator{\ZTpair}{\;\;\overset{\ZTsym}{\longleftrightarrow}\;\;}				% z-transform pair symbol
-
-\DeclareMathOperator{\iFourier}{\Fourier^{-1}}                                 			% Inverse Fourier transform symbol
-\DeclareMathOperator{\iLaplace}{\Laplace^{-1}}                                			% Inverse Laplace transform symbol
-\DeclareMathOperator{\iDFourier}{\DFourier^{-1}}								% Inverse Discrete Fourier transform symbol
-\DeclareMathOperator{\iDTFourier}{\DTFourier^{-1}}								% Inverse Discrete Time Fourier transform symbol
-\DeclareMathOperator{\iRadon}{\Radon^{-1}}									% Inverse Radon transform symbol
-\DeclareMathOperator{\iZTsym}{\ZTsym^{-1}}                                 				% Inverse z-transform pair symbol
-
-\DeclareMathOperator{\tDFourier}{\mathsfst{DFT}}								% Text Symbol for Discrete Fourier transform
-\DeclareMathOperator{\tDTFourier}{\mathsfst{DTFT}}								% Text Symbol for Discrete Time Fourier transform
-\DeclareMathOperator{\tiDFourier}{\tDFourier^{-1}}								% Text Symbol for Inverse Discrete Fourier transform
-\DeclareMathOperator{\tiDTFourier}{\tDTFourier^{-1}}								% Text Symbol for Inverse Discrete Time Fourier transform
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Delimeter Commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}		% Enclose argument in parentheses
-\DeclarePairedDelimiterX\bracketed[1]{\lbrack}{\rbrack}{\mathop{#1}\mathopen{}}			% Enclose argument in square brackets
-\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathop{#1}\mathopen{}}				% Enclose argument in curly braces
-\DeclarePairedDelimiterX\verted[1]{\lvert}{\rvert}{\mathop{#1}\mathopen{}}				% Enclose argument in vertical bars
-\DeclarePairedDelimiterX\angled[1]{\langle}{\rangle}{\mathop{{#1}}\mathopen{}}			% Enclose argument in angle brackets
-\DeclarePairedDelimiterX\bra[1]{\langle}{\rvert}{\@delimiter@surrounding{\mathop{#1}}}		% 'Bra'' indicating (typically prior) quantum mechanical state
-\DeclarePairedDelimiterX\ket[1]{\lvert}{\rangle}{\,\mathop{#1}\,}						% 'Ket'' indicating (typically next) quantum mechanical state
-\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,}	% A	mplitude (inner product) between 2 quantum mechanical 2 states
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\reDeclarePairedDelimiterInnerWrapper\parenthesized{star}{\mathinner{#1\mathord{#2}#3}}		% Automatically scale parentheses to match argument
-\reDeclarePairedDelimiterInnerWrapper\bracketed{star}{\mathinner{#1#2#3}}				% Automatically scale square brackets to match argument
-\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1#2#3}}					% Automatically scale curly braces to match argument
-\reDeclarePairedDelimiterInnerWrapper\verted{star}{\mathinner{#1#2#3}}					% Automatically scale vertical bars to match argument
-\reDeclarePairedDelimiterInnerWrapper\angled{star}{\mathinner{#1#2#3}}					% Automatically scale angle brackets to match argument
-\reDeclarePairedDelimiterInnerWrapper\bra{star}{\mathinner{#1#2#3}}					% Automatically scale bra to match argument
-\reDeclarePairedDelimiterInnerWrapper\ket{star}{\mathinner{#1#2#3}}					% Automatically scale ket to match argument
-\reDeclarePairedDelimiterInnerWrapper\braket{star}{\mathinner{#1#2#3}}					% Automatically scale braket to match argument
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareMathOperator{\Fourier}{\mathbick{F}}                                 					% Fourier transform symbol
+\DeclareMathOperator{\DFourier}{\Fourier\@ss@style\kern-4pt_D}							% Discrete Fourier transform symbol
+\DeclareMathOperator{\DTFourier}{\Fourier\@ss@style\kern-4pt_{DT}}						% Discrete Time Fourier transform symbol
+\DeclareMathOperator{\FourierSlant}{\mathrsfso{F}}                            				% Alternative Fourier transform symbol
+\DeclareMathOperator{\FTpairSym}{\overset{\Fourier}{\longleftrightarrow}}					% Fourier transform pair symbol
+\DeclareMathOperator{\Laplace}{\mathbick{L}}                                 					% Laplace transform symbol
+\DeclareMathOperator{\LaplaceSlant}{\mathrsfso{L}}                            				% Alternative Laplace transform symbol
+\DeclareMathOperator{\Radon}{\mathbick{R}}										% Radon transform symbol
+\DeclareMathOperator{\ZTsym}{\mathcalst{Z}}                                 					% z-transform symbol
+\DeclareMathOperator{\ZTpair}{\;\;\overset{\ZTsym}{\longleftrightarrow}\;\;}					% z-transform pair symbol
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareMathOperator{\iFourier}{\Fourier^{-1}}                                 				% Inverse Fourier transform symbol
+\DeclareMathOperator{\iLaplace}{\Laplace^{-1}}                                				% Inverse Laplace transform symbol
+\DeclareMathOperator{\iDFourier}{\DFourier^{-1}}									% Inverse Discrete Fourier transform symbol
+\DeclareMathOperator{\iDTFourier}{\DTFourier^{-1}}									% Inverse Discrete Time Fourier transform symbol
+\DeclareMathOperator{\iRadon}{\Radon^{-1}}										% Inverse Radon transform symbol
+\DeclareMathOperator{\iZTsym}{\ZTsym^{-1}}                                 					% Inverse z-transform pair symbol
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareMathOperator{\tDFourier}{\mathsfst{DFT}}									% Text Symbol for Discrete Fourier transform
+\DeclareMathOperator{\tDTFourier}{\mathsfst{DTFT}}									% Text Symbol for Discrete Time Fourier transform
+\DeclareMathOperator{\tiDFourier}{\tDFourier^{-1}}									% Text Symbol for Inverse Discrete Fourier transform
+\DeclareMathOperator{\tiDTFourier}{\tDTFourier^{-1}}									% Text Symbol for Inverse Discrete Time Fourier transform
+%*****************************************************************************************************************************************%
+%***************************************************************** Define Delimeter Commands *****************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}			% Enclose argument in parentheses
+\DeclarePairedDelimiterX\bracketed[1]{\lbrack}{\rbrack}{\mathop{#1}\mathopen{}}				% Enclose argument in square brackets
+\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathop{#1}\mathopen{}}					% Enclose argument in curly braces
+\DeclarePairedDelimiterX\verted[1]{\lvert}{\rvert}{\mathop{#1}\mathopen{}}					% Enclose argument in vertical bars
+\DeclarePairedDelimiterX\angled[1]{\langle}{\rangle}{\mathop{{#1}}\mathopen{}}				% Enclose argument in angle brackets
+\DeclarePairedDelimiterX\bra[1]{\langle}{\rvert}{\@delimiter@surrounding{\mathop{#1}}}			% 'Bra'' indicating (typically prior) quantum mechanical state
+\DeclarePairedDelimiterX\ket[1]{\lvert}{\rangle}{\,\mathop{#1}\,}							% 'Ket'' indicating (typically next) quantum mechanical state
+\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,}		% A	mplitude (inner product) between 2 quantum mechanical 2 states
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\reDeclarePairedDelimiterInnerWrapper\parenthesized{star}{\mathinner{#1\mathord{#2}#3}}			% Automatically scale parentheses to match argument
+\reDeclarePairedDelimiterInnerWrapper\bracketed{star}{\mathinner{#1#2#3}}					% Automatically scale square brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1#2#3}}						% Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\verted{star}{\mathinner{#1#2#3}}						% Automatically scale vertical bars to match argument
+\reDeclarePairedDelimiterInnerWrapper\angled{star}{\mathinner{#1#2#3}}						% Automatically scale angle brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\bra{star}{\mathinner{#1#2#3}}						% Automatically scale bra to match argument
+\reDeclarePairedDelimiterInnerWrapper\ket{star}{\mathinner{#1#2#3}}						% Automatically scale ket to match argument
+\reDeclarePairedDelimiterInnerWrapper\braket{star}{\mathinner{#1#2#3}}						% Automatically scale braket to match argument
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Generate p-norm delimiters with 2 closely spaced 'vert' symbols.  Automatic delimiter scaling of the standard double vert symbol (\Vert) for large arguments
 % unfortunately results in an increase in the separation between the 2 vertical bars.  Hence, the double vert is constructed from 2 individual vert symbols with
 % the scaling applied to each vert bar individually and their spacing remains constant for all arguments.
@@ -261,25 +228,25 @@
 {\@place@norm@verts}
 {\kern-1.2pt\@place@norm@verts}
 {#1}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}
-\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}
-\newcommand{\bmath}[1]{$\boldsymbol{#1}$}
-\newcommand{\abs}[1]{\verted*{#1}}
-\newcommand{\timeavg}[1]{\angled*{#1}}
-\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}
+%*****************************************************************************************************************************************%
+%***************************************** Definition of various set/symbol, operator, vector/matrix, etc. commands ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}							% Raises argument #2 by distance #1 with appropriate style (#2)
+\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}						% Wrapper for \raisem@th
+\newcommand{\bmath}[1]{$\boldsymbol{#1}$}									% Insertion of bold math symbol/expression inside text mode
+\newcommand{\abs}[1]{\verted*{#1}}										% Absolute value operator
+\newcommand{\timeavg}[1]{\angled*{#1}}									% Time average of random variable	
+\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}						% Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
 \newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                          	% Identity matrix with dimensions included
-\newcommand{\ink}[1]{\in^{#1}}
-\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}
-\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}
-
+\newcommand{\ink}[1]{\in^{#1}}										% k-th order set membership symbol
+\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}								% NOT IN k-th order set membership symbol
+\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}						% Defines set { #1 | #2 }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %Define default, bold, hat, and wide hat vectors
 \newcommand{\matx}[1]{\mathord{\mathbf{#1}}}
 \newcommand{\bmatx}[1]{\boldsymbol{\matx{#1}}}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Place symbols above/below arrows
 \newcommand{\overrarrow}[1]{{\buildrel{#1}\over\longrightarrow\;}}
 \newcommand{\overlarrow}[1]{{\buildrel{#1}\over\longleftarrow\;}}
@@ -287,26 +254,23 @@
 \newcommand{\underrarrow}[1]{{\buildrel{#1}\under\longrightarrow\;}}
 \newcommand{\underlarrow}[1]{{\buildrel{#1}\under\longleftarrow\;}}
 \newcommand{\underdarrow}[1]{{\buildrel{#1}\under\longleftrightarrow\;}}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Adjust the size of the dot on dot/ddot/dddot/ddddot commands, particularly for use with matrices
 \newcommand\dotmtx[2]{\savebox{\@macro@savebox}{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}\scaleobj{#1}{\dot{\raisebox{0pt}[\ht\@macro@savebox]{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}}}}
 \newcommand\ddotmtx[2]{\savebox{\@macro@savebox}{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}\scaleobj{#1}{\ddot{\raisebox{0pt}[\ht\@macro@savebox]{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}}}}
 \newcommand\dddotmtx[2]{\savebox{\@macro@savebox}{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}\scaleobj{#1}{\dddot{\raisebox{0pt}[\ht\@macro@savebox]{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}}}}
 \newcommand\ddddotmtx[2]{\savebox{\@macro@savebox}{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}\scaleobj{#1}{\ddddot{\raisebox{0pt}[\ht\@macro@savebox]{$\FPeval{\result}{1/#1}\scaleobj{\result}{#2}$}}}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Accent and Symbol Combination Commands %%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % Fix dot placement and raised argument issues with dddot, ddddot, ...
 \renewcommand{\dddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont ...}\vss}}}}
 \renewcommand{\ddddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont....}\vss}}}}
 \renewcommand{\ddddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont....}\vss}}}}
 \renewcommand{\ddddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont....}\vss}}}}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Accent and Symbol Combination Commands %%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\xyplane}{s}{\IfBooleanTF{#1}{\bfseries$\boldsymbol{xy-}$plane}{$xy-$plane}\unskip}
+%*****************************************************************************************************************************************%
+%*************************************************************** Set/symbol/measure operators ****************************************************************%
+%*****************************************************************************************************************************************%
 %\mathord \mathop \mathbin \mathrel  \mathopen \mathclose \mathpunct
 \DeclareDocumentCommand{\numset}{s O{\mathbb} m o}
 {
@@ -320,7 +284,7 @@
 			{#2{#3}}
 	}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\isin}{O{\mathbb} m o}
 {
 	\mathop
@@ -330,7 +294,7 @@
 			{#1{#2}}
 	}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\mean}{s o m}
 {	
 	\IfBooleanTF{#1}
@@ -342,14 +306,14 @@
 		{#2{\@mean@arg}_{\scriptstyle\kern-0.5pt#3}}
 		{\@mean@arg_{\scriptstyle\kern-0.5pt#3}}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\variance}{s m}
 {
 	\IfBooleanTF{#1}
 		{\stddevSym_{\scriptstyle\kern-0.5pt#2}^2}
 		{\stddevSymUp_{\scriptstyle\kern-0.5pt#2}^2}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\pnorm}{m o}
 {
 	\mathop
@@ -367,36 +331,36 @@
 		}{}%
 	}%
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\e}{s m}
 {
 	\IfBooleanTF{#1}
 		{\exp{#2}}
 		{\mathop{\exponentialSym}^{\scriptstyle#2}}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\E}{s O{\bracketed} m}
 	{\mathord{\mathbbm{E}\mathopen{}#2*{#3}}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\inprod}{m m}
 	{\angled*{#1\@set@inprod@comma@pos{#1}{#2}{,}\,#2}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tpose}{m}
 	{\matx{#1}^{\@math@super@script{T}}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\Herm}{m}
 	{\matx{#1}^{\@math@super@script{ H}}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\dagmatx}{m}
 	{\matx{#1}^{\@math@super@script{\dagger}}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%******************************************************************** Function operators *********************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\mathOp}{m m m}
 	{\mathop{#1}\mathopen{}#2*{#3}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\rect}{s O{\parenthesized} m}
 	{\mathOp{\sqcap}{#2}{#3}}
 \DeclareDocumentCommand{\tri}{s O{\parenthesized} m}
@@ -407,13 +371,38 @@
 	{\mathOp{\mathcal{#2}}{#3}{#4}}
 \DeclareDocumentCommand{\normpdf}{s O{\parenthesized} m}
 	{\mathOp{\mathcal{N}}{#2}{#3}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Replacement for {n\choose k} with improved usage (does not require {...}) and improved vertical placement and separation of n/k
+\DeclareDocumentCommand{\nchoosek}{m m}
+{
+	\settoheight\@top@binom@height{$\displaystyle #1$}
+	\settoheight\@bottom@binom@height{$\displaystyle #2$}
+	\def\@top@arg@diff{\dimexpr\@top@binom@height-\@height@of@x\relax}
+	\def\@bottom@arg@diff{\dimexpr\@bottom@binom@height-\@height@of@x\relax}
+	\def\@top@rule@skip{\dimexpr\@top@arg@diff/2 + \@bottom@arg@diff/2\relax}
+	\def\@the@operand%
+	{%
+		\begin{array}{c}
+        		#1\\[2\@top@rule@skip]
+        		#2
+    		\end{array}%
+    	}
+    	\pgfmathsetmacro\@tot@ht{1.5 * (\@top@binom@height + \@bottom@binom@height + 2\@top@rule@skip + 2mm)}
+	\raisebox
+		{-\dimexpr\@bottom@binom@height - 0.7mm + (\@top@binom@height - \@bottom@binom@height)/5\relax}
+		{\hstretch{2.0}{\stretchto{\lparen}{\@tot@ht pt}}}
+	\kern-1.95mm\@the@operand\kern-1.95mm
+	\raisebox
+		{-\dimexpr\@bottom@binom@height - 0.7mm + (\@top@binom@height - \@bottom@binom@height)/5\relax}
+		{\hstretch{2.0}{\stretchto{\rparen}{\@tot@ht pt}}}
+}
+%*****************************************************************************************************************************************%
+%************************************************** Text operator w/ paired delimiter options definitions ****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\textOp}{m m m t'}
 	{\mathop{\text{#1}}\mathopen{}#2*{#3}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\erf}{s O{\parenthesized} m}
 	{\textOp{erf}{#2}{#3}}
 \DeclareDocumentCommand{\erfi}{s O{\parenthesized} m}
@@ -448,7 +437,7 @@
 	{\textOp{atan}{#2}{#3}}
 \DeclareDocumentCommand{\acot}{s O{\parenthesized} m}
 	{\textOp{acot}{#2}{#3}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\sinh}{s O{\parenthesized} m}
 	{\textOp{sinh}{#2}{#3}}
 \DeclareDocumentCommand{\cosh}{s O{\parenthesized} m}
@@ -461,7 +450,7 @@
 	{\textOp{sech}{#2}{#3}}
 \DeclareDocumentCommand{\csch}{s O{\parenthesized} m}
 	{\textOp{csch}{#2}{#3}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\asinh}{s O{\parenthesized} m}
 	{\textOp{asinh}{#2}{#3}}
 \DeclareDocumentCommand{\acosh}{s O{\parenthesized} m}
@@ -474,7 +463,7 @@
 	{\textOp{asech}{#2}{#3}}
 \DeclareDocumentCommand{\acsch}{s O{\parenthesized} m}
 	{\textOp{acsch}{#2}{#3}}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\ln}{s O{\parenthesized} m}
 	{\textOp{ln}{#2}{#3}}
 \DeclareDocumentCommand{\exp}{s O{\parenthesized} m}
@@ -495,16 +484,17 @@
 	{\textOp{log}{#2}{#3}}
 \DeclareDocumentCommand{\log}{s O{\parenthesized} m}
 	{\textOp{log}{#2}{#3}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%*****************************************************************************************************************************************%
+%************************************************************** Transform Operator Definitions ***************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\txformOp}{s m m O{} m m}
 {
 	\IfBooleanTF{#1}
 		{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}
 		{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 % \<op name>[*(use alt symbol?)][<override default brace delimiters>]{<argument>}
 \DeclareDocumentCommand{\ft}{s O{\braced} m}
 {
@@ -578,34 +568,10 @@
 		{\txformOp*{mathcal}{R}[^{\kern-0.5pt\inverseSym}\kern-1.5pt]{#2}{#3}}
 		{\txformOp{mathcalst}{R}[^{\inverseSym}\kern-1.5pt]{#2}{#3}}
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Replacement for {n\choose k} with improved usage (does not require {...}) and improved vertical placement and separation of n/k
-\DeclareDocumentCommand{\nchoosek}{m m}
-{
-	\settoheight\@top@binom@height{$\displaystyle #1$}
-	\settoheight\@bottom@binom@height{$\displaystyle #2$}
-	\def\@top@arg@diff{\dimexpr\@top@binom@height-\@height@of@x\relax}
-	\def\@bottom@arg@diff{\dimexpr\@bottom@binom@height-\@height@of@x\relax}
-	\def\@top@rule@skip{\dimexpr\@top@arg@diff/2 + \@bottom@arg@diff/2\relax}
-	\def\@the@operand%
-	{%
-		\begin{array}{c}
-        		#1\\[2\@top@rule@skip]
-        		#2
-    		\end{array}%
-    	}
-    	\pgfmathsetmacro\@tot@ht{1.5 * (\@top@binom@height + \@bottom@binom@height + 2\@top@rule@skip + 2mm)}
-	\raisebox
-		{-\dimexpr\@bottom@binom@height - 0.7mm + (\@top@binom@height - \@bottom@binom@height)/5\relax}
-		{\hstretch{2.0}{\stretchto{\lparen}{\@tot@ht pt}}}
-	\kern-1.95mm\@the@operand\kern-1.95mm
-	\raisebox
-		{-\dimexpr\@bottom@binom@height - 0.7mm + (\@top@binom@height - \@bottom@binom@height)/5\relax}
-		{\hstretch{2.0}{\stretchto{\rparen}{\@tot@ht pt}}}
-}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%******************************************************* Configuration/setup/component helper commands *******************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@inprod@comma@pos}{m m m}
 {
     \begingroup
@@ -620,8 +586,164 @@
         \fi
     \endgroup
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%                                     1 2  3 4            5 6 7   8 9 
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@add@IBP@node}{m}
+{%\renewcommand{\baselinestretch}{1.5}%
+    	\tikz[overlay, remember picture, baseline] \node (#1) {};}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\addIBProw}{m m s}
+{
+    	%\renewcommand{\baselinestretch}{1.5}%
+    	\IfBooleanTF{#3}
+    	{
+        	\textstyle#1\quad
+        	&\@add@IBP@node{Left \the\numexpr\value{@IBP@rows@counter}+1\relax}
+        	&\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+2\relax}
+        	\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+1\relax}
+        	&\textstyle#2
+    	}
+    	{
+        	\textstyle#1\quad
+        	&\@add@IBP@node{Left \the\numexpr\value{@IBP@rows@counter}+1\relax}
+        	&\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+1\relax}
+		&\textstyle#2
+    	}
+	\addtocounter{@IBP@rows@counter}{1}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@add@arrow@sign}{m}
+{
+	%\renewcommand{\baselinestretch}{1.5}%
+    	node [#1] \bgroup
+    	\iftoggle{@add@sub@TF}
+    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
+    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@draw@IBP@arrows}{}
+{%
+	%\renewcommand{\baselinestretch}{1.5}%
+    	\begin{tikzpicture}[overlay, remember picture]
+		\toggletrue{@add@sub@TF}
+		\forloop[1]{@current@IBP@row@counter}{1}{\value{@current@IBP@row@counter} < \value{@IBP@rows@counter}}
+		{
+		    	\draw[IBPdiagArrows]
+		        	($(Left \the\value{@current@IBP@row@counter}.west)+(\@diag@IBP@arrows@leftXShift, \@diag@IBP@arrows@leftYShift)$)
+		        	--
+		        	($(Right \the\numexpr\value{@current@IBP@row@counter}+1\relax.east)+(-\@diag@IBP@arrows@rightXShift, \@diag@IBP@arrows@rightYShift)$)
+		    	\@add@arrow@sign{above, midway}	
+		}
+		\draw[IBPhorizArrows]
+		    ($(Right \the\numexpr\value{@current@IBP@row@counter}+1\relax.west)+(\@horiz@IBP@arrows@rightXShift, \@horiz@IBP@arrows@yShift)$)
+		    --
+		    ($(Left \the\value{@current@IBP@row@counter}.east)+(-\@horiz@IBP@arrows@leftXShift, \@horiz@IBP@arrows@yShift)$)
+		\@add@arrow@sign{below, pos=0.41}
+    \end{tikzpicture}
+}
+%*****************************************************************************************************************************************%
+%************************************************************* New/Modified Cases Environments ***************************************************************%
+%*****************************************************************************************************************************************%
+% Add spacing after left brace in dcases environment
+\newcases{sdcases}{\quad}{%
+  $\m@th\displaystyle{\;##}$\hfil}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
+\newcases{sdcases*}{\quad}{%
+  $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
+\renewcases{dcases}{\quad}{%
+  $\m@th\displaystyle{\;##}$\hfil}{$\m@th\displaystyle{##}$\hfil}{\lbrace}{.}
+\renewcases{dcases*}{\quad}{%
+  $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
+%*****************************************************************************************************************************************%
+%*************************************************** New math environments and environment-like commands *****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Equivalent to align/align* environment but with math content automatically made bold
+\DeclareDocumentEnvironment{boldAMS}{s O{alignat}}
+	{\boldmath\IfBooleanTF{#1}{\csname #2*\endcsname}{\csname #2\endcsname}}
+	{\IfBooleanTF{#1}{\csname end#2*\endcsname}{\csname end#2\endcsname}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Equivalent to align/align* environment but with math content automatically made bold
+\DeclareDocumentEnvironment{boldalign}{s}
+	{\boldmath\IfBooleanTF{#1}{\csname align*\endcsname}{\align}}
+	{\IfBooleanTF{#1}{\csname endalign*\endcsname}{\endalign}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% Equivalent to alignat/alignat* environment but with math content automatically made bold
+\DeclareDocumentEnvironment{boldalignat}{s}
+	{\boldmath\IfBooleanTF{#1}{\csname alignat*\endcsname{2}}{\alignat{2}}}
+	{\IfBooleanTF{#1}{\csname endalignat*\endcsname}{\endalignat}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%% Generates table for the 'tabular method' of 'integration by parts' (IBP), saving the position of each table entry as a tikz node using tikz's
+%% 'remember picture' capability, then connecting the nodes with the appropriate IBP arrows.  The resulting IBP table is then given a color
+%% background and enclosing it in a color frame box.
+\newenviron{tcbIBP}[4][]
+{%
+	\setlength\doublerulesep{0pt}
+	\setlength{\arrayrulewidth}{0.75pt}
+	\setcounter{@IBP@rows@counter}{0}
+    	\tcbsetcurrentcolors{IBPstyle}
+	\setstretch{1.5}
+    	\arrayrulecolor{IBPstyle-coldraw}%
+	\if\relax\detokenize{#1}\relax	
+       	\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{\int #2#3#4}}}
+    	\else
+    		\ifstrequal{#1}{*}
+    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){}}}
+    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{#1}}}}
+	\fi	
+	\boxedtable[IBPstyle, blend before title code={\shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}}]
+		{\space}{Integration by Parts Table \arabic{table}}
+		\centering
+		\tabular{>{$}c<{$} c @{\hskip 2.5cm} c  >{$}c<{$}}%
+			\boldsymbol{u} && &\boldsymbol{dv}\\[-0.2em]%
+	            \hline\arrayrulecolor{IBPstyle-rulecolor}\hline\arrayrulecolor{IBPstyle-coldraw}\hline\\[-1.5em]%
+	            \addIBProw{#2}{#3}\\
+	            \tcbIBPbody%
+		\endtabular%
+}{
+	\endboxedtable%
+    	\@draw@IBP@arrows%
+    	%\patchcmd\fnum@table{\thetable}{\arabic{table}}{}{}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+% From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
+\DeclareDocumentCommand{\longdiv}{m m}
+{
+ 	\vtop
+ 	{
+	 	\normalbaselines \offinterlineskip
+	   	\setbox\strutbox\hbox{\vrule height 2.1ex depth .5ex width0ex}%
+	   	\def\showdig{$\underline{\the\LDscratch\strut}$\cr\the\rtot\strut\cr\noalign{\kern-.2ex}}%
+	   	\global\rtot=#1\relax
+	   	\count0=\rtot\divide\count0by#2\edef\quotient{\the\count0}%\show\quotient
+	   	% make list macro out of digits in quotient:
+	   	\def\temp##1{\ifx##1\temp\else \noexpand\dodig ##1\expandafter\temp\fi}%
+	   	\edef\routine{\expandafter\temp\quotient\temp}%
+	   	% process list to give power-of-ten:
+	   	\def\dodig##1{\global\multiply\gpten by10 }\global\gpten=1 \routine
+	   	% to display effect of one digit in quotient (zero ignored):
+	   	\def\dodig##1%
+	   	{
+	   		\global\divide\gpten by10
+	      	\LDscratch =\gpten
+	      	\multiply\LDscratch  by##1%
+	      	\multiply\LDscratch  by#2
+	      	\global\advance\rtot-\LDscratch \relax
+	      	\ifnum\LDscratch>0 \showdig \fi % must hide \cr in a macro to skip it
+	   	}
+	   	\tabskip=0pt
+	   	\halign
+	   	{
+	   		\hfil##\cr % \halign for entire division problem
+	     		$\quotient$\strut\cr%
+	     		#2$\,\overline{\vphantom{\big)}%
+	     		\hbox{\smash{\raise3.5\fontdimen8\textfont3\hbox{$\big)$}}%
+	     	}
+	     	\mkern2mu \the\rtot
+     	}
+     	$\cr\noalign{\kern-.2ex}
+     	\routine \cr % do each digit in quotient
+}}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                     1 2  3 4            5 6 7   8 9
 \DeclareDocumentCommand{\polyDivision}{s t` o D(){\rparen} m m d() o s}
 {
 	\IfBooleanTF{#1}%
@@ -683,50 +805,11 @@
 	\@reset@ul@settings
 	\tcbset{reset}
 }
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-% From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
-\DeclareDocumentCommand{\longdiv}{m m}
-{
- 	\vtop
- 	{
-	 	\normalbaselines \offinterlineskip
-	   	\setbox\strutbox\hbox{\vrule height 2.1ex depth .5ex width0ex}%
-	   	\def\showdig{$\underline{\the\LDscratch\strut}$\cr\the\rtot\strut\cr\noalign{\kern-.2ex}}%
-	   	\global\rtot=#1\relax
-	   	\count0=\rtot\divide\count0by#2\edef\quotient{\the\count0}%\show\quotient
-	   	% make list macro out of digits in quotient:
-	   	\def\temp##1{\ifx##1\temp\else \noexpand\dodig ##1\expandafter\temp\fi}%
-	   	\edef\routine{\expandafter\temp\quotient\temp}%
-	   	% process list to give power-of-ten:
-	   	\def\dodig##1{\global\multiply\gpten by10 }\global\gpten=1 \routine
-	   	% to display effect of one digit in quotient (zero ignored):
-	   	\def\dodig##1%
-	   	{
-	   		\global\divide\gpten by10
-	      	\LDscratch =\gpten
-	      	\multiply\LDscratch  by##1%
-	      	\multiply\LDscratch  by#2
-	      	\global\advance\rtot-\LDscratch \relax
-	      	\ifnum\LDscratch>0 \showdig \fi % must hide \cr in a macro to skip it
-	   	}
-	   	\tabskip=0pt
-	   	\halign
-	   	{
-	   		\hfil##\cr % \halign for entire division problem
-	     		$\quotient$\strut\cr%
-	     		#2$\,\overline{\vphantom{\big)}%
-	     		\hbox{\smash{\raise3.5\fontdimen8\textfont3\hbox{$\big)$}}%
-	     	}
-	     	\mkern2mu \the\rtot
-     	}
-     	$\cr\noalign{\kern-.2ex}
-     	\routine \cr % do each digit in quotient
-}}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% End of definitionStyle/settings and development %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used
-% in macro names/definitionStyle
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%*************************************************************** End of 'my-math.sty' package ***************************************************************%
+%*****************************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
 %\catcode`\:=12
-\endinput 
+\endinput

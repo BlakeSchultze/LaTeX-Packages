@@ -1,50 +1,53 @@
-%%
-%% This is file `my-imakeidx.sty',
-%% generated with the docstrip utility.
-%%
-%% The original source files were:
-%%
-%% my-imakeidx.dtx  (with options: `package')
-%%   ___________________________________________________________
-%%   The my-imakeidx package for LaTeX
-%%   Copyright (C) 2010-2013 Enrico Gregorio
-%%   All rights reserved
-%%
-%%   License information appended
-%%
+%*****************************************************************************************************************************************%
+%********************************************************** `my-imakeidx.sty' ************************************************************%
+%*****************************************************************************************************************************************%
+% This is an adaptation of the 'imakeidx' package, used to generate a document's "Index" and print it with the other back matter materials, e.g. the
+% 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-imakeidx}%
-   [2013/07/11 v1.3a Package for typesetting indices in a synchronous mode]
-
-
-
-
-
+\ProvidesPackage{my-imakeidx}
 \RequirePackage{xkeyval}
+\RequirePackage{ifxetex,ifluatex}
+\RequirePackage{xpatch}
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newif\ifimki@disableautomatic
+\newif\ifimki@nonewpage
+\newif\ifimki@splitindex
+\newif\ifimki@original
 \DeclareOption{xindy}{\def\imki@progdefault{texindy}}
 \DeclareOption{texindy}{\def\imki@progdefault{texindy}}
 \DeclareOption{truexindy}{\def\imki@progdefault{truexindy}}
 \DeclareOption{makeindex}{\def\imki@progdefault{makeindex}}
-\newif\ifimki@disableautomatic
 \DeclareOption{noautomatic}{\imki@disableautomatictrue}
-\newif\ifimki@nonewpage
 \DeclareOption{nonewpage}{%
   \imki@nonewpagetrue\imki@disableautomatictrue
 }
-\newif\ifimki@splitindex
 \DeclareOption{splitindex}{\imki@splitindextrue}
-\newif\ifimki@original
 \DeclareOption{original}{\imki@originaltrue}
 \DeclareOption{quiet}{\AtEndOfPackage{%
   \let\imki@finalmessage\@gobble
   \let\imki@splitindexmessage\relax}}
+\DeclareOption*{\PackageWarning{my-imakeidx}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
 \ExecuteOptions{makeindex}
 \ProcessOptions\relax
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\catcode`\!=12
+%\catcode`|=12
+%\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
 \if@twocolumn\imki@originaltrue\fi
 \def\imki@exec{\immediate\write18}
 \def\imki@engine{(pdf)latex}
-\RequirePackage{ifxetex,ifluatex}
 \ifxetex\def\imki@engine{xelatex}\fi
 \ifluatex % luatex doesn't have \(pdf)shellescape
  \def\imki@engine{lualatex}
@@ -56,7 +59,6 @@
   \fi
   \let\imki@exec\pdf@system
 \fi
-\RequirePackage{xpatch}
 \edef\imki@splitindexoptions{-m \string"\string"}
 \def\splitindexoptions#1{\g@addto@macro\imki@splitindexoptions{ #1}}
 \@onlypreamble\splitindexoptions
@@ -213,12 +215,28 @@
 \fi
 \newif\ifimki@fancyhdr
 \AtBeginDocument{%
-  \@ifpackageloaded{fancyhdr}{\imki@fancyhdrtrue}{\imki@fancyhdrfalse}%
+  \@ifpackageloaded{fancyhdr}{\imki@fancyhdrfalse}{\imki@fancyhdrfalse}%
   \ifimki@fancyhdr
     \patchcmd{\theindex}{\imki@indexheaders}{\relax}{}{}%
-    \patchcmd{\theindex}{\thispagestyle}{\@gobble}{}{}%
+    %\patchcmd{\theindex}{\thispagestyle}{\@gobble}{}{}%
   \fi
 }
+\renewenvironment{theindex}
+{%
+	\vskip\@idx@top@skip
+	\if@twocolumn
+		\@restonecolfalse
+	\else
+		\@restonecoltrue
+	\fi
+	\twocolumn[\@makeschapterhead{\indexname}]%
+	\@mkboth{\MakeUppercase\indexname}{\MakeUppercase\indexname}%
+	\thispagestyle{fancy}\parindent\z@%
+	\parskip\z@ \@plus .3\p@\relax%
+	\columnseprule \z@%
+	\columnsep 35\p@%
+	\let\item\@idxitem
+}{\if@restonecol\onecolumn\else\clearpage\fi}%
 \ifimki@original
  \expandafter\def\expandafter\theindex\expandafter{\expandafter
     \imki@maybeaddtotoc\theindex}
@@ -226,11 +244,14 @@
   \global\let\imki@idxprologue\relax
   \RequirePackage{multicol}
   \renewenvironment{theindex}
-    {\imki@maybeaddtotoc
+    {%
+    	\setlength{\topskip}{0pt}%
+	\vskip\@idx@top@skip%
+	\imki@maybeaddtotoc%
      \imki@indexlevel{\indexname}\imki@indexheaders
      \thispagestyle{\imki@firstpagestyle}%
      \ifnum\imki@columns>\@ne
-       \columnsep \imki@columnsep
+       \columnsep\imki@columnsep
        \ifx\imki@idxprologue\relax
          \begin{multicols}{\imki@columns}
        \else
@@ -271,7 +292,6 @@
 \providecommand*{\printindex}{}
 \renewcommand*{\printindex}[1][\imki@jobname]{%
   \@ifundefined{#1@idxfile}{\imki@error{#1}}{\imki@putindex{#1}}}
-
 \def\imki@error#1{%
   \def\@tempa{#1}\def\@tempb{\imki@jobname}%
   \ifx\@tempa\@tempb
@@ -335,15 +355,18 @@
   \fi
   \ifKV@imki@intoc
     \def\imki@maybeaddtotoc{\@nameuse{phantomsection}%
-      \addcontentsline{toc}{\imki@toclevel}{\imki@title}}%
+      %\addcontentsline{toc}{\imki@toclevel}{\imki@title}
+      }%
   \else
     \def\imki@maybeaddtotoc{}%
   \fi
   \ifx\imki@title\imki@check@indexname\else
-    \def\indexname{\vspace{-5mm}}%
+    %\def\indexname{\imki@title}%
+    %\def\indexname{\vspace{-5mm}}%
+    \def\indexname{}%
   \fi
   \@input@{#1.ind}
-  \let\indexname\imki@indexname % restore \indexname
+  %\let\indexname\imki@indexname % restore \indexname
 }
 
 \newif\ifimki@splitdone
@@ -369,12 +392,15 @@
   \fi
   \ifKV@imki@intoc
     \def\imki@maybeaddtotoc{\@nameuse{phantomsection}%
-      \addcontentsline{toc}{\imki@toclevel}{\imki@title}}%
+      \addcontentsline{toc}{\imki@toclevel}{\imki@title}
+      }%
   \else
     \def\imki@maybeaddtotoc{}%
   \fi
   \ifx\imki@title\imki@check@indexname\else
     \def\indexname{\imki@title}%
+    %\def\indexname{\vspace{-5mm}}%
+    %\def\indexname{}%
   \fi
   \@input@{\imki@jobname-#1.ind}
   \let\indexname\imki@indexname % restore \indexname
@@ -398,17 +424,8 @@
 \fi
 \@ifclassloaded{memoir}{\let\@wrindexm@m\@wrindex
    \AtBeginDocument{\hideindexmarks}}{}
-%%
-%% Copyright 2010--2013 Enrico Gregorio <Enrico dot Gregorio at univr dot it>
-%%
-%% Distributable under the LaTeX Project Public License,
-%% version 1.3c or higher (your choice). The latest version of
-%% this license is at: http://www.latex-project.org/lppl.txt
-%%
-%% This work is "author-maintained"
-%%
-%% This work consists of this file my-imakeidx.dtx, a README file
-%% and the derived files my-imakeidx.sty and my-imakeidx.pdf.
-%%
-%%
-%% End of file `my-imakeidx.sty'.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%*************************************************** End of 'my-imakeidx.sty' package ****************************************************%
+%*****************************************************************************************************************************************%
+% End of file `my-imakeidx.sty'.
