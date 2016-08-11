@@ -61,8 +61,8 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AtBeginDocument
 {%
+	%\setcounter{page}{0}
 	\pagenumbering{arabic}
-	%\setcounter{page}{1}
 	%\addtocontents{lol}{\protect\addvspace{10\p@}}
 	%\IfFileExists{\jobname.gls}
 	%	{\AtEndDocument{\foreach \ext in {glsdefs}{\immediate\write18{cmd /c del \jobname.\ext}}}}
@@ -133,15 +133,20 @@
 % 	gradlines=10000,
 %	gradmidpoint=1
 %}%
-%*****************************************************************************************************************************************%
-%*************************************************************** Plain TeX macro definitions *****************************************************************%
-%*****************************************************************************************************************************************%
-\def\@uni@dept@logo{EngineeringLOGOweb.jpg}
-\def\@uni@logo{Baylor_vert.png}
-\def\@uni@rhead@logo{Baylor_IM_horz.png}
-\def\@header@image@height{25pt}
-\def\@header@image{\includegraphics[height=\@header@image@height]{\@uni@rhead@logo}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@set@currently@inside@indent%
+{%
+    	\gdef\@currently@inside@indent{4.3em}%
+    	\ifcsstrequal{\@currently@inside}{figbox}{\gdef\@currently@inside@indent{2.1em}}{}%
+    	\ifcsstrequal{\@currently@inside}{problems}{\gdef\@currently@inside@indent{2.1em}}{}%
+    	\ifcsstrequal{\@currently@inside}{subproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
+    	\ifcsstrequal{\@currently@inside}{problemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
+    	\ifcsstrequal{\@currently@inside}{subproblemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
+	\ifcsstrequal{\@currently@inside}{problempartssubproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
+}
+%*****************************************************************************************************************************************%
+%***************************************************** Plain TeX macro definitions *******************************************************%
+%*****************************************************************************************************************************************%
 \def\smashtext#1#2{#1#2}
 \def\removetonil#1\xx{}
 \def\@nil{}
@@ -159,169 +164,15 @@
 \def\convertto#1#2{\strip@pt\dimexpr 1#1*65536/\number\dimexpr 1#2}		% Convert value of #1 to units of #2
 \long\def\addto#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\setlength\cftfigindent{4.5em}
-\def\@nomecl@baselinestretch{0.0}						% Effectively sets separation between each abbreviation entry
-\def\@glsl@baselinestretch{1.5}						% Effectively sets separation between each acronym/glossary entry and multiline descriptions
-\def\newpar{\\[-1.5mm]}
-\def\parnoskip{\par\vspace{-\parskip}}
-\def\shrinkparskip{\@macro@length=\parskip\setlength{\parskip}{-0.33em}}
-\def\restoreparskip{\setlength{\parskip}{\@macro@length}}
-\def\@end@macro@spacing{\unskip\ignorespaces}
-\def\@tcbfigbox@figure@sep{\hskip1em\relax}
-\def\@currently@inside{subsection}
-%\def\tcbruleskip{\vskip0.25pt}			% used in
-%\def\@std@depth@skip{\vskip0.5pt}
-%\def\@FS@linespace{\baselinestretch}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@set@currently@inside@indent%
-{%
-    	\gdef\@currently@inside@indent{4.3em}%
-    	\ifcsstrequal{\@currently@inside}{figbox}{\gdef\@currently@inside@indent{2.1em}}{}%
-    	\ifcsstrequal{\@currently@inside}{problems}{\gdef\@currently@inside@indent{2.1em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-    	\ifcsstrequal{\@currently@inside}{problemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-    	\ifcsstrequal{\@currently@inside}{subproblemparts}{\gdef\@currently@inside@indent{3.3em}}{}%
-	\ifcsstrequal{\@currently@inside}{problempartssubproblems}{\gdef\@currently@inside@indent{2.8em}}{}%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\textbfit#1{\textbf{\textit{#1}}}
-\def\textbfsf#1{\textsf{\textbf{#1}}}
-\def\bfarabic@fmt{\textbf{(\arabic*)}}
-\def\bfalph@fmt{\textbf{(\alph*)}}
-\def\bfroman@fmt{\textbf{(\roman*)}}
-\def\stdemph#1{\normalem{\emph{#1}}}						%
-\def\fakebold#1{\setbox0=\hbox{$#1$}#1\kern-\wd0\kern\bshft#1\kern-\wd0\kern\bshft#1}
-\def\textsize{\dimexpr\f@size pt\relax}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@coverpage@title@font{\LARGE\anttbcap17pt}							% Coverpage title (e.g. course #/title) font	
-\def\@coverpage@subtitle@font{\anttmcap17pt}								% Coverpage subtitle (e.g. semester/instructor) font
-\def\@coverpage@description@font{\anttmcap17pt}							% Coverpage description (e.g. assignment) font
-\def\@coverpage@author@font{\anttmcap13pt}								% Coverpage author font
-\def\@coverpage@date@font{\anttmcap13pt}								% Coverpage date font
-\def\@frontbackmatter@title@font{\anttmcap18pt}
-\def\@frontbackmatter@entry@name@font#1{\textbfsf{#1}}
-\def\@frontbackmatter@entry@text@font{\normalsize\normalfont}
-\def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
-\def\@frontbackmatter@navhyperlink@font{\anttbcap12pt}
-\def\@frontbackmatter@entry@text@sep{$-$\space\space}
-\def\@glossary@entry@name@text@sep{}
-\def\@acronym@entry@name@text@sep{\space$-$\space\space}
-\def\@nom@abbreviation@font{\sffamily\bfseries}
-\def\@nom@long@name@font{\normalsize\normalfont}
-\def\@acronym@font#1{\textnormal{#1}}
-
-\def\@lhead@font{\Large\scshape}								% All set
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@tcb@text@font{\normalsize\bfseries}
-\def\@tcb@title@font{\anttmcap18pt}
-\def\@tcb@toctitle@font{\sffamily}
-\def\@tcb@list@entry@font{\normalsize\bfseries}
-\def\@document@text@size{\@fsize pt}
-\def\@tcb@title@font@size{}
-\def\@tcb@solutionVerb@font{\normalsize\bfseries}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\TOCName{Table of Contents}
-\def\LOLName{List of Code Listings}
-\def\LOTName{List of Tables}
-\def\LOFName{List of Figures}
-\def\IndexName{Index}
-\def\GlossaryName{Glossary}
-\def\AcronymsName{List of Acronyms}
-\def\AbbreviationsName{List of Abbreviations}
-\def\LOPName{List of Problems}
-\def\FigureName{Figure}
-\def\FigboxName{Figbox}
-\def\TerminalName{Index}
-\def\IBPtableName{IBP Table}
-\def\BibName{Bibliography}
-\def\PartName{Part}
-\def\ChapterName{Chapter}
-\def\SectionName{Section}
-\def\SubsectionName{Subsection}
-\def\AppendixName{Appendix}
-\def\AbstractName{Abstract}
-\def\CodeListingName{Code Listing}
-\def\TerminalListingName{Terminal Listing}
-\def\MatlabListingName{Matlab Listing}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@toc@toctitle{Table of Contents}
-\def\@lot@toctitle{List of Tables}
-\def\@lof@toctitle{List of Figures}
-\def\@index@toctitle{\IndexName}
-\def\@appendix@toctitle{Appendix}
-\def\@glossary@toctitle{\GlossaryName}
-\def\@listof@acronyms@toctitle{List of Acronyms}
-\def\@listof@abbreviations@toctitle{List of Abbreviations}					% was \large
-\def\@listof@problems@toctitle{List of Problems}
-\def\@listof@listings@toctitle{List of Code Listings} 					% The header name for the list of listings.
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@index@lhead@title{\IndexName}
-\def\@glossary@lhead@title{\GlossaryName}
-\def\@listof@acronyms@lhead@title{List of Acronyms}
-\def\@listof@abbreviations@lhead@title{List of Abbreviations}					% was \large
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@tcblistings@caption@label{Code Listing}							% Caption of listing float entry (minted)
-\def\@terminal@listing@label{\bfseries\@tcblisting@terminal@caption@title\ \arabic{@tcb@terminal@listing@counter}: }
-\def\@tcblisting@caption@title{\lstlistingname\ \arabic{@tcb@listings@counter}}
-\def\@tcblisting@terminal@caption@title{Terminal Listing} 					% The header name for the list of listings.
-\def\@tcblisting@Matlab@caption@title{Matlab Listing}						% Caption of listing float entry (minted)
-%\@tcblisting@Matlab@caption@title
-%%\def\LT@caption{}
-%%\def\LT@c@ption#1[#2]#3{}
-%%\def\LT@capti@n{}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\linkedindextitle{\phantomsection\addcontentsline{toc}{chapter}{Index}}
-%\def\toctitletarget#1{\phantomsection\addcontentsline{toc}{chapter}{#1}}
-\def\toctitletarget#1{%
-	\makeatletter%
-	\phantomsection\addcontentsline{toc}{chapter}{#1}\anttmcap18pt #1%
-	\makeatother%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@definition@label{Definition \the\value{@tcb@definition@counter}\relax: }
-\def\@theorem@label{Theorem \the\value{@tcb@theorem@counter}\relax: }
-\def\@corollary@label{Corollary \the\value{@tcb@corollary@counter}\relax: }
-\def\@equation@label{Equation \the\value{@tcb@equation@counter}\relax: }
-\def\@solution@label{Solution \the\value{@tcb@solution@counter}\relax: }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@page@one@target@name{FIRSTPAGE}
-\def\@page@n@target@name{PAGE}
-\def\@Chapter@link@name{chap-}
-\def\@Section@link@name{sec-}
-\def\@Subsection@link@name{subsec-}
-\def\@Topic@link@name{topic-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@index@style@base{my-index}
-\def\@glossary@style@base{my-glossary}
-\def\@acronym@style@base{my-acronyms}
-\def\@index@style@ext{mst}
-\def\@glossary@style@ext{ist}
-\def\@acronym@style@ext{ist}
-\def\@index@style@ext{idxsty}
-\def\@glossary@style@ext{glssty}
-\def\@acronym@style@ext{acrsty}
-\edef\@index@style@file{\@index@style@base.\@index@style@ext}
-\edef\@glossary@style@file{\@glossary@style@base.\@glossary@style@ext}
-\edef\@acronym@style@file{\@acronym@style@base.\@acronym@style@ext}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@default@fig@ref@label{fig:fig\the\value{figure}}
-\def\@default@table@ref@label{tab\the\value{table}}
-\def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
-\def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
-\def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
-%\def\@terminal@listing@label{\bfseries\lstterminaltitle\ \arabic{@tcb@terminal@listing@counter}: }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@reset@ul@settings{\setul{0.75pt}{0.75pt}}
+%--------------------------------------------------- Counter Increment/Print Commands ----------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@counter@print#1#2{#1{#2}\relax}									% Generate string from counter value
 \def\@increment@tcbfigure@counter#1{\addtocounter{@num@tcbfigures}{1}}				% Used to keep track of # of images in each row
 \def\@print@before@increment#1#2{#1{#2}\addtocounter{#2}{1}}					% Print/increment value of counter #2 using format #1 (e.g. \alph)
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------------- Horizontal Rule Coloring/Separation/Fill ------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\def\tcbrulesep{\vskip0.25pt}			% used in
 %\def\hrulefill{\leavevmode\leaders\hrule height 4pt\hfill\kern\z@}
 %\def\@single@color@hrule#1{\begingroup\color{#1}\hrule\endgroup}
 %\def\@bicolor@dbl@hrule#1#2%
@@ -331,13 +182,193 @@
 %	\color{#1}\hrule%
 %}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\primarycolor{white}
-\def\secondarycolor{black}
+%---------------------------------------------------- Universal Symbol/Text Commands -----------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\bfdash{$\boldsymbol{-}$\xspace}
 \def\dirsep{\scaleobj{1.25}{/}}
+\def\tinyvdots{\begingroup\vstretch{0.65}{\tiny$\vdots$}\endgroup}
 \def\usernamelabel{$<$\emph{user name}$>$}
-\def\tinyvdots{\begingroup\tiny$\vdots$\endgroup}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Spacing/Skip/Separation Lengths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Generic/Universal Contexts -------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\newpar{\\[-1.5mm]}
+\def\parnoskip{\par\vspace{-\parskip}}
+\def\shrinkparskip{\@macro@length=\parskip\setlength{\parskip}{-0.33em}}
+\def\restoreparskip{\setlength{\parskip}{\@macro@length}}
+\def\@end@macro@spacing{\unskip\ignorespaces}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Front/back Matter Contexts -------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@nomecl@baselinestretch{0.0}						% Effectively sets separation between each abbreviation entry
+\def\@glsl@baselinestretch{1.5}						% Effectively sets separation between each acronym/glossary entry and multiline descriptions
+\def\@idx@baselinestretch{0.0}						% Effectively sets separation between each acronym/glossary entry and multiline descriptions
+\def\@tcbfigbox@figure@sep{\hskip1em\relax}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Coverpage/Header Images/Formats/Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\def\@uni@logo{Baylor_vert.png}						% Baylor University full size logo filename	
+\def\@uni@rhead@logo{Baylor_IM_horz.png}					% Baylor University miniature logo filename
+\def\@uni@dept@logo{EngineeringLOGOweb.jpg}				% Baylor University Engineering/Computer Science Department logo filename
+\def\@header@image@height{25pt}						% Height of image used as right header
+\def\@header@image%								% Right header graphics command
+{%
+	\includegraphics[height=\@header@image@height]%
+		{\@uni@rhead@logo}%
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font style/format/size commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Generic/Universal Contexts -------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\textbfit#1{\textbf{\textit{#1}}}
+\def\textbfsf#1{\textsf{\textbf{#1}}}
+\def\bfarabic@fmt{\textbf{(\arabic*)}}
+\def\bfalph@fmt{\textbf{(\alph*)}}
+\def\bfroman@fmt{\textbf{(\roman*)}}
+\def\stdemph#1{\normalem{\emph{#1}}}						%
+\def\fakebold#1{\setbox0=\hbox{$#1$}#1\kern-\wd0\kern\bshft#1\kern-\wd0\kern\bshft#1}
+\def\textsize{\dimexpr\f@size pt\relax}
+\def\@document@text@size{\@fsize pt}
+\def\@reset@ul@settings{\setul{0.75pt}{0.75pt}}
+\def\primarycolor{white}
+\def\secondarycolor{black}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Front/back Matter Contexts -------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@coverpage@title@font{\LARGE\anttbcap17pt}							% Coverpage title (e.g. course #/title) font	
+\def\@coverpage@subtitle@font{\anttmcap17pt}							% Coverpage subtitle (e.g. semester/instructor) font
+\def\@coverpage@description@font{\anttmcap17pt}							% Coverpage description (e.g. assignment) font
+\def\@coverpage@author@font{\anttmcap13pt}							% Coverpage author font
+\def\@coverpage@date@font{\anttmcap13pt}								% Coverpage date font
+\def\@frontbackmatter@title@font{\anttmcap18pt}
+\def\@frontbackmatter@entry@name@font#1{\textbfsf{#1}}
+\def\@frontbackmatter@entry@text@font{\normalsize\normalfont}
+\def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
+\def\@frontbackmatter@navhyperlink@font{\anttbcap12pt}
+\def\@frontbackmatter@entry@text@sep{$-$\space\space}
+\def\@Chapter@header@font{\sffamily\LARGE\bfseries}
+\def\@glossary@entry@name@text@sep{}
+\def\@acronym@entry@name@text@sep{\space$-$\space\space}
+\def\@nom@abbreviation@font{\sffamily\bfseries}
+\def\@nom@long@name@font{\normalsize\normalfont}
+\def\@acronym@font#1{\textnormal{#1}}
+\def\@lhead@font{\Large\scshape}								
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------------- tcolorbox Contexts -----------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@tcb@text@font{\normalsize\bfseries}
+\def\@tcb@title@font{\Large\sffamily}
+\def\@tcb@toctitle@font{\sffamily}
+\def\@tcb@list@entry@font{\normalsize\bfseries}
+\def\@tcb@title@font@size{}
+\def\@tcb@solutionVerb@font{\normalsize\bfseries}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Front/Back Matter List/TOC/Header/Caption Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Front/Back Matter List Names -----------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\TOCName{Table of Contents}
+\def\LOLName{List of Code Listings}
+\def\LOTName{List of Tables}
+\def\LOFName{List of Figures}
+\def\LOPName{List of Problems}
+\def\AbbreviationsName{List of Abbreviations}
+\def\AcronymsName{List of Acronyms}
+\def\SymbolsName{List of Symbols}
+\def\GlossaryName{Glossary}
+\def\IndexName{Index}
+\def\BibName{Bibliography}
+\def\AppendixName{Appendix}
+\def\AbstractName{Abstract}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\PartName{Part}
+\def\ChapterName{Chapter}
+\def\SectionName{Section}
+\def\SubsectionName{Subsection}
+\def\FigboxName{Figbox}
+\def\FigureName{Figure}
+\def\FigboxFigureName{Figure}
+\def\TableName{Table}
+\def\IBPtableName{IBP Table}
+\def\CodeListingName{Code Listing}
+\def\TerminalListingName{Terminal Listing}
+\def\MatlabListingName{Matlab Listing}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------ Front/Back Matter TOC Names ------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@toc@toctitle{Table of Contents}
+\def\@lot@toctitle{List of Tables}
+\def\@lof@toctitle{List of Figures}
+\def\@index@toctitle{\IndexName}
+\def\@appendix@toctitle{Appendix}
+\def\@glossary@toctitle{\GlossaryName}
+\def\@listof@symbols@toctitle{List of Symbols}
+\def\@listof@acronyms@toctitle{List of Acronyms}
+\def\@listof@abbreviations@toctitle{List of Abbreviations}					% was \large
+\def\@listof@problems@toctitle{List of Problems}
+\def\@listof@listings@toctitle{List of Code Listings} 					% The header name for the list of listings.
+\def\linkedindextitle{\phantomsection\addcontentsline{toc}{chapter}{Index}}
+\def\toctitletarget#1%
+{%
+	\makeatletter%
+	\phantomsection\addcontentsline{toc}{chapter}{#1}\anttmcap18pt #1%
+	\makeatother%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------- Front/Back Matter Header Names -----------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@index@lhead@title{\IndexName}
+\def\@glossary@lhead@title{\GlossaryName}
+\def\@listof@acronyms@lhead@title{List of Symbols}
+\def\@listof@acronyms@lhead@title{List of Acronyms}
+\def\@listof@abbreviations@lhead@title{List of Abbreviations}					% was \large
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------- Front/Back Matter Caption Names ----------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@tcblisting@terminal@caption@title{Terminal Listing} 					% The header name for the list of listings.
+\def\@tcblisting@Matlab@caption@title{Matlab Listing}						% Caption of listing float entry (minted)
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Reference/hyperlink/hyperlabel labels/names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\def\@page@one@target@name{FIRSTPAGE}
+\def\@page@n@target@name{PAGE}
+\def\@Chapter@link@name{chap-}
+\def\@Section@link@name{sec-}
+\def\@Subsection@link@name{subsec-}
+\def\@Topic@link@name{topic-}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@definition@label{Definition \the\value{@tcb@definition@counter}\relax: }
+\def\@theorem@label{Theorem \the\value{@tcb@theorem@counter}\relax: }
+\def\@corollary@label{Corollary \the\value{@tcb@corollary@counter}\relax: }
+\def\@equation@label{Equation \the\value{@tcb@equation@counter}\relax: }
+\def\@solution@label{Solution \the\value{@tcb@solution@counter}\relax: }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@default@fig@ref@label{fig:fig\the\value{figure}}
+\def\@default@table@ref@label{tab\the\value{table}}
+\def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
+\def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
+\def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
+%\def\@terminal@listing@label{\bfseries\lstterminaltitle\ \arabic{@tcb@terminal@listing@counter}: }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\@index@style@base{my-index}
+\def\@glossary@style@base{my-glossary}
+\def\@acronym@style@base{my-acronyms}
+\def\@index@style@ext{mst}
+\def\@glossary@style@ext{ist}
+\def\@acronym@style@ext{ist}
+\edef\@index@style@file{\@index@style@base.\@index@style@ext}
+\edef\@glossary@style@file{\@glossary@style@base.\@glossary@style@ext}
+\edef\@acronym@style@file{\@acronym@style@base.\@acronym@style@ext}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Verbatim/Color/Shadow Box Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 % From fancybox package (fancybox.sty)
 \def\begin@VerbBox{\aftergroup\end@VerbBox}								% \VerbBox
 \def\end@VerbBox{\the\do@VerbBox{\box\@fancybox}}							% \VerbBox
@@ -388,28 +419,30 @@
     }
 }
 %*****************************************************************************************************************************************%
-%******************************* Define commands used to define/initialize counters, dimensions, and length register variables *******************************%
+%********************* Define commands used to define/initialize counters, dimensions, and length register variables *********************%
 %*****************************************************************************************************************************************%
 \DeclareDocumentCommand{\@init@counter}{m O{0}}{\newcounter{#1}\setcounter{#1}{#2}}
 \DeclareDocumentCommand{\@init@skip}{m m O{0pt} O{0pt}}{\expandafter\newskip\csname #1\endcsname\csname #1\endcsname=#2 plus #3 minus #4}
 \DeclareDocumentCommand{\@init@dimen}{m O{0pt}}{\expandafter\newdimen\csname #1\endcsname\expandafter\setlength\csname #1\endcsname{#2}}
 \DeclareDocumentCommand{\@init@length}{m O{0pt}}{\expandafter\newlength\csname #1\endcsname\expandafter\setlength\csname #1\endcsname{#2}}
 %*****************************************************************************************************************************************%
-%***************************************************** Define/initialize/set internal register variables *****************************************************%
+%******************************************* Define/initialize/set internal register variables *******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Generic temporary/default registers used for macro development
-\newcounter{@macro@counter}   								% Number of a problem
-\newdimen\@macro@dimension									% Generic temporary dimension register
-\newlength\@macro@length									% Generic temporary length register for storing length value
-\newlength\@macro@width										% Generic temporary length register for storing width value
-\newlength\@macro@height									% Generic temporary length register for storing height value
-\newlength\@macro@depth										% Generic temporary length register for storing depth value
-\newlength\@macro@shift										% Generic temporary length register for storing shift value
+\newcounter{@macro@counter}   								% Generic counter register for temporarily storing a counter value
+\newskip\@macro@skip										% Generic skip register for temporarily storing skip distance
+\newdimen\@macro@dimension									% Generic dimension register for temporarily storing dimension
+\newlength\@macro@length									% Generic length register for temporarily storing length dimension
+\newlength\@macro@width										% Generic length register for temporarily storing width dimension
+\newlength\@macro@height									% Generic length register for temporarily storing height dimension
+\newlength\@macro@depth										% Generic length register for temporarily storing depth distance
+\newlength\@macro@shift										% Generic length register for temporarily storing shift distance
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------- Counters --------------------------------------------------------------------------%
+%--------------------------------------------------------------- Counters ----------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \setcounter{secnumdepth}{0}											
+\@init@counter{@tcb@figbox@counter}[0]    								% Number of a problem
 \@init@counter{@index@entry@counter}							% Counter used for glossary shifting of first group entry tcolorbox box
 \@init@counter{@chap@counter}    								% Number of a problem
 \@init@counter{@count@problem}    								% Number of a problem
@@ -425,17 +458,17 @@
 \@init@counter{@tcb@corollary@counter}[0]							% Counter used for numbering tcb corollaries
 \@init@counter{@tcb@equation@counter}[0]							% Counter used for numbering tcb equations
 \@init@counter{@tcb@solution@counter}[0]							% Counter used for numbering tcb solutions
-\@init@counter{@tcb@figbox@counter}[0]    								% Number of a problem
-\@init@counter{@tcb@listings@counter}    							% Number of tcblistings (e.g. Matlab, bash/terminal, etc.)
-\@init@counter{@tcb@terminal@listing@counter}[1]					% Counter used for numbering tcb solutions
-\@init@counter{@bash@keywords@counter}[3]    						% Number of a problem
-\@init@counter{@matlab@keywords@counter}[10]      					% Number of a problem
-\@init@counter{@git@keywords@counter}[3]      						% Number of a problem
+%\@init@counter{@tcb@figbox@counter}[0]    								% Number of a problem
+%\@init@counter{@tcb@listings@counter}    							% Number of tcblistings (e.g. Matlab, bash/terminal, etc.)
+%\@init@counter{@tcb@terminal@listing@counter}[1]					% Counter used for numbering tcb solutions
+%\@init@counter{@bash@keywords@counter}[3]    						% Number of a problem
+%\@init@counter{@matlab@keywords@counter}[10]      					% Number of a problem
+%\@init@counter{@git@keywords@counter}[3]      						% Number of a problem
 \@init@counter{@pld@instances}   								% # of polynomial division tcolorbox tables
 \DeclareTotalCounter{@count@problem}
 \newaliascnt{@num@tcbfigures}{@macro@counter}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------ Skips/Glues ------------------------------------------------------------------------%
+%-------------------------------------------------------------- Skips/Glues --------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@skip{@diag@IBP@arrows@leftXShift}{0.0em}
 \@init@skip{@diag@IBP@arrows@rightXShift}{-0.3em}
@@ -444,9 +477,10 @@
 \@init@skip{@horiz@IBP@arrows@leftXShift}{0.8em}
 \@init@skip{@horiz@IBP@arrows@rightXShift}{0.1em}
 \@init@skip{@horiz@IBP@arrows@yShift}{0.65ex}
+\@init@skip{@idx@baseline@skip}{1.5em}
 \@init@skip{@idx@group@sep}{6pt}
 \@init@skip{@idx@before@group@label@skip}{8pt}
-\@init@skip{@idx@after@group@label@skip}{1pt}
+\@init@skip{@idx@after@group@label@skip}{0pt}
 \@init@skip{@idx@top@skip}{-34mm}
 \@init@skip{@gls@before@hypernav@skip}{6pt}
 \@init@skip{@gls@after@hypernav@skip}{8pt}
@@ -456,7 +490,7 @@
 \@init@skip{@gls@after@entry@sep}{6pt}
 \@init@skip{@gls@group@sep}{2pt}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------- Lengths/Dimensions ---------------------------------------------------------------------%
+%---------------------------------------------------------- Lengths/Dimensions -----------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newdimen\sizeoffont
 \newdimen\rozmiar
@@ -565,6 +599,7 @@
 \@init@length{@overlay@yshift}[-1pt]
 \@init@length{@overlay@linewidth}[1pt]
 \@init@length{@overlay@double@distance}[0.75pt]
+\@init@length{@tcb@single@border@linewidth}[2.0pt]
 \@init@length{@tcb@double@border@linewidth}[0.5pt]
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@tcbfigbox@left@skip}[4mm+12pt]
@@ -654,7 +689,7 @@
 	%\setlength{\parsep}{6em}
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%--------------------------------------------------------------------- Boxes/Saveboxes -----------------------------------------------------------------------%
+%----------------------------------------------------------- Boxes/Saveboxes -------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newbox\@fancybox
 \newbox\@Sbox
@@ -668,11 +703,11 @@
 \newsavebox\@frontbackmatter@savebox@
 \newsavebox\glossbox
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------- Tokens ---------------------------------------------------------------------------%
+%---------------------------------------------------------------- Tokens -----------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtoks\do@VerbBox
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%--------------------------------------------------------------------- Booleans/Toggles ----------------------------------------------------------------------%
+%----------------------------------------------------------- Booleans/Toggles ------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtoggle{bxon}
 \newtoggle{bon}
@@ -714,7 +749,7 @@
 \setlist[ThinEnum, 12]{label=\bfroman@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
-%***************************************************************** Define new LaTeX commands *****************************************************************%
+%******************************************************* Define new LaTeX commands *******************************************************%
 %*****************************************************************************************************************************************%
 \newcommand*{\getValue}[2]{\pgfmathsetmacro#1{#2}}					% Create macro \<#1> initialized to the stripped unit value of #2
 \newcommand*{\getLength}[2]{\pgfmathsetlengthmacro#1{#2}}				% Create macro \<#1> initialized to the value of #2 in pt units
@@ -768,7 +803,7 @@
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
-%************************************************************** Reefine existing LaTeX commands **************************************************************%
+%**************************************************** Reefine existing LaTeX commands ****************************************************%
 %*****************************************************************************************************************************************%
 %\renewcommand*{\hypcapspace}{\baselineskip}
 \renewcommand{\normalsize}{\fontsize{9}{10}\selectfont}

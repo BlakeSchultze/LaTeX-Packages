@@ -682,15 +682,13 @@
     	\tcbsetcurrentcolors{IBPstyle}
 	\setstretch{1.5}
     	\arrayrulecolor{IBPstyle-coldraw}%
-	\if\relax\detokenize{#1}\relax	
-       	\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{\int #2#3#4}}}
-    	\else
-    		\ifstrequal{#1}{*}
-    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){}}}
-    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{#1}}}}
-	\fi	
-	\boxedtable[IBPstyle, blend before title code={\shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}}]
-		{\space}{Integration by Parts Table \arabic{table}}
+    	\IfStrEqCase{#1}%
+    		{%
+    			{}{\def\IBPtitle{\bmath{\int #2#3#4}}}%
+    			{*}{\def\IBPtitle{}}%
+    			{!}{\def\IBPtitle{\bmath{#1}}}%
+    		}[\def\IBPtitle{#1}]%
+	\boxedtable[IBPstyle]{\IBPtitle}{Integration by Parts Table \arabic{table}}
 		\centering
 		\tabular{>{$}c<{$} c @{\hskip 2.5cm} c  >{$}c<{$}}%
 			\boldsymbol{u} && &\boldsymbol{dv}\\[-0.2em]%

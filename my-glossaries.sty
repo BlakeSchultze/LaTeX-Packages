@@ -339,7 +339,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 %\providecommand*{\glsgroupskip}{}
 \providecommand*{\glsgroupskip}{\par\vspace{20pt plus 10pt minus 0pt}}
 \providecommand*{\glsgroupheading}[1]{}
-\newcommand{\acronymfont}[1]{\textsc{#1}}
+\newcommand{\acronymfont}[1]{\@acronym@font{#1}}
 %\renewcommand*{\acronymfont}[1]{\Huge\textsc{#1}}
 \newcommand{\firstacronymfont}[1]{\acronymfont{#1}}
 %\renewcommand*{\firstacronymfont}[1]{\Huge\textsc{\emph{#1}}}
@@ -3731,7 +3731,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newlength\gls@tmplen
 \newcommand*{\glsdohypertarget}[2]{%
   \settoheight{\gls@tmplen}{#2}%
-  \raisebox{\gls@tmplen}{\hypertarget{#1}{}}#2%
+  \raisebox{\f@size pt}{\hypertarget{#1}{}}#2%
 }
 \newcommand*{\glsdohyperlink}[2]{\hyperlink{#1}{#2}}
 \ifcsundef{hyperlink}%
@@ -4875,7 +4875,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \def\currtype{#1}%
      \ifdefstring{\glsorder}{letter}%
       {\def\@gls@order{-l }}%
-      {\let\@gls@order\@empty}%
+      {\let\@gls@order\@empty}     
      	\ifdefstrequal{#1}{\acronymtype}
 	{%
 		\edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
@@ -4886,16 +4886,29 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 			}%
 	     }%
 	     \@gls@dothiswrite
-	}
+	}%
 	{%
-		\edef\@gls@dothiswrite{\noexpand\write18{makeglossaries \@gls@order
-			-s my-glossaries.ist\space
-	       	-t \jobname.glg\space%\csuse{@glotype@#1@log}
-	       	-o \jobname.gls\space%\csuse{@glotype@#1@in}
-	       	\jobname.glo %\csuse{@glotype@#1@out}
-			}%
-	      }%
-	      \@gls@dothiswrite
+		\ifdefstrequal{#1}{\glsdefaulttype}
+		{%
+			\edef\@gls@dothiswrite{\noexpand\write18{makeglossaries \@gls@order
+				-s my-glossaries.ist\space
+		       	-t \jobname.glg\space%\csuse{@glotype@#1@log}
+		       	-o \jobname.gls\space%\csuse{@glotype@#1@in}
+		       	\jobname.glo %\csuse{@glotype@#1@out}
+				}%
+		      }%
+		      \@gls@dothiswrite
+		}%
+		{%
+			\edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
+				-s my-glossaries.ist\space
+		       	-t \jobname.slg\space%\csuse{@glotype@#1@log}
+		       	-o \jobname.sls\space%\csuse{@glotype@#1@in}
+		       	\jobname.slo %\csuse{@glotype@#1@out}
+				}%
+		      }%
+		      \@gls@dothiswrite
+		}%
 	}%
    }%
    {%
@@ -6325,7 +6338,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }%
 {%
   \GlsUseAcrStyleDefs{long-short}%
-  \renewcommand{\acronymfont}[1]{\textsc{##1}}%
+  \renewcommand{\acronymfont}[1]{\@acronym@font{##1}}%
   \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
 }
 \newacronymstyle{long-sm-short}%
@@ -6343,7 +6356,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }%
 {%
   \GlsUseAcrStyleDefs{short-long}%
-  \renewcommand{\acronymfont}[1]{\textsc{##1}}%
+  \renewcommand{\acronymfont}[1]{\@acronym@font{##1}}%
   \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
 }
 \newacronymstyle{sm-short-long}%
@@ -6573,7 +6586,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 {%
   \GlsUseAcrStyleDefs{footnote}%
   \renewcommand{\acronymentry}[1]{\acronymfont{\glsentryshort{##1}}}
-  \renewcommand{\acronymfont}[1]{\textsc{##1}}%
+  \renewcommand{\acronymfont}[1]{\@acronym@font{##1}}%
   \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
 }%
 \newacronymstyle{footnote-sm}%
@@ -6789,7 +6802,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \SetDescriptionFootnoteAcronymDisplayStyle{\@gls@type}%
   }%
   \ifglsacrsmallcaps
-    \renewcommand*{\acronymfont}[1]{\textsc{##1}}%
+    \renewcommand*{\acronymfont}[1]{\@acronym@font{##1}}%
     \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
   \else
     \ifglsacrsmaller
@@ -6958,7 +6971,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \SetDescriptionAcronymDisplayStyle{\@gls@type}%
   }%
   \ifglsacrsmallcaps
-    \renewcommand{\acronymfont}[1]{\textsc{##1}}
+    \renewcommand{\acronymfont}[1]{\@acronym@font{##1}}
     \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
   \else
     \ifglsacrsmaller
@@ -7050,7 +7063,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \SetFootnoteAcronymDisplayStyle{\@gls@type}%
   }%
   \ifglsacrsmallcaps
-     \renewcommand*{\acronymfont}[1]{\textsc{##1}}%
+     \renewcommand*{\acronymfont}[1]{\@acronym@font{##1}}%
      \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
   \else
      \ifglsacrsmaller
@@ -7169,7 +7182,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \SetSmallAcronymDisplayStyle{\@gls@type}%
   }%
   \ifglsacrsmallcaps
-    \renewcommand*{\acronymfont}[1]{\textsc{##1}}
+    \renewcommand*{\acronymfont}[1]{\@acronym@font{##1}}
     \renewcommand*{\acrpluralsuffix}{\glsupacrpluralsuffix}%
   \else
     \renewcommand*{\acronymfont}[1]{\textsmaller{##1}}

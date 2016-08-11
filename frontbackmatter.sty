@@ -33,6 +33,27 @@
 \setglossarystyle{\@gls@glossary@style}
 %\setStyleFile{my-glossaries}
 %\def\istfilename{my-glossaries.ist}	%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%figbox
+%figboxfigure
+%Matlablisting
+%Terminallisting
+%Chapter
+%Section
+%Subsection
+%Topic
+%fig
+%figbox
+%figboxfigure
+%problems
+%subproblems
+%problemparts
+%subproblems
+%problempartssubproblems
+%subproblemparts
+%listings
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newlistentry{Chapter}{toc}{0}
 \newlistentry[Chapter]{Section}{toc}{1}
 \newlistentry[Section]{Subsection}{toc}{2}
@@ -46,16 +67,131 @@
 	\globaldefs\@ne \let\c@loldepth\@ne
   	\newlistof{listings}{lol}{\lstlistlistingname}
 \endgroup
-\newlistentry{Matlablisting}{lol}{0}
-\newlistentry{Terminallisting}{lol}{0}
-\newlistentry{IBPtable}{lot}{0}
-\newlistentry{figbox}{lof}{0}
-\newlistentry[figbox]{figboxfigure}{lof}{1}
+%\newlistentry{Matlablisting}{lol}{0}
+%\newlistentry{Terminallisting}{lol}{0}
+%\newlistentry{IBPtable}{lot}{0}
+%\newlistentry{figbox}{lof}{0}
+%\newlistentry[figbox]{figboxfigure}{lof}{1}
 \setcounter{tocdepth}{4}
 \setcounter{lofdepth}{4}
 \setcounter{probsdepth}{4}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\cftaftertoctitle}{}%\thispagestyle{empty}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\@cfttocfinish}{\if@cfthaschapter\if@restonecol\twocolumn\fi\fi\setcounter{page}{0}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXnamenum}[2]%
+{%	
+	\expandafter\newcommand\expandafter{\csname cft#1name\endcsname}{#2}%
+	\expandafter\newcommand\expandafter{\csname cft#1namenum\endcsname}%
+	{%
+		\expandafter\expandonce%
+		\csname cft#1name\endcsname%
+		\space%
+		\csname the#1\endcsname%
+	}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXnumberline}[2]%
+{%	
+	\expandafter\newcommand\csname cft#2numberline\endcsname[1]
+	{
+		\raisebox{10pt}%
+		{%figbox\thefigbox
+			\expandafter\protect\expandafter\hypertarget{#2\csname the#2\endcsname}{}%
+		}%
+		\protect\numberline{\csname the#2\endcsname}%
+		\csname #2name\endcsname\space\csname the#2\endcsname##1%
+		\ignorespaces%\xspace
+	}
+}
+\cftXnumberline{lof}{figbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXhypertitle}[1]
+{%
+	%                                                                                1                     2        3          4 5
+	\expandafter\DeclareDocumentCommand\expandafter{\csname cft#1hypertitle\endcsname}{D||{\@tcb@title@font} O{white} D(){black} m m }
+	{
+		\edef\@this@title@cft@name{\csname #1name\endcsname\space\csname the#1\endcsname}
+		\expandafter\hyperlink\expandafter%
+			{#1\csname the#1\endcsname}%
+			{\BreakableShadowText{##1}[##2](##3){\@this@title@cft@name##4##5}}%
+	}
+}
+\cftXhypertitle{figbox}	
+%\cftXtcbtitle{figbox}	
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXcontentsline}[2]%
+{%	
+	\expandafter\newcommand\csname cft#2contentsline\endcsname[1]
+		{\expandafter\phantomsection\expandafter\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}
+		%{\phantomsection\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}
+}
+\cftXcontentsline{lof}{figbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXtcbtitle}[1]%
+{%	
+	%\DeclareExpandableDocumentCommand
+	\expandafter\newcommand\expandafter{\csname cft#1tcbtitle\endcsname}[2]
+	{%
+		\csname cft#1contentsline\endcsname{##1##2}%
+		\csname cft#1hypertitle\endcsname{##1}{##2}
+	}
+}
+
+%\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftXcreate}{o m m m m}%
+{%	
+	\IfValueTF{#1}%
+		{\newlistentry[#1]{#2}{#3}{#4}}%
+		{\newlistentry{#2}{#3}{#4}}%
+	\cftXnamenum{#2}{#5}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\cftXcreate{testlist}{toc}{0}{testlistname}
+\cftXcreate{figbox}{lof}{0}{Figbox}
+\cftXcreate[figbox]{figboxfigure}{lof}{1}{Figure}
+\cftXcreate{Matlablisting}{lol}{0}{Matlab Listing}
+\cftXcreate{Terminallisting}{lol}{0}{Terminal Listing}
+\cftXcreate{IBPtable}{lot}{0}{IBP Table}
+%\cftXnamenum{figbox}{Figbox}
+%\cftXnamenum{figboxfigure}{Figbox Figure}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\figboxname}{\FigboxName}								% Figure toc title
+\newcommand{\figboxfigurename}{\FigboxFigureName}								% Figure toc title
+\newcommand{\Matlablistingname}{\MatlabListingName}								% Figure toc title
+\newcommand{\Terminallistingname}{\TerminalListingName}								% Figure toc title
+\newcommand{\IBPtablename}{\IBPtableName}								% Figure toc title
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\figbox}[1]%
+%{%
+%	\refstepcounter{figbox}%
+%	%\gdef\@currently@inside{figbox}%
+%	\phantomsection\addcontentsline{lof}{figbox}%
+%	{%
+%		\protect\numberline{\thefigbox}%
+%		\raisebox{\f@size pt}{%
+%			\protect\hypertarget{figbox\thefigbox}{}%
+%		}%
+%		\figboxname\ \thefigbox#1%
+%	}%
+%	\ignorespaces%\xspace
+%}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\figboxfigure}[1]%
+%{%
+%	\refstepcounter{figboxfigure}%
+%	\gdef\@currently@inside{figboxfigure}%
+%	\phantomsection\addcontentsline{lof}{figboxfigure}{\protect\numberline{\thefigboxfigure}#1}%
+%	\ignorespaces%\xspace
+%}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+
+
+
+\renewcommand{\cftaftertoctitle}{}
 \renewcommand{\cftafterloftitle}{}
 \renewcommand{\cftafterlottitle}{}
 \renewcommand{\cftafterloltitle}{}
@@ -81,8 +217,7 @@
 \renewcommand{\cftMatlablistingfont}{\normalsize\bfseries}
 \renewcommand{\cftTerminallistingfont}{\normalsize\bfseries}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-% 8, 85, 94, 493, 595, 871
-\renewcommand\cftparskip{1.5mm}									% Vertical skip before Table of Contents title
+\renewcommand\cftparskip{1.5mm}								% Vertical skip before Table of Contents title
 \renewcommand\cftparfillskip{1mm}								% Vertical skip before Table of Contents title
 \setlength\cftbeforetoctitleskip{-5mm}							% Vertical skip before Table of Contents title
 \setlength\cftbeforeloftitleskip{5.0mm}							% Vertical skip before Table of Contents title
@@ -95,7 +230,7 @@
 \setlength\cftafterlottitleskip{2.5mm}							% Vertical skip before Table of Contents title
 \setlength\cftafterloltitleskip{2.5mm}							% Vertical skip before Table of Contents title
 \setlength\cftafterprobstitleskip{2.5mm}							% Vertical skip before Table of Contents title
-\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip}			% Vertical skip before Table of Contents title
+\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip}				% Vertical skip before Table of Contents title
 \newcommand*{\@Section@finish@skip}{\par\bigskip}
 \newcommand*{\@Subsection@finish@skip}{\par\bigskip}
 \newcommand*{\@Topic@finish@skip}{\par\bigskip\bigskip}
@@ -116,7 +251,6 @@
 \setlength\cftlistingsindent{1.5em}
 \setlength\cftMatlablistingindent{1.5em}
 \setlength\cftTerminallistingindent{1.5em}
-%\cftsetindents{figbox}{1.5em}{1.5em}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cftTopicdotsep}{4.5}
 \renewcommand{\cftChapterdotsep}{\cftnodots}
@@ -124,61 +258,42 @@
 \renewcommand{\cftTopicleader}{\nobreak\cftdotfill{\cftTopicdotsep}\ }
 \renewcommand{\cftChapterleader}{\nobreak\cftdotfill{\cftChapterdotsep}\ }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\renewcommand{\cftfigboxfigurenumwidth}{4.5em}
-%\renewcommand{\cftfigboxfigureaftersnumb}{\hspace{4.5em}}
-%\renewcommand{\cftfigboxfigureaftersnum}{\hspace{4.5em}}
-%\cftXnumwidth \cftXaftersnumb  \cftXaftersnum  
-
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\acronymfont}[1]{\textbf{#1}}
-%\newcommand{\firstacronymfont}[1]{\acronymfont{#1}}
-%\renewcommand*{\firstacronymfont}[1]{\Huge\textsc{\emph{#1}}}
-%\renewcommand*{\acronymfont}[1]{\Huge\textsc{#1}}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\nomnamefont}{\normalsize\bfseries}
-%\newcommand{\nomnamefont}{\normalsize\bfseries}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\contentsname}{\@toc@toctitle}
-\renewcommand{\listtablename}{\@lot@toctitle}
-\renewcommand{\listfigurename}{\@lof@toctitle}
-\renewcommand{\nomname}{\@listof@abbreviations@toctitle}				% was \large
-\newcommand{\listproblemsname}{\@listof@problems@toctitle}				% List of homework problems/solutions
+\renewcommand{\contentsname}{\TOCName}
+\renewcommand{\listtablename}{\LOTName}
+\renewcommand{\listfigurename}{\LOFName}
+\renewcommand{\nomname}{\AbbreviationsName}				% was \large
 \renewcommand{\lstlistoflistings}{\listoflistings}					% ? print list of listings, defined to be an alias for \listoflistings (minted)
-\renewcommand{\lstlistlistingname}{\@listof@listings@toctitle} 			% The header name for the list of listings.
-\renewcommand{\lstlistingname}{\@tcblistings@caption@label}  				% The caption label for listings.
-%\renewcommand{\indexname}{\anttmcap16pt Index}
-%\renewcommand{\indexname}{\lolName}								% Index toc title
-%\renewcommand{\tablename}{\IBPtableName}							% Table toc title
-%\renewcommand{\figurename}{\figName}								% Figure toc title
-%\newcommand{\figboxname}{\FigboxName}								% Figure toc title
-%\renewcommand\bibname{\BibName}								% Bibliography toc title
-%\renewcommand\partname{\PartName}									% Part toc title
-%\renewcommand\chaptername{\ChapterName}								% Chapter toc title		
-%\renewcommand\appendixname{\AppendixName}							% Appendix toc title
-%\renewcommand\abstractname{\AbstractName}							% Abstract toc title
-\renewcommand{\indexname}{Index}								% Index toc title
-\renewcommand{\tablename}{IBP Table}							% Table toc title
-\renewcommand{\figurename}{Figure}								% Figure toc title
-\newcommand{\figboxname}{Figbox}								% Figure toc title
-\renewcommand\bibname{Bibliography}								% Bibliography toc title
-\renewcommand\partname{Part}									% Part toc title
-\renewcommand\chaptername{Chapter}								% Chapter toc title		
-\renewcommand\appendixname{Appendix}							% Appendix toc title
-\renewcommand\abstractname{Abstract}							% Abstract toc title
+\renewcommand{\lstlistlistingname}{\LOLName} 			% The header name for the list of listings.
+\newcommand{\listproblemsname}{\LOPName}				% List of homework problems/solutions
+\renewcommand{\indexname}{\IndexName}
+\renewcommand{\tablename}{\IBPtableName}							% Table toc title
+\renewcommand{\figurename}{\FigureName}								% Figure toc title
+\renewcommand\bibname{\BibName}								% Bibliography toc title
+\renewcommand\partname{\PartName}									% Part toc title
+\renewcommand\chaptername{\ChapterName}								% Chapter toc title		
+\renewcommand\appendixname{\AppendixName}							% Appendix toc title
+\renewcommand\abstractname{\AbstractName}							% Abstract toc title
+%\renewcommand{\indexname}{Index}								% Index toc title
+%\renewcommand{\tablename}{IBP Table}							% Table toc title
+%\renewcommand{\figurename}{Figure}								% Figure toc title
+%\renewcommand\bibname{Bibliography}								% Bibliography toc title
+%\renewcommand\partname{Part}									% Part toc title
+%\renewcommand\chaptername{Chapter}								% Chapter toc title		
+%\renewcommand\appendixname{Appendix}							% Appendix toc title
+%\renewcommand\abstractname{Abstract}							% Abstract toc title
+\renewcommand{\lstlistingname}{\CodeListingName}  				% The caption label for listings.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifcsdef{listoflistingscaption}								% Caption of listing float entry in ToC (minted)
-	{\renewcommand{\listoflistingscaption}{\@listof@listings@toctitle}}	%
-	{\newcommand{\listoflistingscaption}{\@listof@listings@toctitle}}		%	
+	{\renewcommand{\listoflistingscaption}{\LOLName}}	%
+	{\newcommand{\listoflistingscaption}{\LOLName}}		%	
 \ifcsdef{listingscaption}									% Caption of listing float entry (minted)
-	{\renewcommand{\listingscaption}{\@tcblistings@caption@label}}			%
-	{\newcommand{\listingscaption}{\@tcblistings@caption@label}}			%
+	{\renewcommand{\listingscaption}{\CodeListingName}}			%
+	{\newcommand{\listingscaption}{\CodeListingName}}			%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\thelstlisting}{} 					% prints the running number of the caption.
-\renewcommand{\thefigbox}{\arabic{@tcb@figbox@counter}}
+\newcommand{\thelstlisting}{\arabic{lstlisting}} 					% prints the running number of the caption.
+%\renewcommand{\thefigbox}{\arabic{@tcb@figbox@counter}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}			% \par\vspace{20pt plus 6pt minus 4pt}
 \newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
@@ -228,6 +343,7 @@
 	       	\end{tikzpicture}%
 	     	 };%
 	\end{tikzpicture}%
+	%\begin{tikzpicture}[chapterFormatCode=#4]\end{tikzpicture}%\tikzset{chapterFormatCode=#4}%
 	\IfBooleanTF{#2}{}{\@Chapter@finish@skip}%
 	%\par\bigskip\bigskip\xspace%
 }
@@ -307,7 +423,7 @@
 \newcommand{\problems}[1]%
 {%
 	\refstepcounter{problems}%
-	\gdef\@currently@inside{problems}%
+	%\gdef\@currently@inside{problems}%
 	\phantomsection\addcontentsline{probs}{problems}{\protect\numberline{\theproblems}#1}%
 	\ignorespaces%\xspace
 }
@@ -315,7 +431,7 @@
 \newcommand{\subproblems}[1]
 {%
 	\refstepcounter{subproblems}%
-	\gdef\@currently@inside{subproblems}%
+	%\gdef\@currently@inside{subproblems}%
 	\phantomsection\addcontentsline{probs}{subproblems}{\protect\numberline{\thesubproblems}#1}%
 	\ignorespaces%\xspace
 }
@@ -323,7 +439,7 @@
 \newcommand{\problemparts}[1]%
 {%
 	\refstepcounter{problemparts}%
-	\gdef\@currently@inside{problemparts}%
+	%\gdef\@currently@inside{problemparts}%
 	\phantomsection\addcontentsline{probs}{problemparts}{\protect\numberline{\theproblemparts}#1}%
 	\ignorespaces%\xspace
 }
@@ -331,7 +447,7 @@
 \newcommand{\problempartssubproblems}[1]%
 {%
 	\refstepcounter{problempartssubproblems}%
-	\gdef\@currently@inside{problempartssubproblems}%	
+	%\gdef\@currently@inside{problempartssubproblems}%	
 	\phantomsection\addcontentsline{probs}{problempartssubproblems}%
 	{%
 		\protect\numberline{\theproblempartssubproblems}#1%
@@ -342,31 +458,8 @@
 \newcommand{\subproblemparts}[1]%
 {%
 	\refstepcounter{subproblemparts}%
-	\gdef\@currently@inside{subproblemparts}%
+	%\gdef\@currently@inside{subproblemparts}%
 	\phantomsection\addcontentsline{probs}{subproblemparts}{\protect\numberline{\thesubproblemparts}#1}%
-	\ignorespaces%\xspace
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\figbox}[1]%
-{%
-	\refstepcounter{figbox}%
-	\gdef\@currently@inside{figbox}%
-	\phantomsection\addcontentsline{lof}{figbox}%
-	{%
-		\protect\numberline{\thefigbox}%
-		\raisebox{\f@size pt}{%
-			\protect\hypertarget{figbox\thefigbox}{}%
-		}%
-		\figboxname\ \thefigbox#1%
-	}%
-	\ignorespaces%\xspace
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\figboxfigure}[1]%
-{%
-	\refstepcounter{figboxfigure}%
-	\gdef\@currently@inside{figboxfigure}%
-	\phantomsection\addcontentsline{lof}{figboxfigure}{\protect\numberline{\thefigboxfigure}#1}%
 	\ignorespaces%\xspace
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -426,12 +519,17 @@
 		\pagenumbering{roman}
 	\fi			
 	%-----------------------------------------------------------------------------------------------------------------------------------%
+	\clearpage
+	\printsymbols[title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]
+	%\printglossary[type=symbols,title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]
+%-----------------------------------------------------------------------------------------------------------------------------------%
+	\clearpage
 	\printacronyms[title={\@listof@acronyms@toctitle}, toctitle={\@listof@acronyms@toctitle}]
 	\clearpage
 	\printnomenclature	
 	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\clearpage
-	\printglossary[title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]					
+	\printglossary[type=\glsdefaulttype, title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]					
 	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\clearpage
 	\printindex%
@@ -441,7 +539,8 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\IndexHeading}{m}
 {%	
-	\setstretch{\@glsl@baselinestretch}%
+	\setlength{\@macro@skip}{\baselineskip}
+	\setlength{\baselineskip}{\@idx@baseline@skip}
 	\thispagestyle{fancy}%
 	\par\vskip\@idx@before@group@label@skip%
 	\ifnumcomp{\value{@index@entry@counter}}{>}{0}%
@@ -462,7 +561,7 @@
 	}%
   	\par\vskip\@idx@after@group@label@skip%
   	\fancyhead[L]{\@lhead@font\@index@lhead@title\xspace}%
-	\addtocounter{@index@entry@counter}{1}%
+	\addtocounter{@index@entry@counter}{1}%	
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*************************************************************************************************%

@@ -45,9 +45,10 @@
 		    	line width=1.0pt,
 		    	inner sep=6pt,
 		    	align=center,
-		    	font=\fontsize{10.95}{\baselinestretch}\bfseries,
+		    	font=\@frontbackmatter@group@label@font,
 		    	minimum width=\linewidth-\pgflinewidth,
-		] {#3};}%
+		] {#3};%
+	}%
   \expandafter\let
      \expandafter\@gls@list\csname @gls@hypergrouplist@#1\endcsname
   \@for\@gls@elem:=\@gls@list\do{%
@@ -78,7 +79,11 @@
 	\thispagestyle{fancy}%
 	\ifthenelse{\equal{#1}{\glsdefaulttype}}%\acronymtype
 		{\fancyhead[L]{\@lhead@font\@glossary@lhead@title}}%
-		{\fancyhead[L]{\@lhead@font\@listof@acronyms@lhead@title}}%	
+		{%
+			\ifthenelse{\equal{#1}{\acronymtype}}
+			{\fancyhead[L]{\@lhead@font\@listof@acronyms@lhead@title}}
+			{\fancyhead[L]{\@lhead@font List of Symbols}}
+		}%	
 	\fancyhead[C]{}%
 	\fancyhead[R]{#2}%
 }

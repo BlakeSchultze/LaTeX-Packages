@@ -164,22 +164,6 @@
     \ifstrequal{#1}{listing}{\autoref{\reflst{#2}}}{}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\colortableentry}{m D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight}}
-{%
-	\colortablebox{white}{#2}{#4}{#1}%
-	\colortablebox{#1}{#3}{#4}{}\unskip\ignorespaces%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                       1                   2                   3                    4 5 6 7 8
-\DeclareDocumentCommand{\colortablerow}{D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight} m m m m m}
-{%
-	\colortableentry{#4}<#1><#2><#3>%
-	\colortableentry{#5}<#1><#2><#3>%
-	\colortableentry{#6}<#1><#2><#3>%
-	\colortableentry{#7}<#1><#2><#3>%
-	\colortableentry{#8}<#1><#2><#3>\\[-2pt]%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\caratenclosed}{s m}
 {%\shadowText<title font>'color style'{title text}
 	\IfBooleanTF{#1}%
@@ -335,7 +319,7 @@
 {%
 	\setcounter{@num@tcbfigures}{0}\ignorespaces%
     	\ProcessList{#1}{\@increment@tcbfigure@counter}%
-    	\setlength{\@tcbfigbox@width}{\dimexpr\@macro@dimension/\value{@num@tcbfigures}\relax}\ignorespaces%
+    	\setlength{\@tcbfigbox@width}{\dimexpr\@macro@dimension/\value{@num@tcbfigures}\relax}%
     	\ProcessList{#1}{\tcbfigboxfigure}\\%[1.2em]\\[1.2em]%[-0.5em]\\%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -463,9 +447,6 @@ linewidth=4pt, linecolor=current-coldraw]
 	}%,code=\tcbinlinetextfont{
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newtcboxfit{\colortablebox}[3]{nobeforeafter, sharp corners, colback=#1, width=#2, height=#3, halign=center, valign=center,
-boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\unskip\ignorespaces}%leftrule=0mm,
-%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcboxVerb}{O{red} v O{}}
 {
 	fontupper=\ttfamily, nobeforeafter, tcbox raise base, arc=0pt, outer arc=0pt, top=0pt, bottom=0pt,
@@ -474,57 +455,46 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 }
 {#2}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTotalTCBox{\commandbox}{s v}{verbatim,colupper=white,colback=black!75!white,colframe=black}
-{%
-	\IfBooleanTF{#1}{\textcolor{red}{\ttfamily\bfseries > }}{}%
-	\lstinline[language=command.com, keywordstyle=\color{blue!35!white}\bfseries]^#2^%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTotalTCBox{\tcbinlinebashbox}{s t! v}{tcbinlinebashboxStyle}
-{%
-     	\IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\textsize\relax}{\rule{0pt}{\textsize}}\textcolor{green}{ > }}{}%
-    	\IfBooleanTF{#2}
-    	{
-	    	\lstinline
-		[
-	     		style=emptyStyle, language=bash-extended,  name=bash, identifierstyle=\textcolor{white}, commentstyle=\textcolor{white},
-			stringstyle=\color{white}\upshape, showstringspaces=true, keywordstyle={[3]\color{white}},	     		
-			keywordstyle={[1]\color{white}}, keywordstyle={[2]\color{white}}
-	     	]^#3^%
-     	}
-     	{
-     		\lstinline
-		[
-	     		language=bash-extended,  name=bash, showstringspaces=true
-	     	]^#3^%
-     	}
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboximage}{m m G{\@default@fig@ref@label}}
 {%
-    	\unskip\ignorespaces\@set@currently@inside@indent%
+    	%\unskip\ignorespaces\@set@currently@inside@indent%
     	\refstepcounter{figboxfigure}%
-	\if\relax\detokenize{#2}\relax	
-		\def\@title@sep{}%
-	\else
-		\def\@title@sep{\space:\space}%
-	\fi
-	\begin{boxedfigboxfigure}[tcbfigureStyle]{#2}{\figurename\ \thefigure\@title@sep #2}[#3]%
+	\ifstrempty{#2}%
+		{\def\@title@sep{}}%
+		{\def\@title@sep{\space:\space}}%
+	\def\titleargwrapper{#2}%
+	\begin{figboxfigure}[tcbfigureStyle]{\titleargwrapper}{\figurename\ \thefigure\@title@sep #2}[#3]%
 		\includegraphics[width=\@tcbfigbox@width]{#1}%
-	\end{boxedfigboxfigure}\@nil%\shadowText<\sffamily>[black](white){
+	\end{figboxfigure}%\@nil%\shadowText|\sffamily|[black](white){
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures, number within=figbox]{boxedfigboxfigure}{ o m m O{fig:fig\the\value{figure}}}
+\DeclareDocumentEnvironment{tcbfigure}{O{figureStyle, label = fig:fig\thefigure} m m}
+	{\boxedfigure[#1]{#2}{#3}}{\endboxedfigure}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentEnvironment{tcbfigbox}{r<> O{}}
+{%
+    	\par\smallskip%
+    	\setlength\@tcbfigbox@width{#1}%
+    	\setlength\@tcbfigbox@skip{\dimexpr(0.2\columnwidth)/4\relax}%
+    	\tcbsetcurrentcolors{tcbfigboxStyle}%
+	\def\@tcb@border@linewidth{4.5pt}%
+	\ifstrempty{#2}%
+		{\def\@title@sep{}}%
+		{\def\@title@sep{\space:\space}}%
+	\refstepcounter{figbox}%
+	\ignorespaces\tcolorbox[tcbfigboxStyle={\@tcb@border@linewidth}{single}, left skip=\@tcbfigbox@skip, title={\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}}]%
+%\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}
+}{\endtcolorbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ o m m O{fig:fig\the\value{figure}}}
 {
 	#1, capture=hbox,
 	code=
 	{
-		%\renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
-		\if\relax\detokenize{#2}\relax	
-			\def\@title@sep{}%
-	    	\else
-	    		\def\@title@sep{\space:\space}%
-		\fi
+		%\def\thearg{#2}%
+		\ifdefempty{#2}
+			{\def\@title@sep{}}
+	    		{\def\@title@sep{\space:\space}}
 	},
 	%\setlength\cftfigindent{1.5em}
 	%\setlength\cftfigboxindent{1.5em}
@@ -538,14 +508,27 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 	every float=\centering
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures]{boxedfigure}{ o m m O{fig:fig\the\value{figure}}}
+\DeclareTColorBox[blend into=figures]{boxedfigure}{ o m m O{fig:fig\thefigure}}
 	{#1, capture=hbox, label={#4}, title={#2}, list text={\normalsize\bfseries#3}, every float=\centering}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=tables]{boxedtable}{ o m m O{h!} O{tab:tab\the\value{table}}}
-	{float=#4, every float=\centering, capture=hbox, label={#5}, title={#2}, list entry={\normalsize\bfseries\protect\numberline{\thetable}#3}, #1}
+\DeclareTColorBox[blend into=tables]{boxedtable}{ o m m O{h!} O{tab:tab\thetable}}
+{
+	#1, float=#4, every float=\centering, capture=hbox,
+	code=
+	{
+		%\def\thearg{#2}%
+		\ifdefempty{#2}
+       		{\def\@title@sep{}}
+	    		{\def\@title@sep{\space:\space}}	
+	},
+	label={#5},
+	title={\shadow{#2}},
+	blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
+ 	list entry={\normalsize\bfseries\protect\numberline{\thetable}#3}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                                     1 2 3 4     5
-\DeclareTColorBox[blend into=listings]{boxedlisting}{ o m m O{h!} O{lst:lst\the\value{lstlisting}}}
+\DeclareTColorBox[blend into=listings]{boxedlisting}{ o m m O{h!} O{lst:lst\thelstlisting}}
 {float=#4, capture=hbox, label={#5}, title={#2}, list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}#3}, every float=\centering, #1}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
@@ -712,7 +695,7 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	\tcbset{reset, #3, title={\shadowText<#4>'#2'{#5}}}
+	\tcbset{reset, #3, title={\shadowText|#4|'#2'{#5}}}
     	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
     	\IfValueTF{#7}{\tcbset{#7}}{}
     	\begin{tcolorbox}#8
@@ -744,19 +727,6 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 %*****************************************************************************************************************************************%
 %************************************************* Specialized environment definitions ***************************************************%
 %*****************************************************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{preproblemenv}{s G{\linewidth} O{angleBoxedTitleStyle}}
-{%
-    	\@macro@length=\parindent
-    	\setlength{\parindent}{0em}
-    	\tcbsetcurrentcolors{tcbBlueScheme}
-	\tcbset{breakable, width=#2, boxrule=2pt, arc=6pt, drop fuzzy shadow, #3}
-   	\IfValueTF{#3}
-   		{\tcbset{#3}}
-   		{}
-    	\begin{tcolorbox}
-}
-{\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                    1   2 3 4 5
 \DeclareDocumentEnvironment{problem}{d() s o o t'}
@@ -852,15 +822,13 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 	}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                      1 2             3 4   5
-%\DeclareDocumentEnvironment{solution}{s G{\linewidth} o d() D''{solutionStyle}}
 %                                     1 2                  3 4   5
 \DeclareDocumentEnvironment{solution}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
 {%
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Solution:}}%before skip=,
+	\tcbset{reset, tcbSectionStyle, title=\shadowText|#5|'#2'{Solution:}}%before skip=,
     	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
     	\IfValueTF{#4}{\tcbset{#4}}{}
     	\begin{tcolorbox}
@@ -869,16 +837,14 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{tcbsolutionverb}{s o}
 {%
-    \@macro@length=\parindent
-    \setlength{\parindent}{0em}
-    \tcbset{every box on layer 2/.style={reset, tcbsolutionverbStyle}}
-    \IfValueTF{#2}{\tcbsetforeverylayer{#2}}{}
-    \IfBooleanTF{#1}{\par\medskip\medskip}{}
-    \begin{tcolorbox}
-}
-{\end{tcolorbox}\setlength{\parindent}{\@macro@length}}
+    %\@macro@length=\parindent
+    %\setlength{\parindent}{0em}
+    \tcbsetforeverylayer{tcbsolutionverbStyle}%
+    \IfValueTF{#2}{\tcbsetforeverylayer{#2}}{}%
+    %\IfBooleanTF{#1}{\par\medskip\medskip}{}%
+    \begin{tcolorbox}%[tcbsolutionverbStyle]%
+}{\end{tcolorbox}}%\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentEnvironment{proofenv}{s m o}
 %                                     1 2                  3 4   5
 \DeclareDocumentEnvironment{tcbproof}{s D''{solutionStyle} o d() D<>{\anttmcap16pt}}
 {%
@@ -887,7 +853,7 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
     	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
     	\tcbsetcurrentcolors{#2}
-	\tcbset{reset, tcbSectionStyle, title=\shadowText<#5>'#2'{Proof:}}
+	\tcbset{reset, tcbSectionStyle, title=\shadowText|#5|'#2'{Proof:}}
     	\IfValueTF{#3}{\tcbsetforeverylayer{#3}}{}
     	\IfValueTF{#4}{\tcbset{#4}}{}
     	\begin{tcolorbox}\proof[\unskip\nopunct]\bgroup
@@ -897,17 +863,6 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2               3                 4                      5 6
-\DeclareDocumentEnvironment{tcbcolortable}{s D<>{\textwidth} D''{tcbBlueScheme} G{tcbenvironmentStyle} o d()}
-{%tcbenvironment[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-	\tcbsetcurrentcolors{#3}
-	\tcbset{#4, drop fuzzy shadow=#3-colboxshadow, top=-1mm, after=\par\bigskip\bigskip\bigskip, pad after break=1.0mm, pad before break*=3.0mm, width=#2, left=0mm}
-   	\IfValueTF{#5}{\tcbset{#5}}{}
-    	\IfValueTF{#6}{\tcbsetforeverylayer{#6}}{}
-    	\tcolorbox
-    	\vspace{1mm}
-}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                       1 2          3   4 5
 \DeclareDocumentEnvironment{tcblistbox}{m O{\arabic} d() m d()}
@@ -992,59 +947,6 @@ boxsep=0mm, top=0mm, bottom=0mm, left=0mm, right=0pt, right skip=-1pt, after=\un
     		{\vspace{-5mm}\empheq[box=\tcboxmath]{alignat*=2}}
     		{\vspace{-5mm}\empheq[box=\tcboxmath]{alignat=2}}
 }{\endempheq}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{tcbfigure}{O{figureStyle, label = fig:fig\the\value{figure}} m m}
-	{\boxedfig[#1]{#2}{#3}}{\endboxedfig}
-
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\colortableentry}{m D<>{\labelboxwidth} D<>{\colorboxwidth} D<>{\colorboxheight}}
-%{%\addcontentsline{file}{kind}{title}
-%	\phantomsection\addcontentsline{lof}{figbox}
-%	{%
-%		\protect\numberline{\thefigbox}%
-%		\raisebox{10pt}%
-%		{%
-%			\protect\hypertarget{testingit}{}%
-%		}%
-%		\figboxname\ \thefigbox%
-%	}
-%}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{tcbfigbox}{r<> O{}}
-{%
-    	\par\smallskip%
-    	\def\@currently@inside{figbox}%
-	\@set@currently@inside@indent%
-    	\setlength\@tcbfigbox@width{#1}%
-    	\setlength\@tcbfigbox@skip{\dimexpr(\linewidth-\@tcbfigbox@width-2\@tcbfigbox@left@skip)/2\relax}%
-    	\tcbsetcurrentcolors{tcbfigboxStyle}%
-	\refstepcounter{@tcb@figbox@counter}%
-	\def\@tcb@border@linewidth{4.5pt}%
-	\if\relax\detokenize{#2}\relax%	
-		\def\@title@sep{}%
-	\else%
-		\def\@title@sep{\space:\space}%
-	\fi%
-	%\refstepcounter{figbox}%
-%	\def\@toc@hyperlink%
-%	{%
-%		\phantomsection\addcontentsline{lof}{figbox}{%
-%		\protect\numberline{\thefigbox}%
-%		\raisebox{10pt}{%
-%			\protect\hypertarget{testingit}{}%
-%		}%
-%		\figboxname\ \thefigbox}%
-%	}%
-	%\IfValueTF{#2}%
-%    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\@toc@hyperlink\fontsize{14}{\baselinestretch}{\protect\hyperlink{testingit}{\shadowText<\sffamily>[black](white){\LARGE#2}}}}]}%
-%    		{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\@toc@hyperlink}%
-	%\IfValueTF{#2}%
-    	%{%
-    		\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip, title={\figbox{\@title@sep#2}\fontsize{14}{\baselinestretch}%
-     			{\protect\hyperlink{figbox\thefigbox}{\shadowText<\sffamily>[black](white){\LARGE\figboxname\ \thefigbox\@title@sep#2}}}}]%
-     	%}%
-    	%{\tcolorbox[tcbfigboxStyle=\@tcb@border@linewidth, left skip=\@tcbfigbox@skip]\figbox{}}%
-}{\endtcolorbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\functionOptionsEntry}{m o}
 {%\functionOptionsEntry{option}[option argument]

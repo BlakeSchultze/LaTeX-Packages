@@ -7,6 +7,7 @@
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
 \ProvidesPackage{my-listings}
+%\usepackage[procnames]{listingsutf8}
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
@@ -23,9 +24,6 @@
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
-%\usepackage[procnames]{listingsutf8}
-% \lstname: prints the name of the current listing which is either the file name or the name defined by the name key.
-% \thelstnumber \arabic{lstnumber}: prints the lines numbers.
 \def\@tcblistings@rulesep{0.75pt}							%
 \def\@tcblistings@framerule{2.0pt}							%
 \def\@tcblistings@framesep{1.0mm}
@@ -40,9 +38,9 @@
 \def\@tcblistings@width{\dimexpr\@tcblistings@linewidth + \@tcblistings@numbersep + 2\@tcblistings@rulesep + 1.5mm\relax}
 \def\@tcblistings@captionwidth{\dimexpr\@tcblistings@linewidth + \@tcblistings@framexleftmargin + 9.5pt\relax}
 \def\@tcblistings@captionleftskip{\dimexpr\@tcblistings@framerule+\@tcblistings@framerule+\@tcblistings@rulesep+\@tcblistings@framexleftmargin + 1mm\relax}
-\def\@terminal@style@xleftmargin{6pt}
-\def\@terminal@style@xrightmargin{-\dimexpr 9.75mm - 1.25pt\relax}
-\def\@terminal@style@rulesep{0.25mm}
+\def\@terminal@style@xleftmargin{3pt}
+\def\@terminal@style@xrightmargin{-\dimexpr 11.33mm - 3pt\relax}
+\def\@terminal@style@rulesep{0.0mm}
 \def\@terminal@style@framesep{0.25mm}
 \def\@terminal@style@framerule{0.25mm}
 \def\@terminal@style@framexleftmargin{5pt}
@@ -51,46 +49,62 @@
 \def\@terminal@style@framexbottommargin{3mm}
 \def\@terminal@style@aboveskip{0.95pt}
 \def\@terminal@style@belowskip{-\dimexpr 6.25mm - 0.5pt\relax}
-
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareCaptionType{code}[Code Listing][List of Code Listings]
 \DeclareCaptionFont{white}{ \color{white} }
 \DeclareCaptionFont{black}{ \color{black} }
 \DeclareCaptionFont{blue}{ \color{blue} }
 \DeclareCaptionFont{green}{ \color{green} }
-%\DeclareCaptionFormat{listing}{#1#2#3\par}
 %\DeclareCaptionLabelFormat{emptylabel}{\bothIfFirst{#1}{}#2}
+%\DeclareCaptionFormat{listing}{#1#2#3\par}
 %\DeclareCaptionFormat{empty}{ }
 \DeclareCaptionFormat{listing}
 {
-	\begin{tcolorbox}
-	[
-		colback=listingsStyle-colbackcaption, colframe=listingsStyle-colframecaption, coltext=listingsStyle-coltextcaption,
-		before skip=1mm, after skip=-8.5mm, left skip=-\@tcblistings@captionleftskip, right skip=0mm,
-		boxsep=2pt, boxrule=2pt, arc=6pt, width=\@tcblistings@captionwidth, before=\par\smallskip,
-		left=2mm, right=3mm, top=0mm, bottom=0mm, fontupper=\normalsize\bfseries
-	]
-	\unskip\ignorespaces\parbox{\textwidth}{#1#2#3}
+	\begin{tcolorbox}[tcblistingcaptionStyle]
+		\unskip\ignorespaces\parbox{\textwidth}{#1#2#3}
 	\end{tcolorbox}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\captionsetup[lstlisting]{format=listing, labelfont=white, textfont=white, singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm}, justification=justified}
-%\captionsetup[lstlisting]{ format=listing, labelfont=white, textfont=white, singlelinecheck=false, margin=0pt, font={bf,footnotesize} }
-%\lstset{fancyvrb}
-%\lstset{moredelim=[is][\ttfamily]{(}{)}}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%% Usage: \Matlab{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
-%\newcommand{\Matlab}[6]{
-%                                1 2 3 4 5 6
 \captionsetup[lstlisting]
-	{%
-		format=listing, labelfont={sf,white}, textfont={white,sf}, singlelinecheck=false, width=\linewidth,
-		margin={0.0cm,-1.0cm}, justification=justified, aboveskip=-2.5mm, belowskip=0.5mm
-	}
+{%
+	format=listing, labelfont={sf,white}, textfont={white,sf}, singlelinecheck=false, width=\linewidth,
+	margin={0.0cm,-1.0cm}, justification=justified, aboveskip=-2.5mm, belowskip=0.5mm
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTotalTCBox{\commandbox}{s v}{verbatim,colupper=white,colback=black!75!white,colframe=black}
+{%
+	\IfBooleanTF{#1}{\textcolor{red}{\ttfamily\bfseries > }}{}%
+	\lstinline[language=command.com, keywordstyle=\color{blue!35!white}\bfseries]^#2^%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTotalTCBox{\tcbinlinebashbox}{s t! v}{tcbinlinebashboxStyle}
+{%
+     	\IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\textsize\relax}{\rule{0pt}{\textsize}}\textcolor{green}{ > }}{}%
+    	\IfBooleanTF{#2}
+    	{
+	    	\lstinline
+		[
+	     		style=emptyStyle, language=bash-extended,  name=bash, identifierstyle=\textcolor{white}, commentstyle=\textcolor{white},
+			stringstyle=\color{white}\upshape, showstringspaces=true, keywordstyle={[3]\color{white}},	     		
+			keywordstyle={[1]\color{white}}, keywordstyle={[2]\color{white}}
+	     	]^#3^%
+     	}
+     	{
+     		\lstinline
+		[
+	     		language=bash-extended,  name=bash, showstringspaces=true
+	     	]^#3^%
+     	}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                                   1 2  3 4
 \DeclareTCBListing[blend into=listings]{tcbbashbox}{s t! O{} d()}
 {%
-	width=\linewidth,
+	%width=\linewidth,
 	blend before title={colon},
 	blend before title code={\hspace{-2.5mm}},
 	IfBooleanTF={#1}
@@ -108,16 +122,16 @@
 		},
 	IfValueTF={#3}
 	{
-		%code={\def\@title@text{\shadowText<\sffamily>[black](white){\space:\space#3}}},
+		%code={\def\@title@text{\shadowText|\sffamily|[black](white){\space:\space#3}}},
 		IfBooleanTF={#2}
-			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
-			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
+			{title={\shadowText|\sffamily|[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
+			{title={\shadowText|\sffamily|[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting\@title@text}}}
 	}
 	{
-		%code={\def\@title@text{\shadowText<\sffamily>[black](white){}}},
+		%code={\def\@title@text{\shadowText|\sffamily|[black](white){}}},
 		IfBooleanTF={#2}
 			{title={}}
-			{title={\shadowText<\sffamily>[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }}}
+			{title={\shadowText|\sffamily|[black](white){\@tcblisting@terminal@caption@title\ \theTerminallisting }}}
 	},
 	%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\normalsize\bfseries\@tcblisting@terminal@caption@title\ \theTerminallisting },
 	%list entry={\protect\numberline{\hspace{2.0em}\lstlistingname\ \thelstlisting }},
@@ -129,6 +143,9 @@
 	code={\refstepcounter{Terminallisting}\par\medskip}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%% Usage: \lstMatlab{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
+%\newcommand{\lstMatlab}[6]{
+%                                1 2 3 4 5 6
 \newtcbinputlisting[blend into=listings]{\Matlab}[7][]
 	{
 		MatlabStyle,
@@ -143,10 +160,10 @@
 		},
 		listing file={#7},
 		blend before title={colon},
-		blend before title code={\hspace{-10mm}\sffamily\BreakableShadowText<0.65pt><0.2pt>[white](black){##1\@title@sep}},
+		blend before title code={\hspace{-10mm}\BreakableShadowText{\sffamily}<0.65pt><0.2pt>[white](black){\@tcblisting@Matlab@caption@title\ \theMatlablisting\@title@sep}},
 		%list text={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting },
 		list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}\@tcblisting@Matlab@caption@title\ \theMatlablisting\@title@sep#1},
-		title={\addtocounter{lstlisting}{-1}#1},
+		title={\addtocounter{lstlisting}{-1}\BreakableShadowText{\sffamily}<0.65pt><0.2pt>[white](black){#1}},
 		listing options=
 		{
 	   		style=codingStyle, language=matlab-extended, caption={#5}, label={#6},
@@ -182,6 +199,8 @@
 {
 	%language={command.com},
 	language={bash}, name=bash, float, floatplacement=b, commentstyle=\color{bash-extended-commentcolor}\textit,
+	alsodigit={-},							% add the minus sign '-' to the list of identifier digits so they will be printed
+	alsoletter={-},
 	%morekeywords={cp, rm, mv, git},
     	morekeywords=                           % if you want to add more keywords to the set
     	{[1]
@@ -470,6 +489,8 @@
 {
     	abovecaptionskip=0mm,						% is the vertical space respectively above each caption.
 	aboveskip=3.5mm,
+	alsodigit={-},
+	alsoletter={-},
 	backgroundcolor=\color{emptyStyle-backgroundcolor},	% choose the background color. You must add \RequirePackage{color}
 	basewidth={0.575em,0.45em}, 					% default: {fixed,flexible mode}={0.6em,0.45em}
 	basicstyle=\ttfamily,               			% the size of the fonts that are used for the code

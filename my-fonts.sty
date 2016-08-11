@@ -70,11 +70,6 @@
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \edef\currentseries{\f@series}
-\edef\normitnow{\f@series}
-\def\seriesb{\bfseries b}
-\def\seriesbx{\bfseries bx}
-\def\seriesbxb{\bfseries\ignorespaces bx}
-\def\seriesm{m}
 \def\Bbbsum{\DOTSI\Bbbsumop\slimits@}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -83,7 +78,8 @@
 \newcommand\bmmax{20}
 \newcommand\hmmax{20}
 \newcommand{\bboldfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
-\newcommand{\textbbold}[1]{{\bbfamily#1}}
+\newcommand{\bbfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
+\newcommand{\textbbold}[1]{{\bboldfamily#1}}
 \DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
 %\DeclareRobustCommand\bboardfamily
 %        {\not@math@alphabet\bboardfamily\mathbboard
@@ -106,11 +102,19 @@
 %\renewcommand{\textsc}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont#1}}
 \newcommand{\textscsl}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont#1}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%\renewcommand\normalsize{\fontsize{10}{\baselinestretch}}
+\newcommand\default@fsize{\fontsize{10}{\baselinestretch}}
+\newcommand\midlarge{\fontsize{11}{\baselinestretch}}
 \renewcommand\large{\fontsize{12}{\baselinestretch}}
+\newcommand\midLarge{\fontsize{13}{\baselinestretch}}
 \renewcommand\Large{\fontsize{14}{\baselinestretch}}
+\newcommand\midLARGE{\fontsize{15}{\baselinestretch}}
 \renewcommand\LARGE{\fontsize{16}{\baselinestretch}}
+\newcommand\midhuge{\fontsize{17}{\baselinestretch}}
 \renewcommand\huge{\fontsize{18}{\baselinestretch}}
+\newcommand\midHuge{\fontsize{19}{\baselinestretch}}
 \renewcommand\Huge{\fontsize{20}{\baselinestretch}}
+\newcommand{\midHUGE}{\fontsize{21}{\baselinestretch}}
 \renewcommand{\HUGE}{\fontsize{22}{\baselinestretch}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\coloredtext}{s t! m m}
@@ -128,38 +132,6 @@
 			{\ignorespaces\color{#3}#4\unskip\ignorespaces}
 	}
 	\endgroup%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setshadowtextprops}{D<>{0.5pt} O{0.65pt} O{-0.2pt} G{BaylorGoldCMYK}}
-{%\setshadowtextprops<offset>[offset x][offset y]{shadow color}
-	\shadowoffset{#1}%
-	\shadowoffsetx{#2}%
-	\shadowoffsety{#3}%
-	\shadowcolor{#4}%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\shadowoffset{0.5pt}
-%\shadowoffsetx{0.65pt}
-%\shadowoffsety{-0.2pt}
-%\shadowcolor{BaylorGoldCMYK}
-%{
-%\fontencoding{T1}\fontfamily{anttlc}\fontseries{m}\fontshape{n}\selectfont
-%Some text in anttlc...
-%}
-%\usefont{T1}{cmr}{m}{n}
-%                                    1 2                  3            4 5   6
-\DeclareDocumentCommand{\shadowText}{s D<>{\anttmcap18pt} D''{current} o d() m}
-{%\shadowText<title font>'color style'{title text}
-	%\IfBooleanTF{#1}%
-	%{%
-	%	\setshadowtextprops
-	\IfValueTF{#4}
-		{\shadowcolor{#4}}
-		{\shadowcolor{#3-coltextshadow}}
-	\IfValueTF{#5}
-		{\ignorespaces\unskip#2\color{#5}}
-		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
-	\shadowtext{#6}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\RaisedText}[1]{%
@@ -215,23 +187,24 @@
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\shadowfypars#1\par#2\relax{%
   \ifx#1\relax\else%
     \shadowfywords#1 \relax\relax%
   \fi%
-  \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip\xspace%
+  \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadowfywords#1 #2\relax{%
   \ifx#1\relax\else%
     \shadowfyletters#1\relax\relax%
   \fi%
-  \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip\xspace%
+  \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadowfyletters#1#2\relax{%
   \shadow{#1}%
-  \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip\xspace}
+  \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadow#1{\kern\shadowHoffset%
   \raisebox{\shadowVoffset}{%
@@ -242,9 +215,27 @@
 }
 \def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\shadowoffset{0.5pt}
+\shadowoffsetx{0.65pt}
+\shadowoffsety{-0.2pt}
 %Breakable
-%                                             1 2         3          4        5          6
-\DeclareDocumentCommand{\BreakableShadowText}{s D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
+%                                             1 2              3           4          5        6          7
+\DeclareDocumentCommand{\BreakableShadowText}{s G{\sffamily} D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
+{%\BreakableShadowText<horizontal offset><vertical offset>[text color](shadow color){text}
+	\setlength\shadowHoffset{#3}%
+	\setlength\shadowVoffset{#4}%
+	\def\primarycolor{#5}%
+	\def\secondarycolor{#6}%
+%	\IfValueTF{#4}
+%		{\shadowcolor{#4}}
+%		{\shadowcolor{#3-coltextshadow}}
+%	\IfValueTF{#5}
+%		{\ignorespaces\unskip#2\color{#5}}
+%		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
+	#2\shadowfy{#7}\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbtitleShadowText}{s D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
 {%\BreakableShadowText<horizontal offset><vertical offset>[text color](shadow color){text}
 	\setlength\shadowHoffset{#2}%
 	\setlength\shadowVoffset{#3}%
@@ -256,7 +247,31 @@
 %	\IfValueTF{#5}
 %		{\ignorespaces\unskip#2\color{#5}}
 %		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
-	\shadowfy{#6}\unskip\xspace%
+	\shadowfy{#6}\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setshadowtextprops}{D<>{0.5pt} O{0.65pt} O{-0.2pt} G{BaylorGoldCMYK}}
+{%\setshadowtextprops<offset>[offset x][offset y]{shadow color}
+	\shadowoffset{#1}%
+	\shadowoffsetx{#2}%
+	\shadowoffsety{#3}%
+	\shadowcolor{#4}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2                  3            4         5            6 7   8
+\DeclareDocumentCommand{\shadowText}{s D||{\anttmcap18pt} D<>{0.65pt} D<>{0.2pt} D''{current} o d() m}
+{%\shadowText|title font|'color style'{title text}
+	%\IfBooleanTF{#1}%
+	%{%
+	%	\setshadowtextprops
+	\setshadowtextprops[#3][#4]
+	\IfValueTF{#6}
+		{\shadowcolor{#6}}
+		{\shadowcolor{#5-coltextshadow}}
+	\IfValueTF{#7}
+		{\ignorespaces\unskip#2\color{#7}}
+		{\ignorespaces\unskip#2\color{#5-coltextshadowbase}}
+	\shadowtext{#8}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
