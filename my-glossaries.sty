@@ -3726,12 +3726,13 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \noexpand\fi
   \noexpand\@@gls@xdycheckbackslash
  }%
-}
+}%\pgfmathsetlength{\qux}{max(\foo,\baz)}\maxof{\foo}{\baz}
 \def@gls@xdycheckbackslash
 \newlength\gls@tmplen
 \newcommand*{\glsdohypertarget}[2]{%
-  \settoheight{\gls@tmplen}{#2}%
-  \raisebox{\f@size pt}{\hypertarget{#1}{}}#2%
+  \settototalheight{\gls@tmplen}{#2}%
+  \setlength\@macro@length{\maxof{\gls@tmplen}{\textsize}}
+  \raisebox{\@macro@length}{\hypertarget{#1}{}}#2%
 }
 \newcommand*{\glsdohyperlink}[2]{\hyperlink{#1}{#2}}
 \ifcsundef{hyperlink}%

@@ -54,10 +54,10 @@
 %subproblemparts
 %listings
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newlistentry{Chapter}{toc}{0}
-\newlistentry[Chapter]{Section}{toc}{1}
-\newlistentry[Section]{Subsection}{toc}{2}
-\newlistentry{Topic}{toc}{0}
+%\newlistentry{Chapter}{toc}{0}
+%\newlistentry[Chapter]{Section}{toc}{1}
+%\newlistentry[Section]{Subsection}{toc}{2}
+%\newlistentry{Topic}{toc}{0}
 \newlistof{problems}{probs}{\listproblemsname}
 \newlistentry[problems]{subproblems}{probs}{2}
 \newlistentry[problems]{problemparts}{probs}{2}
@@ -91,20 +91,30 @@
 	}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\cftXnumberline}[2]%
+\newcommand{\cftXnumberline}[1]%
 {%	
-	\expandafter\newcommand\csname cft#2numberline\endcsname[1]
+	\expandafter\newcommand\csname cft#1numberline\endcsname%[1]
 	{
-		\raisebox{10pt}%
-		{%figbox\thefigbox
-			\expandafter\protect\expandafter\hypertarget{#2\csname the#2\endcsname}{}%
-		}%
-		\protect\numberline{\csname the#2\endcsname}%
-		\csname #2name\endcsname\space\csname the#2\endcsname##1%
+		\protect\numberline{\raisebox{10pt}{\protect\hypertarget{#1\csname the#1\endcsname}{}}\csname the#1\endcsname}%
+%		\protect\phantomsection\raisebox{10pt}%
+%		{%figbox\thefigbox
+%			\protect\hypertarget{#2\csname the#2\endcsname}{}%
+%		}%
+		%\csname #2name\endcsname\space\csname the#2\endcsname##1%
+		%\csname cft#2namenum\endcsname##1%
 		\ignorespaces%\xspace
 	}
 }
-\cftXnumberline{lof}{figbox}
+\cftXnumberline{figbox}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftXcontentsline}[2]%
+{%	
+	\expandafter\newcommand\csname cft#2contentsline\endcsname[1]
+		{\expandafter\phantomsection\expandafter\addcontentsline{#1}{#2}{\csname cft#2numberline\endcsname\csname cft#2namenum\endcsname##1}\ignorespaces}
+		%{\expandafter\phantomsection\expandafter\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}
+		%{\phantomsection\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}\csname #1name\endcsname
+}
+\cftXcontentsline{lof}{figbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\cftXhypertitle}[1]
 {%
@@ -119,14 +129,6 @@
 }
 \cftXhypertitle{figbox}	
 %\cftXtcbtitle{figbox}	
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\cftXcontentsline}[2]%
-{%	
-	\expandafter\newcommand\csname cft#2contentsline\endcsname[1]
-		{\expandafter\phantomsection\expandafter\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}
-		%{\phantomsection\addcontentsline{#1}{#2}{\cftfigboxnumberline{##1}}\ignorespaces}
-}
-\cftXcontentsline{lof}{figbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\cftXtcbtitle}[1]%
 {%	
@@ -148,12 +150,17 @@
 	\cftXnamenum{#2}{#5}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%\newlistentry{Topic}{toc}{0}
 \cftXcreate{testlist}{toc}{0}{testlistname}
-\cftXcreate{figbox}{lof}{0}{Figbox}
-\cftXcreate[figbox]{figboxfigure}{lof}{1}{Figure}
-\cftXcreate{Matlablisting}{lol}{0}{Matlab Listing}
-\cftXcreate{Terminallisting}{lol}{0}{Terminal Listing}
-\cftXcreate{IBPtable}{lot}{0}{IBP Table}
+\cftXcreate{Chapter}{toc}{0}{\ChapterName}
+\cftXcreate[Chapter]{Section}{toc}{1}{\SectionName}
+\cftXcreate[Section]{Subsection}{toc}{2}{\SubsectionName}
+\cftXcreate{Topic}{toc}{0}{\TopicName}
+\cftXcreate{figbox}{lof}{0}{\FigboxName}
+\cftXcreate[figbox]{figboxfigure}{lof}{1}{\FigboxFigureName}
+\cftXcreate{Matlablisting}{lol}{0}{\MatlabListingName}
+\cftXcreate{Terminallisting}{lol}{0}{\TerminalListingName}
+\cftXcreate{IBPtable}{lot}{0}{\IBPtableName}
 %\cftXnamenum{figbox}{Figbox}
 %\cftXnamenum{figboxfigure}{Figbox Figure}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -163,34 +170,8 @@
 \newcommand{\Terminallistingname}{\TerminalListingName}								% Figure toc title
 \newcommand{\IBPtablename}{\IBPtableName}								% Figure toc title
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\figbox}[1]%
-%{%
-%	\refstepcounter{figbox}%
-%	%\gdef\@currently@inside{figbox}%
-%	\phantomsection\addcontentsline{lof}{figbox}%
-%	{%
-%		\protect\numberline{\thefigbox}%
-%		\raisebox{\f@size pt}{%
-%			\protect\hypertarget{figbox\thefigbox}{}%
-%		}%
-%		\figboxname\ \thefigbox#1%
-%	}%
-%	\ignorespaces%\xspace
-%}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\figboxfigure}[1]%
-%{%
-%	\refstepcounter{figboxfigure}%
-%	\gdef\@currently@inside{figboxfigure}%
-%	\phantomsection\addcontentsline{lof}{figboxfigure}{\protect\numberline{\thefigboxfigure}#1}%
-%	\ignorespaces%\xspace
-%}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-
-
-
 \renewcommand{\cftaftertoctitle}{}
 \renewcommand{\cftafterloftitle}{}
 \renewcommand{\cftafterlottitle}{}
@@ -275,14 +256,6 @@
 \renewcommand\chaptername{\ChapterName}								% Chapter toc title		
 \renewcommand\appendixname{\AppendixName}							% Appendix toc title
 \renewcommand\abstractname{\AbstractName}							% Abstract toc title
-%\renewcommand{\indexname}{Index}								% Index toc title
-%\renewcommand{\tablename}{IBP Table}							% Table toc title
-%\renewcommand{\figurename}{Figure}								% Figure toc title
-%\renewcommand\bibname{Bibliography}								% Bibliography toc title
-%\renewcommand\partname{Part}									% Part toc title
-%\renewcommand\chaptername{Chapter}								% Chapter toc title		
-%\renewcommand\appendixname{Appendix}							% Appendix toc title
-%\renewcommand\abstractname{Abstract}							% Abstract toc title
 \renewcommand{\lstlistingname}{\CodeListingName}  				% The caption label for listings.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifcsdef{listoflistingscaption}								% Caption of listing float entry in ToC (minted)
@@ -312,9 +285,9 @@
     \@starttoc{toc}%
     \if@restonecol\twocolumn\fi
 }
-%*************************************************************************************************%
-%********************************************************** Document sectioning command definitions **********************************************************%
-%*************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document sectioning command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                 1 2  3 4 5
 \DeclareDocumentCommand{\Chapter}{s t! o m d()}
@@ -339,14 +312,26 @@
 	      			anchor=east, xshift=\@Chapter@heading@title@xshift, rectangle, fill=chapterHeading-colbacktitle, inner sep=\@Chapter@heading@inner@sep,
 					rounded corners=\@Chapter@heading@rounded@corners, line width=\@Chapter@heading@title@linewidth, draw=chapterHeading-coldraw
 				]	
-				{\color{chapterHeading-coltitle}\sffamily\LARGE\bfseries\theChapter\ #4};%
+				{\@Chapter@heading@font\theChapter\ \currentChaptername};%
 	       	\end{tikzpicture}%
 	     	 };%
 	\end{tikzpicture}%
+	\fancyhead[L]{\@lhead@font\theChapter\; \currentChaptername}%
 	%\begin{tikzpicture}[chapterFormatCode=#4]\end{tikzpicture}%\tikzset{chapterFormatCode=#4}%
 	\IfBooleanTF{#2}{}{\@Chapter@finish@skip}%
 	%\par\bigskip\bigskip\xspace%
 }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\cftXtcbtitle}[1]%
+%{%	
+%	%\DeclareExpandableDocumentCommand
+%	\expandafter\newcommand\expandafter{\csname cft#1tcbtitle\endcsname}[2]
+%	{%
+%		\csname cft#1contentsline\endcsname{##1##2}%
+%		\csname cft#1hypertitle\endcsname{##1}{##2}
+%	}
+%}
+%\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\raisebox{\textsize}{\protect\hypertarget{toc\theSection}{}}\theSection}#4}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                 1 2  3 4   5
 \DeclareDocumentCommand{\Section}{s t! m d() o}
@@ -358,11 +343,11 @@
 		{\hypertarget{\@Section@link@name#4}{}}%
 		{\hypertarget{\@Section@link@name#3}{}}%
 	\IfValueTF{#4}%
-		{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\theSection}#4}}%
-		{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\theSection}#3}}%
+		{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\raisebox{\textsize}{\protect\hypertarget{toc\theSection}{}}\theSection}#4}}%
+		{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\raisebox{\textsize}{\protect\hypertarget{toc\theSection}{}}\theSection}#3}}%
 	\IfValueTF{#5}%
-		{\begin{tcbsection}{\tcbhyperlink[stddkblue]{PAGE0}{\shadowcolor{black}\shadowtext{\theSection\ : #3}}}[after skip=\@Section@after@skip]#5\end{tcbsection}}%
-		{\begin{tcbsection}{\tcbhyperlink[stddkblue]{PAGE0}{\shadowcolor{black}\shadowtext{\theSection\ : #3}}}[bottom=0mm, after skip=\@Section@after@skip]\end{tcbsection}}%
+		{\begin{tcbsection}{\tcbhyperlink[stddkblue]{toc\theSection}{\shadowcolor{black}\shadowtext{\theSection\ : #3}}}[after skip=\@Section@after@skip]#5\end{tcbsection}}%
+		{\begin{tcbsection}{\tcbhyperlink[stddkblue]{toc\theSection}{\shadowcolor{black}\shadowtext{\theSection\ : #3}}}[bottom=0mm, after skip=\@Section@after@skip]\end{tcbsection}}%
 	\fancyhead[L]{\@lhead@font\theSection\; \currentChaptername : #3}\xspace%
 	\IfBooleanTF{#2}{}{\@Section@finish@skip}%
 	%\ignorespaces\par\bigskip%\@Section@finish@skip
@@ -417,9 +402,16 @@
 	\IfBooleanTF{#2}{}{\@Topic@finish@skip}%
 	%\par\bigskip\bigskip\xspace%
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Index/Glossary/Acronyms/Nomenclature style file generation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\def\@Chapter@link@name{chap-}
+\def\@Section@link@name{sec-}
+\def\@Subsection@link@name{subsec-}
+\def\@Topic@link@name{topic-}
+\def\@toc@link@label@prefix{toc-}
+%*****************************************************************************************************************************************%
+%****************************************** Index/Glossary/Acronyms/Nomenclature style file generation ***********************************%
+%*****************************************************************************************************************************************%
 \newcommand{\problems}[1]%
 {%
 	\refstepcounter{problems}%
@@ -463,13 +455,59 @@
 	\ignorespaces%\xspace
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%*************************************************************************************************%
-%***************************************************** make/add/print back matter definitions/commands  ******************************************************%
-%*************************************************************************************************%
+%\newcommand{\figbox}[1]%
+%{%
+%	\refstepcounter{figbox}%
+%	%\gdef\@currently@inside{figbox}%
+%	\phantomsection\addcontentsline{lof}{figbox}%
+%	{%
+%		\protect\numberline{\thefigbox}%
+%		\raisebox{\f@size pt}{%
+%			\protect\hypertarget{figbox\thefigbox}{}%
+%		}%
+%		\figboxname\ \thefigbox#1%
+%	}%
+%	\ignorespaces%\xspace
+%}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\figboxfigure}[1]%
+%{%
+%	\refstepcounter{figboxfigure}%
+%	\gdef\@currently@inside{figboxfigure}%
+%	\phantomsection\addcontentsline{lof}{figboxfigure}{\protect\numberline{\thefigboxfigure}#1}%
+%	\ignorespaces%\xspace
+%}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@backmatter@group@label@node}{m}
+{%
+	\tikz\node%
+	[%
+		rounded corners=5pt, draw=tcbIndexStyle-coldraw, fill=tcbIndexStyle-colfill, inner sep=5pt,%
+		line width=1pt, align=center, font=\@frontbackmatter@group@label@font, minimum width=\linewidth-\pgflinewidth%
+	]%
+	{#1};%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\IndexHeading}{m}
+{%	
+	\setlength{\@macro@skip}{\baselineskip}
+	\setlength{\baselineskip}{\@idx@baseline@skip}
+	\thispagestyle{fancy}%
+	\par\vskip\@idx@before@group@label@skip%
+	\ifnumcomp{\value{@index@entry@counter}}{>}{0}%
+		{\hspace{-7.0mm}\@backmatter@group@label@node{#1}}%
+     	 	{\@backmatter@group@label@node{#1}}%
+  	\par\vskip\@idx@after@group@label@skip%
+  	\fancyhead[L]{\@lhead@font\@index@lhead@title}%
+	\addtocounter{@index@entry@counter}{1}%	
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%******************************************* make/add/print back matter definitions/commands  ********************************************%
+%*****************************************************************************************************************************************%
 \DeclareDocumentCommand{\@automake@nomenclature}{G{my-nomencl.ist}}
 {%makeindex -s my-nomencl.ist -t pCT_Data_Organization_Format.nlg  -o pCT_Data_Organization_Format.nls  pCT_Data_Organization_Format.nlo
 	\edef\@gls@dothiswrite%
@@ -534,39 +572,9 @@
 	\clearpage
 	\printindex%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\IndexHeading}{m}
-{%	
-	\setlength{\@macro@skip}{\baselineskip}
-	\setlength{\baselineskip}{\@idx@baseline@skip}
-	\thispagestyle{fancy}%
-	\par\vskip\@idx@before@group@label@skip%
-	\ifnumcomp{\value{@index@entry@counter}}{>}{0}%
-	{%
-		\hspace{-7.0mm}%
-		\tikz\node%
-		[%
-			rounded corners=5pt, draw=tcbIndexStyle-coldraw, fill=tcbIndexStyle-colfill, inner sep=5pt,
-			line width=1pt, align=center, font=\sffamily\bfseries\large, minimum width=\linewidth-\pgflinewidth%
-		] {#1};%
-	}%
-      {%
-      	\tikz\node%
-      	[%
-      		rounded corners=5pt, draw=tcbIndexStyle-coldraw, fill=tcbIndexStyle-colfill, inner sep=5pt, xshift=4mm,
-		    line width=1pt, align=center, font=\sffamily\bfseries\large, minimum width=\linewidth-\pgflinewidth%
-		] {#1};%
-	}%
-  	\par\vskip\@idx@after@group@label@skip%
-  	\fancyhead[L]{\@lhead@font\@index@lhead@title\xspace}%
-	\addtocounter{@index@entry@counter}{1}%	
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%*************************************************************************************************%
-%************************************************ Index/Glossary/Acronyms/Nomenclature style file generation *************************************************%
-%*************************************************************************************************%
+%*****************************************************************************************************************************************%
+%************************************** Index/Glossary/Acronyms/Nomenclature style file generation ***************************************%
+%*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`!=12 title={\\linkedindextitle\\anttmcap18pt\\IndexName}
 %\catcode`\$=\active
@@ -647,9 +655,9 @@ headings_flag  1
 \end{filecontents*}
 %}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%*************************************************************************************************%
+%*****************************************************************************************************************************************%
 %************************************************* End of 'frontbackmatter.sty' package **************************************************%
-%*************************************************************************************************%
+%*****************************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \catcode`|=\active
 \makeatother

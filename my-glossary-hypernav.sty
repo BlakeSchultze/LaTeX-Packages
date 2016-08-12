@@ -34,21 +34,22 @@
 {%
 	\renewcommand*{\glsgroupskip}{}%
   	\protected@write\@auxout{}{\string\@gls@hypergroup{#1}{#2}}%
-  	\@glstarget{glsn:#1@#2}
-  	{%
-  		\tikz\node
-  		[
-  			outer frame ysep=4cm,
-			rounded corners=6pt,
-		  	draw=DarkSlateGray!75!ForestGreen,
-			fill=DarkSlateGray!10,
-		    	line width=1.0pt,
-		    	inner sep=6pt,
-		    	align=center,
-		    	font=\@frontbackmatter@group@label@font,
-		    	minimum width=\linewidth-\pgflinewidth,
-		] {#3};%
-	}%
+  	\@glstarget{glsn:#1@#2}{\@backmatter@group@label@node{#3}}%
+  	%\@glstarget{glsn:#1@#2}
+  	%{
+%  		\tikz\node
+%  	[
+%  			%outer frame ysep=4cm,
+%  			%xshift=5mm,
+%			rounded corners=5pt,
+%		  	draw=tcbGlossaryStyle-coldraw,
+%			fill=tcbGlossaryStyle-colfill,
+%		    	line width=1.0pt,
+%			inner sep=5pt,
+%		    	align=center,
+%		    	font=\@frontbackmatter@group@label@font,
+%		    	minimum width=\linewidth-\pgflinewidth,
+%		] {#3};}%
   \expandafter\let
      \expandafter\@gls@list\csname @gls@hypergrouplist@#1\endcsname
   \@for\@gls@elem:=\@gls@list\do{%
@@ -82,8 +83,14 @@
 		{%
 			\ifthenelse{\equal{#1}{\acronymtype}}
 			{\fancyhead[L]{\@lhead@font\@listof@acronyms@lhead@title}}
-			{\fancyhead[L]{\@lhead@font List of Symbols}}
+			{\fancyhead[L]{\@lhead@font\@listof@symbols@lhead@title}}
 		}%	
+%	\IfStrEqCase{#1}%
+%	{%
+%		{\glsdefaulttype}{\fancyhead[L]{\@glossary@lhead@title}}%
+%		{\acronymtype}{\fancyhead[L]{\@listof@acronyms@lhead@title}}%
+%		{\symbolname}{\fancyhead[L]{\@listof@symbols@lhead@title}}%
+%	}[\fancyhead[L]{\@glossary@lhead@title}]%	
 	\fancyhead[C]{}%
 	\fancyhead[R]{#2}%
 }

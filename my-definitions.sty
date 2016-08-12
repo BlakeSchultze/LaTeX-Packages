@@ -250,13 +250,13 @@
 \def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
 \def\@frontbackmatter@navhyperlink@font{\anttbcap12pt}
 \def\@frontbackmatter@entry@text@sep{$-$\space\space}
-\def\@Chapter@header@font{\sffamily\LARGE\bfseries}
+\def\@Chapter@heading@font{\color{chapterHeading-coltitle}\LARGE\sffamily\bfseries}
 \def\@glossary@entry@name@text@sep{}
 \def\@acronym@entry@name@text@sep{\space$-$\space\space}
 \def\@nom@abbreviation@font{\sffamily\bfseries}
 \def\@nom@long@name@font{\normalsize\normalfont}
 \def\@acronym@font#1{\textnormal{#1}}
-\def\@lhead@font{\Large\scshape}								
+\def\@lhead@font{\large\scshape}								
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------------------- tcolorbox Contexts -----------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -289,6 +289,7 @@
 \def\PartName{Part}
 \def\ChapterName{Chapter}
 \def\SectionName{Section}
+\def\TopicName{Topic}
 \def\SubsectionName{Subsection}
 \def\FigboxName{Figbox}
 \def\FigureName{Figure}
@@ -324,7 +325,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@index@lhead@title{\IndexName}
 \def\@glossary@lhead@title{\GlossaryName}
-\def\@listof@acronyms@lhead@title{List of Symbols}
+\def\@listof@symbols@lhead@title{List of Symbols}
 \def\@listof@acronyms@lhead@title{List of Acronyms}
 \def\@listof@abbreviations@lhead@title{List of Abbreviations}					% was \large
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -342,6 +343,7 @@
 \def\@Section@link@name{sec-}
 \def\@Subsection@link@name{subsec-}
 \def\@Topic@link@name{topic-}
+\def\@toc@link@label@prefix{toc-}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@definition@label{Definition \the\value{@tcb@definition@counter}\relax: }
 \def\@theorem@label{Theorem \the\value{@tcb@theorem@counter}\relax: }
@@ -482,11 +484,12 @@
 \@init@skip{@idx@before@group@label@skip}{8pt}
 \@init@skip{@idx@after@group@label@skip}{0pt}
 \@init@skip{@idx@top@skip}{-34mm}
-\@init@skip{@gls@before@hypernav@skip}{6pt}
+\@init@skip{@gls@before@hypernav@skip}{0pt}
 \@init@skip{@gls@after@hypernav@skip}{8pt}
 \@init@skip{@gls@before@group@label@skip}{0pt}
-\@init@skip{@gls@after@group@label@skip}{6pt}
-\@init@skip{@gls@before@entry@sep}{4pt}
+\@init@skip{@gls@after@group@label@skip}{0pt}
+\@init@skip{@gls@entry@hskip}{2mm}
+\@init@skip{@gls@before@entry@sep}{0pt}
 \@init@skip{@gls@after@entry@sep}{6pt}
 \@init@skip{@gls@group@sep}{2pt}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -546,7 +549,7 @@
 \@init@length{@document@landscape@hoffset}[-2.25in]
 \@init@length{@document@landscape@textheight}[7.25in]
 \@init@length{@document@landscape@voffset}[-1.1in]
-\@init@length{@document@landscape@headsep}[1.5mm]
+\@init@length{@document@landscape@headsep}[3.5mm]
 \@init@length{@document@landscape@topmargin}[0.25in]
 \@init@length{@document@landscape@headheight}[29pt]
 \@init@length{@document@landscape@footskip}[0.85cm]
