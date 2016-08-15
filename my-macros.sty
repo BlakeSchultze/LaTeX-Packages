@@ -477,12 +477,12 @@ linewidth=4pt, linecolor=current-coldraw]
     	\setlength\@tcbfigbox@width{#1}%
     	\setlength\@tcbfigbox@skip{\dimexpr(0.2\columnwidth)/4\relax}%
     	\tcbsetcurrentcolors{tcbfigboxStyle}%
-	\def\@tcb@border@linewidth{4.5pt}%
+	\def\@tcb@border@linewidth{\@tcb@boxrule@linewidth}%
 	\ifstrempty{#2}%
 		{\def\@title@sep{}}%
 		{\def\@title@sep{\space:\space}}%
 	\refstepcounter{figbox}%
-	\ignorespaces\tcolorbox[tcbfigboxStyle={\@tcb@border@linewidth}{single}, left skip=\@tcbfigbox@skip, title={\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}}]%
+	\ignorespaces\tcolorbox[tcbfigboxStyle={\@tcb@border@linewidth}{single}{tcbfigboxStyle-colframeborder}, left skip=\@tcbfigbox@skip, title={\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}}]%
 %\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}
 }{\endtcolorbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -499,11 +499,11 @@ linewidth=4pt, linecolor=current-coldraw]
 	%\setlength\cftfigindent{1.5em}
 	%\setlength\cftfigboxindent{1.5em}
 	%\setlength\cftfigboxfigureindent{1.5em}
-	blend before title={colon},
+	%blend before title={colon},
 	blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
 	label={#4},
 	title={\BreakableShadowText[white](black){#2}},
-	list entry={\normalsize\bfseries\hspace{\cftfigboxfigureindent}\protect\numberline{\thefigboxfigure}#3},
+	list entry={\hspace{\cftfigboxfigureindent}\normalsize\bfseries\protect\numberline{\thefigboxfigure}#3},%\hspace{\cftfigboxfigureindent}
 	%list entry={\normalsize\bfseries\protect\numberline{\hspace{2.0em}\thefigboxfigure}\hspace{2.25em}#3},
 	every float=\centering
 }
@@ -653,22 +653,22 @@ linewidth=4pt, linecolor=current-coldraw]
 	\ifstrequal{#1}{documentation}
     	{%
     		\begingroup
-	    	\if\relax\detokenize{#2}\relax
-	   	\else	    	
-	    		\@set@coverpage@dimensions%
+	    	\ifstrempty{#2}{}%
+		{%
+			\@set@coverpage@dimensions%
 			\begin{documentation-coverpage}
 	        		{#3}{#4}{#2}%
-	        	\end{documentation-coverpage} 	
-	    	\fi
+	        	\end{documentation-coverpage} 
+		}%
 	    	\endgroup
     	}{}
 	\ifstrequal{#1}{assignment}
     	{%
-    		\if\relax\detokenize{#2}\relax
-	    	\else
-	        	\begin{assignment-coverpage}{#3}{#4}{#5}{#6}{#7}\end{assignment-coverpage}%
+    		\ifstrempty{#2}{}%
+		{%
+			\begin{assignment-coverpage}{#3}{#4}{#5}{#6}{#7}\end{assignment-coverpage}%
 	        	\@set@document@dimensions%
-	    	\fi
+		}%
     	}{}
 }{}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -741,7 +741,7 @@ linewidth=4pt, linecolor=current-coldraw]
         	\setcounter{@subprob@counter}{1}
     	}
     	{\tcbset{subproblemsStyle}}
-    	\IfBooleanTF {#2}%
+    	\IfBooleanTF{#2}%
     	{%
     		\IfValueTF{#4}%
         	{%

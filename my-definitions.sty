@@ -226,6 +226,8 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\textbfit#1{\textbf{\textit{#1}}}
 \def\textbfsf#1{\textsf{\textbf{#1}}}
+\def\textbfmit#1{\textbfm{\textit{#1}}}
+\def\textbfmsf#1{\textsf{\textbfm{#1}}}
 \def\bfarabic@fmt{\textbf{(\arabic*)}}
 \def\bfalph@fmt{\textbf{(\alph*)}}
 \def\bfroman@fmt{\textbf{(\roman*)}}
@@ -244,8 +246,9 @@
 \def\@coverpage@description@font{\anttmcap17pt}							% Coverpage description (e.g. assignment) font
 \def\@coverpage@author@font{\anttmcap13pt}							% Coverpage author font
 \def\@coverpage@date@font{\anttmcap13pt}								% Coverpage date font
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@frontbackmatter@title@font{\anttmcap18pt}
-\def\@frontbackmatter@entry@name@font#1{\textbfsf{#1}}
+\def\@frontbackmatter@entry@name@font#1{\textbfmsf{#1}}
 \def\@frontbackmatter@entry@text@font{\normalsize\normalfont}
 \def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
 \def\@frontbackmatter@navhyperlink@font{\anttbcap12pt}
@@ -253,18 +256,18 @@
 \def\@Chapter@heading@font{\color{chapterHeading-coltitle}\LARGE\sffamily\bfseries}
 \def\@glossary@entry@name@text@sep{}
 \def\@acronym@entry@name@text@sep{\space$-$\space\space}
-\def\@nom@abbreviation@font{\sffamily\bfseries}
+\def\@nom@abbreviation@font{\sffamily\bfmseries}
 \def\@nom@long@name@font{\normalsize\normalfont}
 \def\@acronym@font#1{\textnormal{#1}}
 \def\@lhead@font{\large\scshape}								
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------------------- tcolorbox Contexts -----------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@tcb@text@font{\normalsize\bfseries}
-\def\@tcb@title@font{\Large\sffamily}
+\def\@tcb@text@font{\normalsize\bfmseries}
+\def\@tcb@title@font{\Large\sffamily\bfmseries}
 \def\@tcb@toctitle@font{\sffamily}
 \def\@tcb@list@entry@font{\normalsize\bfseries}
-\def\@tcb@title@font@size{}
+\def\@tcb@title@font@size{\Large}
 \def\@tcb@solutionVerb@font{\normalsize\bfseries}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Front/Back Matter List/TOC/Header/Caption Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -299,6 +302,9 @@
 \def\CodeListingName{Code Listing}
 \def\TerminalListingName{Terminal Listing}
 \def\MatlabListingName{Matlab Listing}
+\def\ProblemName{Problem}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\IBPtableLongName{Integration by Parts Table}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------ Front/Back Matter TOC Names ------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -445,6 +451,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \setcounter{secnumdepth}{0}											
 \@init@counter{@tcb@figbox@counter}[0]    								% Number of a problem
+%\newcommand\the@tcb@figbox@counter{\arabic{@tcb@figbox@counter}}   								% Number of a problem
 \@init@counter{@index@entry@counter}							% Counter used for glossary shifting of first group entry tcolorbox box
 \@init@counter{@chap@counter}    								% Number of a problem
 \@init@counter{@count@problem}    								% Number of a problem
@@ -461,7 +468,7 @@
 \@init@counter{@tcb@equation@counter}[0]							% Counter used for numbering tcb equations
 \@init@counter{@tcb@solution@counter}[0]							% Counter used for numbering tcb solutions
 %\@init@counter{@tcb@figbox@counter}[0]    								% Number of a problem
-%\@init@counter{@tcb@listings@counter}    							% Number of tcblistings (e.g. Matlab, bash/terminal, etc.)
+\@init@counter{@tcb@listings@counter}[0]    							% Number of tcblistings (e.g. Matlab, bash/terminal, etc.)
 %\@init@counter{@tcb@terminal@listing@counter}[1]					% Counter used for numbering tcb solutions
 %\@init@counter{@bash@keywords@counter}[3]    						% Number of a problem
 %\@init@counter{@matlab@keywords@counter}[10]      					% Number of a problem
@@ -572,6 +579,7 @@
 \@init@length{@par@indent}[4ex]
 \@init@length{tcbparskip}[-0.33em]
 \@init@length{tcbparindent}[0.25in]
+\@init@length{cftindentunit@em}[1.5em]
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{labelboxwidth}[3.1cm]
 \@init@length{colorboxwidth}[1.4cm]
@@ -602,8 +610,13 @@
 \@init@length{@overlay@yshift}[-1pt]
 \@init@length{@overlay@linewidth}[1pt]
 \@init@length{@overlay@double@distance}[0.75pt]
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@tcb@boxrule@linewidth}[4.5pt]
 \@init@length{@tcb@single@border@linewidth}[2.0pt]
 \@init@length{@tcb@double@border@linewidth}[0.5pt]
+\@init@length{@tcb@boxrule@twice@linewidth}
+\@init@length{@tcb@boxrule@half@linewidth}
+\@init@length{@tcb@boxrule@oneandhalf@linewidth}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@tcbfigbox@left@skip}[4mm+12pt]
 \@init@length{@function@listbox@first@column}[3.0cm]
@@ -756,7 +769,7 @@
 %*****************************************************************************************************************************************%
 \newcommand*{\getValue}[2]{\pgfmathsetmacro#1{#2}}					% Create macro \<#1> initialized to the stripped unit value of #2
 \newcommand*{\getLength}[2]{\pgfmathsetlengthmacro#1{#2}}				% Create macro \<#1> initialized to the value of #2 in pt units
-\newcommand*{\printLength}[2][pt]{\uselengthunit{#1}\printlength{#2}}		% Wrapper for \printlength command
+\newcommand{\printLength}[2][pt]{\uselengthunit{#1}\printlength{#2}}		% Wrapper for \printlength command
 \newcommand{\repfrac}{.33}									% Sets the dot/dash/etc. repetition length as a fraction of defined \replength
 \newcommand{\dashfrac}[1]{\renewcommand\repfrac{#1}}					% Sets the dash length as a fraction of \replength
 \newcommand{\rulewidth}{.6pt}									% Sets line width of horizontal rule in t(ab)dotfill and t(ab)dashfill commands
@@ -772,7 +785,7 @@
 \newcommand{\myLaTeX}{\hbox{\fontencoding{OT1}\fontfamily{txr}\selectfont L\kern-.29em\raisebox{.5ex}{\textsc{a}}\kern-.1em\hbox{\TeX}}}%
 \newcommand{\myLaTeXe}{\hbox{\myLaTeX 2\raisebox{-.4ex}{$\varepsilon$}}}%
 \newcommand{\pagereftop}[1]{\hyperlink{page.\getpagerefnumber{#1}}{\pageref*{#1}}}
-\renewcommand*{\pagedeclaration}[1]{\hyperlink{a#1}{#1}, \thepage}%\hypertarget{#1}{#1}\hyperlink{a#1}{#1}
+\newcommand\cftXtcbtitle@font[1]{\BreakableShadowText'\sffamily'<0.65pt><0.2pt>[white](black){#1}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\tdotfill[1][\repfrac]
 {%
@@ -808,6 +821,7 @@
 %*****************************************************************************************************************************************%
 %**************************************************** Reefine existing LaTeX commands ****************************************************%
 %*****************************************************************************************************************************************%
+\renewcommand*{\pagedeclaration}[1]{\hyperlink{a#1}{#1}, \thepage}%\hypertarget{#1}{#1}\hyperlink{a#1}{#1}
 %\renewcommand*{\hypcapspace}{\baselineskip}
 \renewcommand{\normalsize}{\fontsize{9}{10}\selectfont}
 %\renewcommand{\arraystretch}{1.5}%
@@ -821,6 +835,16 @@
 %\renewcommand\ellipsisgap{1.5\fontdimen3\font}
 %\renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}%
 \renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%***************************************************** Define Robust LaTeX commands ******************************************************%
+%*****************************************************************************************************************************************%
+\DeclareRobustCommand*{\bfmseries}
+{%
+	\not@math@alphabet\bfseries\mathbf
+  	\fontseries\bfdefault\selectfont
+  	\boldmath
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %************************************************** End of 'my-definitions.sty' package **************************************************%

@@ -569,7 +569,7 @@
 		{\txformOp{mathcalst}{R}[^{\inverseSym}\kern-1.5pt]{#2}{#3}}
 }
 %*****************************************************************************************************************************************%
-%******************************************************* Configuration/setup/component helper commands *******************************************************%
+%********************************************* Configuration/setup/component helper commands *********************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@inprod@comma@pos}{m m m}
@@ -641,7 +641,7 @@
     \end{tikzpicture}
 }
 %*****************************************************************************************************************************************%
-%************************************************************* New/Modified Cases Environments ***************************************************************%
+%*************************************************** New/Modified Cases Environments *****************************************************%
 %*****************************************************************************************************************************************%
 % Add spacing after left brace in dcases environment
 \newcases{sdcases}{\quad}{%
@@ -653,7 +653,7 @@
 \renewcases{dcases*}{\quad}{%
   $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
 %*****************************************************************************************************************************************%
-%*************************************************** New math environments and environment-like commands *****************************************************%
+%***************************************** New math environments and environment-like commands *******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Equivalent to align/align* environment but with math content automatically made bold
@@ -682,14 +682,14 @@
     	\tcbsetcurrentcolors{IBPstyle}
 	\setstretch{1.5}
     	\arrayrulecolor{IBPstyle-coldraw}%
-	\if\relax\detokenize{#1}\relax	
-       	\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{\int #2#3#4}}}
-    	\else
-    		\ifstrequal{#1}{*}
+	\ifstrempty{#1}
+	{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{\int #2#3#4}}}}%
+	{%
+		\ifstrequal{#1}{*}
     			{\def\IBPtitle{\shadowText<\sffamily>[black](white){}}}
     			{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{#1}}}}
-	\fi	
-	\boxedtable[IBPstyle, blend before title code={\shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}}]
+	}%
+	\boxedtable[IBPstyle={IBPstyle-colframeborder}{IBPstyle-colinterioroutline}{\@tcb@boxrule@linewidth}, blend before title code={\shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}}]
 		{\space}{Integration by Parts Table \arabic{table}}
 		\centering
 		\tabular{>{$}c<{$} c @{\hskip 2.5cm} c  >{$}c<{$}}%

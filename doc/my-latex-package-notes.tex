@@ -101,6 +101,63 @@ SUPPORTS:\newcommand, \renewcommand, \newenvironment, \renewenvironment, \Declar
 \ShowDocumentCommandArgSpec
 \ShowDocumentEnvironmentArgSpec
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+*ltclass.dtx*
+\@ifpackageloaded{<package name>}{true code}{false code}
+\@ifpackagelater{<package name>}{<version>}{true code}{false code}
+\@ifpackagewith{<package name>}{<options>}{true code}{false code}
+- 	Example: \AtBeginDocument{\@ifpackageloaded{titlesec}{\@cfttitlesectrue}{}}
+\@ifclassloaded{<package name>}{true code}{false code}
+\@ifclasslater{<package name>}{<version>}{true code}{false code}
+\@ifclasswith{<package name>}{<options>}{true code}{false code}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\ProvidesPackage{name}[version] 
+-	A package can identify itself with the \ProvidesPackage command. The version should begin with a date in the format YYYY/MM/DD.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage[options]{name}[version]
+-	Packages or classes can load other packages using \RequirePackage. If the package has already been loaded, then nothing happens unless the requested options are not a subset of the options with which it was loaded, in which case an error is called.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\LoadClass 
+-	Similar to \RequirePackage, but for classes, may not be used in package files.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\PassOptionsToPackage{options}{package}
+-	Packages can pass options to other packages using:\PassOptionsToPackage{options}{package}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\PassOptionsToClass
+-	This adds the <options> to the options list of any future \RequirePackage or \usepackage command. For example:
+		\PassOptionsToPackage{foo,bar}{fred} \RequirePackage[baz]{fred}
+	is the same as:
+		\RequirePackage[foo,bar,baz]{fred}  
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\LoadClassWithOptions
+-	\LoadClassWithOptions{name}[version]: This is similar to \LoadClass, but it always calls class <name> with exactly the same option list that is being used by the current class, rather than an option explicitly supplied or passed on by \PassOptionsToClass. %-----------------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackageWithOptions
+-	\RequirePackageWithOptions is the analogous command for packages. This is mainly intended to allow one class to simply build on another, for example:
+	
+	\LoadClassWithOptions{article}
+
+This should be contrasted with the slightly different construction
+	
+	\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}} 
+	\ProcessOptions 
+	\LoadClass{article}
+
+As used here, the effects are more or less the same, but the version using \LoadClassWithOptions is slightly quicker (and less to type). If, however, the class declares options of its own then the two constructions are different; compare, for example:
+	
+	\DeclareOption{landscape}{...} 
+	\ProcessOptions 
+	\LoadClassWithOptions{article}
+
+with:
+	
+	\DeclareOption{landscape}{...} 
+	\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}} 
+	\ProcessOptions 
+	\LoadClass{article}
+
+In the first case, the article class will be called with option landscape precisely when the current class is called with this option; but in the second example it will not as in that case article is only passed options by the default option handler, which is not used for landscape as that option is explicitly declared.
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \overfullrule=2cm
 -	add black bar where overfull box occurs
 %-----------------------------------------------------------------------------------------------------------------------------------------%

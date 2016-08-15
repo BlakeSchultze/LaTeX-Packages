@@ -660,26 +660,23 @@ graphs/every graph/.style={edges=rounded corners},
  		%fontupper=\protect\string\\normalsize\string\\normalfont
     	},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-   	IBPstyle/.style n args={2}%
+   	IBPstyle/.style n args={3}%
     	{
-        	@DEFAULT@STYLE, hbox, no shadow, tcbsetcoloringStyle=IBPstyle,
-        	%drop fuzzy shadow=IBPstyle-colboxshadow,
-        	fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{tcbbashboxStyle-colboxshadow},
-        	%drop fuzzy shadow southeast=IBPstyle-colboxshadow,
-        	fonttitle=\large\bfseries\sffamily, arc=6pt, boxrule=2pt, boxsep=3pt, before skip=0mm,
-        	top=-0.5mm, bottom=0.5mm, lefttitle=2mm, righttitle=1mm, toptitle=0.5mm, bottomtitle=0.5mm,
-        	borderline={4.0pt}{-1pt}{IBPstyle-colframeborder},
-		borderline={1.0pt}{0.5pt}{#1},
-		title style={draw=IBPstyle-colframeborder, fill=IBPstyle-colbacktitle, line width=1.0pt},  		
-    		interior style={draw=IBPstyle-colframeborder, line width=1.0pt},
-    		finish=
+        	@DEFAULT@STYLE, hbox, tcbsetcoloringStyle=IBPstyle,
+        	code=
     		{
-    			\path[draw=#2, line width=1.0pt]
-				([xshift=-1.0pt, yshift=1.0pt]interior.north west)
-				-- ([xshift=1.0pt, yshift=1.0pt]interior.north east);,
-    		}	
+    			\setlength\@tcb@boxrule@half@linewidth{\dimexpr #3 / 2\relax}
+    			\setlength\@tcb@boxrule@oneandhalf@linewidth{\dimexpr #3 * 3/2\relax}
+    			\setlength\@tcb@boxrule@twice@linewidth{\dimexpr #3 * 2\relax}
+    		},
+    		fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{tcbbashboxStyle-colboxshadow},
+        	fonttitle=\@tcb@title@font, arc=6pt, boxrule=#3, boxsep=2pt, before skip=0mm,
+        	top=0.0mm, bottom=1.5mm, lefttitle=2mm, righttitle=1mm, toptitle=0.5mm, bottomtitle=0.5mm,
+        	tcbsingleborder={#3}{#1},
+		tcbsingletitleborder={#3}{IBPstyle}{#1},
+    		interior style={draw=IBPstyle-colinteriorborder, line width=\@tcb@boxrule@half@linewidth},	
 	},
-	IBPstyle/.default={IBPstyle-colframeoutline}{IBPstyle-colinterioroutline},
+	IBPstyle/.default={IBPstyle-colframeborder}{IBPstyle-colinterioroutline}{\@tcb@boxrule@linewidth},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
     	indexStyle/.style =
     	{%		
@@ -701,26 +698,30 @@ graphs/every graph/.style={edges=rounded corners},
     		before skip=0mm, before=\par\smallskip, after=\par\smallskip
 	},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-	MatlabStyle/.style=
+	MatlabStyle/.style n args={2}%=
     	{
-    		enhanced, breakable, enforce breakable, tcbsetcoloringStyle=MatlabStyle, width=1.05\@tcblistings@width,
-		lifted shadow={1.0mm}{-3.25mm}{3.0mm}{0.1mm}{MatlabStyle-colboxshadow},
-        	borderline={2pt}{-2pt}{MatlabStyle-colframeborder},
-		borderline={1.0pt}{0.0pt}{Matlab-figcolback},
-    		fonttitle=\Large\bfseries\sffamily, lefttitle=-3mm, toptitle=1mm, bottomtitle=0mm, 		   		
-		before=\par\smallskip, after=\par\smallskip,
-		left=12.0mm, right=2mm, top=1.0mm, bottom=0.5mm, boxrule=2pt,
-		title style={draw=MatlabStyle-colframeborder, fill=MatlabStyle-colbacktitle, line width=1.0pt},  		
-    		titlerule=3.0pt,
-    		interior style={draw=MatlabStyle-colframeborder, line width=1.0pt},
+    		enhanced, breakable, enforce breakable, tcbsetcoloringStyle=MatlabStyle, width=\@Matlab@style@width,
+		code=
+    		{
+    			\setlength\@tcb@boxrule@half@linewidth{\dimexpr #2 / 2\relax}
+    			\setlength\@tcb@boxrule@oneandhalf@linewidth{\dimexpr #2 * 3/2\relax}
+    			\setlength\@tcb@boxrule@twice@linewidth{\dimexpr #2 * 2\relax}
+    		},
+    		lifted shadow={1.0mm}{-3.25mm}{4.0mm}{0.1mm}{MatlabStyle-colboxshadow}, 
+        	%borderline={2pt}{-2pt}{MatlabStyle-colframe},
+		%borderline={1.0pt}{0.0pt}{#1},
+    		arc=6pt, boxrule=#2, boxsep=2pt, 
+    		left=\@Matlab@style@left@frame@skip, right=2mm, top=1.0mm, bottom=1.0mm,
+		tcbsingleborder={#2}{#1},
+		tcbsingletitleborder={#2}{MatlabStyle}{#1},
+    		fonttitle=\@tcb@title@font,
+		%title style={draw=MatlabStyle-colinteriorborder, fill=MatlabStyle-colbacktitle, line width=1.0pt},  		
+    		%titlerule=3.0pt,
+    		interior style={draw=MatlabStyle-colinteriorborder, line width=\@tcb@boxrule@half@linewidth},
 		listing engine=listings, listing only, listing remove caption=false,
-		finish =
-		{
-			\path[draw=Matlab-figcolback, line width=1.0pt]
-				([xshift=-1.0pt, yshift=1.5pt]interior.north west)
-				-- ([xshift=1.0pt, yshift=1.5pt]interior.north east);
-		}	
+		lefttitle=4mm, toptitle=1mm, bottomtitle=0mm, before=\par\smallskip, after=\par\bigskip
     	},
+    	MatlabStyle/.default={MatlabStyle-colframeborder}{\@tcb@boxrule@linewidth},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
     	nomenclatureStyle/.style =
     	{%		
@@ -793,50 +794,58 @@ graphs/every graph/.style={edges=rounded corners},
     		before skip=0mm, after skip=3mm, boxrule=2pt, boxsep=2mm, bottom=0mm, left=1mm, right=2mm
 	},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-    	tcbbashboxStyle/.style n args={2}%=
+    	tcbbashboxStyle/.style n args={3}%=
     	{
-    		reset, enhanced, skin=bicolor, tcbsetcoloringStyle=tcbbashboxStyle, colframe=#1, width=1.0\@tcblistings@width,
+    		reset, enhanced, tcbsetcoloringStyle=tcbbashboxStyle, width=\@terminal@style@width, %colframe=#1, 
+    		code=
+    		{
+    			\setlength\@tcb@boxrule@half@linewidth{\dimexpr #1 / 2\relax}
+    			\setlength\@tcb@boxrule@oneandhalf@linewidth{\dimexpr #1 * 3/2\relax}
+    			\setlength\@tcb@boxrule@twice@linewidth{\dimexpr #1 * 2\relax}
+    		},
     		fuzzy shadow={1.25mm}{-1.5mm}{-1.0mm}{0.3mm}{tcbbashboxStyle-colboxshadow},
-        	fontupper=\ttfamily, fontlower=\upshape, fonttitle=\Large\bfseries\sffamily,
-    		lefttitle=0mm, toptitle=1mm, bottomtitle=1.0mm,
-    		arc=6pt, boxrule=2pt, leftrule=2.5pt, rightrule=2.5pt, boxsep=3pt, bottom=0.5mm,  		
-    		left=2mm, leftupper=0.125mm, leftlower=2.0mm, right=0mm, rightlower=3.0mm,
-    		borderline={5pt}{-2pt}{tcbbashboxStyle-colframeborder},
-		borderline={1.0pt}{0.5pt}{#1},
-		title style={draw=tcbbashboxStyle-colframeborder, fill=tcbbashboxStyle-colbacktitle, line width=1.0pt},  		
-    		titlerule=1.5pt, interior style={draw=tcbbashboxStyle-colframeborder, line width=1.0pt},
-        	before lower pre=\vspace{-0.5mm}, %after upper pre=\vspace{-5mm},
+        	fontupper=\ttfamily, fontlower=\upshape, fonttitle=\@tcb@title@font,
+    		arc=6pt, boxrule=#1, boxsep=#1, bottom=0.5mm, %leftrule=2.5pt, rightrule=2.5pt,   		
+    		left=0mm, leftupper=0.0mm, leftlower=1.0mm, right=0mm, rightlower=1.0mm, rightupper=0.0mm,
+    		interior style={draw=black, line width=\@tcb@boxrule@half@linewidth},%tcbbashboxStyle-colframeborder
+        	before lower=\vspace{-#1}, %after upper=\vspace{-2mm},
 		segmentation code=
 		{	
 			\begin{tcbclipframe}
-				\filldraw[fill=tcbbashboxStyle-colbacklower, draw=tcbbashboxStyle-colinteriorborder, line width=0.0pt]
-					([xshift=0.0pt, yshift=1.25mm]segmentation.south west)
-					-- ([xshift=-0.5pt, yshift=1.25mm]segmentation.south east)
-					-- ([xshift=-0.5pt, yshift=-1.0pt]interior.south east)
-					-- ([xshift=0.0pt, yshift=-1.0pt]interior.south west)
+				\filldraw
+				[
+					fill=tcbbashboxStyle-colbacklower, draw=tcbbashboxStyle-colinteriorborder, 
+					rounded corners=\@frame@corner@radius, line width=\@tcb@boxrule@half@linewidth
+				]
+					([xshift=0.0pt, yshift=\@tcb@boxrule@twice@linewidth]segmentation.south west)
+					-- ([xshift=0.0pt, yshift=\@tcb@boxrule@twice@linewidth]segmentation.south east)
+					-- ([xshift=-0.0pt, yshift=0.0pt]interior.south east)
+					-- ([xshift=0.0pt, yshift=0.0pt]interior.south west)
+					-- cycle;
+				\filldraw[fill=tcbbashboxStyle-colbackupper, draw=tcbbashboxStyle-colinteriorborder, sharp corners, line width=\@tcb@boxrule@half@linewidth]
+					([xshift=0.0pt, yshift=#1]segmentation.south west)
+					-- ([xshift=-0.0pt, yshift=#1]segmentation.south east)
+					-- ([xshift=-0.0pt, yshift=\@tcb@boxrule@twice@linewidth]segmentation.south east)
+					-- ([xshift=0.0pt, yshift=\@tcb@boxrule@twice@linewidth]segmentation.south west)
 					-- cycle;
 			\end{tcbclipframe}
 		},
-		every listing line*={\textcolor{#2}>\ \unskip\ignorespaces },
+		every listing line*={\textcolor{terminalStyle-fillcolor}>\ \unskip\ignorespaces },
     		listing remove caption=false, listing and comment, listing engine=listings,
-    		listing options={style=terminalStyle, language=bash-extended,  name=bash-extended, fillcolor=\color{#2}},
+    		listing options={style=terminalStyle, language=bash-extended,  name=bash-extended, fillcolor=\color{terminalStyle-fillcolor}},
+    		tcbborder={#1}{#2}{#3},
+		%{\@tcb@boxrule@linewidth}{single}{tcbfigboxStyle-colframeborder},
+		%tcbsingleborder={#3}{#1},
+        	%tcbsingletitleborder={#3}{tcbbashboxStyle}{#1},
     		finish =
 		{
-			\path[draw=tcbbashboxStyle-colinteriorborder, line width=1.5pt]
-				([xshift=-1.0pt, yshift=1.5pt]interior.north west)
-				-- ([xshift=1.0pt, yshift=1.5pt]interior.north east);,
-			\path[draw=#1, line width=1.0pt]
-				([xshift=-1.0pt, yshift=0.5pt]interior.north west)
-				-- ([xshift=1.0pt, yshift=0.5pt]interior.north east);,
-			\draw[draw=tcbbashboxStyle-colinteriorborder, line width=1.75pt]%
-				([xshift=-0.5pt, yshift=1.45mm]segmentation.south west)
-				-- ([xshift=0.5pt, yshift=1.45mm]segmentation.south east);	
-			\path[draw=#1, line width=1.25pt]
-				([xshift=-1.0pt, yshift=1.825mm]segmentation.south west)
-				-- ([xshift=1.0pt, yshift=1.825mm]segmentation.south east);
-		}	
+			\path[draw=#3, line width=\@tcb@boxrule@half@linewidth]
+				([xshift=-1.0pt, yshift=-#1]segmentation.north west)
+				-- ([xshift=1.0pt, yshift=-#1]segmentation.north east);
+		},
+		lefttitle=3mm, after={\par\medskip}, toptitle=0mm, bottomtitle=-1.0mm%, top=3.0mm	
 	},
-	tcbbashboxStyle/.default={Matlab-figcolback}{green},
+	tcbbashboxStyle/.default={\@tcb@boxrule@linewidth}{single}{tcbbashboxStyle-colframeborder},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 	tcbdefinitionlistboxStyle/.style =
     	{
@@ -881,68 +890,110 @@ graphs/every graph/.style={edges=rounded corners},
         	tcbsetcoloringStyle=tcbequationlistboxStyle, before skip=1mm, after skip=1mm
     	},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-	tcbdoubleborder/.style=
+	tcbdoubleborder/.style n args={3}%=
+	{
+		boxrule=#1,
+		borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 - 0.25pt\relax}{#2, rounded corners=\@frame@corner@radius},
+         	borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 + 0.25pt\relax}{#3, rounded corners=\@frame@corner@radius},
+         	borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 + 0.75pt\relax}{#2, rounded corners=\@frame@corner@radius}      	    		
+	},
+    	tcbdoubleborder/.default={\@tcb@boxrule@linewidth}{current-colframeborder}{current-colframeoutline},
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+	tcbsingleborder/.style n args={2}%=
+	{
+		boxrule=#1,
+		borderline={\@tcb@single@border@linewidth}{\dimexpr#1 / 2 - 0.5pt\relax}{#2, rounded corners=\@frame@corner@radius}	          	    		
+	},
+    	tcbsingleborder/.default={\@tcb@boxrule@linewidth}{current-colframeborder},
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+	tcbsingletitleborder/.style n args={3}%=
 	{
 		titlerule=#1,
-		borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 - 0.25pt\relax}{current-colframeborder, rounded corners=\@frame@corner@radius},
-         	borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 + 0.25pt\relax}{current-colframeoutline, rounded corners=\@frame@corner@radius},
-         	borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 + 0.75pt\relax}{current-colframeborder, rounded corners=\@frame@corner@radius},
-		finish=
-		{
-			\draw[draw=tcbfigboxStyle-colframeborder, rounded corners=\@interior@corner@radius, line width=0.5pt,
-				double=tcbfigboxStyle-colframeoutline, double distance=0.5pt]
+		title code=
+	  	{
+			enhanced,
+			\filldraw[draw=#2-colframe, fill=#2-colbacktitle,
+				rounded corners=\@interior@corner@radius, line width=\@title@interior@sep@linewidth]
+				([xshift=0pt, yshift=0pt]title.south west)
+				--([xshift=0pt, yshift=0pt]title.north west)	
+				--([xshift=0pt, yshift=0pt]title.north east)	
+				--([xshift=0pt, yshift=0pt]title.south east);,
+			\draw[draw=#3, rounded corners=\@interior@corner@radius, line width=\dimexpr#1 / 2 - 0.5pt\relax]
 				([xshift=-\dimexpr#1 / 2 - 0.75pt\relax, yshift=-\dimexpr#1 / 2 + 0.5pt\relax]title.south west)
 				--([xshift=\dimexpr#1 / 2 - 0.75pt\relax, yshift=-\dimexpr#1 / 2 + 0.5pt\relax]title.south east);,
 		}	          	    		
 	},
-    	tcbdoubleborder/.default=4.5pt,
+    	tcbsingletitleborder/.default={\@tcb@boxrule@linewidth}{current}{current-colframeborder},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-	tcbsingleborder/.style=
+	tcbborder/.style n args={3}%=
+	{
+		code=
+        	{
+        		\IfStrEqCase{#2}%
+	    		{%
+	    			{single}{\tcbset{tcbsingleborder={#1}{#3}}}%
+	    			{double}{\tcbset{tcbdoubleborder={#1}{#3}{current-colframeoutline}}}%
+	    			{plain}{\tcbset{tcbplainborder={#1}{#3}{current-colframeoutline}}}%
+	    		}[\tcbset{tcbsingleborder={#1}{#3}}]%
+			\IfStrEqCase{#2}%
+	    		{%
+	    			{single}{\tcbset{tcbsingletitleborder={#1}{current}{#3}}}%
+	    			{double}{\tcbset{tcbdoubletitleborder={#1}{current}{#3}}}%
+	    			{plain}{\tcbset{tcbplaintitleborder={#1}{current}{#3}}}%
+	    		}[\tcbset{tcbsingletitleborder={#1}{current}{#3}}]%		
+        	}  	    		
+	},
+    	tcbborder/.default={\@tcb@boxrule@linewidth}{single}{current-colframeborder},
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+	tcbdoubletitleborder/.style n args={3}%=
 	{
 		titlerule=#1,
-		borderline={\@tcb@single@border@linewidth}{\dimexpr#1 / 2 - 0.5pt\relax}{current-colframeborder, rounded corners=\@frame@corner@radius},
-		finish=
-		{
-			\draw[draw=tcbfigboxStyle-colframeborder, rounded corners=\@interior@corner@radius, line width=\dimexpr#1 / 2 - 0.5pt\relax]
+		title code=
+	  	{
+			enhanced,
+			\filldraw[draw=#2-colframe, fill=#2-colbacktitle,
+				rounded corners=\@interior@corner@radius, line width=\@title@interior@sep@linewidth]
+				([xshift=0pt, yshift=0pt]title.south west)
+				--([xshift=0pt, yshift=0pt]title.north west)	
+				--([xshift=0pt, yshift=0pt]title.north east)	
+				--([xshift=0pt, yshift=0pt]title.south east);,
+			\draw[draw=#3, rounded corners=\@interior@corner@radius, line width=0.5pt,
+				double=#2-colframeoutline, double distance=0.5pt]
 				([xshift=-\dimexpr#1 / 2 - 0.75pt\relax, yshift=-\dimexpr#1 / 2 + 0.5pt\relax]title.south west)
-				--([xshift=\dimexpr#1 / 2 - 0.75pt\relax, yshift=-\dimexpr#1 / 2 + 0.5pt\relax]title.south east);,
-		}	          	    		
+				--([xshift=\dimexpr#1 / 2 - 0.75pt\relax, yshift=-\dimexpr#1 / 2 + 0.5pt\relax]title.south east);
+		}    	          	    		
 	},
-    	tcbsingleborder/.default=4.5pt,
+    	tcbdoubletitleborder/.default={\@tcb@boxrule@linewidth}{current}{current-colframeborder},,
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-    	tcbfigboxStyle/.style n args={2}%=
+    	tcbfigboxStyle/.style n args={3}%=
     	{
         	empty, enhanced, unbreakable, segmentation empty, every float=\centering, capture=hbox, hyphenationfix,
         	box align=center, valign=top, center title, tcbsetcoloringStyle=tcbfigboxStyle,
         	fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{tcbfigboxStyle-colboxshadow},
-        	fonttitle=\LARGE\bfseries, fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries,
-        	arc=6pt, boxrule=#1, boxsep=0mm,top=2mm, bottom=0mm, left=0mm, % left=0mm, right=0mm,         		
-        	before=\par\medskip, after=\par\medskip, %left skip=0mm, right skip=0mm,%before skip=3mm, after skip=3mm,
-        	lefttitle=2mm, righttitle=2mm, toptitle=1.5mm, bottomtitle=1mm,
+        	fonttitle=\@tcb@title@font, fontupper=\@tcb@text@font, fontlower=\@tcb@text@font,
+        	arc=6pt, boxrule=#1, boxsep=2pt,top=2mm, bottom=1.0mm, left=0mm, % left=0mm, right=0mm,         		
+        	before=\par\medskip, after=\par\medskip, 
+        	%left skip=0mm, right skip=0mm,%before skip=3mm, after skip=3mm,
+        	lefttitle=2mm, righttitle=2mm, toptitle=1.5mm, bottomtitle=0.5mm,
         	interiorStyle=tcbfigboxStyle,
-        	%tcbdoubleborder=#1,
-        	%tcbsingleborder=#1,
-    		code=
-        	{
-        		\IfStrEqCase{#2}%
-	    		{%
-	    			{single}{\tcbset{tcbsingleborder=#1}}%
-	    			{double}{\tcbset{tcbdoubleborder=#1}}%
-	    			{plain}{\tcbset{tcbplainborder=#1}}%
-	    		}[\tcbset{tcbsingleborder=#1}]%	
-        	},
-        	title code=
-	  	{
-			enhanced,
-			\filldraw[draw=tcbfigboxStyle-colframe, fill=tcbfigboxStyle-colbacktitle,
-				rounded corners=\@interior@corner@radius, line width=\@title@interior@sep@linewidth]
-				([xshift=0pt, yshift=-0.0pt]title.south west)
-				--([xshift=0pt, yshift=0pt]title.north west)	
-				--([xshift=0pt, yshift=0pt]title.north east)	
-				--([xshift=0pt, yshift=-0.0pt]title.south east);,
-		}
+        	tcbborder={#1}{#2}{#3}%,
+%        	code=
+%        	{
+%        		\IfStrEqCase{#2}%
+%	    		{%
+%	    			{single}{\tcbset{tcbsingleborder={#1}{#3}}}%
+%	    			{double}{\tcbset{tcbdoubleborder={#1}{#3}{tcbfigboxStyle-colframeoutline}}}%
+%	    			{plain}{\tcbset{tcbplainborder={#1}{#3}{tcbfigboxStyle-colframeoutline}}}%
+%	    		}[\tcbset{tcbsingleborder={#1}{#3}}]%
+%			\IfStrEqCase{#2}%
+%	    		{%
+%	    			{single}{\tcbset{tcbsingletitleborder={#1}{tcbfigboxStyle}{#3}}}%
+%	    			{double}{\tcbset{tcbdoubletitleborder={#1}{tcbfigboxStyle}{#3}}}%
+%	    			{plain}{\tcbset{tcbplaintitleborder={#1}{tcbfigboxStyle}{#3}}}%
+%	    		}[\tcbset{tcbsingletitleborder={#1}{tcbfigboxStyle}{#3}}]%		
+%        	}
     	},
-    	tcbfigboxStyle/.default={4.5pt}{single},
+    	tcbfigboxStyle/.default={\@tcb@boxrule@linewidth}{single}{tcbfigboxStyle-colframeborder},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
     	tcbfigureStyle/.style =
     	{
@@ -1013,13 +1064,14 @@ graphs/every graph/.style={edges=rounded corners},
         	subtitle style={}
     	},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-    	tcblistingcaptionStyle/.style =
+    	tcblistingcaptionStyle/.style n args={2}%=
     	{
 		colback=listingsStyle-colbackcaption, colframe=listingsStyle-colframecaption, coltext=listingsStyle-coltextcaption,
-		before skip=1mm, after skip=-8.5mm, left skip=-\@tcblistings@captionleftskip, right skip=0mm,
-		boxsep=2pt, boxrule=2pt, arc=6pt, width=\@tcblistings@captionwidth, before=\par\smallskip,
+		before skip=1mm, after skip=-8.5mm, left skip=#2, right skip=0mm,
+		boxsep=2pt, boxrule=2pt, arc=6pt, width=#1, before=\par\smallskip,
 		left=2mm, right=3mm, top=0mm, bottom=0mm, fontupper=\normalsize\bfseries
 	},
+	tcblistingcaptionStyle/.default={\@tcblistings@captionwidth}{\@tcblistings@captionleftskip},
 %-----------------------------------------------------------------------------------------------------------------------------------------%
     	tcbparagraphStyle/.style=
 	{%\fontsize{10}{\baselinestretch}\selectfont
