@@ -44,20 +44,21 @@
 %\bookmark[dest=mypage]{go to my page}
 \AddEverypageHook{\hypertarget{\@page@n@target@name\thepage}{}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\AtEndPreamble{\if@frontbackmatter@option@\makeFrontbackMatter\fi}
+\AtEndPreamble{\ifmylatex@frontbackmatter\makeFrontbackMatter\fi}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AtBeginDocument
 {%
-	\pagenumbering{arabic}%
-	\input{glsentries.def}%					% Import the master list of glossary/acronym/symbol terms 
+        \pagenumbering{arabic}%
+        \input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
 }                                                        %-----------------------------------------------------------------------------------------------------------------------------------------%
-\AtEndDocument{\if@frontbackmatter@option@\printFrontbackMatter\fi}
+\AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AfterEndEnvironment{coverpage}
-{%	
-	\if@toc@option@\addTOC\fi%
-	\if@frontbackmatter@option@\addFrontbackMatter\fi%
-}	
+{%
+        \ifmylatex@toc\addTOC\fi%
+        \ifmylatex@frontbackmatter\addFrontbackMatter\fi%
+}
+
 %*****************************************************************************************************************************************%
 %********************************************************* Package setup/options *********************************************************%
 %*****************************************************************************************************************************************%
@@ -679,7 +680,7 @@
 \let\@tcbfigbox@width=\@macro@width
 \let\@tcbfigbox@skip=\@macro@length
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@landscape@option@
+\ifmylatex@landscape
 	\@init@length{@Chapter@heading@width}[\dimexpr\paperwidth + 2.0in\relax]
 	\@init@length{@Chapter@heading@title@xshift}[\dimexpr.9\paperwidth + 1.5in\relax]
 	%\setlength\@function@listbox@second@column{\dimexpr\linewidth - cm\relax}

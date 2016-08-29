@@ -83,54 +83,6 @@
 		\csname the#1\endcsname%
 	}%
 }
-%%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\cftXnumberline}[1]%
-%{%\cftXnumberline{list entry}		
-%	\expandafter\newcommand\csname cft#1numberline\endcsname%
-%	{%
-%		\protect\numberline%
-%		{%
-%			\raisebox{10pt}%
-%				{\unskip\ignorespaces\protect\hypertarget{#1\csname the#1\endcsname}{}}%
-%			\csname the#1\endcsname\unskip\ignorespaces%
-%		}%
-%		\ignorespaces%
-%	}%
-%}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\cftXnumberline}{m o}%
-%{%\cftXnumberline{list entry}
-%        %\IfValueTF{#2}
-%	%	{\def\@the@num@counter{#2}}%
-%	%	{\def\@the@num@counter{\csname the#1\endcsname}}%
-%        \IfValueTF{#2}
-%                {\def\@the@num@counter{#2}}%
-%                {\def\@the@num@counter{#1}}%
-%        %\expandafter\DeclareDocumentCommand\expandafter{\csname cft#1numberline\endcsname}{}%{ g }%{ G{\csname the#1\endcsname} }
-%        \expandafter\newcommand\expandafter{\csname cft#1numberline\endcsname}%[1][]%
-%        %\expandafter\newcommand\csname cft#1numberline\endcsname[1][\csname the#1\endcsname]%
-%        {%
-%                %\ifstrempty{##1}%
-%                %       {\def\@the@counter{\csname the#1\endcsname}}%
-%                %       {\def\@the@counter{\csname the##1\endcsname}}%
-%                %\IfValueTF{##1}
-%                %        {\def\@the@num@counter{##1}}%
-%                %        {\def\@the@num@counter{\csname the#1\endcsname}}%
-%                %\IfValueTF{#2}
-%%                        {\def\@the@num@counter{#2}}%
-%%                        {\def\@the@num@counter{\csname the#1\endcsname}}%
-%                \protect\numberline%
-%                {%
-%                        \raisebox{10pt}%
-%                                {\unskip\ignorespaces\protect\hypertarget{#1\csname the#1\endcsname}{}}%
-%                        %\csname the#1\endcsname\unskip\ignorespaces%
-%                        \csname the\@the@num@counter\endcsname\unskip\ignorespaces%
-%                        %##1\unskip\ignorespaces%
-%                        %\@the@num@counter\unskip\ignorespaces%
-%                }%
-%                \ignorespaces%
-%        }%
-%}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\cftXnumberline}{m o}%
 {%\cftXnumberline{list entry}
@@ -355,7 +307,7 @@
 \ifcsdef{listingscaption}									% Caption of listing float entry (minted)
 	{\renewcommand{\listingscaption}{\CodeListingName}}				%
 	{\newcommand{\listingscaption}{\CodeListingName}}				%
-\newcommand{\problemname}{\ProblemName}  							% The caption label for listings.
+\newcommand{\problemsname}{\ProblemName}  							% The caption label for listings.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}			% \par\vspace{20pt plus 6pt minus 4pt}
 \newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
@@ -497,19 +449,33 @@
 %*****************************************************************************************************************************************%
 %****************************************** Index/Glossary/Acronyms/Nomenclature style file generation ***********************************%
 %*****************************************************************************************************************************************%
+%\newlistentry[problems]{subproblems}{probs}{2}
+%\cftXcreate{Terminal}{lol}{1}{\TerminalListingName}(thelstlisting)
+%\cftXcreate{IBPtable}{lot}{1}{\IBPtableName}[\IBPtableLongName]
+\cftXnames{problems}{\ProblemName}
+\cftXtcbtitle{problems}
 \newcommand{\problems}[1]%
 {%
 	\refstepcounter{problems}%
-	\phantomsection\addcontentsline{probs}{problems}%
-		{\protect\numberline{\theproblems}\problemname\space#1}%
-	\ignorespaces%
+	\raisebox{10pt}
+	{%
+		\phantomsection\addcontentsline{probs}{problems}%
+			{\protect\numberline{\theproblems}\problemsname\space#1}%
+	}%
+	\bookmark[dest=\@page@n@target@name\thepage, rellevel=1]%
+		{\problemsname\space#1}%  
+	(#1)\space\ignorespaces%                            
+	%\hyperlink{#1}{#1}%
+        %\ignorespaces%
+        %\raisebox{10pt}%
+           	%{\unskip\ignorespaces\protect\hypertarget{#1\csname the#1\endcsname}{}}%                               
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\subproblems}[1]
 {%
 	\refstepcounter{subproblems}%
 	\phantomsection\addcontentsline{probs}{subproblems}%
-		{\protect\numberline{\thesubproblems}\problemname\space#1}%
+		{\protect\numberline{\thesubproblems}\problemsname\space#1}%
 	\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -517,7 +483,7 @@
 {%
 	\refstepcounter{problemparts}%
 	\phantomsection\addcontentsline{probs}{problemparts}%
-		{\protect\numberline{\theproblemparts}\problemname\space#1}%
+		{\protect\numberline{\theproblemparts}\problemsname\space#1}%
 	\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -533,7 +499,7 @@
 {%
 	\refstepcounter{subproblemparts}%
 	\phantomsection\addcontentsline{probs}{subproblemparts}%
-		{\protect\numberline{\thesubproblemparts}\problemname\space#1}%
+		{\protect\numberline{\thesubproblemparts}\problemsname\space#1}%
 	\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -611,9 +577,7 @@
 	%\clearpage
 	\cleardoublepage
 	\setcounter{page}{0}
-	\if@roman@backmatter@option@
-		\pagenumbering{roman}
-	\fi			
+	\ifmylatex@romanbackmatter\pagenumbering{roman}\fi			
 	%-----------------------------------------------------------------------------------------------------------------------------------%
 	\clearpage
 	\printsymbols[title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]

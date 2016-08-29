@@ -20,7 +20,8 @@
 %\catcode`|=12
 %\makeatletter					% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@isorot@package@option@
+%\if@isorot@package@option@
+\ifmylatex@isorot
 	\RequirePackage{isorot}			% Provides ability to rotate objects (tables, figures, etc.)
 \else
 	\RequirePackage{rotating}           	% for sidewaystable
@@ -211,6 +212,7 @@
 \RequirePackage{atbegshi}                         % AMS theorem/lemma/etc structures
 %\RequirePackage{unicode-math}                          % XeLaTeX/LuaLaTeX engines only
 \RequirePackage{nomentbl}
+\RequirePackage{forarray}
 \RequirePackage{xpatch}
 \RequirePackage{pst-xkey}
 \RequirePackage{xkvltxp}

@@ -30,8 +30,8 @@
 \DeclareDocumentCommand{\@set@document@dimensions}{}
 {
 	%\setlength{\headheight}{\dimexpr (\@header@image@height)*5/4\relax}
-    	\if@landscape@option@
-	%landscape mode
+    	\ifmylatex@landscape
+		%landscape mode
 		\setlength{\textwidth}{\@document@landscape@textwidth}
 	  	\setlength{\hoffset}{\@document@landscape@hoffset}
 	  	\setlength{\textheight}{\@document@landscape@textheight}
@@ -64,8 +64,8 @@
 \DeclareDocumentCommand{\@set@coverpage@dimensions}{}
 {
 	%\setlength{\headheight}{150pt}
-    	\if@landscape@option@
-	%landscape mode
+    	\ifmylatex@landscape
+		%landscape mode
 		\setlength{\textwidth}{\@coverpage@landscape@textwidth}
 	  	\setlength{\hoffset}{\@coverpage@landscape@hoffset}
 	  	\setlength{\textheight}{\@coverpage@landscape@textheight}
@@ -746,10 +746,41 @@ linewidth=4pt, linecolor=current-coldraw]
 %*****************************************************************************************************************************************%
 %********************************************* Specialized/Specific Application Environments *********************************************%
 %*****************************************************************************************************************************************%
+\DeclareDocumentCommand{\@problem@settings}{s o o t'}
+{%\@problem@settings[</tcb/style>>][*][<ch.>][<problem>][<part>]
+	%\GetDocumentEnvironmmentArgSpec{problem}
+        %\ShowDocumentEnvironmentArgSpec{problem}\relax
+        %\ArgumentSpecification 
+        \IfBooleanTF{#1}%
+       	{%
+		\IfValueTF{#3}%
+               	{%
+                       	\IfBooleanTF{#4}%
+                       	{\def\problem@numbering{\roman{@prob@part@counter}}}%
+                       	{%
+                       		\setcounter{@prob@part@counter}{1}%
+                               	\setcounter{@chap@counter}{#2}%
+                               	\setcounter{@prob@counter}{#3}%
+                               	\def\problem@numbering{\arabic{@chap@counter}.\arabic{@prob@counter}}%
+                               	%\problems{\arabic{@chap@counter}.\arabic{@prob@counter}}%
+                       	}%
+               	}{\def\problem@numbering{\arabic{@prob@counter}}}%
+               	%\@end@macro@spacing%
+       	}%
+       	{%
+               	\IfBooleanTF{#4}%
+               	{%
+                       	\IfValueTF{#3}%
+                       		{\def\problem@numbering{\alph{@subprob@counter}}}%
+                       		{\def\problem@numbering{\roman{@prob@part@counter}}}%
+               	}%
+               	{\def\problem@numbering{\alph{@subprob@counter}}}%
+       	}%
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                    1   2 3 4 5
 \DeclareDocumentEnvironment{problem}{d() s o o t'}
-{%\problem[</tcb/style>>][*][<ch.>][<problem>][<part>]
+{%\problem[</tcb/style>>]*<problem indicator>[<ch. #>][<problem #>][<(sub)problem part indicator>]
 	\@macro@length=\parindent
     	\setlength{\parindent}{0em}
    	\stepcounter{@count@problem}
@@ -761,78 +792,55 @@ linewidth=4pt, linecolor=current-coldraw]
     	}
     	{\tcbset{subproblemsStyle}}
     	\IfBooleanTF{#2}%
-    	{%
-    		\IfValueTF{#4}%
-        	{%
-        		\IfBooleanTF{#5}%
-			{\problemparts{(\roman{@prob@part@counter})}}%
-			{%				
-        			\setcounter{@prob@part@counter}{1}
-				\setcounter{@chap@counter}{#3}%
-            			\setcounter{@prob@counter}{#4}%
-            			\problems{\arabic{@chap@counter}.\arabic{@prob@counter}}%
-            		}%
-		}{\problems{\arabic{@prob@counter}}}%    		
-		\@end@macro@spacing%
-    	}%
     	{
     		\IfBooleanTF{#5}%
-		{
-			\IfValueTF{#4}%
-			{\problempartssubproblems{(\alph{@subprob@counter})}}
-	        	{\subproblemparts{(\roman{@prob@part@counter})}}
-		}
-	    	{\subproblems{(\alph{@subprob@counter})}}
-    	}    				  	    	
+                	{\@problem@settings*[#3][#4]'}%
+                	{\@problem@settings*[#3][#4]}%
+    	}    
+	{
+         	\IfBooleanTF{#5}%
+                	{\@problem@settings[#3][#4]'}%
+                	{\@problem@settings[#3][#4]}%
+	}
     	\IfValueTF{#1}
     		{\tcbset{#1}}{}
-    	\textbf\bgroup
-    	\begin{tcolorbox}
-	\IfBooleanTF {#2}
-    	{
-        	\IfValueTF{#4}
-        	{
-        		\IfBooleanTF{#5}
-			{
-		        	%\currentpdfbookmark
-				%	{(\arabic{@chap@counter}.\arabic{@prob@counter})\roman{@prob@part@counter}}
-				%	{problem\arabic{@chap@counter}.\arabic{@prob@counter}\roman{@prob@part@counter}}	
-				%\bookmark[dest=mypage]{go to my page}%
-		        	\BookmarkAtEnd{ \bookmarksetup{startatroot} \bookmark[named=LastPage, level=0]{Last page} }
-				(\roman{@prob@part@counter})
-				\stepcounter{@prob@part@counter}
-		        	\ignorespaces
-		    	}
-			{
-            		%\currentpdfbookmark
-            		%	{(\arabic{@chap@counter}.\arabic{@prob@counter})}
-            		%	{problem\arabic{@chap@counter}.\arabic{@prob@counter}}
-            		%\bookmark[dest=mypage]{go to my page}%
-            		\BookmarkAtEnd{ \bookmarksetup{startatroot} \bookmark[named=LastPage, level=0]{Last page} }
-            		(\arabic{@chap@counter}.\arabic{@prob@counter})
-            		\ignorespaces
-            	}
-		}{(\arabic{@prob@counter}) \ignorespaces}
-	}
-    	{
+    	\textbf\bgroup%
+    	%\raisebox{20pt}{\phantomsection}
+    	\begin{tcolorbox}%
+	\IfBooleanTF{#2}%
+    	{%
+        	\IfValueTF{#4}%
+        	{%
+        		\IfBooleanTF{#5}%
+			{%
+		        	\problemparts{(\problem@numbering)}%
+				\bookmark[dest=\@page@n@target@name\thepage, rellevel=1]%
+					{\problemsname\space\problem@numbering}%
+		        	(\problem@numbering)%
+				\stepcounter{@prob@part@counter}%
+		        	\ignorespaces%
+		    	}{\problems{\problem@numbering}}%
+		}{\problems{\problem@numbering}}%
+	}%
+    	{%
     		\IfBooleanTF{#5}%
-		{
-			\BookmarkAtEnd{ \bookmarksetup{startatroot} \bookmark[named=LastPage, level=0]{Last page} }
-			%\currentpdfbookmark
-        		%{(\roman{@prob@part@counter})}
-        		%{problem\alph{@prob@part@counter}}
-        		(\roman{@prob@part@counter})
-        		%\addtocounter{@prob@part@counter}{1}\ignorespaces
-		}
-	    	{
-			%\currentpdfbookmark
-        		%	{(\alph{@subprob@counter})}
-        		%	{problem\alph{@subprob@counter}}
-        		\BookmarkAtEnd{ \bookmarksetup{startatroot} \bookmark[named=LastPage, level=0]{Last page} }
-        		(\alph{@subprob@counter})
-        		\addtocounter{@subprob@counter}{1}\ignorespaces
-        	}       	
-    	}
+		{%
+			\IfValueTF{#4}%
+                        	{\problempartssubproblems{(\problem@numbering)}}%
+                        	{\subproblemparts{(\problem@numbering)}}%
+                        \bookmark[dest=\@page@n@target@name\thepage,rellevel=1]
+                        	{\problemsname\space\problem@numbering}%
+                        (\problem@numbering)\space\ignorespaces%
+        		\stepcounter{@prob@part@counter}{1}\ignorespaces
+		}%
+	    	{%
+			\subproblems{(\problem@numbering)}%
+			\bookmark[dest=\@page@n@target@name\thepage,rellevel=1]
+        			{\problemsname\space\problem@numbering}%
+                        (\problem@numbering)\space\ignorespaces%
+        		\stepcounter{@subprob@counter}{1}\ignorespaces%
+        	}%     	
+    	}%
 }{\end{tcolorbox}\egroup\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Problem environment with box fitted to content, for short content problems where a fitted box improves appearance over a box width of '\linewidth'

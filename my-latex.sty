@@ -11,87 +11,95 @@
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-latex}
+\RequirePackage{kvoptions}                      % Provides ability to define key=value package options
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\reportname{report}
 \def\articlename{article}
-\newif\if@documentclass@report@\@documentclass@report@false
-\newif\if@documentclass@article@\@documentclass@article@false
-\newif\if@documentclass@option@crop@\@documentclass@option@crop@false
-\newif\if@landscape@option@\@landscape@option@false
-\newif\if@standalone@option@\@standalone@option@true
-\newif\if@toc@option@\@toc@option@false
-\newif\if@frontbackmatter@option@\@frontbackmatter@option@false
-\newif\if@automake@option@\@automake@option@false
-\newif\if@roman@backmatter@option@\@roman@backmatter@option@false
-\newif\if@isorot@package@option@\@isorot@package@option@false
-\newif\if@fbm@dotfill@option@\@fbm@dotfill@option@false
-%\DeclareOption{landscape}{\@landscape@option@true\PassOptionsToClass{landscape}{article}}
-\DeclareOption{report}{\@documentclass@report@true}
-\DeclareOption{article}{\@documentclass@article@true}
-\DeclareOption{crop}{\@documentclass@option@crop@true}
-\DeclareOption{landscape}{\@landscape@option@true}
-\DeclareOption{standaloneoff}{\@standaloneoff@option@false}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption{toc}{\@toc@option@true}
-\DeclareOption{frontbackmatter}{\@frontbackmatter@option@true}
-\DeclareOption{romanbackmatter}{\@roman@backmatter@option@true}
-\DeclareOption{fbmdotfill}{\@fbm@dotfill@option@true}
-\DeclareOption{automake}{\@automake@option@true}
+\SetupKeyvalOptions
+{
+%family=mylatex,
+prefix=mylatex@,
+%setkeys=setkeys command
+}
+
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx-patched}}
-\DeclareOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx-patched}}
-\DeclareOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx-patched}}
-\DeclareOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx-patched}}
-\DeclareOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx-patched}}
-\DeclareOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx-patched}}
-\DeclareOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx-patched}}
-\DeclareOption{original}{\PassOptionsToPackage{original}{imakeidx-patched}}
-\DeclareOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx-patched}}
+\DeclareBoolOption{report}
+\DeclareBoolOption{article}%
+\DeclareBoolOption{crop}
+\DeclareBoolOption{landscape}
+\DeclareBoolOption{standaloneoff}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption*{\PackageWarning{my-latex}{Unknown \CurrentOption}}
+\DeclareBoolOption{toc}
+\DeclareBoolOption{frontbackmatter}
+\DeclareBoolOption{romanbackmatter}
+\DeclareBoolOption{fbmdotfill}
+\DeclareBoolOption{automake}
+\DeclareBoolOption{isorot}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareVoidOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx}}
+\DeclareVoidOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx}}
+\DeclareVoidOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx}}
+\DeclareVoidOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx}}
+\DeclareVoidOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx}}
+\DeclareVoidOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx}}
+\DeclareVoidOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx}}
+\DeclareVoidOption{original}{\PassOptionsToPackage{original}{imakeidx}}
+\DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
+%\DeclareBoolOption[true]{splitindex}%{\PassOptionsToPackage{splitindex}{imakeidx}}
+%\AddToKeyvalOption*{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareStringOption[hello]{kvoptionstest}[world]
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
 %*****************************************************************************************************************************************%
-\ProcessOptions\relax
+\ExecuteOptions{splitindex,nonewpage}
+%\ProcessKeyvalOptions{my-latex}
+\ProcessKeyvalOptions*
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@landscape@option@
+%\if@landscape@option@
+\ifmylatex@landscape
 	\PassOptionsToClass{landscape}{article}
 	\PassOptionsToClass{landscape}{report}
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@documentclass@option@crop@
+\ifmylatex@crop
 	\PassOptionsToClass{crop}{article}
 	\PassOptionsToClass{crop}{report}
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@documentclass@report@
-	\if@standalone@option@
-		\documentclass[class=\reportname, crop=false]{standalone}
-	\else
+\ifmylatex@report
+	\ifmylatex@standaloneoff
 		\documentclass{report}
+	\else
+		\documentclass[class=\reportname, crop=false]{standalone}
 	\fi
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@documentclass@article@
-        \if@standalone@option@
-                \documentclass[class=\articlename, crop=false]{standalone}
-        \else
+\ifmylatex@article
+        \ifmylatex@standaloneoff
                 \documentclass{article}
+        \else
+                \documentclass[class=\articlename, crop=false]{standalone}
         \fi
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@automake@option@
+\ifmylatex@automake
 	\PassOptionsToPackage{automake}{my-glossaries}
 \fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\if@fbm@dotfill@option@
+\ifmylatex@fbmdotfill
 	\newcommand*{\frontbackmatterhfill}{\nobreak,\,\space\dotfill\space\nobreak}%
 \else
 	\newcommand*{\frontbackmatterhfill}{\space}%
 \fi
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\kvoptionstestvalue{\csname mylatex@kvoptionstest\endcsname}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\ifdraft {draft case} {final case}
 %\ifoptiondraft {option draft is given} {option draft is not given}
@@ -103,8 +111,6 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackage{imakeidx-patched}           	% options: xindy
-%\RequirePackage{my-imakeidx}                   % options: xindy
-%\RequirePackage[nonewpage]{my-imakeidx}	% options: xindy
 \RequirePackage{my-packages}           		% Custom set of packages used in my-latex.sty development
 \RequirePackage{my-patches}                     % Contains package patches modifying/adding register variables and macros/commands/environments
 \RequirePackage{my-colorsets}			% Custom colorset definitions loaded
