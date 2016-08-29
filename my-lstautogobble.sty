@@ -1,18 +1,17 @@
 %*****************************************************************************************************************************************%
 %******************************************************** `my-lstautogobble.sty' *********************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
-% \setglossarystyle{indexhypergroup} command
+% This is an adaptation of the 'lstautogobble' subpackage which automatically sets the value of the 'gobble=#' utility of the 'listings' package such that the correct # of characters are removed from the beginning of each listing line and the listing is printed with the appropriate indentation.  This is accomplished by scanning the first line of a listing so the appropriate # of characters to remove from each listing line can be determined and used to automatically set 'gobble=#' insted of having to set this manually before each listing as is required when 'lstautogobble' is not included.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\ProvidesPackage{my-lstautogobble}
-\RequirePackage{listings}		% This is an add-on to the `listings` package
+\ProvidesPackage{my-lstautogobble}				% This is an add-on to the `listings` package
+\RequirePackage{listings}						
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption*{\PackageWarning{my-minted}{Unknown \CurrentOption}}
+\DeclareOption*{\PackageWarning{my-lstautogobble}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
 %*****************************************************************************************************************************************%

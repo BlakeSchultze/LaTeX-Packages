@@ -1,12 +1,11 @@
 %*****************************************************************************************************************************************%
 %************************************************************ `my-math.sty' **************************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
-% \setglossarystyle{indexhypergroup} command
+% Defines additional math symbols, (paired) delimiters, and operators and provides macros/commands/environments for typesetting of math expressions and other math related content.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-math}
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
@@ -35,8 +34,15 @@
 \def\@delimiter@surrounding#1{\kern1pt#1\kern1pt}
 \def\@numset@surrounding#1{\kern-1.0pt#1\kern-1.0pt}
 \def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
-\def\@tcb@pld@title@label{\flushleft\setul{1.5pt}{2.0pt} \setulcolor{black}\ul{Polynomial Division:} \\[0.3em]\centering\normalsize\normalfont}
-\def\d#1{\kern1ptd#1}
+\def\@tcb@pld@title@label%
+{%
+	\flushleft%
+	\setul{1.5pt}{2.0pt} %
+	\setulcolor{black}%
+	\ul{Polynomial Division:} \\[0.3em]%
+	\centering\normalsize\normalfont%
+}
+\def\d#1{\kern1pt d#1}
 %\def\myastb{\myast}
 %\def\mymath#1§{$\boldsymbol{#1}$}
 \catcode`|=\active
@@ -50,25 +56,27 @@
 %\def!#1!{hello}
 %\gdef$#1${\[\mathbf{#1}\]}
 \newlength\@pld@tcb@width
-\newlength\@top@binom@height													% Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@bottom@binom@height												% Height of 'k' in "n choose k" environment \nchoosek
-\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}						% Height of math character 'X' in current font
+\newlength\@top@binom@height						% Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@bottom@binom@height						% Height of 'k' in "n choose k" environment \nchoosek
+\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}	% Height of math character 'X' in current font
 \newlength\@height@math@symbols\settoheight{\@height@math@symbols}{$\displaystyle X$}
 \newlength\@height@math@comma\settoheight{\@height@math@comma}{$\displaystyle ,$}
-\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}					% Height of math character 'X' in current font
-\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}							% Height of math character 'X' in current font
-\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$}						% Height of math character 'X' in current font
-\newlength\@total@heght														% Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@dbl@verted@shift													% Height of 'n' in "n choose k" environment \nchoosek
-\newcount\gpten 															% (global) power-of-ten -- tells which digit we are doing
-\countdef\rtot2 															% running total -- remainder so far
-\countdef\LDscratch4 														% scratch
+\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}	% Height of math character 'X' in current font
+\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}		% Height of math character 'X' in current font
+\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$}	% Height of math character 'X' in current font
+\newlength\@total@heght							% Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@dbl@verted@shift						% Height of 'n' in "n choose k" environment \nchoosek
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcount\gpten 							% (global) power-of-ten -- tells which digit we are doing
+\countdef\rtot2 							% running total -- remainder so far
+\countdef\LDscratch4 							% scratch
 \newcounter{@current@IBP@row@counter}
-\@init@counter{@IBP@instances@counter}      										% Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@rows@counter}[0]      										% Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@nodes@counter}[1]       										% Node # of left column in IBP environment
-\@init@counter{@left@IBP@nodes@counter}       										% Node # of left column in IBP environment
-\@init@counter{@right@IBP@nodes@counter}[2]										% Node # of right column in IBP environment
+\@init@counter{@IBP@instances@counter}      				% Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@rows@counter}[0]      				% Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@nodes@counter}[1]       				% Node # of left column in IBP environment
+\@init@counter{@left@IBP@nodes@counter}       				% Node # of left column in IBP environment
+\@init@counter{@right@IBP@nodes@counter}[2]				% Node # of right column in IBP environment
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtoggle{@add@sub@TF}
 \let\@ss@style=\scriptscriptstyle
 %*****************************************************************************************************************************************%
@@ -76,91 +84,94 @@
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Define math symbols
-\DeclareMathOperator{\exponentialSym}{\mathit{e}}                                    			% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\inss}{\raisemath{0.75pt}{\scriptstyle\in}}                                   	% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}								% Directional vector for 1st dimension e1 (i.e. x-axis)
-\DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}								% Directional vector for 1st dimension e1 (i.e. y-axis)
-\DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}			% Directional vector for 1st dimension e1 (i.e. z-axis)
-\DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}								% Degrees symbol
-\DeclareMathOperator{\dB}{\mathrm{dB}}                                  					% decibels, dB
-\DeclareMathOperator{\degF}{\si{\degree} \mathsf{F}}									% Degrees Fahrenheit
-\DeclareMathOperator{\convolutionSym}{\ast}										% Convolution symbol
-\DeclareMathOperator{\correlationSym}{\star}										% Correlation symbol
+\DeclareMathOperator{\exponentialSym}{\mathit{e}}                                    	% exponential function, exp(x): \e{<arg>}
+\DeclareMathOperator{\inss}{\raisemath{0.75pt}{\scriptstyle\in}}                        % scriptstyle set membership suymbol \in
+\DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}				% Directional vector for 1st dimension e1 (i.e. x-axis)
+\DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}				% Directional vector for 1st dimension e1 (i.e. y-axis)
+\DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}	% Directional vector for 1st dimension e1 (i.e. z-axis)
+\DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}					% Degrees symbol
+\DeclareMathOperator{\dB}{\mathrm{dB}}                                  		% decibels, dB
+\DeclareMathOperator{\degF}{\si{\degree} \mathsf{F}}					% Degrees Fahrenheit
+\DeclareMathOperator{\convolutionSym}{\ast}						% Convolution symbol
+\DeclareMathOperator{\correlationSym}{\star}						% Correlation symbol
 \DeclareMathOperator{\hence}{\raisebox{-1.5pt}{\hstretch{1.25}{\scaleobj{1.5}{\Rightarrow}}}\;\;}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathOperator{\superscriptPlus}{\raisebox{0.55pt}{\scaleobj{0.55}{\boldsymbol{+}}}}
 \DeclareMathOperator{\superscriptMinus}{\raisebox{-1.25pt}{\hstretch{0.55}{\boldsymbol{--}}}}
-\DeclareMathOperator{\negSign}{\scriptstyle-\kern-2.0pt}                                    		% negative sign
+\DeclareMathOperator{\negSign}{\scriptstyle-\kern-2.0pt}                                % negative sign
 \DeclareMathOperator{\inverseSym}{\negSign\scriptscriptstyle 1}
-\DeclareMathOperator{\eqdefas}{\overset{\underset{\mathsfs{def}}{}}{=}}        				% The "defined as" symbol written as equal sign w/ def above it
+\DeclareMathOperator{\eqdefas}{\overset{\underset{\mathsfs{def}}{}}{=}}        		% "defined as" symbol written w/ 'def' above equal sign
 \DeclareMathOperator{\setor}{\mathop{\lvert}}
-\DeclareMathOperator{\rectSym}{\sqcap}											% Rectangular function symbol
-\DeclareMathOperator{\triSym}{\wedge}											% Rectangular function symbol
-\DeclareMathOperator{\combSym}{\mathrms{III}}										% Rectangular function symbol
-\DeclareMathOperator{\meanSym}{\mu}                                    						% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\meanSymUp}{\muup}                                    					% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\stddevSym}{\sigma}                                    					% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\stddevSymUp}{\sigmaup}                                    				% exponential function, exp(x): \e{<arg>}
-\DeclareMathOperator{\identity}{\mathord{\mathalpha{\mathbbm{I}}}}                            		% Identity matrix symbol
-\DeclareMathOperator{\indicator}{\mathbbs{1}\kern\z@}         							% Indicator function symbol
+\DeclareMathOperator{\rectSym}{\sqcap}							% Rectangular function symbol
+\DeclareMathOperator{\triSym}{\wedge}							% Rectangular function symbol
+\DeclareMathOperator{\combSym}{\mathrms{III}}						% Rectangular function symbol
+\DeclareMathOperator{\meanSym}{\mu}                                    			% exponential function, exp(x): \e{<arg>}
+\DeclareMathOperator{\meanSymUp}{\muup}                                    		% exponential function, exp(x): \e{<arg>}
+\DeclareMathOperator{\stddevSym}{\sigma}                                    		% exponential function, exp(x): \e{<arg>}
+\DeclareMathOperator{\stddevSymUp}{\sigmaup}                                    	% exponential function, exp(x): \e{<arg>}
+\DeclareMathOperator{\identity}{\mathord{\mathalpha{\mathbbm{I}}}}                      % Identity matrix symbol
+\DeclareMathOperator{\indicator}{\mathbbs{1}\kern\z@}         				% Indicator function symbol
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
-\DeclareMathOperator{\AlgnumSet}{\numset{A}}                               					% Set of Algebraic #s
-\DeclareMathOperator{\NaturalSet}{\numset{N}}                              					% Set of natural #s
-\DeclareMathOperator{\PosNaturalSet}{\numset{N}[\kern-0.5pt\superscriptPlus]}                   	% Set of positive natural #s
-\DeclareMathOperator{\NegNaturalSet}{\numset{N}[\superscriptMinus]}                 			% Set of negative natural #s
-\DeclareMathOperator{\IntegerSet}{\numset{Z}}                              					% Set of integer #s
-\DeclareMathOperator{\PosIntegerSet}{\numset{Z}[\kern-0.5pt\superscriptPlus]}                    	% Set of positive integer #s
-\DeclareMathOperator{\NegIntegerSet}{\numset{Z}[\superscriptMinus]}                                	% Set of negative integer #s
-\DeclareMathOperator{\ModIntegerSet}{\numset{Z}_{\scriptstyle\kern-0.5pt\mathrm{n}}}			% Set of integer #s (mod) n, i.e., {[0], [1], [2], ...[n−1]}
-\DeclareMathOperator{\ComplexSet}{\numset{C}}                    							% Set of rational #s
-\DeclareMathOperator{\RealSet}{\numset{R}}                                 					% Set of Real #s
-\DeclareMathOperator{\PosRealSet}{\numset{R}[\kern-0.5pt\superscriptPlus]}                      	% Set of positive Real #s
-\DeclareMathOperator{\NegRealSet}{\numset{R}[\superscriptMinus]}                                	% Set of negative Real #s
-\DeclareMathOperator{\RationalSet}{\numset{Q}}                            					% Set of Rational #s
-\DeclareMathOperator{\PosRationalSet}{\numset{Q}[\kern-0.5pt\superscriptPlus]}               		% Set of positive Rational #s
-\DeclareMathOperator{\NegRationalSet}{\numset{Q}[\superscriptMinus]}                         		% Set of negative Rational #s
-\DeclareMathOperator{\PowerSet}{\@numset@surrounding{\wp}}                    				% Set of all subsets of S, including empty and S itself, Weirstrass
-\DeclareMathOperator{\AlphabetSet}{\@numset@surrounding{\bbSigma}}                    			% Alphabet used in constructing words of a (formal) language
+\DeclareMathOperator{\AlgnumSet}{\numset{A}}                               		% Set of Algebraic #s
+\DeclareMathOperator{\NaturalSet}{\numset{N}}                              		% Set of natural #s
+\DeclareMathOperator{\PosNaturalSet}{\numset{N}[\kern-0.5pt\superscriptPlus]}           % Set of positive natural #s
+\DeclareMathOperator{\NegNaturalSet}{\numset{N}[\superscriptMinus]}                 	% Set of negative natural #s
+\DeclareMathOperator{\IntegerSet}{\numset{Z}}                              		% Set of integer #s
+\DeclareMathOperator{\PosIntegerSet}{\numset{Z}[\kern-0.5pt\superscriptPlus]}           % Set of positive integer #s
+\DeclareMathOperator{\NegIntegerSet}{\numset{Z}[\superscriptMinus]}                   	% Set of negative integer #s
+\DeclareMathOperator{\ModIntegerSet}{\numset{Z}_{\scriptstyle\kern-0.5pt\mathrm{n}}}	% Set of integer #s (mod) n, i.e., {[0], [1], [2], ...}
+\DeclareMathOperator{\ComplexSet}{\numset{C}}                    			% Set of rational #s
+\DeclareMathOperator{\RealSet}{\numset{R}}                                 		% Set of Real #s
+\DeclareMathOperator{\PosRealSet}{\numset{R}[\kern-0.5pt\superscriptPlus]}       	% Set of positive Real #s
+\DeclareMathOperator{\NegRealSet}{\numset{R}[\superscriptMinus]}                    	% Set of negative Real #s
+\DeclareMathOperator{\RationalSet}{\numset{Q}}                            		% Set of Rational #s
+\DeclareMathOperator{\PosRationalSet}{\numset{Q}[\kern-0.5pt\superscriptPlus]}       	% Set of positive Rational #s
+\DeclareMathOperator{\NegRationalSet}{\numset{Q}[\superscriptMinus]}            	% Set of negative Rational #s
+\DeclareMathOperator{\PowerSet}{\@numset@surrounding{\wp}}            			% Set of all S subsets, including empty/S; Weirstrass
+\DeclareMathOperator{\AlphabetSet}{\@numset@surrounding{\bbSigma}}               	% Alphabet used to construct (formal) language words
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
-\DeclareMathOperator{\Algnums}{\numset{A}}                              					% Set of Algebraic #s
-\DeclareMathOperator{\Naturals}{\numset{N}}                              					% Set of natural #s
-\DeclareMathOperator{\PosNaturals}{\numset{N}[\kern-0.5pt\superscriptPlus]}                   		% Set of positive natural #s
-\DeclareMathOperator{\NegNaturals}{\numset{N}[\superscriptMinus]}                 				% Set of negative natural #s
-\DeclareMathOperator{\Integers}{\mathord{\numset{Z}}}                              				% Set of integer #s
-\DeclareMathOperator{\PosIntegers}{\mathord{\numset{Z}[\kern-0.5pt\superscriptPlus]}}                	% Set of positive integer #s
-\DeclareMathOperator{\NegIntegers}{\mathord{\numset{Z}[\superscriptMinus]}}                    		% Set of negative integer #s
-\DeclareMathOperator{\ModIntegers}{\mathord{\numset*{Z}[\scriptstyle\kern-0.5pt\mathrm{n}]}}		% Set of integer #s (mod) n, i.e., {[0], [1], [2], ...[n−1]}
-\DeclareMathOperator{\Complexs}{\mathord{\numset{C}}}                    					% Set of rational #s
-\DeclareMathOperator{\Reals}{\mathord{\numset{R}}}                                 				% Set of Real #s
-\DeclareMathOperator{\PosReals}{\mathord{\numset{R}[\kern-0.5pt\superscriptPlus]}}      			% Set of positive Real #s
-\DeclareMathOperator{\NegReals}{\mathord{\numset{R}[\superscriptMinus]}}                      		% Set of negative Real #s
-\DeclareMathOperator{\Rationals}{\mathord{\numset{Q}}}                            				% Set of Rational #s
-\DeclareMathOperator{\PosRationals}{\mathord{\numset{Q}[\kern-0.5pt\superscriptPlus]}}               	% Set of positive Rational #s
-\DeclareMathOperator{\NegRationals}{\mathord{\numset{Q}[\superscriptMinus]}}                  		% Set of negative Rational #s
-\DeclareMathOperator{\Alphabet}{\mathord{\bbSigma}}                    						% Alphabet used in constructing words of a (formal) language
-\DeclareMathOperator{\Language}{\mathord{\numset{\bbSigma}[\kern1.25pt\@math@super@script{\ast}]}}	% (Formal) Language: words built from elements of the alphabet (Sigma)
-\DeclareMathOperator{\ProjSpace}{\mathord{\numset{P}}}                    					% Projective space					
-\DeclareMathOperator{\Quaternions}{{\mathbb{H}}}                   						% Quaternions
+\DeclareMathOperator{\Algnums}{\numset{A}}                              		% Set of Algebraic #s
+\DeclareMathOperator{\Naturals}{\numset{N}}                              		% Set of natural #s
+\DeclareMathOperator{\PosNaturals}{\numset{N}[\kern-0.5pt\superscriptPlus]}        	% Set of positive natural #s
+\DeclareMathOperator{\NegNaturals}{\numset{N}[\superscriptMinus]}                 	% Set of negative natural #s
+\DeclareMathOperator{\Integers}{\mathord{\numset{Z}}}                             	% Set of integer #s
+\DeclareMathOperator{\PosIntegers}{\mathord{\numset{Z}[\kern-0.5pt\superscriptPlus]}}	% Set of positive integer #s
+\DeclareMathOperator{\NegIntegers}{\mathord{\numset{Z}[\superscriptMinus]}}          	% Set of negative integer #s
+\DeclareMathOperator{\ModIntegers}{\mathord{\numset*{Z}[\scriptstyle\kern-0.5pt\mathrm{n}]}}% Set of integer #s (mod) n: {[0],[1],[2], ...}
+\DeclareMathOperator{\Complexs}{\mathord{\numset{C}}}                    		% Set of rational #s
+\DeclareMathOperator{\Reals}{\mathord{\numset{R}}}                                 	% Set of Real #s
+\DeclareMathOperator{\PosReals}{\mathord{\numset{R}[\kern-0.5pt\superscriptPlus]}}      % Set of positive Real #s
+\DeclareMathOperator{\NegReals}{\mathord{\numset{R}[\superscriptMinus]}}         	% Set of negative Real #s
+\DeclareMathOperator{\Rationals}{\mathord{\numset{Q}}}                            	% Set of Rational #s
+\DeclareMathOperator{\PosRationals}{\mathord{\numset{Q}[\kern-0.5pt\superscriptPlus]}}	% Set of positive Rational #s
+\DeclareMathOperator{\NegRationals}{\mathord{\numset{Q}[\superscriptMinus]}}          	% Set of negative Rational #s
+\DeclareMathOperator{\Alphabet}{\mathord{\bbSigma}}                    			% Alphabet used to construct (formal) language words
+\DeclareMathOperator{\Language}								% (Formal) Language, built from alphabet (Sigma)	
+{%
+	\mathord{\numset{\bbSigma}[\kern1.25pt\@math@super@script{\ast}]}%
+}
+\DeclareMathOperator{\ProjSpace}{\mathord{\numset{P}}}                    		% Projective space
+\DeclareMathOperator{\Quaternions}{{\mathbb{H}}}                   			% Quaternions
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Define math operators given as text
-\DeclareMathOperator{\exponentialText}{exp}                                             			% exponential function written as text symbol: exp(x)
-\DeclareMathOperator{\trText}{Tr}                                             				% The 'trace' of a matrix
-\DeclareMathOperator{\varText}{var}                                           				% 'Variance' of a random variable/vector written as "var A"
-\DeclareMathOperator{\detText}{det}                                           				% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\supText}{sup}                                           				% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\infText}{inf}                                           				% 'Determinant' of a matrix written as "det A"
-\DeclareMathOperator{\erfText}{erf}                                           				% 'Error function' written as "erf(x)"
-\DeclareMathOperator{\erfiText}{erfi}                                           				% 'Imaginary error function' written as "erf(x)"
-\DeclareMathOperator{\rectText}{rect}											% Rectangular function text symbol
-\DeclareMathOperator{\sincText}{sinc}											% Sinc function text symbol
-\DeclareMathOperator{\jincText}{jinc}											% Jinc function text symbol
-\DeclareMathOperator{\signumText}{signum}											% Signum function text symbol
-\DeclareMathOperator{\signText}{sign}											% Sign function text symbol
-\DeclareMathOperator{\sgnText}{sgn}												% Alternative sign function text symbol
-\DeclareMathOperator{\lcmText}{lcm}												% Lowest common multiple (LCM)
-\DeclareMathOperator{\lcdText}{lcd}												% Lowest common denominator (LCD)
+\DeclareMathOperator{\exponentialText}{exp}                                    		% exponential function written as text symbol: exp(x)
+\DeclareMathOperator{\trText}{Tr}                                             		% The 'trace' of a matrix
+\DeclareMathOperator{\varText}{var}                                           		% 'Variance' of random variable/vector written "var A"
+\DeclareMathOperator{\detText}{det}                                           		% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\supText}{sup}                                           		% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\infText}{inf}                                           		% 'Determinant' of a matrix written as "det A"
+\DeclareMathOperator{\erfText}{erf}                                           		% 'Error function' written as "erf(x)"
+\DeclareMathOperator{\erfiText}{erfi}                                           	% 'Imaginary error function' written as "erf(x)"
+\DeclareMathOperator{\rectText}{rect}							% Rectangular function text symbol
+\DeclareMathOperator{\sincText}{sinc}							% Sinc function text symbol
+\DeclareMathOperator{\jincText}{jinc}							% Jinc function text symbol
+\DeclareMathOperator{\signumText}{signum}						% Signum function text symbol
+\DeclareMathOperator{\signText}{sign}							% Sign function text symbol
+\DeclareMathOperator{\sgnText}{sgn}							% Alternative sign function text symbol
+\DeclareMathOperator{\lcmText}{lcm}							% Lowest common multiple (LCM)
+\DeclareMathOperator{\lcdText}{lcd}							% Lowest common denominator (LCD)
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Forward/Inverse linear transformation operators
 \DeclareMathOperator{\Fourier}{\mathbick{F}}                                 					% Fourier transform symbol
@@ -232,16 +243,42 @@
 %***************************************** Definition of various set/symbol, operator, vector/matrix, etc. commands ******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}							% Raises argument #2 by distance #1 with appropriate style (#2)
-\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}						% Wrapper for \raisem@th
-\newcommand{\bmath}[1]{$\boldsymbol{#1}$}									% Insertion of bold math symbol/expression inside text mode
-\newcommand{\abs}[1]{\verted*{#1}}										% Absolute value operator
-\newcommand{\timeavg}[1]{\angled*{#1}}									% Time average of random variable	
-\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}						% Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
-\newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                          	% Identity matrix with dimensions included
-\newcommand{\ink}[1]{\in^{#1}}										% k-th order set membership symbol
-\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}								% NOT IN k-th order set membership symbol
-\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}						% Defines set { #1 | #2 }
+\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}				% Raises argument #2 by distance #1 with appropriate style (#2)
+\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}			% Wrapper for \raisem@th
+%\newcommand{\bmath}[1]{$\boldsymbol{#1}$}					% Insertion of bold math symbol/expression inside text mode
+\newcommand{\bmath}[1]{\ensuremath{\boldsymbol{#1}}}                         	% Insertion of bold math \newcommand{\abs}[1]{\verted*{#1}}										% Absolute value operator
+\newcommand{\timeavg}[1]{\angled*{#1}}						% Time average of random variable	
+\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}				% Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
+\newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                   % Identity matrix with dimensions included
+\newcommand{\ink}[1]{\in^{#1}}							% k-th order set membership symbol
+\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}					% NOT IN k-th order set membership symbol
+\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}				% Defines set { #1 | #2 }
+\newcommand\inline@dfrac[2]{\frac{\displaystyle#1}{\displaystyle#2}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@derivative@operator{s m}%
+{%
+        \IfBooleanTF{#1}
+        {\mathord{\partial\raisebox{4pt}{$\scriptscriptstyle#2$}}}%
+        {\mathord{d\raisebox{4pt}{$\scriptscriptstyle#2$}}}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\deriv}{s t! m m m}
+{%
+	\IfBooleanTF{#2}%
+		{\let\@current@fraction@operator=\inline@dfrac}%
+		{\let\@current@fraction@operator=\dfrac}%
+	\IfBooleanTF{#1}%
+	{%
+		\@current@fraction@operator%
+		{\@derivative@operator*{#3}{#4}}%
+		{\@derivative@operator*{#3}{#5}}%
+	}%
+ 	{%		
+ 		\@current@fraction@operator%
+                {\@derivative@operator{#3}{#4}}%
+                {\@derivative@operator{#3}{#5}}%
+ 	}%
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %Define default, bold, hat, and wide hat vectors
 \newcommand{\matx}[1]{\mathord{\mathbf{#1}}}
@@ -267,22 +304,31 @@
 \renewcommand{\ddddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont....}\vss}}}}
 \renewcommand{\ddddot}[1]{{\mathop{\kern\z@#1}\limits^{\vbox to-1.4\ex@{\kern-\tw@\ex@\hbox{\normalfont....}\vss}}}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\xyplane}{s}{\IfBooleanTF{#1}{\bfseries$\boldsymbol{xy-}$plane}{$xy-$plane}\unskip}
+\DeclareDocumentCommand{\xyplane}{s}{\IfBooleanTF{#1}{\bfmseries$\boldsymbol{xy-}$plane}{$xy-$plane}\unskip}
+\DeclareDocumentCommand{\axis}{s}{\IfBooleanTF{#1}{\bfmseries\ensuremath{\boldsymbol{xy-}}\text{axis}}{\ensuremath{xy-}\text{axis}}\unskip}
+\DeclareDocumentCommand{\plane}{s}{\IfBooleanTF{#1}{\bfmseries\ensuremath{\boldsymbol{xy-}}\text{plane}}{\ensuremath{xy-}\text{plane}}\unskip}
 %*****************************************************************************************************************************************%
-%*************************************************************** Set/symbol/measure operators ****************************************************************%
+%***************************************************** Set/symbol/measure operators ******************************************************%
 %*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\mathord \mathop \mathbin \mathrel  \mathopen \mathclose \mathpunct
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\numset}{s O{\mathbb} m o}
-{
-	\IfBooleanTF{#4}
-		{\def\@sub@or@super{_}}
-		{\def\@sub@or@super{^}}
-	\mathord
+{%
+	\IfBooleanTF{#4}%
+		{\def\@sub@or@super{_}}%
+		{\def\@sub@or@super{^}}%
+	\ensuremath
 	{%
-		\IfValueTF{#4}
-			{#2{#3}\@sub@or@super{#4}}
-			{#2{#3}}
-	}
+		\mathord
+		{%
+			\IfValueTF{#4}%
+				{#2{#3}\@sub@or@super{#4}}%
+				{#2{#3}}%
+		}%
+	}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\isin}{O{\mathbb} m o}
@@ -359,7 +405,7 @@
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\mathOp}{m m m}
-	{\mathop{#1}\mathopen{}#2*{#3}}
+	{\ensuremath{\mathop{#1}\mathopen{}#2*{#3}}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\rect}{s O{\parenthesized} m}
 	{\mathOp{\sqcap}{#2}{#3}}
@@ -401,7 +447,7 @@
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\textOp}{m m m t'}
-	{\mathop{\text{#1}}\mathopen{}#2*{#3}}
+	{\ensuremath{\mathop{\text{#1}}\mathopen{}#2*{#3}}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\erf}{s O{\parenthesized} m}
 	{\textOp{erf}{#2}{#3}}
@@ -491,8 +537,8 @@
 \DeclareDocumentCommand{\txformOp}{s m m O{} m m}
 {
 	\IfBooleanTF{#1}
-		{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}
-		{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}
+		{\ensuremath{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}}
+		{\ensuremath{\mathop{\csname #2\endcsname{#3}#4}\mathopen{}#5*{#6}}}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % \<op name>[*(use alt symbol?)][<override default brace delimiters>]{<argument>}
@@ -616,8 +662,8 @@
 	%\renewcommand{\baselinestretch}{1.5}%
     	node [#1] \bgroup
     	\iftoggle{@add@sub@TF}
-    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
-    		{$\scriptscriptstyle\color{IBPstyle-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
+    		{$\scriptscriptstyle\color{IBPColorset-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
+    		{$\scriptscriptstyle\color{IBPColorset-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@draw@IBP@arrows}{}
@@ -679,22 +725,23 @@
 	\setlength\doublerulesep{0pt}
 	\setlength{\arrayrulewidth}{0.75pt}
 	\setcounter{@IBP@rows@counter}{0}
-    	\tcbsetcurrentcolors{IBPstyle}
+    	\@set@current@tcb@colors{IBPColorset}
 	\setstretch{1.5}
-    	\arrayrulecolor{IBPstyle-coldraw}%
+    	\arrayrulecolor{IBPColorset-coldraw}%
 	\ifstrempty{#1}
-	{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{\int #2#3#4}}}}%
+	{\def\IBPtitle{\cftXtcbtitle@font{: \bmath{\int #2#3#4}}}}%
 	{%
 		\ifstrequal{#1}{*}
-    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){}}}
-    			{\def\IBPtitle{\shadowText<\sffamily>[black](white){: \bmath{#1}}}}
-	}%
-	\boxedtable[IBPstyle={IBPstyle-colframeborder}{IBPstyle-colinterioroutline}{\@tcb@boxrule@linewidth}, blend before title code={\shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}}]
-		{\space}{Integration by Parts Table \arabic{table}}
+    			{\def\IBPtitle{\cftXtcbtitle@font{}}}
+    			{\def\IBPtitle{\cftXtcbtitle@font{: \bmath{#1}}}}
+	}%\cftXtcbtitle@font \shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}
+	\boxedtable[IBPStyle={\@tcb@default@boxrule@linewidth}{single}{IBPColorset-colframeborder}{IBPColorset-colinteriorborder},
+		blend before title code={\cftXtcbtitle@font{\tablename\space\thetable\space\IBPtitle}}]
+		{\space}{\IBPtableLongName\space\thetable}
 		\centering
-		\tabular{>{$}c<{$} c @{\hskip 2.5cm} c  >{$}c<{$}}%
-			\boldsymbol{u} && &\boldsymbol{dv}\\[-0.2em]%
-	            \hline\arrayrulecolor{IBPstyle-rulecolor}\hline\arrayrulecolor{IBPstyle-coldraw}\hline\\[-1.5em]%
+		\tabular{>{$}c<{$} c @{\hskip\@tcbIBP@column@sep} c  >{$}c<{$}}%
+			\boldsymbol{u} && &\boldsymbol{dv}\\[\@tcbIBP@before@hrule@skip]%
+	            \hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline\\[\@tcbIBP@after@hrule@skip]%
 	            \addIBProw{#2}{#3}\\
 	            \tcbIBPbody%
 		\endtabular%
@@ -805,7 +852,6 @@
 	\@reset@ul@settings
 	\tcbset{reset}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %*************************************************************** End of 'my-math.sty' package ***************************************************************%
 %*****************************************************************************************************************************************%

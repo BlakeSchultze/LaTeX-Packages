@@ -1,18 +1,20 @@
 %*****************************************************************************************************************************************%
-%******************************************************** `keycommand-patch.sty' *********************************************************%
+%******************************************************* `keycommand-patched.sty' ********************************************************%
 %*****************************************************************************************************************************************%
-% Provides an encapsulation of the code segment provided by Joseph Wright to patch the 'keycommand' package 
+% Provides a patched version of the 'keycommand' package, encapsulating (1) the loading of the original 'keycommand' package and (2) the code segment provided by Joseph Wright to patch the 'keycommand' package into the single package `keycommand-patched.sty', thereby guaranteeing that the loading and patching of the 'keycomand' package is performed sequentially without any other code being executed or packages being loaded between them.
+%
+% Patch by Joseph Wright ("bug in the definition of \ifcommandkey (2010/04/27 v3.1415)"), http://tex.stackexchange.com/a/35794/
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{keycommand-patch}                    %
-\RequirePackage{keycommand}                             %
+\ProvidesPackage{keycommand-patched}             	%
+\RequirePackage{keycommand}                 		%
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption*{\PackageWarning{keycommand-patch}{Unknown \CurrentOption}}
+\DeclareOption*{\PackageWarning{keycommand-patched}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
 %*****************************************************************************************************************************************%
@@ -29,17 +31,16 @@
 \catcode`\/=8 %
 \@firstofone
 {
-	\endgroup
-      	\renewcommand{\ifcommandkey}[1]
-      	{%
-		\csname @\expandafter \expandafter \expandafter
-        	\expandafter \expandafter \expandafter \expandafter
-        	\kcmd@nbk \commandkey {#1}//{first}{second}//oftwo\endcsname
-      	}
+        \endgroup
+        \renewcommand{\ifcommandkey}[1]
+        {%
+                \csname @\expandafter \expandafter \expandafter
+                \expandafter \expandafter \expandafter \expandafter
+                \kcmd@nbk \commandkey {#1}//{first}{second}//oftwo\endcsname
+        }
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
-%************************************************* End of 'keycommand-patch.sty' package *************************************************%
+%************************************************ End of 'keycommand-patched.sty' package ************************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \endinput

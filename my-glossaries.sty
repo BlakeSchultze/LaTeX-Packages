@@ -1,8 +1,7 @@
 %*****************************************************************************************************************************************%
 %********************************************************** `my-glossaries.sty' **********************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package, used to generate (1) a glossary of terms and (2) a glossary of acronyms and add these to a
-% document's back matter (in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
+% This is an adaptation of the 'glossaries' package, used to generate (1) a glossary of terms and (2) a glossary of acronyms and add these to a document's back matter (in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
@@ -33,7 +32,7 @@
 %\catcode`\!=12
 %\catcode`|=12
 \makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-\AtBeginDocument{\input{glsentries.def}}							% Import the master list of glossary terms and acronyms defined previously
+%\AtBeginDocument{\input{glsentries.def}}							% Import the master list of glossary terms and acronyms defined previously
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
@@ -382,17 +381,6 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \@do@wrglossary{#2}%
   }%
 }
-%\renewcommand*{\glsadd}[2][]{%
-%  \glsdoifexists{#2}%
-%  {%
-%%     \def\@glsnumberformat{glsnumberformat}% DELETED
-%    \def\@glsnumberformat{glsgobblenumber}% NEW
-%    \edef\@gls@counter{\csname glo@#2@counter\endcsname}%
-%    \setkeys{glossadd}{#1}%
-%    \@gls@saveentrycounter
-%    \@do@wrglossary{#2}%
-%  }%
-%}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -400,7 +388,6 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m }
 {% [][options]{label}{abbreviation}{long form}{description}
 	\newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
-  	%\glsseedual{#3}{#3}%
   	\newacronym{#3}{#4}{#5}%
   	\glsseedual{#3}{gls-#3}%
 }
@@ -431,11 +418,8 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \glsdoifexists{#2}%
   {%
     \setkeys{glossadd}{#1}%
-    %\setkeys{glslink}{#1}%
     \def\@glsnumberformat{glsgobblenumber}%
-    %\def\@glsnumberformat{\@nil}%
     \edef\@gls@counter{\csname glo@\glsdetoklabel{#2}@counter\endcsname}%
-    %\show\csname glo@\glsdetoklabel{#2}@counter\endcsname
     \@gls@saveentrycounter
     \@do@wrglossary{#2}%
   }%
@@ -574,15 +558,12 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\@printglossary}[2]{%	
-	%\pagestyle{fancy}%\phantomsection\addcontentsline{toc}{chapter}{\protect\numberline{}\glossaryname}
-  	%\setstretch{\@glsl@baselinestretch}
-  	%\onehalfspacing%
-  	\def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
+	\def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
   	\ifglstoc
     		\ifglsnumberline
-      		\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\protect\numberline{}\glossarytitle}}%
+			\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\protect\numberline{}\glossarytitle}}%*****%
     		\else
-     			\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\glossarytitle}}%
+     			\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\glossarytitle}}%**************************%
     		\fi
     	\else
     		\def\linkedglossarytitle{\glossarytitle}%
@@ -4877,7 +4858,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \def\currtype{#1}%
      \ifdefstring{\glsorder}{letter}%
       {\def\@gls@order{-l }}%
-      {\let\@gls@order\@empty}     
+      {\let\@gls@order\@empty}
      	\ifdefstrequal{#1}{\acronymtype}
 	{%
 		\edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order

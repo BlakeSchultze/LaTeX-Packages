@@ -1,14 +1,13 @@
 %*****************************************************************************************************************************************%
 %************************************************************ `my-fonts.sty' *************************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
-% \setglossarystyle{indexhypergroup} command
+% Provides font encoding, family, and shape definitions, loads/configures font/symbol alphabets, defines text/math symbols, and provides text/math definitions, macros, and commands including shortcut commands used to perform local font/style changes.  
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-fonts}
-\RequirePackage{stackengine}				%
+%\RequirePackage{stackengine}				%
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
@@ -20,7 +19,12 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter							% Change @ to standard letter, \catcode'@=11, for macro name/definition use
+%\setmainfont{Arial}
+%\setmainfont{Computer Modern}
+%\setmainfont{Times New Roman}                                  % listings
+%\setmathfont{xits-math.otf}
+%\fontdimen13                                                   % + whitespace above/below super/subscripts of math operators
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
@@ -81,11 +85,19 @@
 \newcommand{\bboldfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
 \newcommand{\bbfamily}{\fontencoding{U}\fontfamily{bbold}\selectfont}
 \newcommand{\textbbold}[1]{{\bboldfamily#1}}
-\DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareRobustCommand\bboardfamily
 %        {\not@math@alphabet\bboardfamily\mathbboard
 %        \fontfamily{mbb}\selectfont}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\@EachCharacter #1\@EndEachCharacter}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand*{\bfmseries}
+{%
+	\not@math@alphabet\bfseries\mathbf
+  	\fontseries\bfdefault\selectfont
+  	\boldmath
+}
 %*****************************************************************************************************************************************%
 %********************************************************** Text Font Commands ***********************************************************%
 %*****************************************************************************************************************************************%
@@ -117,6 +129,9 @@
 \renewcommand\Huge{\fontsize{20}{\baselinestretch}}
 \newcommand{\midHUGE}{\fontsize{21}{\baselinestretch}}
 \renewcommand{\HUGE}{\fontsize{22}{\baselinestretch}}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Color/Shadow/Appearance Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\coloredtext}{s t! m m}
 {%
@@ -135,144 +150,188 @@
 	\endgroup%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*{\RaisedText}[1]{%
-  \begingroup
-    \leavevmode
-    \rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
-    \rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
-    \hbox{#1}%
-  \endgroup
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*{\BeveledText}[1]{%
-  \begingroup
-    \leavevmode
-    \rlap{\kern-.3pt\raise.15pt\hbox{%
-      \pdfrender{
-        TextRenderingMode=Stroke,
-        LineWidth=.2pt,
-        StrokeColor=white,
-      }#1%
-    }}%
-    \rlap{\kern.3pt\raise-.15pt\hbox{%
-      \pdfrender{
-        TextRenderingMode=Stroke,
-        LineWidth=.2pt,
-        StrokeColor=black,
-      }#1%
-    }}%
-    \rlap{%
-      \pdfrender{
-        TextRenderingMode=Stroke,
-        LineWidth=.2pt,
-        StrokeColor=DarkSlateGrey,
-      }#1%
-    }%
-    \hbox{#1}%
-  \endgroup
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tcbinlinetextfont}{m}
+\newcommand*{\RaisedText}[1]
 {%
-    	\shadowoffset{2pt}
-	\shadowtext
+	\begingroup
+		\leavevmode
+    		\rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
+    		\rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
+    		\hbox{#1}%
+  	\endgroup
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*{\BeveledText}[1]
+{%
+  	\begingroup
+	    	\leavevmode
+	    	\rlap%
+	    	{%
+	    		\kern-.3pt\raise.15pt%
+	    		\hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=white}#1}%
+	    	}%
+	    	\rlap%
+	    	{%
+	    		\kern.3pt\raise-.15pt%
+	    		\hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=black}#1}
+	    	}%
+	    	\rlap{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=DarkSlateGrey}#1}%
+	    	\hbox{#1}%
+  	\endgroup
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\usefont{<encoding>}{<family>}{<series>}{<shape>} c
+%                                       1       2              3       4        5      6       
+\DeclareDocumentCommand{\useshadowfont}{O{navy} D<>{\textsize} D(){T1} D(){pag} D(){b} m}
+{%
+    	\shadowoffset{2pt}%
+	\shadowtext%
 	{%
-		\color{navy}%
-		\fontencoding{T1}%
-		\fontfamily{pag}%
-		\fontseries{b}%
-		\fontsize{32}{32}%
+		\textcolor{#1}%
+		\fontencoding{#3}%
+		\fontfamily{#4}%
+		\fontseries{#5}%
+		\fontsize{#2}{#2}%
 		\selectfont%
-		#1%
+		#6%
 	}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\long\def\shadowfypars#1\par#2\relax{%
-  \ifx#1\relax\else%
-    \shadowfywords#1 \relax\relax%
-  \fi%
-  \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
+\long\def\shadowfypars#1\par#2\relax%
+{%
+	%\begingroup\catcode`\$=11
+  	\ifstrempty{#1}%
+                {}%
+                {\shadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}%
+                {}%
+                {\par\shadowfypars#2\relax}%  
+        %\expandafter\@firstoftwo\unskip%
+        %\expandafter\@secondoftwo\unskip%
+%	\endgroup   
+%  	\ifx#1\relax\else%
+%    		\shadowfywords#1 \relax\relax%
+%  	\fi%
+%  	\ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadowfywords#1 #2\relax{%
-  \ifx#1\relax\else%
-    \shadowfyletters#1\relax\relax%
-  \fi%
-  \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
+\def\shadowfywords#1 #2\relax%
+{%
+	%\begingroup\catcode`\$=11
+  	\ifstrempty{#1}%
+                {}%
+                {\shadowfyletters#1\relax\relax}%
+        \ifstrempty{#2}%
+                {}%
+                {\ \shadowfywords#2\relax}%
+        \unskip%
+%	\endgroup
+%	\expandafter\@firstoftwo%\catcode`$=11
+%	\def\@left@char{\StrLeft{#2}{1}}
+%	\IfStrEq{\@left@char}{$}{hello}{}    
+%	%\IfStrEq{\StrLeft{#2}{1}}{$}{hello}{}
+%	\catcode`$=12  
+%  	\ifx#1\relax\else%
+%    		\shadowfyletters#1\relax\relax%
+%  	\fi%
+%  	\ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadowfyletters#1#2\relax{%
-  \shadow{#1}%
-  \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip}
+\def\shadowfyletters#1#2\relax%
+{%  
+%	\begingroup\catcode`\$=11
+%	\@ifnextchar\$%
+%	\@ifnextchar\textdollar%
+%	\@ifnextchar\mathdollar%
+%		{whoop\@gobble}{}%
+	\shadow{#1}%
+%	\mathshadow{#1}%
+%	\ifmmode{\dagger}\else \shadow{#1}%
+%	\ifstrempty{#2}%
+%  		{}%
+%             	{\shadowfyletters#2\relax}%
+%      \unskip%
+  	\ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%\fi%
+%	\endgroup
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadow#1{\kern\shadowHoffset%
-  \raisebox{\shadowVoffset}{%
-  \stackinset{c}{-\shadowHoffset}{c}{-\shadowVoffset}%
-  {\color{\primarycolor}{#1}}{\color{\secondarycolor}{#1}}}%
-  \kern-\shadowHoffset%
-\unskip\ignorespaces%
+\def\shadow#1%
+{%
+	\kern\shadowHoffset%
+  	\raisebox{\st@shadowoffsety}%
+  	{%
+  		\stackinset{c}{-\st@shadowoffsetx}{c}{-\st@shadowoffsety}%
+  			{\color{\st@textcolor}{#1}}%
+  			{\color{\st@shadowcolor}{#1}}%
+  	}%
+  	\kern-\st@shadowoffsetx%
+	\unskip\ignorespaces%
 }
 \def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\shadowbasecolor[1]{\def\st@textcolor{#1}}
+\newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \shadowoffset{0.5pt}
 \shadowoffsetx{0.65pt}
 \shadowoffsety{-0.2pt}
-%Breakable
+\shadowbasecolor{black}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                            1 2          3         4        5          6
+\DeclareDocumentCommand{\setshadowTextProps}{s D<>{0.5pt} O{0.65pt} O{0.2pt} D''{white} D(){black}}
+{%\setshadowTextProps<offset>[offset x][offset y]{shadow color}
+        %\IfBooleanTF{#1}%
+        %{%
+                \shadowoffset{#2}%
+                \shadowoffsetx{#3}%
+                \shadowoffsety{#4}%
+                \shadowbasecolor{#5}%
+                \shadowcolor{#6}%
+%       }%
+%       {%
+%               \setlength\shadowHoffset{#2}%
+%               \setlength\shadowVoffset{#3}%
+%               \def\primarycolor{#5}%
+%               \def\secondarycolor{#6}%
+%       }%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2              3           4          5        6          7
-\DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
-{%\BreakableShadowText<horizontal offset><vertical offset>[text color](shadow color){text}
-	\setlength\shadowHoffset{#3}%
-	\setlength\shadowVoffset{#4}%
-	\def\primarycolor{#5}%
-	\def\secondarycolor{#6}%
-%	\IfValueTF{#4}
-%		{\shadowcolor{#4}}
-%		{\shadowcolor{#3-coltextshadow}}
-%	\IfValueTF{#5}
-%		{\ignorespaces\unskip#2\color{#5}}
-%		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
-	#2\shadowfy{#7}\unskip%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tcbtitleShadowText}{s D<>{0.65pt} D<>{0.2pt} O{white} D(){black} m}
-{%\BreakableShadowText<horizontal offset><vertical offset>[text color](shadow color){text}
-	\setlength\shadowHoffset{#2}%
-	\setlength\shadowVoffset{#3}%
-	\def\primarycolor{#4}%
-	\def\secondarycolor{#5}%
-%	\IfValueTF{#4}
-%		{\shadowcolor{#4}}
-%		{\shadowcolor{#3-coltextshadow}}
-%	\IfValueTF{#5}
-%		{\ignorespaces\unskip#2\color{#5}}
-%		{\ignorespaces\unskip#2\color{#3-coltextshadowbase}}
-	\shadowfy{#6}\unskip%
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setshadowtextprops}{D<>{0.5pt} O{0.65pt} O{-0.2pt} G{BaylorGoldCMYK}}
-{%\setshadowtextprops<offset>[offset x][offset y]{shadow color}
-	\shadowoffset{#1}%
-	\shadowoffsetx{#2}%
-	\shadowoffsety{#3}%
-	\shadowcolor{#4}%
+\DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.75pt} D<>{0.1pt} O{current-coltext} D(){current-coltextshadow} m}
+{%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}	
+	%\setlength\shadowHoffset{#3}%
+	%\setlength\shadowVoffset{#4}%
+	%\def\primarycolor{#5}%
+	%\def\secondarycolor{#6}%
+	\shadowoffsetx{#3}%
+	\shadowoffsety{#4}%
+	\shadowbasecolor{#5}%
+	\shadowcolor{#6}%
+	%\setshadowTextProps[#3][#4]'#5'(#6)
+	\IfBooleanTF{#1}%
+		%{#2\shadowfy{\underline{#7}}\unskip}%
+                {\underline{#2\shadowfy{#7}}}%
+        	{#2\shadowfy{#7}}%
+        \unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                    1 2                  3            4         5            6 7   8
-\DeclareDocumentCommand{\shadowText}{s D||{\anttmcap18pt} D<>{0.65pt} D<>{0.2pt} D''{current} o d() m}
+\DeclareDocumentCommand{\shadowText}{s D::{\anttmcap16pt} D<>{0.65pt} D<>{0.2pt} D''{current} o d() m}
 {%\shadowText|title font|'color style'{title text}
 	%\IfBooleanTF{#1}%
 	%{%
-	%	\setshadowtextprops
-	\setshadowtextprops[#3][#4]
-	\IfValueTF{#6}
-		{\shadowcolor{#6}}
-		{\shadowcolor{#5-coltextshadow}}
-	\IfValueTF{#7}
-		{\ignorespaces\unskip#2\color{#7}}
-		{\ignorespaces\unskip#2\color{#5-coltextshadowbase}}
-	\shadowtext{#8}%
+	%	
+	%\ignorespaces\unskip\setshadowTextProps[#3][#4]{#5}%
+	\ignorespaces\unskip\setshadowTextProps[#3][#4]'#5-coltext'(#5-coltextshadow)%
+        \IfValueTF{#6}%
+		{\shadowcolor{#6}}%
+		{\shadowcolor{#5-coltextshadow}}%
+	\IfValueTF{#7}%
+		{\ignorespaces\unskip#2\shadowbasecolor{#7}}%
+		{\ignorespaces\unskip#2\shadowbasecolor{#5-coltext}}%
+	%\IfValueTF{#7}%
+%                {\ignorespaces\unskip#2\color{#7}}%
+%                {\ignorespaces\unskip#2\color{#5-coltext}}%
+        \ignorespaces\unskip\color{\st@textcolor}\shadowtext{#8}\ignorespaces\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
@@ -281,7 +340,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTextFontCommand{\textbfm}{\bfmseries} 
+\DeclareTextFontCommand{\textbfm}{\bfmseries}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -341,11 +400,19 @@
 \font\oryrm qx-lmr10 at 11pt
 \font\sc qx-anttrcap
 \font\ttsmall qx-lmtt8
-\font\ttn qx-lmvtt10 at10.5pt
-\font\ttb qx-lmvtt10 at11pt
-\font\sec qx-anttm at12pt
+\font\ttn qx-lmvtt10 at 10.5pt
+\font\ttb qx-lmvtt10 at 11pt
+\font\sec qx-anttm at 12pt
 \font\tcblistboxtext qx-anttb at 12pt
 \font\tcblistboxlabel qx-anttb at 14pt
+\font\navhyperlinkfont qx-anttmcap at 12pt
+\font\tcbsectiontextfont qx-anttmcap at 12pt
+\font\coverpagemedfont qx-anttmcap at 13pt
+\font\cftmedfont qx-anttmcap at 14pt
+\font\tcbsectionheaderfont qx-anttmcap at 14pt
+\font\tcbsectiontitlefont qx-anttmcap at 16pt
+\font\coverpagebigfont qx-anttmcap at 17pt
+\font\cftbigfont qx-anttmcap at 18pt
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -441,15 +508,15 @@
 %      <5> <6> <7> <8> <9> <10> gen * mbb
 %      <10.95> mbb10 <12> <14.4> mbb12 <17.28> <20.74> <24.88> mbb17
 %      }{}
-%\expandafter\ifx\csname rsfso@scale\endcsname\relax
-%\let\rsfso@@scale\@empty\else\edef\rsfso@@scale{s*[\csname rsfso@scale\endcsname]}\fi
-%\DeclareFontFamily{U}{rsfso}{\skewchar \font =45}
-%
-%\DeclareFontShape{U}{rsfso}{m}{n}{
-%   <-6> \rsfso@@scale  rsfso5
-%   <6-8> \rsfso@@scale  rsfso7
-%   <8-> \rsfso@@scale  rsfso10
-%}{}
+\expandafter\ifx\csname rsfso@scale\endcsname\relax
+\let\rsfso@@scale\@empty\else\edef\rsfso@@scale{s*[\csname rsfso@scale\endcsname]}\fi
+\DeclareFontFamily{U}{rsfso}{\skewchar \font =45}
+\DeclareFontShape{U}{rsfso}{m}{n}
+{
+	<-6> \rsfso@@scale  rsfso5
+   	<6-8> \rsfso@@scale  rsfso7
+   	<8-> \rsfso@@scale  rsfso10
+}{}
 \DeclareFontShape{T1}{bickham}{m}{n}{  <-> \bickham@@scale  bickham-r}{}
 \DeclareFontShape{T1}{bickham}{b}{n}{  <-> \bickham@@scale  bickham-b}{}
 \DeclareFontShape{T1}{bickham}{sb}{n}{  <-> \bickham@@scale  bickham-s}{}
@@ -508,12 +575,12 @@
 %\DeclareSymbolFont{symbolsA}{OMS}{txsy}{m}{n}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
 \DeclareSymbolFont{lettersA}{U}{txmia} {m}{it}							%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
 \DeclareSymbolFont{lettersP}{OML}{antt}{m}{it}							%\RequirePackage{antt}<antt.sty>
-%\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}								%\RequirePackage{mathrsfs}<mathrsfs.sty>
+\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}								%\RequirePackage{mathrsfs}<mathrsfs.sty>
 %\DeclareSymbolFont{AMSbb}{U}{pxsyb}{m}{n}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareSymbolFontAlphabet{\mathtxsy}{symbolsA}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
 %\DeclareSymbolFontAlphabet{\mathtxmia}{lettersA}						%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
-%\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}							%\RequirePackage{mathrsfs}<mathrsfs.sty>
+\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}							%\RequirePackage{mathrsfs}<mathrsfs.sty>
 %\DeclareSymbolFontAlphabet{\mathpxsyb}{AMSbb}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\SetSymbolFont{symbolsA}{bold}{OMS}{txsy}{bx}{n}						%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy

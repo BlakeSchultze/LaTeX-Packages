@@ -1,12 +1,11 @@
 %*****************************************************************************************************************************************%
 %***************************************************** `my-glossary-hypernav.sty' ********************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
-% \setglossarystyle{indexhypergroup} command
+% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' subpackage providing the macros/commands required by the various <...>hypergroup glossary styles (e.g. 'indexhypergroup', 'treehypergroup', etc.) such that the list of page #s associated with each glossary entry, indicating the location of each instance of the corresponding glossary entry, are converted into hyperlinks to these locations in the document.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-glossary-hypernav}
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
@@ -23,7 +22,7 @@
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
-\newcommand*{\glsgroupskip}{\par\vspace{20pt plus 10pt minus 0pt}}
+\newcommand*{\glsgroupskip}{\par\vspace{10pt plus 10pt minus 0pt}}
 \newcommand*{\glsgroupheading}[1]{}
 \newcommand*{\glsnavhyperlink}[3][\@glo@type]%
 {%
@@ -70,12 +69,6 @@
 			{\fancyhead[L]{\@lhead@font\@listof@acronyms@lhead@title}}
 			{\fancyhead[L]{\@lhead@font\@listof@symbols@lhead@title}}
 		}%	
-%	\IfStrEqCase{#1}%
-%	{%
-%		{\glsdefaulttype}{\fancyhead[L]{\@glossary@lhead@title}}%
-%		{\acronymtype}{\fancyhead[L]{\@listof@acronyms@lhead@title}}%
-%		{\symbolname}{\fancyhead[L]{\@listof@symbols@lhead@title}}%
-%	}[\fancyhead[L]{\@glossary@lhead@title}]%	
 	\fancyhead[C]{}%
 	\fancyhead[R]{#2}%
 }

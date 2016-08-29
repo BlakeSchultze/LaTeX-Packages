@@ -1,17 +1,18 @@
 %*****************************************************************************************************************************************%
-%********************************************************** `my-colorsets.sty' ***********************************************************%
+%****************************************************** `my-shadowtext-patch.sty' ********************************************************%
 %*****************************************************************************************************************************************%
-% Loads additional color sets defined for use in TeX documents but not provided by the 'xcolor' package (e.g. Pantone, Crayola, etc.).  These color sets redefine some colors from the 'xcolor' package but the original definition of the affected colors are restored by manually loading the corresponding 'xcolor' package's color sets. Each color set, including those of the 'xcolor' package, are provided as '<name>.def' files and loaded via 'input{<name>.def}' commands.
+% This is a patch of the 'shadowtext' package.  The 'shadowtext' package provides a macro command for typesetting shadowed text and includes register variables and accompanying macros for controlling the color of the shadow and its horizontal/vertical offset from the base text.  In the definition of the '\shadowtext' macro, several lines of code in a horizontal mode context (inside a \raisebox without '%' or '\relax' imultiple spaces are typeset preceding the resulting shadowed text
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-colorsets}
+\ProvidesPackage{my-shadowtext-patch}                 % This is a patch to the `cool` package, renewing/redefining some macros
+%\RequirePackage{shadowtext}                           % COntent Oriented LaTeX (LATEX2î) : standardized mathematical macros/operators/symbols/etc.
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareOption*{\PackageWarning{my-colorsets}{Unknown \CurrentOption}}
+\DeclareOption*{\PackageWarning{my-shadowtext-patch}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
 %*****************************************************************************************************************************************%
@@ -19,55 +20,38 @@
 \ProcessOptions\relax
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`\!=12
-%\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
-\input{colorsAZ.def}
-%\input{colors_A-Z.def}
-%\input{colors_A-F.def}
-%\input{colors_G-M.def}
-%\input{colors_N-Z.def}
-\input{gvcolors.def}
-\input{pantone.def}		% All PMS<XXX> and PMS<XXXX> named colors, mostly 100-732 and 7401-7547 but some XXX5 e.g. 584,5845,585,...
-\input{pantone-pack.def}
-\input{crayola.def}
-\input{svgcolors.def}
-\input{x11colors.def}
-\input{svgnam.def}
-\input{x11nam.def}
-\input{dvipsnames.def}
-%\@for \x:=\list \do
-%     {\colorbox {\x }{(\x)} }
-%*****************************************************************************************************************************************%
-%*****************************************************************************************************************************************%
-%*****************************************************************************************************************************************%
-%\newif\ifdefinecolors \definecolorstrue
-%\def\XC@append#1#2%
-% {\ifx#1\@undefined\def#1{#2}\else\ifx#1\relax\def#1{#2}\else
-%  \toks@\expandafter{#1#2}\edef#1{\the\toks@}\fi\fi}
-%
-%\let\XC@@names\relax
-%\providecommand*\paperquality{1}
-%\providecommand*\colornameprefix{XC@}
-%\let\XC@@nameprefix\colornameprefix
-%\def\XC@declarenames#1#2#3%
-% {\DeclareOption{#1}{\XC@append\XC@@names
-%   {#3\definecolorstrue\input{#2.def}\definecolorstrue
-%    \let\colornameprefix\XC@@nameprefix}}
-%  \DeclareOption{#1*}{\XC@append\XC@@names
-%   {#3\definecolorsfalse\input{#2.def}\definecolorstrue
-%    \let\colornameprefix\XC@@nameprefix}}}
-%\XC@declarenames{dvipsnames}{dvipsnam}{\let\colornameprefix\@empty}
-%\XC@declarenames{svgnames}{svgnam}{}
-%\XC@declarenames{x11names}{x11nam}{}
-%\XC@declarenames{hksnames}%
-% {hks\ifcase\paperquality k\or n\or k\or z\else n\fi nam}{}
-%\XC@declarenames{pmsnames}{pmsnam}{}
-%\XC@declarenames{ralnames}{ralnam}{}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand\shadowtext[1]%
+{%
+   \begingroup%
+   \settowidth{\st@temp@width}{#1}%
+   \settoheight{\st@temp@height}{#1}%
+   \setlength{\st@pic@width}{\st@temp@width}%
+   \setlength{\st@pic@height}{\st@temp@height}%
+   \addtolength{\st@pic@width}{\st@shadowoffsetx}%
+   \addtolength{\st@pic@height}{\st@shadowoffsety}%
+   %
+   \edef\num@tw{\strip@pt\st@temp@width}%
+   \edef\num@th{\strip@pt\st@temp@height}%
+   \edef\num@pw{\strip@pt\st@pic@width}%
+   \edef\num@ph{\strip@pt\st@pic@height}%
+   \edef\num@offsetx{\strip@pt\st@shadowoffsetx}%
+   \edef\num@offsety{\strip@pt\st@shadowoffsety}%
+   \raisebox{-\st@shadowoffsety}{%
+   \begin{picture}(\num@pw,\num@ph)(0,0)%
+            \put(\num@offsetx,0){\makebox(\num@tw,\num@th)[tl]{\color{\st@shadowcolor}\def\color##1{}\ignorespaces #1}}%
+                \put(0,\num@offsety){\makebox(\num@tw,\num@th)[tl]{\ignorespaces #1}}%
+        \end{picture}}%
+        \endgroup%
+        \ignorespaces%
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
-%*************************************************** End of 'my-colorsets.sty' package ***************************************************%
+%*********************************************** End of 'my-shadowtext-patch.sty' package ************************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \endinput

@@ -1,12 +1,11 @@
 %*****************************************************************************************************************************************%
 %******************************************************** `my-glossary-tree.sty' *********************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' component implementing the 'indexhypergroup' glossary style selected using the
-% \setglossarystyle{indexhypergroup} command
+% This is an adaptation of the 'glossaries' package's 'glossary-tree.sty' subpackage which provides the implementation of each glossary style and the associated macros/commands
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-glossary-tree}
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
@@ -23,59 +22,59 @@
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
-\providecommand{\indexspace}{%
-  \par \vskip 10\p@ \@plus 5\p@ \@minus 3\p@ \relax
-}
+\providecommand{\indexspace}{\par \vskip 10\p@ \@plus 5\p@ \@minus 3\p@ \relax}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\glstreenamefmt}[1]{\@frontbackmatter@entry@name@font{#1}}
 \newcommand*{\glstreegroupheaderfmt}[1]{\glstreenamefmt{#1}}
 \newcommand*{\glstreenavigationfmt}[1]{\glstreenamefmt{#1}}
-\newcommand*{\glssetwidest}[2][0]{%
-  \expandafter\def\csname @glswidestname\romannumeral#1\endcsname{%
-    #2}%
-}
+\newcommand*{\glssetwidest}[2][0]{\expandafter\def\csname @glswidestname\romannumeral#1\endcsname{#2}}
 \newcommand*{\@glswidestname}{}
 \newlength\glstreeindent
 \setlength{\glstreeindent}{4pt}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newglossarystyle{index}{%
-  \renewenvironment{theglossary}%
-    {\setlength{\parindent}{0pt}%
-     \setlength{\parskip}{0pt plus 0.3pt}%
-     \let\item\@idxitem}%
-    {\par}%
-  \renewcommand*{\glossaryheader}{}%
-  \renewcommand*{\glsgroupheading}[1]{}%
-  \renewcommand*{\glossentry}[2]%
-  {%
-	\ifthenelse{\equal{\@glo@type}{\glsdefaulttype}}%\acronymtype
-		{\def\@entry@name@text@sep{\@glossary@entry@name@text@sep}}%
-		{\def\@entry@name@text@sep{\@acronym@entry@name@text@sep}}%
-	\par\vskip\@gls@before@entry@sep
-     \item\glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{\glossentryname{##1}}}%
-    \space\@frontbackmatter@entry@text@font \ifglshassymbol{##1}{\space(\glossentrysymbol{##1})}{}%
-     \@entry@name@text@sep\@frontbackmatter@entry@text@font \glossentrydesc{##1}\glspostdescription\frontbackmatterhfill##2%
-     \par\vskip\@gls@after@entry@sep%
-  }%
-	\renewcommand{\subglossentry}[3]{%
-    \ifcase##1\relax
-      % level 0
-      \item
-    \or
-      % level 1
-      \subitem
-      \glssubentryitem{##2}%
-    \else
-      % all other levels
-      \subsubitem
-    \fi
-    \glstreenamefmt{\glstarget{##2}{\glossentryname{##2}}}%
-    \ifglshassymbol{##2}{\space(\glossentrysymbol{##2})}{}%
-    \space\glossentrydesc{##2}\glspostdescription\space ##3%
-  }%
-  \renewcommand*{\glsgroupskip}{\ifglsnogroupskip\else\vskip\@gls@group@sep\fi}}
+\newglossarystyle{index}
+{%
+  	\renewenvironment{theglossary}%
+    	{%
+    		\setlength{\parindent}{0pt}%
+     		\setlength{\parskip}{0pt plus 0.3pt}%
+     		\let\item\@idxitem%
+     	}{\par}%
+  	\renewcommand*{\glossaryheader}{}%
+  	\renewcommand*{\glsgroupheading}[1]{}%
+  	\renewcommand*{\glossentry}[2]%
+  	{%
+		\ifthenelse{\equal{\@glo@type}{\glsdefaulttype}}
+			{\def\@entry@name@text@sep{\@glossary@entry@name@text@sep}}%
+			{\def\@entry@name@text@sep{\@acronym@entry@name@text@sep}}%
+		\par\vskip\@gls@before@entry@sep
+	     	\item\glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{\glossentryname{##1}}}%
+	    	\space\@frontbackmatter@entry@text@font\ifglshassymbol{##1}{\space(\glossentrysymbol{##1})}{}%
+	     	\@entry@name@text@sep\@frontbackmatter@entry@text@font\glossentrydesc{##1}\glspostdescription%
+		\frontbackmatterhfill##2%
+	     	\par\vskip\@gls@after@entry@sep%
+ 	}
+	\renewcommand{\subglossentry}[3]
+	{%
+		\ifcase##1\relax
+	      		% level 0
+	      		\item
+	    	\or
+	      		% level 1
+	      		\subitem
+	      		\glssubentryitem{##2}%
+	    	\else
+	      		% all other levels
+	      		\subsubitem
+	    	\fi
+	    	\glstreenamefmt{\glstarget{##2}{\glossentryname{##2}}}%
+	    	\ifglshassymbol{##2}{\space(\glossentrysymbol{##2})}{}%
+	    	\space\glossentrydesc{##2}\glspostdescription\space ##3%
+  	}
+  	\renewcommand*{\glsgroupskip}{\ifglsnogroupskip\else\vskip\@gls@group@sep\fi}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newglossarystyle{indexgroup}{%
   \setglossarystyle{index}%
@@ -84,40 +83,28 @@
     \indexspace}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newglossarystyle{indexhypergroup}{%
-  \setglossarystyle{index}%
-  \renewcommand*{\glossaryheader}{%
-    \par%
-% Skip here adds spacing BEFORE the hypernav panel if \par is included, otherwise the spacing is added afte the hypernav panel
-    \vskip\@gls@before@hypernav@skip%**********************************************************************************************
-    \item\glstreenamefmt{\glsnavigation}%
-    % Skip here adds spacing AFTER the hypernav panel if \par is included, otherwise the spacing is added afte the hypernav panel
-    \vskip\@gls@after@hypernav@skip
-	\glsgroupskip%
-  }%
-  \renewcommand*{\glsgroupheading}[1]{%
-% Inclusion of the \par is required to place first group tcolorbox on line following hypernavel panel
-    \par%
-% Skip here adds spacing BEFORE each group tcolorbox, including between the hypernav panel and the 1st group tcolorbox
-    \vskip\@gls@before@group@label@skip%**********************************************************************************************
-    \item\glstreenamefmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}%
-% Skip here adds spacing AFTER each group tcolorbox
-	\vskip\@gls@after@group@label@skip%**********************************************************************************************
-    \glsgroupskip}%
+\newglossarystyle{indexhypergroup}
+{%
+  	\setglossarystyle{index}%
+  	\renewcommand*{\glossaryheader}
+  	{%
+    		% Skip added BEFORE the hypernav panel if \par is included, otherwise skip is added after the hypernav panel	
+		\par\vskip\@gls@before@hypernav@skip%
+    		\item\glstreenamefmt{\glsnavigation}%
+    		% Skip added AFTER the hypernav panel
+    		\vskip\@gls@after@hypernav@skip
+		\glsgroupskip%
+  	}%
+  	\renewcommand*{\glsgroupheading}[1]
+  	{%
+		% Skip added BEFORE each group label tcolorbox if \par is included, otherwise skip is added after group label tcolorbox
+   		\par\vskip\@gls@before@group@label@skip%
+    		\item\glstreenamefmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}%
+		% Skip added AFTER each group label tcolorbox		
+		\vskip\@gls@after@group@label@skip%
+    		\glsgroupskip%
+    	}%
 }
- % \renewcommand*{\glsgroupheading}[1]
-%  {%
-%% Inclusion of the \par is required to place first group tcolorbox on line following hypernavel panel
-%    \par%
-%% Skip here adds spacing BEFORE each group tcolorbox, including between the hypernav panel and the 1st group tcolorbox
-%    \vskip\@gls@before@group@label@skip%**********************************************************************************************
-%    \def\@gls@prevlevel{-1}%
-%    \hangindent0pt\relax
-%    \parindent0pt\relax
-%    \glstreenamefmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}%
-%% Skip here adds spacing AFTER each group tcolorbox
-%	\vskip\@gls@after@group@label@skip%**********************************************************************************************
-%  }%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -212,77 +199,76 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newglossarystyle{alttree}{%
+\newglossarystyle{alttree}
+{%
 	\renewenvironment{theglossary}%
-    		{\def\@gls@prevlevel{-1}\mbox{}\par}	% Skip here has no discernable effect
-    		{\par}						% Skip here has no discernable effect
-	%\renewcommand{\baselinestretch}{1.5}%**********************************************************************************************
+    		{\def\@gls@prevlevel{-1}\mbox{}\par}	
+    		{\par}						
 	\renewcommand*{\glossaryheader}{}%
   	\renewcommand*{\glsgroupheading}[1]{}%
-%-------------------------------------------------------------------------%
-  	\renewcommand{\glossentry}[2]
+	\renewcommand{\glossentry}[2]
   	{%
-	    	\ifthenelse{\equal{\@glo@type}{\glsdefaulttype}}%\acronymtype
-		{\def\@entry@name@text@sep{\@glossary@entry@name@text@sep}}%
-		{\def\@entry@name@text@sep{\@acronym@entry@name@text@sep}}%
+		\ifthenelse{\equal{\@glo@type}{\glsdefaulttype}}
+			{\def\@entry@name@text@sep{\@glossary@entry@name@text@sep}}%
+			{\def\@entry@name@text@sep{\@acronym@entry@name@text@sep}}%
 		\ifnum\@gls@prevlevel=0\relax
 	    	\else
-	       	\settowidth{\glstreeindent}{\glstreenamefmt{\@glswidestname}}%
-	    	\fi
-	      \hangindent\glstreeindent
-	      \parindent\glstreeindent
-	% Inclusion of the \par here is required, otherwise subsequent spacing is added
-	      \par%
-	% Skip here adds spacing BEFORE each entry. Requires preceding \par otherwise the spacing is moved after 1st entry, adding to the spacing between the 1st/2nd entries
-		\vskip\@gls@before@entry@sep%**********************************************************************************************
-    	\hskip\@gls@entry@hskip\makebox[0pt][r]{\makebox[\glstreeindent][l]{%
-	% Skip here has no discernable effect
-	       \glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{}}}}%
-	% Skip here adds spacing AFTER each group entry, including between the last entry and the following group tcolorbox
-		%\@gls@after@entry@sep%**********************************************************************************************
-	    \glossentryname{##1}\space\@frontbackmatter@entry@text@font\ifglshassymbol{##1}{(\glossentrysymbol{##1})\space}{}%
-	% Skip here ALSO adds spacing AFTER each group entry, including between the last entry and the following group tcolorbox
-		%\@gls@after@entry@sep%**********************************************************************************************
-	    \@entry@name@text@sep\@frontbackmatter@entry@text@font\glossentrydesc{##1}\glspostdescription\frontbackmatterhfill##2\par
-	% Skip here ALSO adds spacing AFTER each group entry, including between the last entry and the following group tcolorbox
-		\vskip\@gls@after@entry@sep%**********************************************************************************************
-	    \def\@gls@prevlevel{0}%
+	       		\settowidth{\glstreeindent}{\glstreenamefmt{\@glswidestname}}%
+	    	\fi		
+		\hangindent\@backmatter@group@entries@lmargin\relax
+                \parindent\@backmatter@group@entries@lmargin\relax
+		% Skip added BEFORE each group entry if \par is included, otherwise skip is added after group entry
+		\par\vskip\@gls@before@entry@sep%
+    		\hskip\@gls@entry@hskip%
+    		\makebox[0pt][r]
+    		{%
+    			\makebox[\glstreeindent][l]%
+    			{\glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{}}}
+    		}%
+		\glossentryname{##1}\space\@frontbackmatter@entry@text@font\ifglshassymbol{##1}{(\glossentrysymbol{##1})\space}{}%
+		\@entry@name@text@sep%
+		\@frontbackmatter@entry@text@font\glossentrydesc{##1}\glspostdescription%
+		\frontbackmatterhfill##2% 
+		%Skip added AFTER each group entry if \par is included, otherwise skip is added after following group label node
+                \par\vskip\@gls@after@entry@sep%
+		\def\@gls@prevlevel{0}%
   	}%
-%-------------------------------------------------------------------------%
-  \renewcommand{\subglossentry}[3]{%
-    \ifnum##1=1\relax
-      \glssubentryitem{##2}%
-    \fi
-    \ifnum\@gls@prevlevel=##1\relax
-    \else
-      \@ifundefined{@glswidestname\romannumeral##1}{%
-        \settowidth{\gls@tmplen}{\glstreenamefmt{\@glswidestname\space}}}{%
-        \settowidth{\gls@tmplen}{\glstreenamefmt{%
-           \csname @glswidestname\romannumeral##1\endcsname\space}}}%
-      \ifnum\@gls@prevlevel<##1\relax
-         \setlength\glstreeindent\gls@tmplen
-         \addtolength\glstreeindent\parindent
-         \parindent\glstreeindent
-      \else
-         \@ifundefined{@glswidestname\romannumeral\@gls@prevlevel}{%
-           \settowidth{\glstreeindent}{\glstreenamefmt{%
-              \@glswidestname\space}}}{%
-           \settowidth{\glstreeindent}{\glstreenamefmt{%
-              \csname @glswidestname\romannumeral\@gls@prevlevel
-                 \endcsname\space}}}%
-         \addtolength\parindent{-\glstreeindent}%
-         \setlength\glstreeindent\parindent
-      \fi
-    \fi
-    \hangindent\glstreeindent
-    \makebox[0pt][r]{\makebox[\gls@tmplen][l]{%
-      \glstreenamefmt{\glstarget{##2}{\glossentryname{##2}}}}}%
-    \ifglshassymbol{##2}{(\glossentrysymbol{##2})\space}{}%
-    \glossentrydesc{##2}\glspostdescription\space ##3\par
-    \def\@gls@prevlevel{##1}%
-  }%
-%-------------------------------------------------------------------------%
-  \renewcommand*{\glsgroupskip}{\ifglsnogroupskip\else\vskip\@gls@group@sep\fi}%***********************************
+	\renewcommand{\subglossentry}[3]
+  	{%
+	    	\ifnum##1=1\relax
+	      		\glssubentryitem{##2}%
+	    	\fi
+	    	\ifnum\@gls@prevlevel=##1\relax
+	    	\else
+	      		\@ifundefined{@glswidestname\romannumeral##1}
+			{\settowidth{\gls@tmplen}{\glstreenamefmt{\@glswidestname\space}}}
+			{%
+		        	\settowidth{\gls@tmplen}
+				{\glstreenamefmt{\csname @glswidestname\romannumeral##1\endcsname\space}}%
+			}%
+		      	\ifnum\@gls@prevlevel<##1\relax
+		         	\setlength\glstreeindent\gls@tmplen
+		         	\addtolength\glstreeindent\parindent
+		         	\parindent\glstreeindent
+		      	\else
+		         	\@ifundefined{@glswidestname\romannumeral\@gls@prevlevel}
+				{\settowidth{\glstreeindent}{\glstreenamefmt{\@glswidestname\space}}}
+				{%
+		           		\settowidth{\glstreeindent}
+					{\glstreenamefmt{\csname @glswidestname\romannumeral\@gls@prevlevel\endcsname\space}}%
+				}%
+		         	\addtolength\parindent{-\glstreeindent}%
+		         	\setlength\glstreeindent\parindent
+	      		\fi
+	    	\fi
+	    	\hangindent\glstreeindent
+	    	\makebox[0pt][r]{\makebox[\gls@tmplen][l]{\glstreenamefmt{\glstarget{##2}{\glossentryname{##2}}}}}%
+	    	\ifglshassymbol{##2}{(\glossentrysymbol{##2})\space}{}%
+	    	\glossentrydesc{##2}\glspostdescription\space ##3\par
+	    	\def\@gls@prevlevel{##1}%
+  	}%
+	
+	\renewcommand*{\glsgroupskip}{\ifglsnogroupskip\else\vskip\@gls@group@sep\fi}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newglossarystyle{alttreegroup}{%
@@ -295,39 +281,32 @@
     \par\indexspace}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newglossarystyle{alttreehypergroup}{%
-  \setglossarystyle{alttree}%
-  \renewcommand*{\glossaryheader}
-  {%
-% Inclusion of the \par adds a small space before hypernav panel
-    \par%
-    \def\@gls@prevlevel{-1}%
-    \hangindent0pt\relax
-    \parindent0pt\relax
-% Skip here adds spacing BEFORE the hypernav panel if \par is included, otherwise the spacing is added afte the hypernav panel
-    \vskip\@gls@before@hypernav@skip%**********************************************************************************************
-    \glstreenamefmt{\glsnavigation}%
-% Skip here adds spacing AFTER the hypernav panel if \par is included, otherwise the spacing is added afte the hypernav panel
-    \vskip\@gls@after@hypernav@skip%**********************************************************************************************
-  }%*******************************************
-  \renewcommand*{\glsgroupheading}[1]
-  {%
-% Inclusion of the \par is required to place first group tcolorbox on line following hypernavel panel
-    \par%
-% Skip here adds spacing BEFORE each group tcolorbox, including between the hypernav panel and the 1st group tcolorbox
-    \vskip\@gls@before@group@label@skip%**********************************************************************************************
-    \def\@gls@prevlevel{-1}%
-    \hangindent0pt\relax
-    \parindent0pt\relax
-    \glstreenamefmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}%
-% Skip here adds spacing AFTER each group tcolorbox
-	\vskip\@gls@after@group@label@skip%**********************************************************************************************
-  }%
-}%**************************************************************************
-%\glstreenavigationfmt{\glsnavigation}\par\indexspace}%
-%\glstreegroupheaderfmt
-% {\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}\par
- %\indexspace}}
+\newglossarystyle{alttreehypergroup}
+{%
+  	\setglossarystyle{alttree}%
+  	\renewcommand*{\glossaryheader}
+  	{%
+		\def\@gls@prevlevel{-1}%
+    		\hangindent\@backmatter@group@label@node@lmargin\relax
+    		\parindent\@backmatter@group@label@node@lmargin\relax
+		% Skip added BEFORE hypernav panel if \par is included, otherwise skip is added after hypernav panel
+    		\par\vskip\@gls@before@hypernav@skip%
+    		\glstreenamefmt{\glsnavigation}%
+		% Skip added AFTER hypernav panel
+    		\vskip\@gls@after@hypernav@skip%
+  	}
+  	\renewcommand*{\glsgroupheading}[1]
+  	{%
+		\def\@gls@prevlevel{-1}%
+    		\hangindent\@backmatter@group@label@node@lmargin\relax
+    		\parindent\@backmatter@group@label@node@lmargin\relax
+    		% Skip added BEFORE each group label tcolorbox if \par is included, otherwise skip is added after group label tcolorbox
+                \par\vskip\@gls@before@group@label@skip%
+                \glstreenamefmt{\glsnavhypertarget{##1}{\glsgetgrouptitle{##1}}}%
+		% Skip added AFTER each group label tcolorbox
+		\vskip\@gls@after@group@label@skip%
+  	}%
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %************************************************* End of 'my-glossary-tree.sty' package *************************************************%

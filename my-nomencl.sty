@@ -1,12 +1,11 @@
 %*****************************************************************************************************************************************%
 %*********************************************************** `my-nomencl.sty' ************************************************************%
 %*****************************************************************************************************************************************%
-% This is an adaptation of the 'nomencl' package, used to generate a "List of Abbreviations" and add it to a document's back matter in addition to the
-% 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
+% This is an adaptation of the 'nomencl' package, used to generate a "List of Abbreviations" and add it to a document's back matter in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-nomencl}
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
@@ -126,20 +125,21 @@
  \def\@tempa{#2}\def\@tempb{#3}%
  \protected@write\@nomenclaturefile{}%
   {\string\nomenclatureentry{#1\nom@verb\@tempa @[{\nom@verb\@tempa}]%
-      \begingroup\nom@verb\@tempb\protect\nomeqref{\theequation}%
+      \begingroup\@nom@long@name@font\@abbreviation@entry@name@text@sep\nom@verb\@tempb\protect\nomeqref{\theequation}%
         |nompageref}{\thepage}}%
  \endgroup
  \@esphack}
 \def\nomgroup#1{}
-\def\printnomenclature{%
-  %\renewcommand{\baselinestretch}{\@nomecl@baselinestretch}%
-  \setstretch{\@nomecl@baselinestretch}%**************************************************************************************************
-	\thispagestyle{fancy}%
-  \fancyhead[L]{\@lhead@font\@listof@abbreviations@lhead@title\xspace}%*******************************************************************
-	%\phantomsection\addcontentsline{toc}{chapter}{\nomname}
-  \@ifnextchar[%
-    {\@printnomenclature}{\@printnomenclature[\nomlabelwidth]}}
-\def\@printnomenclature[#1]{\pagestyle{fancy}%********************************************************************************************
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\printnomenclature
+{%
+  	\setstretch{\@nomecl@baselinestretch}%
+	\thispagestyle{fancy}\fancyhead[L]{\@lhead@font\@listof@abbreviations@lhead@title}%
+  	\@ifnextchar[%
+    		{\@printnomenclature}
+    		{\@printnomenclature[\nomlabelwidth]}
+}
+\def\@printnomenclature[#1]{
   \nom@tempdim#1\relax
   \@input@{\jobname\@inputfileextension}}
 \if@compatibilitymode\let\printglossary\printnomenclature\fi%
@@ -148,7 +148,6 @@
 \def\nompostamble{}
 \def\nomentryend{}
 \def\thenomenclature{%
-	%\if@intoc\phantomsection\addcontentsline{toc}{chapter}{\nomname}\fi
   \nompreamble
   \list{}{%
     \labelwidth\nom@tempdim
@@ -172,7 +171,6 @@
   \InputIfFileExists{nomencl.cfg}{%
     \typeout{Using the configuration file nomencl.cfg}}{}
 \fi
-\def\nomhypertitle{\phantomsection\addcontentsline{toc}{chapter}{\nomname}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -201,12 +199,12 @@
 		{%
 			\nomenclature%
 			[#1]{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-			{\protect\normalsize\protect\normalfont{#3}\frontbackmatterhfill\csname page#2\endcsname}%
+			{\expandafter\protect\expandafter#3\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
 		}%
 		{%
 			\nomenclature%
 			{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-			{\protect\normalsize\protect\normalfont{#3},\,\frontbackmatterhfill\csname page#2\endcsname}%
+			{\expandafter\protect\expandafter#3,\,\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
 		}%
 	}%
 }
