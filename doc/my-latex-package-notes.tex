@@ -2,26 +2,26 @@ Curiosities:
 \everypar
 tikzpagenodes package
 linegoal package
-\tikzmark 
+\tikzmark
 %*****************************************************************************************************************************************%
 %*************************************************************** General Package Info *********************************************************************%
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{...}
--	specifies which version of TeX or LaTeX is required at least to run your package. The optional date may be used to specify the version more precisely.
+-   specifies which version of TeX or LaTeX is required at least to run your package. The optional date may be used to specify the version more precisely.
 \ProvidesPackage{<name>}[<version>]
--	A package introduces itself using this command. <name> should be identical to the basename of the file itself. The <version> should begin with a date in the format YYYY/MM/DD. Version information should be kept updated while developing a package.
+-   A package introduces itself using this command. <name> should be identical to the basename of the file itself. The <version> should begin with a date in the format YYYY/MM/DD. Version information should be kept updated while developing a package.
 Next you may write some TeX or LaTeX code like loading package, but write only the bare minimum needed for the package options set below.
 \RequirePackage
--	is equivalent to \usepackage.
+-   is equivalent to \usepackage.
 \DeclareOptions
--	are end-user parameters. Each option is declared by one such command.
+-   are end-user parameters. Each option is declared by one such command.
 \ExecuteOptions{...}
--	tells which are the default.
+-   tells which are the default.
 \ProcessOptions\relax
--	terminates the option processing.
+-   terminates the option processing.
 Write whatever you want in it using all the LaTeX commands you know. Normally you should define new commands or import other packages.
 \endinput:
--	this must be the last command.
+-   this must be the last command.
 \CheckCommand{\InputIfFileExists}[2]{%
   \IfFileExists{#1}}%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -50,9 +50,9 @@ Write whatever you want in it using all the LaTeX commands you know. Normally yo
 \AfterEndPreamble{hcodei}%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AtBeginDocument
--	will let you specify a set of commands that will be executed when \begin{document} is met.
+-   will let you specify a set of commands that will be executed when \begin{document} is met.
 \AtEndDocument
--	does the same for \end{document}.
+-   does the same for \end{document}.
 \AfterEndDocument{hcodei}
 \AfterEndDocument{\foreach \ext in {aux}{\immediate\write18{cmd /c del \jobname.\ext}}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -67,21 +67,21 @@ Write whatever you want in it using all the LaTeX commands you know. Normally yo
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 *atveryend*
 \BeforeClearDocument{code}
--	The code is called before the final \clearpage in \enddocument. However it is
+-   The code is called before the final \clearpage in \enddocument. However it is
 unknown, whether the last page is already shipped out or if this will be triggered
 by the final \clearpage.
 \AfterLastShipout{code}
--	The code is called after the final \clearpage of \enddocument before the main
+-   The code is called after the final \clearpage of \enddocument before the main
 .aux file is closed. This is the right place to remember the last page in the .aux
 file, for instance.
 \AtVeryEndDocument{code}
--	The code is called after the .aux file is closed and read in again. It is the place for
+-   The code is called after the .aux file is closed and read in again. It is the place for
 final checks, rerun hints, final messages.
 \AtEndAfterFileList{code}
--	After the .aux file closing and reading LATEX prints the file list if requested by
+-   After the .aux file closing and reading LATEX prints the file list if requested by
 \listfiles. Then this hook is executed.
 \AtVeryVeryEnd{code}
--	This code is called right before the final \@@end.
+-   This code is called right before the final \@@end.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 everypage
 \AddEverypageHook{}{}
@@ -89,13 +89,13 @@ everypage
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 *letltxmacro*
 \LetLtxMacro {new macro} {old macro}
--	Macro \LetLtxMacro behaves similar to TEX’s \let assignment, but it takes care of macros that are defined by \DeclareRobustCommand and/or have optional arguments. Example:
-	\DeclareRobustCommand{\Macro}[1][default]{...}
-	\LetLtxMacro{\SavedMacro}{\Macro}
-- 	Then macro \SavedMacro only uses internal macro names that are derived from \SavedMacro’s macro name. Macro \Macro can now be redefined without affecting
+-   Macro \LetLtxMacro behaves similar to TEX’s \let assignment, but it takes care of macros that are defined by \DeclareRobustCommand and/or have optional arguments. Example:
+    \DeclareRobustCommand{\Macro}[1][default]{...}
+    \LetLtxMacro{\SavedMacro}{\Macro}
+-   Then macro \SavedMacro only uses internal macro names that are derived from \SavedMacro’s macro name. Macro \Macro can now be redefined without affecting
 \SavedMacro.
 \GlobalLetLtxMacro {new macro} {old macro}
--	Like \LetLtxMacro, but the new macro is defined globally. Since version 2016/05/16 v1.4
+-   Like \LetLtxMacro, but the new macro is defined globally. Since version 2016/05/16 v1.4
 SUPPORTS:\newcommand, \renewcommand, \newenvironment, \renewenvironment, \DeclareRobustCommand, \newrobustcmd (etoolbox), \renewrobustcmd (etoolbox), \robustify (etoolbox)
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ShowDocumentCommandArgSpec
@@ -105,54 +105,54 @@ SUPPORTS:\newcommand, \renewcommand, \newenvironment, \renewenvironment, \Declar
 \@ifpackageloaded{<package name>}{true code}{false code}
 \@ifpackagelater{<package name>}{<version>}{true code}{false code}
 \@ifpackagewith{<package name>}{<options>}{true code}{false code}
-- 	Example: \AtBeginDocument{\@ifpackageloaded{titlesec}{\@cfttitlesectrue}{}}
+-   Example: \AtBeginDocument{\@ifpackageloaded{titlesec}{\@cfttitlesectrue}{}}
 \@ifclassloaded{<package name>}{true code}{false code}
 \@ifclasslater{<package name>}{<version>}{true code}{false code}
 \@ifclasswith{<package name>}{<options>}{true code}{false code}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ProvidesPackage{name}[version]
--	A package can identify itself with the \ProvidesPackage command. The version should begin with a date in the format YYYY/MM/DD.
+-   A package can identify itself with the \ProvidesPackage command. The version should begin with a date in the format YYYY/MM/DD.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackage[options]{name}[version]
--	Packages or classes can load other packages using \RequirePackage. If the package has already been loaded, then nothing happens unless the requested options are not a subset of the options with which it was loaded, in which case an error is called.
+-   Packages or classes can load other packages using \RequirePackage. If the package has already been loaded, then nothing happens unless the requested options are not a subset of the options with which it was loaded, in which case an error is called.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \LoadClass
--	Similar to \RequirePackage, but for classes, may not be used in package files.
+-   Similar to \RequirePackage, but for classes, may not be used in package files.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \PassOptionsToPackage{options}{package}
--	Packages can pass options to other packages using:\PassOptionsToPackage{options}{package}
+-   Packages can pass options to other packages using:\PassOptionsToPackage{options}{package}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \PassOptionsToClass
--	This adds the <options> to the options list of any future \RequirePackage or \usepackage command. For example:
-		\PassOptionsToPackage{foo,bar}{fred} \RequirePackage[baz]{fred}
-	is the same as:
-		\RequirePackage[foo,bar,baz]{fred}
+-   This adds the <options> to the options list of any future \RequirePackage or \usepackage command. For example:
+        \PassOptionsToPackage{foo,bar}{fred} \RequirePackage[baz]{fred}
+    is the same as:
+        \RequirePackage[foo,bar,baz]{fred}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \LoadClassWithOptions
--	\LoadClassWithOptions{name}[version]: This is similar to \LoadClass, but it always calls class <name> with exactly the same option list that is being used by the current class, rather than an option explicitly supplied or passed on by \PassOptionsToClass. %-----------------------------------------------------------------------------------------------------------------------------------------%
+-   \LoadClassWithOptions{name}[version]: This is similar to \LoadClass, but it always calls class <name> with exactly the same option list that is being used by the current class, rather than an option explicitly supplied or passed on by \PassOptionsToClass. %-----------------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackageWithOptions
--	\RequirePackageWithOptions is the analogous command for packages. This is mainly intended to allow one class to simply build on another, for example:
-	
-	\LoadClassWithOptions{article}
+-   \RequirePackageWithOptions is the analogous command for packages. This is mainly intended to allow one class to simply build on another, for example:
+
+    \LoadClassWithOptions{article}
 
 This should be contrasted with the slightly different construction
-	
-	\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-	\ProcessOptions
-	\LoadClass{article}
+
+    \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+    \ProcessOptions
+    \LoadClass{article}
 
 As used here, the effects are more or less the same, but the version using \LoadClassWithOptions is slightly quicker (and less to type). If, however, the class declares options of its own then the two constructions are different; compare, for example:
-	
-	\DeclareOption{landscape}{...}
-	\ProcessOptions
-	\LoadClassWithOptions{article}
+
+    \DeclareOption{landscape}{...}
+    \ProcessOptions
+    \LoadClassWithOptions{article}
 
 with:
-	
-	\DeclareOption{landscape}{...}
-	\DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
-	\ProcessOptions
-	\LoadClass{article}
+
+    \DeclareOption{landscape}{...}
+    \DeclareOption*{\PassOptionsToClass{\CurrentOption}{article}}
+    \ProcessOptions
+    \LoadClass{article}
 
 In the first case, the article class will be called with option landscape precisely when the current class is called with this option; but in the second example it will not as in that case article is only passed options by the default option handler, which is not used for landscape as that option is explicitly declared.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -161,7 +161,7 @@ In the first case, the article class will be called with option landscape precis
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \overfullrule=2cm
--	add black bar where overfull box occurs
+-   add black bar where overfull box occurs
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Delimeter Options: {} [] () <> '' || // ?? -- ** :: !! ;; ,, NOT: `` ^^ @@ ## == __ ..
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -171,19 +171,24 @@ In the first case, the article class will be called with option landscape precis
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------------------------------- xargs -----------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommandx*\coord[3][1=1, 3=n]{(#2_{#1},\ldots,#2_{#3})}
+$\coord{x}$ (x1, . . . , xn)
+$\coord[0]{y}$ (y0, . . . , yn)
+$\coord{z}[m]$ (z1, . . . , zm)
+$\coord[0]{t}[m]$ (t0, . . . , tm)
 
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareRobustCommand{\MyCommand}...
 \newcommand
-	defines a new command, and makes an error if it is already defined.
+    defines a new command, and makes an error if it is already defined.
 \renewcommand
-	redefines a predefined command, and makes an error if it is not yet defined.
+    redefines a predefined command, and makes an error if it is not yet defined.
 \providecommand
-	defines a new command if it isn't already defined.
+    defines a new command if it isn't already defined.
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\examplea#1{% #1 cannot contain \par}
 \long\def\exampleb#1{% #1 can contain \par}
@@ -199,7 +204,7 @@ In the first case, the article class will be called with option landscape precis
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\<error command name>}
 {%
-	\PackageError{<package>}{...\string\<cs/def name used>\space...}{help text}
+    \PackageError{<package>}{...\string\<cs/def name used>\space...}{help text}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifdefstrequal{\currentseries}{\seriesm}{true}{false}
@@ -209,17 +214,38 @@ In the first case, the article class will be called with option landscape precis
 \ifstrequal{\currentseries}{\seriesm}{true}{false}
 \ifcsstring{\currentseries}{\seriesm}{true}{false}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\ifcsstrequal{#1}{Chapter}{\unskip\ignorespaces\hyperlink{\@Chapter@link@name#2}{#3}}{}%
+\ifstrequal{#1}{figure}{\autoref{\reffig{#2}}}{}%
+\IfEq{stringA}{stringB}{true}{false}
+\IfStrEq[*]{stringA}{stringB}{true}{false}
+\ifdefequal{hcontrol sequencei}{hcontrol sequencei}{htruei}{hfalsei}
+\ifdefstring{hcommandi}{hstringi}{htruei}{hfalsei}
+\ifcsequal{hcsnamei}{hcsnamei}{htruei}{hfalsei}
+\ifcsstring{hcsnamei}{hstringi}{htruei}{hfalsei}
+\ifdefstrequal{hcommandi}{hcommandi}{htruei}{hfalsei}
+\ifcsstrequal{hcsnamei}{hcsnamei}{htruei}{hfalsei}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\PackageError{ethel}{%
+Your hovercraft is full of eels,\MessageBreak
+and \protect\foo\space is \foo
+}{%
+Oh dear! Something's gone wrong.\MessageBreak
+\space \space Try typing \space <return>
+\space to proceed, ignoring \protect\foo.
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\foreach \pathname/\shift in {line/0cm, curve/2cm}{
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %******************************************************************* `my-macros.sty' **********************************************************************%
 %*****************************************************************************************************************************************%
-	%\captionof{table}[\tablename\thetable\relax]{hehe}%
-%    	\caption{<Caption Text>}
-%	\endfirsthead
-%	\caption[]{<Caption Text>}
-%	\endhead% Uncomment following line to trace macro usage and view expansion details
+    %\captionof{table}[\tablename\thetable\relax]{hehe}%
+%       \caption{<Caption Text>}
+%   \endfirsthead
+%   \caption[]{<Caption Text>}
+%   \endhead% Uncomment following line to trace macro usage and view expansion details
 %\tracingmacros=2 \tracingcommands=2
 \ignorespacesafterend
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -269,27 +295,27 @@ makeglossaries->alg, glg, (acr, gls)
 %\cftZindent
 %\cftZfillnum
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%	%                                                                                                                                         \ifdefstrequal{#1}{\acronymtype}
-%	%{%
-%		\edef\@gls@dothiswrite{\noexpand\write18{makeindex
-%			-s my-acronyms.ist\space
-%	       	-t \jobname.alg\space%\csuse{@glotype@#1@log}
-%	       	-o \jobname.acr\space%\csuse{@glotype@#1@in}
-%	       	\jobname.acn%\csuse{@glotype@#1@out}
-%			}%
-%	     }%
-%	     \@gls@dothiswrite
-%	%}
-%	%{%
-%		\edef\@gls@dothiswrite{\noexpand\write18{makeglossaries
-%			-s my-acronyms.ist\space
-%	       	-t \jobname.glg\space%\csuse{@glotype@#1@log}
-%	       	-o \jobname.gls\space%\csuse{@glotype@#1@in}
-%	       	\jobname.glo %\csuse{@glotype@#1@out}
-%			}%
-%	      }%
-%	      \@gls@dothiswrite
-%	%}%
+%   %                                                                                                                                         \ifdefstrequal{#1}{\acronymtype}
+%   %{%
+%       \edef\@gls@dothiswrite{\noexpand\write18{makeindex
+%           -s my-acronyms.ist\space
+%           -t \jobname.alg\space%\csuse{@glotype@#1@log}
+%           -o \jobname.acr\space%\csuse{@glotype@#1@in}
+%           \jobname.acn%\csuse{@glotype@#1@out}
+%           }%
+%        }%
+%        \@gls@dothiswrite
+%   %}
+%   %{%
+%       \edef\@gls@dothiswrite{\noexpand\write18{makeglossaries
+%           -s my-acronyms.ist\space
+%           -t \jobname.glg\space%\csuse{@glotype@#1@log}
+%           -o \jobname.gls\space%\csuse{@glotype@#1@in}
+%           \jobname.glo %\csuse{@glotype@#1@out}
+%           }%
+%         }%
+%         \@gls@dothiswrite
+%   %}%
 %*****************************************************************************************************************************************%
 %***************************************************************** `my-colorsets.sty' *********************************************************************%
 %*****************************************************************************************************************************************%
@@ -303,44 +329,44 @@ makeglossaries->alg, glg, (acr, gls)
 %***************************************************************** `my-styles.sty' ************************************************************************%
 %*****************************************************************************************************************************************%
 % RULES: titlerule style={black!50,line width=0.5mm}, titlerule, boxrule, toprule,
-		%bottomrule, leftrule, rightrule
-	% SHADOWS: smart shadow arc, drop fuzzy shadow(=), lifted
-		%shadow={1mm}{-2mm}{3mm}{0.1mm}{default-colbacktitle}
-	% SKINS: skin = enhanced
-	% GRAPHICS: every float=\centering, tabular, tabularx(*), tikz upper|lower, tikznode
-		%upper|lower,
-	% OPTIONS: hyphenationfix=true, text fill,
-	% COLORS: coltitle, coltext, colbacktitle, colupper, collower, colframe, colback, title
-		%filled=true|false
-	% FONTS: fontupper, fontlower, fonttitle,
-	% ALIGNMENT: halign = justify | (flush) left | (flush) right | (flush) center,
-		% halign upper, halign lower, halign title,
-	% CORNERS: arc = 6pt,
-	% BOX: boxsep = 2pt,
-	% SPACING: top(|title), middle, bottom(|title), left(|upper|lower|title),
-		%right(|upper|lower|title)
-	% CODE: before (<code>|skip|title|upper(*)|lower), after
-		%(<code>|skip|title|upper(*)|lower(*))
-	% Haven't tried:
-	% ----> borderline horizontal={0.5mm}{0pt}{red!50!white},
-	% ----> arrows = {Hooks[arc=270]-Hooks[arc=270]}}
-	% TIKZ NODES: frame code={...;}, interior titled code={...;}, segmentation code={...;},
-		%title code={...;}
-	%ifpgfkeyssuccess
-	% key/.store in=macro: <key>=<value> -->> \def{\macro}{value}
-	% key/.estore in=macro: <key>=<value> -->> \edef{\macro}{value}
-	% key/.link=hanother keyi
-	%/b/.forward to=/a,
-	%key/.expand once=value.
-	%key/.expand twice=value ~ key/.expand once/.expand once=value
-	% key/.expanded=value
-	%hkeyi/.try=hvaluei
-	%/utils/exec=hcodei
-	%\pgfkeys{/foo/.code=(#1)}
-	%\pgfkeys{/foo/.list={a,b,0,1,...,5}}
-	%\pgfkeysdef{/my key}{#1, #1.}
-	%\pgfkeys{/my key=hello} -->> hello, hello.
-	%hkeyi/.belongs to family={hfamily namei}
+        %bottomrule, leftrule, rightrule
+    % SHADOWS: smart shadow arc, drop fuzzy shadow(=), lifted
+        %shadow={1mm}{-2mm}{3mm}{0.1mm}{default-colbacktitle}
+    % SKINS: skin = enhanced
+    % GRAPHICS: every float=\centering, tabular, tabularx(*), tikz upper|lower, tikznode
+        %upper|lower,
+    % OPTIONS: hyphenationfix=true, text fill,
+    % COLORS: coltitle, coltext, colbacktitle, colupper, collower, colframe, colback, title
+        %filled=true|false
+    % FONTS: fontupper, fontlower, fonttitle,
+    % ALIGNMENT: halign = justify | (flush) left | (flush) right | (flush) center,
+        % halign upper, halign lower, halign title,
+    % CORNERS: arc = 6pt,
+    % BOX: boxsep = 2pt,
+    % SPACING: top(|title), middle, bottom(|title), left(|upper|lower|title),
+        %right(|upper|lower|title)
+    % CODE: before (<code>|skip|title|upper(*)|lower), after
+        %(<code>|skip|title|upper(*)|lower(*))
+    % Haven't tried:
+    % ----> borderline horizontal={0.5mm}{0pt}{red!50!white},
+    % ----> arrows = {Hooks[arc=270]-Hooks[arc=270]}}
+    % TIKZ NODES: frame code={...;}, interior titled code={...;}, segmentation code={...;},
+        %title code={...;}
+    %ifpgfkeyssuccess
+    % key/.store in=macro: <key>=<value> -->> \def{\macro}{value}
+    % key/.estore in=macro: <key>=<value> -->> \edef{\macro}{value}
+    % key/.link=hanother keyi
+    %/b/.forward to=/a,
+    %key/.expand once=value.
+    %key/.expand twice=value ~ key/.expand once/.expand once=value
+    % key/.expanded=value
+    %hkeyi/.try=hvaluei
+    %/utils/exec=hcodei
+    %\pgfkeys{/foo/.code=(#1)}
+    %\pgfkeys{/foo/.list={a,b,0,1,...,5}}
+    %\pgfkeysdef{/my key}{#1, #1.}
+    %\pgfkeys{/my key=hello} -->> hello, hello.
+    %hkeyi/.belongs to family={hfamily namei}
 %*****************************************************************************************************************************************%
 %***************************************************************** `my-glossaries.sty' ************************************************************************%
 (6004) \@glshypernumber
@@ -413,9 +439,9 @@ makeglossaries->alg, glg, (acr, gls)
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 
 %\ifdefstrequal{#1}{main}
-	%\ifstrequal{\currenttype}{main}
-	%	{T-#1\fancyhead[L]{\Large\scshape\@glossary@toctitle}}%
-	%	{F-#1\fancyhead[L]{\Large\scshape\@listof@acronyms@toctitle}}%
+    %\ifstrequal{\currenttype}{main}
+    %   {T-#1\fancyhead[L]{\Large\scshape\@glossary@toctitle}}%
+    %   {F-#1\fancyhead[L]{\Large\scshape\@listof@acronyms@toctitle}}%
 %*****************************************************************************************************************************************%
 %************************************************************ `my-math.sty' **************************************************************%
 %*****************************************************************************************************************************************%

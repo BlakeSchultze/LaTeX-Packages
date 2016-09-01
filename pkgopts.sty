@@ -1,0 +1,162 @@
+%*****************************************************************************************************************************************%
+%*********************************************************** `pkgopts.sty' ***************************************************************%
+%*****************************************************************************************************************************************%
+% Expands upon the 'kvoptions' package to add another '\DeclareXOption' package option key command corresponding to the key type 'X=Choice', analagous to the 'define@choicekey' command of the 'keyval' package, thereby providing key/value package option equivalents to each of the primary key types defined by the 'keyval' package.   
+%*****************************************************************************************************************************************%
+%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%*****************************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{pkgopts}                    	%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%****************************************** Package options and corresponding Boolean variables ******************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{pkgopts}{Unknown \CurrentOption}}
+%*****************************************************************************************************************************************%
+%***************************************************** Processing of package options *****************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\catcode`\!=12
+%\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\reportname{report}
+\def\articlename{article}
+%\gdef\fullyexpand#1{\romannumeral - `0#1}
+\def\@csname#1{\csname #1\endcsname}
+\def\pkgname{my-latex}%\PackageInfo
+\def\choicetestoptions{choiceone,choicetwo,choicethree}
+\def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\fullyexpand#1{\romannumeral - `0#1}
+\def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
+\def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
+\xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
+\newif\if@pkgopts@packages@loaded@\@pkgopts@packages@loaded@false
+\newcommand\@init@pkgopts@packages{etoolbox,forarray}
+\newcommand\@pkgopts@packages{kvoptions,xstring,xparse,etoolbox,pgffor,forarray,trimspaces}
+\newcommand\PrintPackageList{\@loaded@packages}
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePackageInit[1]
+{%
+        \@for\next:=#1\do{\RequirePackage{\next}}%
+        \newcommand\@loaded@packages{#1}%
+        \@pkgopts@packages@loaded@true%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePackageOnce[1]
+{%    
+        \@ifpackageloaded{#1}{}%
+        {%
+        	\RequirePackage{#1}%
+        	\csxappto{@loaded@packages}{,#1}%
+        }%	
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePackageList[1]
+{%
+	\if@pkgopts@packages@loaded@\else\RequirePackageInit{\@init@pkgopts@packages}\fi
+	\ForEachX{,}{\RequirePackageOnce{\thislevelitem}}{#1}
+}
+%*****************************************************************************************************************************************%
+%************************************************************* Package Body **************************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\DeclareChoiceOptionMessage}{D(){\KVO@prefix} m}
+\newcommand\DeclareChoiceOptionMessage[2][\KVO@prefix]%
+{%
+        \gdef\msgtext{\string\DeclareChoiceOption\space Error%
+        \MessageBreak Invalid choice '#1#2\space=\space\csname #1#2\endcsname'}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\DeclareChoiceOptionHelp}{D(){\KVO@prefix} m}
+\newcommand\DeclareChoiceOptionHelp[2][\KVO@prefix]%
+{%
+        \gdef\hlptext{\string\DeclareChoiceOption\space Help:%
+        \IndentedMessageBreak Valid '#1#2' Options:%
+        \MessageBreak\IndentedMessageBreak #2\space=\space{\csname @#1valid@#2@choice@options\endcsname}}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\DeclareChoiceOptionError}{D(){\KVO@prefix} m}
+\newcommand\DeclareChoiceOptionError[2][\KVO@prefix]%
+{%
+        \DeclareChoiceOptionMessage[#1]{#2}%
+        \DeclareChoiceOptionHelp[#1]{#2}%
+        \@PackageError\pkgname\msgtext\hlptext%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\DeclareChoiceOption}{D(){\KVO@prefix} m o m}
+\def\DeclareChoiceOption[#1]#2[#3]#4%
+{%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
+        %\IfValueTF{#3}%
+        %        {\DeclareStringOption{#2}[#3]}%
+        %       {\DeclareStringOption{#2}}%
+        \ifstrempty{#3}
+        	{\DeclareStringOption{#2}}%
+                {\DeclareStringOption{#2}[#3]}%
+        \ifstrempty{#1}
+                {\def\@current@prefix{\KVO@prefix}}%
+               	{\def\@current@prefix{#1}}%
+        \expandafter\newif\csname if\@current@prefix#2\endcsname%
+        \expandafter\gdef\csname @\@current@prefix valid@#2@choice@options\endcsname{#4}%
+        \expandafter\xdef\csname @#2@prefix\endcsname{\@current@prefix}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\ProcessChoiceOption}{D(){\KVO@prefix} m}
+%\def\ProcessChoiceOption[#1]#2%
+\newcommand\ProcessChoiceOption[2][\KVO@prefix]%
+{%\ProcessChoiceOption<*>(<prefix>){<key>}[<default>]
+        %\ifstrempty{#3}
+%                {\DeclareStringOption{#2}}%
+%                {\DeclareStringOption{#2}[#3]}%
+%        \ifstrempty{#1}
+%                {\def\@current@prefix{\KVO@prefix}}%
+%                {\def\@current@prefix{#1}}%
+        \expandafter\ifdefempty\expandafter{\csname#1#2\endcsname}%
+                {}{\csname #1#2true\endcsname}%
+        \def\@validated{false}%
+        \xdef\@valid@choice@options{\csname @#1valid@#2@choice@options\endcsname}%
+        \ForEachX{,}%
+        {%
+                \IfEq{\csname #1#2\endcsname}{\thislevelitem}%
+                {\def\@validated{true}}{}%
+        }%
+        {\@valid@choice@options}%
+        \IfStrEq{\@validated}{true}{}{\DeclareChoiceOptionError[#1]{#2}}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\PrintChoiceInfo}{d() m}
+\def\PrintChoiceInfo[#1]#2%
+{%\ProcessChoiceOption<*>(<prefix>){<key>}[<default>]
+        %\@mylatex@valid@choiceopttest@choice@options\\
+        %\fullyexpand{\csname @#3@prefix\endcsname}\\
+        %\IfValueTF{#1}
+        %        {\fullyexpand{\csname @#1valid@#2@choice@options\endcsname}\\}
+        %        {\fullyexpand{\csname @#2@prefix@valid@#2@choice@options\endcsname}\\}
+        \ifstrempty{#1}
+                {\fullyexpand{\csname @#1valid@#2@choice@options\endcsname}\\}%
+                {\fullyexpand{\csname @#2@prefix@valid@#2@choice@options\endcsname}\\}%
+        \mylatex@choiceopttest\\%
+        \ifmylatex@choiceopttest%
+                true%
+        \else%
+                false%
+        \fi%
+        \expandafter\ifdefempty{\mylatex@choiceopttest}{defempty}{defnotempty}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackageList{\@pkgopts@packages}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%*****************************************************************************************************************************************%
+%***************************************************** End of 'pkgopts.sty' package ******************************************************%
+%*****************************************************************************************************************************************%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\endinput 

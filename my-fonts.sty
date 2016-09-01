@@ -199,12 +199,8 @@
 \long\def\shadowfypars#1\par#2\relax%
 {%
 	%\begingroup\catcode`\$=11
-  	\ifstrempty{#1}%
-                {}%
-                {\shadowfywords#1 \relax\relax}%
-        \ifstrempty{#2}%
-                {}%
-                {\par\shadowfypars#2\relax}%  
+  	\ifstrempty{#1} {}{\shadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}{}{\par\shadowfypars#2\relax}%  
         %\expandafter\@firstoftwo\unskip%
         %\expandafter\@secondoftwo\unskip%
 %	\endgroup   
@@ -217,12 +213,8 @@
 \def\shadowfywords#1 #2\relax%
 {%
 	%\begingroup\catcode`\$=11
-  	\ifstrempty{#1}%
-                {}%
-                {\shadowfyletters#1\relax\relax}%
-        \ifstrempty{#2}%
-                {}%
-                {\ \shadowfywords#2\relax}%
+  	\ifstrempty{#1}{}{\shadowfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\ \shadowfywords#2\relax}%
         \unskip%
 %	\endgroup
 %	\expandafter\@firstoftwo%\catcode`$=11
@@ -254,6 +246,25 @@
 %	\endgroup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadowfypars#1\par#2\relax%
+{%
+        \ifstrempty{#1} {}{\doubleshadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}{}{\par\doubleshadowfypars#2\relax}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\doubleshadowfywords#1 #2\relax%
+{%
+        \ifstrempty{#1}{}{\doubleshadowfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\ \doubleshadowfywords#2\relax}%
+        \unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\doubleshadowfyletters#1#2\relax%
+{%
+        \doubleshadow{#1}%
+        \ifx\relax#2\else\doubleshadowfyletters#2\relax\fi\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadow#1%
 {%
 	\kern\shadowHoffset%
@@ -268,12 +279,28 @@
 }
 \def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\shadowbasecolor[1]{\def\st@textcolor{#1}}
+\def\doubleshadow#1%
+{%
+        \kern\st@doubleshadowoffsetx%
+        \raisebox{\st@doubleshadowoffsety}%
+        {%
+                \stackinset{c}{\st@doubleshadowoffsetx}{c}{-\st@doubleshadowoffsety}%
+                        {\shadow{#1}}%
+                        {\color{\st@doubleshadowcolor}{#1}}%
+        }%
+        \kern-\st@doubleshadowoffsetx%
+        \unskip\ignorespaces%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
+\newcommand\doubleshadowfy[1]{\expandafter\doubleshadowfypars#1\par\relax\relax}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \shadowoffset{0.5pt}
 \shadowoffsetx{0.65pt}
 \shadowoffsety{-0.2pt}
+\doubleshadowoffset{0.5pt}
+\doubleshadowoffsetx{1.20pt}
+\doubleshadowoffsety{-0.0pt}
 \shadowbasecolor{black}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                            1 2          3         4        5          6
@@ -295,8 +322,10 @@
 %       }%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                             1 2              3           4          5        6          7
-\DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.75pt} D<>{0.1pt} O{current-coltext} D(){current-coltextshadow} m}
+\def\minispace{\space\!}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                             1 2              3           4          5                  6                          7   8
+\DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.75pt} D<>{0.1pt} O{current-coltext} D(){current-coltextshadow} d:: m}
 {%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}	
 	%\setlength\shadowHoffset{#3}%
 	%\setlength\shadowVoffset{#4}%
@@ -307,10 +336,19 @@
 	\shadowbasecolor{#5}%
 	\shadowcolor{#6}%
 	%\setshadowTextProps[#3][#4]'#5'(#6)
-	\IfBooleanTF{#1}%
-		%{#2\shadowfy{\underline{#7}}\unskip}%
-                {\underline{#2\shadowfy{#7}}}%
-        	{#2\shadowfy{#7}}%
+	%\IfValueTF{#7}{\expandafter\def\expandafter\@text@arg\expandafter{\BreakableShadowText'#2'<#3><#4>[#5](#7){#8}}}{\def\@text@arg{#8}}%
+        \IfBooleanTF{#1}%
+	%{#2\shadowfy{\underline{#7}}\unskip}%
+	{%
+		\IfValueTF{#7}%
+		{#2\doubleshadowcolor{#7}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#8}\kern2\st@doubleshadowoffsetx}}%
+                {\underline{#2\shadowfy{#8}}}%
+	}%
+	{%
+                \IfValueTF{#7}%
+                {#2\doubleshadowcolor{#7}\doubleshadowfy{#8}}%
+                {#2\shadowfy{#8}}%
+        }%
         \unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -403,16 +441,19 @@
 \font\ttn qx-lmvtt10 at 10.5pt
 \font\ttb qx-lmvtt10 at 11pt
 \font\sec qx-anttm at 12pt
-\font\tcblistboxtext qx-anttb at 12pt
-\font\tcblistboxlabel qx-anttb at 14pt
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \font\navhyperlinkfont qx-anttmcap at 12pt
-\font\tcbsectiontextfont qx-anttmcap at 12pt
 \font\coverpagemedfont qx-anttmcap at 13pt
+\font\coverpagebigfont qx-anttmcap at 17pt
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \font\cftmedfont qx-anttmcap at 14pt
+\font\cftbigfont qx-anttmcap at 18pt
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 \font\tcbsectionheaderfont qx-anttmcap at 14pt
 \font\tcbsectiontitlefont qx-anttmcap at 16pt
-\font\coverpagebigfont qx-anttmcap at 17pt
-\font\cftbigfont qx-anttmcap at 18pt
+\font\tcbsectiontextfont qx-anttmcap at 12pt
+\font\tcblistboxlabel qx-anttb at 14pt
+\font\tcblistboxtext qx-anttb at 12pt
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
