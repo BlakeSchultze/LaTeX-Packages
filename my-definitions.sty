@@ -145,16 +145,16 @@
 %}
 %\etexcmds@newif{expanded}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
-\newcommand\backpagenumberingDD{}
-\newcommand\backpagenumberingD
-{
-	\foreach\valid in \@supported@page@numbering%{arabic,roman,Roman,alph,Alph}%
-                {\csxappto{backpagenumberingDD}{,\valid}}%{\apptocmd{, \valid@option}}%      
-}
 %*****************************************************************************************************************************************%
 %***************************************************** Plain TeX macro definitions *******************************************************%
 %*****************************************************************************************************************************************%
+\def\ifitseq#1#2{%
+ \ifx#1#2\relax
+   \expandafter\@firstoftwo
+ \else
+   \expandafter\@secondoftwo
+ \fi
+}
 %\def\@coverpage@command{\begin{coverpage}{empty}{}{}{}\end{coverpage}}
 %\g@addto@macro\@begindocumenthook{\@coverpage@command}
 \def\fullyexpand#1{\romannumeral - `0#1}

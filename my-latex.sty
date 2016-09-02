@@ -11,14 +11,8 @@
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-latex}
-%\RequirePackage{kvoptions}                      % Provides ability to define key=value class/package options
-%\RequirePackage{xstring}                        % Provides macros to manipulate/parse strings of characters/tokens (requires î-TEX)
-%\RequirePackage{xparse}                        % Provides macros to manipulate/parse strings of characters/tokens (requires î-TEX)
-%\RequirePackage{etoolbox}                       % Package tools especially for use with î-tex
-%\RequirePackage{pgffor}                         % Defines two new "for" loop commands: \foreach and \breakforeach
-%%\RequirePackage{xfor}                           % AMS theorem/lemma/etc structures
-%\RequirePackage{forarray}                       % Provides functionality for processing lists and array structures in LATEX
-%\RequirePackage{trimspaces}                     % Provides tools to remove preceding and/or trailing spaces from token list or macro contents
+\def\choicetestoptions{choiceone,choicetwo,choicethree}
+\def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
 \RequirePackage{pkgopts}                         % Defines two new "for" loop commands: \foreach and \breakforeach
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackageList{\@pkgopts@packages}
@@ -55,9 +49,10 @@
 \DeclareVoidOption{original}{\PassOptionsToPackage{original}{imakeidx}}
 \DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareStringOption[]{documentclass}[report]
-\DeclareStringOption[]{backpagenumbering}[roman]
-\DeclareChoiceOption[]{choiceopttest}[choicetwo]{choiceone,choicetwo,choicethree}
+\DeclareStringOption{documentclass}[report]
+%\DeclareStringOption{backpagenumbering}[roman]
+\DeclareChoiceOption(){backpagenumbering}[roman]{\@supported@page@numbering}
+\DeclareChoiceOption(){choiceopttest}[choicetwo]{choiceone,choicetwo,choicethree}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
@@ -65,51 +60,10 @@
 %*****************************************************************************************************************************************%
 \ExecuteOptions{splitindex,nonewpage}
 %\ProcessKeyvalOptions{my-latex}
-\ProcessKeyvalOptions*
-\ProcessChoiceOption{choiceopttest}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\@backmatter@page@numbering
-{
-	%{\texttt{backpagenumbering} Error\MessageBreak Unrecognized page numbering style}
-        \def\msgtext{ERROR\MessageBreak ERROR TEXT HERE}%
- 	\def\hlptext{HELP\MessageBreak HELP TEXT HERE}
- 	\IfStrEqCase{\mylatex@backpagenumbering}%
-	{%
-		{arabic}{\def\@validated@backpagenumbering@option{arabic}}%
-	 	{roman}{\def\@validated@backpagenumbering@option{roman}}%
-	 	{Roman}{\def\@validated@backpagenumbering@option{Roman}}%
-	 	{alph}{\def\@validated@backpagenumbering@option{alph}}%
-                {Alph}{\def\@validated@backpagenumbering@option{Alph}}%
-	}[\@PackageError\pkgname\msgtext\hlptext]%
-	\foreach\valid@option in {\@supported@page@numbering}%
-	{
-		\IfEq{\mylatex@backpagenumbering}{\valid@option}
-                %\IfStrEq{\mylatex@backpagenumbering}{\valid@option}%
-                {\def\@validated{true}}{}
-	}	
-	\@ifundefined{\@validated@backpagenumbering@option}%
-		{\newcommand\backpagenumbering{invalid option provided}}
-		{\newcommand\backpagenumbering{\@validated@backpagenumbering@option}}
-        \foreach\valid in \@supported@page@numbering%{arabic,roman,Roman,alph,Alph}%
-                {\csxappto{backpagenumbering}{,\valid}}% 
-        \foreach\valid in \@supported@page@numbering%{arabic,roman,Roman,alph,Alph}%
-                {\IfStrEq{\valid}{\mylatex@backpagenumbering}{\csxappto{backpagenumbering}{,\valid=backpagenumbering}}{}}%  
-        \trim@spaces@in{\backpagenumbering}         
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\ifx\mylatex@documentclass\@empty%\@empty is a predefined macro with empty contents.
-        \def\documentclassVALUE{IFX-TRUE\mylatex@documentclass}
-\else
-        \def\documentclassVALUE{IFX-FALSE\mylatex@documentclass}
-        \@backmatter@page@numbering
-\fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\ifx\mylatex@backpagenumbering\@empty%\@empty is a predefined macro with empty contents.
-        \def\backpagenumberingVALUE{IFX-TRUE\mylatex@backpagenumbering}
-\else
-        \def\backpagenumberingVALUE{IFX-FALSE\mylatex@backpagenumbering}
-        \@backmatter@page@numbering
-\fi
+%\ProcessKeyvalOptions*
+%\ProcessChoiceOption{backpagenumbering}
+%\ProcessChoiceOptions
+\ProcessPackageOptions
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@landscape
         \PassOptionsToClass{landscape}{article}
@@ -120,22 +74,8 @@
         \PassOptionsToClass{crop}{article}
         \PassOptionsToClass{crop}{report}
 \fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\ifmylatex@report
-        \ifmylatex@standaloneoff
-                \documentclass{report}
-        \else
-                \documentclass[class=\reportname, crop=false]{standalone}
-        \fi
-\fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\ifmylatex@article
-        \ifmylatex@standaloneoff
-                \documentclass{article}
-        \else
-                \documentclass[class=\articlename, crop=false]{standalone}
-        \fi
-\fi
+%%-----------------------------------------------------------------------------------------------------------------------------------------%
+\SetDocumentClass
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@automake
         \PassOptionsToPackage{automake}{my-glossaries}

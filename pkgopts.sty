@@ -27,11 +27,9 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\reportname{report}
 \def\articlename{article}
-%\gdef\fullyexpand#1{\romannumeral - `0#1}
 \def\@csname#1{\csname #1\endcsname}
-\def\pkgname{my-latex}%\PackageInfo
-\def\choicetestoptions{choiceone,choicetwo,choicethree}
-\def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
+\def\pkgname{my-latex}%
+%\edef\my@options@list{\my@options@list,#2}%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\fullyexpand#1{\romannumeral - `0#1}
 \def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
@@ -40,7 +38,6 @@
 \newif\if@pkgopts@packages@loaded@\@pkgopts@packages@loaded@false
 \newcommand\@init@pkgopts@packages{etoolbox,forarray}
 \newcommand\@pkgopts@packages{kvoptions,xstring,xparse,etoolbox,pgffor,forarray,trimspaces}
-\newcommand\PrintPackageList{\@loaded@packages}
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
@@ -57,7 +54,10 @@
         \@ifpackageloaded{#1}{}%
         {%
         	\RequirePackage{#1}%
-        	\csxappto{@loaded@packages}{,#1}%
+        	%\csxappto{@loaded@packages}{,#1}%
+        	\ifundef{\@loaded@packages}%
+	                {\edef\@loaded@packages{#1}}%
+	                {\edef\@loaded@packages{\@loaded@packages,#1}}%
         }%	
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -70,14 +70,12 @@
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\DeclareChoiceOptionMessage}{D(){\KVO@prefix} m}
 \newcommand\DeclareChoiceOptionMessage[2][\KVO@prefix]%
 {%
         \gdef\msgtext{\string\DeclareChoiceOption\space Error%
         \MessageBreak Invalid choice '#1#2\space=\space\csname #1#2\endcsname'}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\DeclareChoiceOptionHelp}{D(){\KVO@prefix} m}
 \newcommand\DeclareChoiceOptionHelp[2][\KVO@prefix]%
 {%
         \gdef\hlptext{\string\DeclareChoiceOption\space Help:%
@@ -85,7 +83,6 @@
         \MessageBreak\IndentedMessageBreak #2\space=\space{\csname @#1valid@#2@choice@options\endcsname}}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\DeclareChoiceOptionError}{D(){\KVO@prefix} m}
 \newcommand\DeclareChoiceOptionError[2][\KVO@prefix]%
 {%
         \DeclareChoiceOptionMessage[#1]{#2}%
@@ -93,67 +90,85 @@
         \@PackageError\pkgname\msgtext\hlptext%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\DeclareChoiceOption}{D(){\KVO@prefix} m o m}
-\def\DeclareChoiceOption[#1]#2[#3]#4%
+\def\DeclareChoiceOption(#1)#2[#3]#4%
 {%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
-        %\IfValueTF{#3}%
-        %        {\DeclareStringOption{#2}[#3]}%
-        %       {\DeclareStringOption{#2}}%
         \ifstrempty{#3}
         	{\DeclareStringOption{#2}}%
                 {\DeclareStringOption{#2}[#3]}%
         \ifstrempty{#1}
                 {\def\@current@prefix{\KVO@prefix}}%
                	{\def\@current@prefix{#1}}%
+        %\edef\my@options@list{\my@options@list,#2}     
+        \ifundef{\@defined@Choice@Options}%
+        	{\edef\@defined@Choice@Options{#2}}%
+        	{\edef\@defined@Choice@Options{\@defined@Choice@Options,#2}}%  
         \expandafter\newif\csname if\@current@prefix#2\endcsname%
         \expandafter\gdef\csname @\@current@prefix valid@#2@choice@options\endcsname{#4}%
         \expandafter\xdef\csname @#2@prefix\endcsname{\@current@prefix}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\ProcessChoiceOption}{D(){\KVO@prefix} m}
-%\def\ProcessChoiceOption[#1]#2%
 \newcommand\ProcessChoiceOption[2][\KVO@prefix]%
 {%\ProcessChoiceOption<*>(<prefix>){<key>}[<default>]
-        %\ifstrempty{#3}
-%                {\DeclareStringOption{#2}}%
-%                {\DeclareStringOption{#2}[#3]}%
-%        \ifstrempty{#1}
-%                {\def\@current@prefix{\KVO@prefix}}%
-%                {\def\@current@prefix{#1}}%
         \expandafter\ifdefempty\expandafter{\csname#1#2\endcsname}%
                 {}{\csname #1#2true\endcsname}%
-        \def\@validated{false}%
-        \xdef\@valid@choice@options{\csname @#1valid@#2@choice@options\endcsname}%
-        \ForEachX{,}%
-        {%
-                \IfEq{\csname #1#2\endcsname}{\thislevelitem}%
-                {\def\@validated{true}}{}%
-        }%
-        {\@valid@choice@options}%
-        \IfStrEq{\@validated}{true}{}{\DeclareChoiceOptionError[#1]{#2}}%
+        \expandafter\csname if\csname @\next @prefix\endcsname\next\endcsname\relax%
+                \def\@validated{false}%
+	        \xdef\@valid@choice@options{\csname @#1valid@#2@choice@options\endcsname}%
+	        \ForEachX{,}%
+	        {%
+	                \IfEq{\csname #1#2\endcsname}{\thislevelitem}%
+	                {\def\@validated{true}}{}%
+	        }%
+	        {\@valid@choice@options}%
+	        \IfStrEq{\@validated}{true}{}{\DeclareChoiceOptionError[#1]{#2}}%
+        \fi%   
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\PrintChoiceInfo}{d() m}
-\def\PrintChoiceInfo[#1]#2%
+\newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\csname @\next @prefix\endcsname]{\next}}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessPackageOptions[1][]%
+{%
+        \ifstrempty{#1}%
+                {\ProcessKeyvalOptions*}%
+                {\ProcessKeyvalOptions{#1}}%
+        \ProcessChoiceOptions%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintChoiceInfo[2][]%
 {%\ProcessChoiceOption<*>(<prefix>){<key>}[<default>]
-        %\@mylatex@valid@choiceopttest@choice@options\\
-        %\fullyexpand{\csname @#3@prefix\endcsname}\\
-        %\IfValueTF{#1}
-        %        {\fullyexpand{\csname @#1valid@#2@choice@options\endcsname}\\}
-        %        {\fullyexpand{\csname @#2@prefix@valid@#2@choice@options\endcsname}\\}
-        \ifstrempty{#1}
-                {\fullyexpand{\csname @#1valid@#2@choice@options\endcsname}\\}%
-                {\fullyexpand{\csname @#2@prefix@valid@#2@choice@options\endcsname}\\}%
-        \mylatex@choiceopttest\\%
-        \ifmylatex@choiceopttest%
-                true%
+        \noindent \underline{Defined Choice Keys} : \@defined@Choice@Options\\%
+        \indent \underline{Choice key (family@key)} : \csname @#2@prefix\endcsname#2\\
+        \expandafter\csname if\csname @#2@prefix\endcsname#2\endcsname\relax%
+                \indent\indent \underline{Provided} = true\\%
+                \indent\indent \underline{Acceptable Choices} = %
+                \ifstrempty{#1}
+                	{\fullyexpand{\csname @\csname @#2@prefix\endcsname valid@#2@choice@options\endcsname}\\}%
+                	{\fullyexpand{\csname @#2@prefix@valid@#2@choice@options\endcsname}\\}%       
+                \indent\indent \underline{Selected Choice} = \expandafter\csname\csname @#2@prefix\endcsname#2\endcsname\\
         \else%
-                false%
-        \fi%
-        \expandafter\ifdefempty{\mylatex@choiceopttest}{defempty}{defnotempty}%
+                \indent\indent \underline{Provided} = false\\%
+        \fi%        
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\RequirePackageList{\@pkgopts@packages}
+\newcommand\PrintPackageList{\noindent \underline{Loaded Packages} : \@loaded@packages}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\SetDocumentClass[1][\KVO@prefix]%
+{%\ProcessChoiceOption<*>(<prefix>){<key>}[<default>]
+        \ifstrempty{\csname #1documentclass\endcsname}
+                {\def\thedocumentclass{report}}%
+                {\def\thedocumentclass{\csname #1documentclass\endcsname}}%
+        \ifmylatex@article
+		\def\thedocumentclass{article}
+	\fi
+	\ifmylatex@report
+		\def\thedocumentclass{report}
+        \fi
+        \ifmylatex@standaloneoff
+		\documentclass{\thedocumentclass}
+	\else
+		\documentclass[class=\thedocumentclass, crop=false]{standalone}
+	\fi
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %***************************************************** End of 'pkgopts.sty' package ******************************************************%
