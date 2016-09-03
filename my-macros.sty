@@ -357,7 +357,7 @@
                 {\def\@title@sep{}}%
                 {\def\@title@sep{\@tcb@title@sep}}%
         \def\titleargwrapper{#2}%
-        \begin{figboxfigure}[reset, tcbfigureStyle]{\titleargwrapper}{\figurename\ \thefigure\@title@sep #2}[#3]%
+        \begin{figboxfigure}[reset, tcbfigureStyle]{\titleargwrapper}[#3]%
                 \includegraphics[width=\@tcb@figboxfigure@width]{#1}%
         \end{figboxfigure}%
 }
@@ -475,20 +475,27 @@ linewidth=4pt, linecolor=current-coldraw,
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ o m m O{fig:fig\the\value{figure}}}
+\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ o m O{fig:fig\thefigure}}
 {
         #1, capture=hbox,
         code=
         {
                 %\def\thearg{#2}%
-                \ifdefempty{#2}
+                \@set@current@tcb@colors{tcbfigureColorset}
+        	\ifdefempty{#2}
                         {\def\@title@sep{}}
                         {\def\@title@sep{\@tcb@title@sep}}
         },
-        blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
-        label={#4},
-        title={\BreakableShadowText[white](black){#2}},
-        list entry={\hspace{\cftfigboxfigureindent}\normalsize\bfseries\protect\numberline{\thefigboxfigure}#3},%\hspace{\cftfigboxfigureindent}
+        %blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
+        blend before title code={\cftfigboxfigure@titleblend{\@title@sep}},
+        label={#3},
+        %blend before title code={\cftMatlab@titleblend{\@title@sep}},
+        %list entry={\cftMatlab@listentry{\@title@sep#1}},
+        title={\bfmseries\cftX@tcbtitle@font*{#2}},
+        %title={\BreakableShadowText[white](black){#2}},
+        %list entry={\hspace{\cftfigboxfigure@indent}\normalsize\bfseries\protect\numberline{\thefigboxfigure}#3},%\hspace{\cftfigboxfigureindent}
+        list entry={\hspace{\cftfigboxfigureindent}\cftfigboxfigure@listentry{\@title@sep}#2}, %\hspace{\cftfigboxfigureindent}
+        %list text={\cftfigboxfigure@listentry{\@title@sep}#2},
         every float=\centering
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -540,78 +547,71 @@ linewidth=4pt, linecolor=current-coldraw,
 %*********************************************** Coverpage and Document Type Environments ************************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-% Replaces 'document' environment and the optional first argument is used to turn on/off the Baylor cover page.  The cover page is displayed
-% if the optional argument is non-empty or absent, since it is non empty (single character 'a') by default. It can be suppressed with an empty
-% optional argument, i.e. '[]'.
-\newenvironment{homework}[6][a]
+\newkeyenvironment{thedocument}
+[enum type={documentation, homework, default}, author={Blake Edward Schultze}, title=, subtitle=, course number=, course title=, instructor=, assignment=, semester=][1]
 {
-        \@reset@ul@settings
-        \@set@coverpage@dimensions
-        %\def\@coverpage@command{\pagestyle{fancy}\begin{coverpage}{assignment}{#1}{#2}{#3}[#4][#5][#6]\end{coverpage}}
-        \document\pagestyle{fancy}
-        \ifmylatex@coverpage\begin{coverpage}{assignment}{#1}{#2}{#3}[#4][#5][#6]\end{coverpage}\fi
+        \xdef\thedoctype{\commandkey{type}}%
+        \xdef\theauthor{\commandkey{author}}%
+        \@reset@ul@settings%
+        \IfStrEq{\thedoctype}{documentation}%
+        {%
+                \ifcommandkey{title}{}{\PackageError{\pkgname}{missing 'title' key}{Provide 'title' and recompile}}%
+                \ifcommandkey{subtitle}{}{\PackageError{\pkgname}{missing 'subtitle' key}{Provide 'subtitle' and recompile}}%
+                \xdef\thetitle{\commandkey{title}}
+                \xdef\thesubtitle{\commandkey{subtitle}}
+                \hypersetup
+                {
+                        pdftitle        ={\thetitle},
+                        pdfauthor       ={\theauthor},
+                        pdfsubject      ={\thesubtitle},
+                        pdfcreator      ={\theauthor},
+                        pdfproducer     ={\theauthor}
+                }
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{documentation}{\theauthor}{\thetitle}{\thesubtitle}\end{coverpage}
+        }{}
+        \IfStrEq{\thedoctype}{homework}
+        {%
+                \ifcommandkey{course number}{}{\PackageError{\pkgname}{missing 'course number' key}{Provide 'course number' and recompile}}%
+                \ifcommandkey{course title}{}{\PackageError{\pkgname}{missing 'course title' key}{Provide 'course title' and recompile}}%
+                \ifcommandkey{instructor}{}{\PackageError{\pkgname}{missing 'instructor' key}{Provide 'instructor' and recompile}}%
+                \ifcommandkey{assignment}{}{\PackageError{\pkgname}{missing 'assignment' key}{Provide 'assignment' and recompile}}%
+                \ifcommandkey{semester}{}{\PackageError{\pkgname}{missing 'semester' key}{Provide 'semester' and recompile}}%
+                \xdef\coursenumber{\commandkey{course number}}%
+                \xdef\coursetitle{\commandkey{course title}}%
+                \xdef\instructor{\commandkey{instructor}}%
+                \xdef\assignment{\commandkey{assignment}}%
+                \xdef\semester{\commandkey{semester}}%
+                \ifcommandkey{title}{\xdef\thetitle{\commandkey{title}}}{\xdef\thetitle{\commandkey{course title}}}%
+                \ifcommandkey{subtitle}{\xdef\thesubtitle{\commandkey{subtitle}}}{\xdef\thesubtitle{\commandkey{assignment}}}%
+                \hypersetup
+                {
+                        pdftitle        ={\thetitle},
+                        pdfauthor       ={\theauthor},
+                        pdfsubject      ={\thesubtitle},
+                        pdfcreator      ={\theauthor},
+                        pdfproducer     ={\theauthor}
+                }
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{assignment}{\coursenumber}{\coursetitle}{\semester}{\instructor}{\assignment}{\theauthor}\end{coverpage}
+        }{}
+        \IfStrEq{\thedoctype}{default}
+        {%
+                \ifcommandkey{title}{\xdef\thetitle{}}{\xdef\thetitle{\commandkey{title}}}%
+                \ifcommandkey{subtitle}{\xdef\thesubtitle{}}{\xdef\thesubtitle{\commandkey{subtitle}}}%
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{default}{\coursenumber}{\coursetitle}{\semester}{\instructor}{\assignment}{\theauthor}\end{coverpage}
+        }{}
         \@set@document@dimensions%
         \renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
         \fancyhead[L]{\rightmark}%
         \fancyhead[R]{\@header@image}%
         \cfoot[\thepage]{\thepage}
-}{\enddocument}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentEnvironment{documentation}{O{Blake Edward Schultze} m m}
-\newenvironment{documentation}[3][Blake Schultze]
-{
-        \hypersetup
-        {
-                pdftitle        ={#2},
-                pdfauthor       ={#1},
-                pdfsubject      ={#3},
-                pdfcreator      ={#1},
-                pdfproducer     ={#1}
-        }
-        \@reset@ul@settings
-        %\def\@coverpage@command{\begin{coverpage}{documentation}{#1}{#2}{#3}\end{coverpage}}
-        \document
-        \ifmylatex@coverpage\begin{coverpage}{documentation}{#1}{#2}{#3}\end{coverpage}\fi
-        %\begin{coverpage}{documentation}{#1}{#2}{#3}\end{coverpage}
-        \@set@document@dimensions%
-        \pagestyle{fancy}\renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
-        \fancyhead[L]{\rightmark}%
-        \fancyhead[R]{\@header@image}%
-        \cfoot[\thepage]{\thepage}
 }{\enddocument}%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-% The cover page is designed for Baylor associated documents and displays my name/date and the course info, instructor, and assignment, all
-% specified as arguments.  A page header is also added which includes a small Baylor logo in the top right corner.
-\DeclareDocumentEnvironment{assignment-coverpage}{m m m m m}
-%\newenvironment{assignment-coverpage}[5]
-{
-   \def\coverpage{documentation-coverpage}
-        \thispagestyle{empty} \shadowcolor{BaylorGoldCMYK}
-    \begin{figure}[h!]
-        \centering\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@title@font#1: #2}}
-        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@logo}}
-        \cshadowbox{\usebox{\@coverpage@savebox@title@contents}}
-        \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}\\[0.1em]
-        \parbox{\textwidth}
-        {
-            \title{}\centering\LARGE
-            \@coverpage@subtitle@font{#3, #4}\\[0.2em]
-            \@coverpage@description@font{#5}
-            \author{\@coverpage@author@font\shadowtext{Blake Edward Schultze}}
-            \date{\@coverpage@date@font\shadowtext{\today}}
-        }
-        \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}
-        \begin{minipage}{\textwidth}
-        \centering
-        \vspace{-11mm}\maketitle\vspace{-4mm}\color{Black}
-        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@dept@logo}}
-        \end{minipage}\caption{}
-    \end{figure}
-}
-{\thispagestyle{empty}\setcounter{page}{0}}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%                                                    1 2 3
 \DeclareDocumentEnvironment{documentation-coverpage}{m m m}
-{%
+{%\documentation-coverpage{title}{subtitle}{author}
         \begingroup
         \thispagestyle{empty}%
         \shadowcolor{BaylorGoldCMYK}%
@@ -652,29 +652,67 @@ linewidth=4pt, linecolor=current-coldraw,
         \endgroup\clearpage%
 }{\setcounter{page}{0}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+% The cover page is designed for Baylor associated documents and displays my name/date and the course info, instructor, and assignment, all
+% specified as arguments.  A page header is also added which includes a small Baylor logo in the top right corner.
+%                                                 1 2 3 4 5 6
+\DeclareDocumentEnvironment{assignment-coverpage}{m m m m m m}
+%\newenvironment{assignment-coverpage}[5]
+{%\assignment-coverpage{course #}{course title}{semester}{instructor}{assignment Ch./problem #s}{author}
+   %\def\coverpage{documentation-coverpage}
+        \thispagestyle{empty} \shadowcolor{BaylorGoldCMYK}
+    \begin{figure}[h!]
+        \centering\savebox{\@coverpage@savebox@title@contents}{\shadowtext{\@title@font#1: #2}}
+        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@logo}}
+        \cshadowbox{\usebox{\@coverpage@savebox@title@contents}}
+        \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}\\[0.1em]
+        \parbox{\textwidth}
+        {
+            \title{}\centering\LARGE
+            \@coverpage@subtitle@font{#3, #4}\\[0.2em]
+            \@coverpage@description@font{#5}
+            \author{\@coverpage@author@font\shadowtext{#6}}
+            \date{\@coverpage@date@font\shadowtext{\today}}
+        }
+        \@section@sep{BaylorGreenCMYK}{BaylorGoldCMYK}
+        \begin{minipage}{\textwidth}
+        \centering
+        \vspace{-11mm}\maketitle\vspace{-4mm}\color{Black}
+        \cshadowbox{\includegraphics[width=\wd\@coverpage@savebox@title@contents]{\@uni@dept@logo}}
+        \end{minipage}\caption{}
+    \end{figure}
+}
+{\thispagestyle{empty}\setcounter{page}{0}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                      1 2 3 4 5 6 7
 \DeclareDocumentEnvironment{coverpage}{m m m m o o o}
 {
-        \ifstrequal{#1}{documentation}
-        {%
-                \begingroup
-                \ifstrempty{#2}{}%
+        \ifmylatex@coverpage
+                \ifstrequal{#1}{documentation}
                 {%
+                %\begin{coverpage}{documentation}{\theauthor}{\thetitle}{\thesubtitle}\end{coverpage}
+                        %\begingroup
+                        %\ifstrempty{#2}{}%
+                        %{%
                         \@set@coverpage@dimensions%
                         \begin{documentation-coverpage}
                                 {#3}{#4}{#2}%
                         \end{documentation-coverpage}
-                }%
-                \endgroup
-        }{}
-        \ifstrequal{#1}{assignment}
-        {%
-                \ifstrempty{#2}{}%
-                {%
-                        \begin{assignment-coverpage}{#3}{#4}{#5}{#6}{#7}\end{assignment-coverpage}%
+                        %}%
+                        %\endgroup
                         \@set@document@dimensions%
-                }%
-        }{}
+                }{}
+                \ifstrequal{#1}{assignment}
+                {%
+                        %\begingroup
+                        %\ifstrempty{#2}{}%
+                        %{%
+                        \@set@coverpage@dimensions%
+                        \begin{assignment-coverpage}{#2}{#3}{#4}{#5}{#6}\end{assignment-coverpage}%
+                        %\endgroup
+                        \@set@document@dimensions%
+                        %}%
+                }{}
+        \fi
 }{}
 %*****************************************************************************************************************************************%
 %************************************************ General Purpose Document Environments **************************************************%
@@ -941,7 +979,7 @@ linewidth=4pt, linecolor=current-coldraw,
         \tcolorbox[tcbfigboxStyle={\@tcb@boxrule@linewidth}{single}{tcbfigboxColorset-colframeborder}{tcbfigboxColorset-colinteriorborder},
                 %left skip=\@tcbfigbox@skip,
                 left skip=0pt,
-                title={\cftfigboxcontentsline{\@title@sep#2}\cftfigboxhypertitle{\@title@sep}{#2}}]%
+                title={\cftfigbox@contentsline{\@title@sep#2}\cftfigbox@hypertitle{\@title@sep}{#2}}]%
 }{\endtcolorbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfunctionargspec}{m o}

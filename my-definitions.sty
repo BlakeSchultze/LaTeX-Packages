@@ -117,9 +117,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AtBeginDocument
 {%
-        %\@coverpage@command
         \pagenumbering{arabic}%
-        %\begin{coverpage}{empty}{}{}{}\end{coverpage}
         \input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
 }                                                        %-----------------------------------------------------------------------------------------------------------------------------------------%
 \AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
@@ -148,27 +146,6 @@
 %*****************************************************************************************************************************************%
 %***************************************************** Plain TeX macro definitions *******************************************************%
 %*****************************************************************************************************************************************%
-\def\ifitseq#1#2{%
- \ifx#1#2\relax
-   \expandafter\@firstoftwo
- \else
-   \expandafter\@secondoftwo
- \fi
-}
-%\def\@coverpage@command{\begin{coverpage}{empty}{}{}{}\end{coverpage}}
-%\g@addto@macro\@begindocumenthook{\@coverpage@command}
-\def\fullyexpand#1{\romannumeral - `0#1}
-%\def\expandall#1{\csname #1\endcsname}
-\def\removetonil#1\xx{}
-\def\@nil{}
-\long\def\firstofone#1{#1}
-\def\GobbleExactlyOne%
-{%
-        \afterassignment\NextThing
-        \firstofone{\let\TokenA= }%
-}
-\def\@csname#1{\csname #1\endcsname}
-\def\smashtext#1#2{#1#2}
 \def\isinlist#1#2#3%
 {%
         \def\tmp##1#2##2\end%

@@ -27,17 +27,19 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareBoolOption{report}
 \DeclareBoolOption{article}%
-\DeclareBoolOption{crop}
-\DeclareBoolOption{landscape}
-\DeclareBoolOption{standaloneoff}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareBoolOption[true]{coverpage}
-\DeclareBoolOption[true]{toc}
-\DeclareBoolOption{frontbackmatter}
 \DeclareBoolOption{romanbackmatter}
-\DeclareBoolOption{fbmdotfill}
-\DeclareBoolOption[true]{automake}
 \DeclareBoolOption{isorot}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareComplementaryOption{rotating}{isorot}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareBoolOptionPair{crop}
+\DeclareBoolOptionPair{landscape}
+\DeclareBoolOptionPair[true]{standalone}
+\DeclareBoolOptionPair[true]{coverpage}
+\DeclareBoolOptionPair[true]{toc}
+\DeclareBoolOptionPair[true]{frontbackmatter}
+\DeclareBoolOptionPair[true]{automake}
+\DeclareBoolOptionPair{fbmdotfill}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareVoidOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx}}
 \DeclareVoidOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx}}
@@ -50,19 +52,15 @@
 \DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareStringOption{documentclass}[report]
-%\DeclareStringOption{backpagenumbering}[roman]
-\DeclareChoiceOption(){backpagenumbering}[roman]{\@supported@page@numbering}
-\DeclareChoiceOption(){choiceopttest}[choicetwo]{choiceone,choicetwo,choicethree}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareChoiceOption{backpagenumbering}[roman]{\@supported@page@numbering}
+\DeclareChoiceOption{choiceopttest}[choicetwo]{\choicetestoptions}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
 %*****************************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
 %*****************************************************************************************************************************************%
 \ExecuteOptions{splitindex,nonewpage}
-%\ProcessKeyvalOptions{my-latex}
-%\ProcessKeyvalOptions*
-%\ProcessChoiceOption{backpagenumbering}
-%\ProcessChoiceOptions
 \ProcessPackageOptions
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@landscape
@@ -86,8 +84,6 @@
 \else
         \newcommand*{\frontbackmatterhfill}{\space}%
 \fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\kvoptionstestvalue{\csname mylatex@kvoptionstest\endcsname}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\ifdraft {draft case} {final case}
 %\ifoptiondraft {option draft is given} {option draft is not given}

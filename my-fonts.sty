@@ -1,13 +1,13 @@
 %*****************************************************************************************************************************************%
 %************************************************************ `my-fonts.sty' *************************************************************%
 %*****************************************************************************************************************************************%
-% Provides font encoding, family, and shape definitions, loads/configures font/symbol alphabets, defines text/math symbols, and provides text/math definitions, macros, and commands including shortcut commands used to perform local font/style changes.  
+% Provides font encoding, family, and shape definitions, loads/configures font/symbol alphabets, defines text/math symbols, and provides text/math definitions, macros, and commands including shortcut commands used to perform local font/style changes.
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-fonts}
-%\RequirePackage{stackengine}				%
+%\RequirePackage{stackengine}                           %
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
 %*****************************************************************************************************************************************%
@@ -19,7 +19,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter							% Change @ to standard letter, \catcode'@=11, for macro name/definition use
+\makeatletter                                                   % Change @ to standard letter, \catcode'@=11, for macro name/definition use
 %\setmainfont{Arial}
 %\setmainfont{Computer Modern}
 %\setmainfont{Times New Roman}                                  % listings
@@ -53,11 +53,11 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\DoLongFutureLet #1#2#3#4{%
-	\def\@FutureLetDecide{#1#2\@FutureLetToken
-		\def\@FutureLetNext{#3}\else
+        \def\@FutureLetDecide{#1#2\@FutureLetToken
+                \def\@FutureLetNext{#3}\else
         \def\@FutureLetNext{#4}\fi\@FutureLetNext}
-		\futurelet\@FutureLetToken\@FutureLetDecide}
-		\def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
+                \futurelet\@FutureLetToken\@FutureLetDecide}
+                \def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@EachCharacter{\DoFutureLet{\ifx}{\@EndEachCharacter}%
     {\@EachCharacterDone}{\@PickUpTheCharacter}}
@@ -66,12 +66,12 @@
 \def\@EachCharacterDone \@EndEachCharacter{}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\declarefont#1#2{% #1: TeX name; #2: TFM file name
-	\expandafter\def\csname #1\endcsname
-	{\expandafter\afterassignment\csname #1_\endcsname
-	\sizeoffont=}%
-	\expandafter\def\csname #1_\endcsname
-	{\font\currfont #2 at \sizeoffont\relax \currfont}%
-	\baselineskip=\sizeoffont
+        \expandafter\def\csname #1\endcsname
+        {\expandafter\afterassignment\csname #1_\endcsname
+        \sizeoffont=}%
+        \expandafter\def\csname #1_\endcsname
+        {\font\currfont #2 at \sizeoffont\relax \currfont}%
+        \baselineskip=\sizeoffont
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \edef\currentseries{\f@series}
@@ -92,12 +92,25 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\@EachCharacter #1\@EndEachCharacter}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareRobustCommand*{\bfmseries}
+\DeclareRobustCommand{\bfmseries}
 {%
-	\not@math@alphabet\bfseries\mathbf
-  	\fontseries\bfdefault\selectfont
-  	\boldmath
+        \not@math@alphabet\bfseries\mathbf%
+        \fontseries\bfdefault\selectfont%
+        \boldmath%
 }
+%\long\def\bfmseries%
+%{%
+%        \not@math@alphabet\bfseries\mathbf
+%        \fontseries\bfdefault\selectfont
+%        \boldmath
+%}
+%\newrobustcmd{\bfmseries}
+%{%
+%        \not@math@alphabet\bfseries\mathbf
+%        \fontseries\bfdefault\selectfont
+%        \boldmath
+%}
+
 %*****************************************************************************************************************************************%
 %********************************************************** Text Font Commands ***********************************************************%
 %*****************************************************************************************************************************************%
@@ -135,115 +148,115 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\coloredtext}{s t! m m}
 {%
-	\begingroup%
-	\IfBooleanTF{#1}
-	{%
-		\IfBooleanTF{#2}
-			{\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
-			{\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
-	}
-	{%
-		\IfBooleanTF{#2}
-			{\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
-			{\ignorespaces\color{#3}#4\unskip\ignorespaces}
-	}
-	\endgroup%
+        \begingroup%
+        \IfBooleanTF{#1}
+        {%
+                \IfBooleanTF{#2}
+                        {\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
+                        {\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
+        }
+        {%
+                \IfBooleanTF{#2}
+                        {\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
+                        {\ignorespaces\color{#3}#4\unskip\ignorespaces}
+        }
+        \endgroup%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\RaisedText}[1]
 {%
-	\begingroup
-		\leavevmode
-    		\rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
-    		\rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
-    		\hbox{#1}%
-  	\endgroup
+        \begingroup
+                \leavevmode
+                \rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
+                \rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
+                \hbox{#1}%
+        \endgroup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\BeveledText}[1]
 {%
-  	\begingroup
-	    	\leavevmode
-	    	\rlap%
-	    	{%
-	    		\kern-.3pt\raise.15pt%
-	    		\hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=white}#1}%
-	    	}%
-	    	\rlap%
-	    	{%
-	    		\kern.3pt\raise-.15pt%
-	    		\hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=black}#1}
-	    	}%
-	    	\rlap{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=DarkSlateGrey}#1}%
-	    	\hbox{#1}%
-  	\endgroup
+        \begingroup
+                \leavevmode
+                \rlap%
+                {%
+                        \kern-.3pt\raise.15pt%
+                        \hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=white}#1}%
+                }%
+                \rlap%
+                {%
+                        \kern.3pt\raise-.15pt%
+                        \hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=black}#1}
+                }%
+                \rlap{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=DarkSlateGrey}#1}%
+                \hbox{#1}%
+        \endgroup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\usefont{<encoding>}{<family>}{<series>}{<shape>} c
-%                                       1       2              3       4        5      6       
+%                                       1       2              3       4        5      6
 \DeclareDocumentCommand{\useshadowfont}{O{navy} D<>{\textsize} D(){T1} D(){pag} D(){b} m}
 {%
-    	\shadowoffset{2pt}%
-	\shadowtext%
-	{%
-		\textcolor{#1}%
-		\fontencoding{#3}%
-		\fontfamily{#4}%
-		\fontseries{#5}%
-		\fontsize{#2}{#2}%
-		\selectfont%
-		#6%
-	}%
+        \shadowoffset{2pt}%
+        \shadowtext%
+        {%
+                \textcolor{#1}%
+                \fontencoding{#3}%
+                \fontfamily{#4}%
+                \fontseries{#5}%
+                \fontsize{#2}{#2}%
+                \selectfont%
+                #6%
+        }%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\shadowfypars#1\par#2\relax%
 {%
-	%\begingroup\catcode`\$=11
-  	\ifstrempty{#1} {}{\shadowfywords#1 \relax\relax}%
-        \ifstrempty{#2}{}{\par\shadowfypars#2\relax}%  
+        %\begingroup\catcode`\$=11
+        \ifstrempty{#1} {}{\shadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}{}{\par\shadowfypars#2\relax}%
         %\expandafter\@firstoftwo\unskip%
         %\expandafter\@secondoftwo\unskip%
-%	\endgroup   
-%  	\ifx#1\relax\else%
-%    		\shadowfywords#1 \relax\relax%
-%  	\fi%
-%  	\ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
+%       \endgroup
+%       \ifx#1\relax\else%
+%               \shadowfywords#1 \relax\relax%
+%       \fi%
+%       \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadowfywords#1 #2\relax%
 {%
-	%\begingroup\catcode`\$=11
-  	\ifstrempty{#1}{}{\shadowfyletters#1\relax\relax}%
+        %\begingroup\catcode`\$=11
+        \ifstrempty{#1}{}{\shadowfyletters#1\relax\relax}%
         \ifstrempty{#2}{}{\ \shadowfywords#2\relax}%
         \unskip%
-%	\endgroup
-%	\expandafter\@firstoftwo%\catcode`$=11
-%	\def\@left@char{\StrLeft{#2}{1}}
-%	\IfStrEq{\@left@char}{$}{hello}{}    
-%	%\IfStrEq{\StrLeft{#2}{1}}{$}{hello}{}
-%	\catcode`$=12  
-%  	\ifx#1\relax\else%
-%    		\shadowfyletters#1\relax\relax%
-%  	\fi%
-%  	\ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
+%       \endgroup
+%       \expandafter\@firstoftwo%\catcode`$=11
+%       \def\@left@char{\StrLeft{#2}{1}}
+%       \IfStrEq{\@left@char}{$}{hello}{}
+%       %\IfStrEq{\StrLeft{#2}{1}}{$}{hello}{}
+%       \catcode`$=12
+%       \ifx#1\relax\else%
+%               \shadowfyletters#1\relax\relax%
+%       \fi%
+%       \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadowfyletters#1#2\relax%
-{%  
-%	\begingroup\catcode`\$=11
-%	\@ifnextchar\$%
-%	\@ifnextchar\textdollar%
-%	\@ifnextchar\mathdollar%
-%		{whoop\@gobble}{}%
-	\shadow{#1}%
-%	\mathshadow{#1}%
-%	\ifmmode{\dagger}\else \shadow{#1}%
-%	\ifstrempty{#2}%
-%  		{}%
-%             	{\shadowfyletters#2\relax}%
+{%
+%       \begingroup\catcode`\$=11
+%       \@ifnextchar\$%
+%       \@ifnextchar\textdollar%
+%       \@ifnextchar\mathdollar%
+%               {whoop\@gobble}{}%
+        \shadow{#1}%
+%       \mathshadow{#1}%
+%       \ifmmode{\dagger}\else \shadow{#1}%
+%       \ifstrempty{#2}%
+%               {}%
+%               {\shadowfyletters#2\relax}%
 %      \unskip%
-  	\ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%\fi%
-%	\endgroup
+        \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%\fi%
+%       \endgroup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\doubleshadowfypars#1\par#2\relax%
@@ -267,15 +280,15 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\shadow#1%
 {%
-	\kern\shadowHoffset%
-  	\raisebox{\st@shadowoffsety}%
-  	{%
-  		\stackinset{c}{-\st@shadowoffsetx}{c}{-\st@shadowoffsety}%
-  			{\color{\st@textcolor}{#1}}%
-  			{\color{\st@shadowcolor}{#1}}%
-  	}%
-  	\kern-\st@shadowoffsetx%
-	\unskip\ignorespaces%
+        \kern\shadowHoffset%
+        \raisebox{\st@shadowoffsety}%
+        {%
+                \stackinset{c}{-\st@shadowoffsetx}{c}{-\st@shadowoffsety}%
+                        {\color{\st@textcolor}{#1}}%
+                        {\color{\st@shadowcolor}{#1}}%
+        }%
+        \kern-\st@shadowoffsetx%
+        %\unskip\ignorespaces%
 }
 \def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -289,7 +302,7 @@
                         {\color{\st@doubleshadowcolor}{#1}}%
         }%
         \kern-\st@doubleshadowoffsetx%
-        \unskip\ignorespaces%
+        %\unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
@@ -326,47 +339,47 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2              3           4          5                  6                          7   8
 \DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.75pt} D<>{0.1pt} O{current-coltext} D(){current-coltextshadow} d:: m}
-{%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}	
-	%\setlength\shadowHoffset{#3}%
-	%\setlength\shadowVoffset{#4}%
-	%\def\primarycolor{#5}%
-	%\def\secondarycolor{#6}%
-	\shadowoffsetx{#3}%
-	\shadowoffsety{#4}%
-	\shadowbasecolor{#5}%
-	\shadowcolor{#6}%
-	%\setshadowTextProps[#3][#4]'#5'(#6)
-	%\IfValueTF{#7}{\expandafter\def\expandafter\@text@arg\expandafter{\BreakableShadowText'#2'<#3><#4>[#5](#7){#8}}}{\def\@text@arg{#8}}%
+{%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}
+        %\setlength\shadowHoffset{#3}%
+        %\setlength\shadowVoffset{#4}%
+        %\def\primarycolor{#5}%
+        %\def\secondarycolor{#6}%
+        \shadowoffsetx{#3}%
+        \shadowoffsety{#4}%
+        \shadowbasecolor{#5}%
+        \shadowcolor{#6}%
+        %\setshadowTextProps[#3][#4]'#5'(#6)
+        %\IfValueTF{#7}{\expandafter\def\expandafter\@text@arg\expandafter{\BreakableShadowText'#2'<#3><#4>[#5](#7){#8}}}{\def\@text@arg{#8}}%
         \IfBooleanTF{#1}%
-	%{#2\shadowfy{\underline{#7}}\unskip}%
-	{%
-		\IfValueTF{#7}%
-		{#2\doubleshadowcolor{#7}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#8}\kern2\st@doubleshadowoffsetx}}%
+        %{#2\shadowfy{\underline{#7}}\unskip}%
+        {%
+                \IfValueTF{#7}%
+                {#2\doubleshadowcolor{#7}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#8}\kern2\st@doubleshadowoffsetx}}%
                 {\underline{#2\shadowfy{#8}}}%
-	}%
-	{%
+        }%
+        {%
                 \IfValueTF{#7}%
                 {#2\doubleshadowcolor{#7}\doubleshadowfy{#8}}%
                 {#2\shadowfy{#8}}%
         }%
-        \unskip\ignorespaces%
+        %\unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                    1 2                  3            4         5            6 7   8
 \DeclareDocumentCommand{\shadowText}{s D::{\anttmcap16pt} D<>{0.65pt} D<>{0.2pt} D''{current} o d() m}
 {%\shadowText|title font|'color style'{title text}
-	%\IfBooleanTF{#1}%
-	%{%
-	%	
-	%\ignorespaces\unskip\setshadowTextProps[#3][#4]{#5}%
-	\ignorespaces\unskip\setshadowTextProps[#3][#4]'#5-coltext'(#5-coltextshadow)%
+        %\IfBooleanTF{#1}%
+        %{%
+        %
+        %\ignorespaces\unskip\setshadowTextProps[#3][#4]{#5}%
+        \ignorespaces\unskip\setshadowTextProps[#3][#4]'#5-coltext'(#5-coltextshadow)%
         \IfValueTF{#6}%
-		{\shadowcolor{#6}}%
-		{\shadowcolor{#5-coltextshadow}}%
-	\IfValueTF{#7}%
-		{\ignorespaces\unskip#2\shadowbasecolor{#7}}%
-		{\ignorespaces\unskip#2\shadowbasecolor{#5-coltext}}%
-	%\IfValueTF{#7}%
+                {\shadowcolor{#6}}%
+                {\shadowcolor{#5-coltextshadow}}%
+        \IfValueTF{#7}%
+                {\ignorespaces\unskip#2\shadowbasecolor{#7}}%
+                {\ignorespaces\unskip#2\shadowbasecolor{#5-coltext}}%
+        %\IfValueTF{#7}%
 %                {\ignorespaces\unskip#2\color{#7}}%
 %                {\ignorespaces\unskip#2\color{#5-coltext}}%
         \ignorespaces\unskip\color{\st@textcolor}\shadowtext{#8}\ignorespaces\unskip%
@@ -395,7 +408,7 @@
 \DeclareTextCommand{\euro}{LGR}{\char"18\relax}
 \DeclareTextCommand{\Euro}{LGR}{\char"18\relax}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareTextFontCommand{\textbboard}{\bboardfamily}						%\RequirePackage{mbboard}
+%\DeclareTextFontCommand{\textbboard}{\bboardfamily}                                            %\RequirePackage{mbboard}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -554,9 +567,9 @@
 \DeclareFontFamily{U}{rsfso}{\skewchar \font =45}
 \DeclareFontShape{U}{rsfso}{m}{n}
 {
-	<-6> \rsfso@@scale  rsfso5
-   	<6-8> \rsfso@@scale  rsfso7
-   	<8-> \rsfso@@scale  rsfso10
+        <-6> \rsfso@@scale  rsfso5
+        <6-8> \rsfso@@scale  rsfso7
+        <8-> \rsfso@@scale  rsfso10
 }{}
 \DeclareFontShape{T1}{bickham}{m}{n}{  <-> \bickham@@scale  bickham-r}{}
 \DeclareFontShape{T1}{bickham}{b}{n}{  <-> \bickham@@scale  bickham-b}{}
@@ -566,68 +579,68 @@
 \DeclareFontShape{T1}{bickham}{sb}{it}{   <-> ssub * bickham/sb/n}{}
 \DeclareFontShape{T1}{bickham}{m}{it}{   <-> ssub * bickham/m/n}{}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareFontEncoding				{LS1}{}{}						%\RequirePackage{stix}<stix.sty>
-\DeclareFontEncoding				{LS2}{}{\noaccents@}				%\RequirePackage{stix}<stix.sty>
+\DeclareFontEncoding                            {LS1}{}{}                                               %\RequirePackage{stix}<stix.sty>
+\DeclareFontEncoding                            {LS2}{}{\noaccents@}                            %\RequirePackage{stix}<stix.sty>
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareFontSubstitution			{LS1}{stix}{m}{n}
-\DeclareFontSubstitution			{LS2}{stix}{m}{n}
-%\DeclareFontSubstitution{OT1}{mbb}{m}{n}								%\RequirePackage{mbboard}
+\DeclareFontSubstitution                        {LS1}{stix}{m}{n}
+\DeclareFontSubstitution                        {LS2}{stix}{m}{n}
+%\DeclareFontSubstitution{OT1}{mbb}{m}{n}                                                               %\RequirePackage{mbboard}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathAlphabet{\mathitst}   	{LS1}{stix}     {m} {it}				%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathrmst}   	{LS1}{stix}     {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathscript}  	{LS1}{stixscr}  {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathfrakst} 	{LS1}{stixfrak} {m}{n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbbst}   	{LS1}{stixbb}   {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbbstit} 	{LS1}{stixbb}   {m} {it}				%\RequirePackage{stix}<stix.sty>	
-\DeclareMathAlphabet{\mathcalst}  	{LS2}{stixcal}  {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathsfst}   	{LS1}{stixsf}   {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathsfstit} 	{LS1}{stixsf}   {m} {it}				%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathttst}   	{LS2}{stixtt}   {m} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfst}   	{LS1}{stix}     {b} {n}					%\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathitst}         {LS1}{stix}     {m} {it}                                %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathrmst}         {LS1}{stix}     {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathscript}       {LS1}{stixscr}  {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathfrakst}       {LS1}{stixfrak} {m}{n}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbst}         {LS1}{stixbb}   {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbstit}       {LS1}{stixbb}   {m} {it}                                %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathcalst}        {LS2}{stixcal}  {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathsfst}         {LS1}{stixsf}   {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathsfstit}       {LS1}{stixsf}   {m} {it}                                %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathttst}         {LS2}{stixtt}   {m} {n}                                 %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfst}         {LS1}{stix}     {b} {n}                                 %\RequirePackage{stix}<stix.sty>
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % Bold font versions of selected fonts above, each font name preceeded by 'bf' followed by the font name
-\DeclareMathAlphabet{\mathbfitst}  	{LS1}{stix}    {b}{it}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfsfst}  	{LS1}{stixsf}  {b} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfsfitst}	{LS1}{stixsf}  {b}{it}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfbbst}  	{LS1}{stixbb}  {b} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfbbitst}	{LS1}{stixbb}  {b}{it}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbfscript} {LS1}{stixscr} {b} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbffrakst}	{LS1}{stixfrak}{b} {n}					%\RequirePackage{stix}<stix.sty>
-\DeclareMathAlphabet{\mathbbold}{U}{bbold}{m}{n}						%\RequirePackage{bbold}<bbold.sty>
-\DeclareMathAlphabet{\mathbbm}{U}{bbm}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
-%\DeclareMathAlphabet{\mathbbs}{U}{bbmss}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
-%\DeclareMathAlphabet{\mathbbt}{U}{bbmtt}{m}{n}							%\RequirePackage{bbm}<bbm.sty>
-\DeclareMathAlphabet{\mathrsfso}{U}{rsfso}{m}{n}						%\RequirePackage{rsfso}<rsfso.sty>
-%\DeclareMathAlphabet{\mathds}{U}{dsrom}{m}{n}							%\RequirePackage{dsfont}<dsfont.sty>
-\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}							%\RequirePackage{?}<?.sty>
+\DeclareMathAlphabet{\mathbfitst}       {LS1}{stix}    {b}{it}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfsfst}       {LS1}{stixsf}  {b} {n}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfsfitst}     {LS1}{stixsf}  {b}{it}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfbbst}       {LS1}{stixbb}  {b} {n}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfbbitst}     {LS1}{stixbb}  {b}{it}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbfscript} {LS1}{stixscr} {b} {n}                                      %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbffrakst}     {LS1}{stixfrak}{b} {n}                                  %\RequirePackage{stix}<stix.sty>
+\DeclareMathAlphabet{\mathbbold}{U}{bbold}{m}{n}                                                %\RequirePackage{bbold}<bbold.sty>
+\DeclareMathAlphabet{\mathbbm}{U}{bbm}{m}{n}                                                    %\RequirePackage{bbm}<bbm.sty>
+%\DeclareMathAlphabet{\mathbbs}{U}{bbmss}{m}{n}                                                 %\RequirePackage{bbm}<bbm.sty>
+%\DeclareMathAlphabet{\mathbbt}{U}{bbmtt}{m}{n}                                                 %\RequirePackage{bbm}<bbm.sty>
+\DeclareMathAlphabet{\mathrsfso}{U}{rsfso}{m}{n}                                                %\RequirePackage{rsfso}<rsfso.sty>
+%\DeclareMathAlphabet{\mathds}{U}{dsrom}{m}{n}                                                  %\RequirePackage{dsfont}<dsfont.sty>
+\DeclareMathAlphabet{\mathpzc}{OT1}{pzc}{m}{it}                                                 %\RequirePackage{?}<?.sty>
 \DeclareMathAlphabet{\mathbick}{T1}{bickham}{m}{n}
 %\DeclareMathAlphabet{\mathbickx} {T1}{bickham}{sb}{n}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\SetMathAlphabet\mathbbold{bold}{U}{bbold}{bx}{n}						%\RequirePackage{bbold}<bbold.sty>
-\SetMathAlphabet\mathbbm{bold}{U}{bbm}{bx}{n}							%\RequirePackage{bbm}<bbm.sty>
-%\SetMathAlphabet\mathbbs{bold}{U}{bbmss}{bx}{n}							%\RequirePackage{bbm}<bbm.sty>
+%\SetMathAlphabet\mathbbold{bold}{U}{bbold}{bx}{n}                                              %\RequirePackage{bbold}<bbold.sty>
+\SetMathAlphabet\mathbbm{bold}{U}{bbm}{bx}{n}                                                   %\RequirePackage{bbm}<bbm.sty>
+%\SetMathAlphabet\mathbbs{bold}{U}{bbmss}{bx}{n}                                                        %\RequirePackage{bbm}<bbm.sty>
 \SetMathAlphabet{\mathbick}{bold}{T1}{bickham}{b}{n}
 %\SetMathAlphabet{\mathbickx}{bold}{T1}{bickham}{bx}{n}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareSymbolFont{mbb}{OT1}{mbb}{m}{n}
-%\DeclareSymbolFont{mbb}{OT1}{mbb}{bx}{n}								%\RequirePackage{mbboard}
-%\DeclareSymbolFontAlphabet{\mathbboard}{mbb}							%\RequirePackage{mbboard}
-\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}								%\RequirePackage{bbold}<bbold.sty>
-%\DeclareSymbolFont{symbolsA}{OMS}{txsy}{m}{n}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
-\DeclareSymbolFont{lettersA}{U}{txmia} {m}{it}							%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
-\DeclareSymbolFont{lettersP}{OML}{antt}{m}{it}							%\RequirePackage{antt}<antt.sty>
-\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}								%\RequirePackage{mathrsfs}<mathrsfs.sty>
-%\DeclareSymbolFont{AMSbb}{U}{pxsyb}{m}{n}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%\DeclareSymbolFont{mbb}{OT1}{mbb}{bx}{n}                                                               %\RequirePackage{mbboard}
+%\DeclareSymbolFontAlphabet{\mathbboard}{mbb}                                                   %\RequirePackage{mbboard}
+\DeclareSymbolFont{bbold}{U}{bbold}{m}{n}                                                               %\RequirePackage{bbold}<bbold.sty>
+%\DeclareSymbolFont{symbolsA}{OMS}{txsy}{m}{n}                                                  %\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+\DeclareSymbolFont{lettersA}{U}{txmia} {m}{it}                                                  %\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+\DeclareSymbolFont{lettersP}{OML}{antt}{m}{it}                                                  %\RequirePackage{antt}<antt.sty>
+\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}                                                         %\RequirePackage{mathrsfs}<mathrsfs.sty>
+%\DeclareSymbolFont{AMSbb}{U}{pxsyb}{m}{n}                                                      %\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareSymbolFontAlphabet{\mathtxsy}{symbolsA}							%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
-%\DeclareSymbolFontAlphabet{\mathtxmia}{lettersA}						%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
-\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}							%\RequirePackage{mathrsfs}<mathrsfs.sty>
-%\DeclareSymbolFontAlphabet{\mathpxsyb}{AMSbb}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%\DeclareSymbolFontAlphabet{\mathtxsy}{symbolsA}                                                        %\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+%\DeclareSymbolFontAlphabet{\mathtxmia}{lettersA}                                               %\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+\DeclareSymbolFontAlphabet{\mathrsfs}{rsfs}                                                     %\RequirePackage{mathrsfs}<mathrsfs.sty>
+%\DeclareSymbolFontAlphabet{\mathpxsyb}{AMSbb}                                                  %\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\SetSymbolFont{symbolsA}{bold}{OMS}{txsy}{bx}{n}						%\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
-\SetSymbolFont{lettersA}{bold}{U}{txmia}{bx}{it}						%\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
-\SetSymbolFont{lettersP}{bold}{OML}{antt}{bx}{it}						%\RequirePackage{antt}<antt.sty>
-%\SetSymbolFont{AMSbb}{bold}{U}{pxsyb}{bx}{n}							%\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
+%\SetSymbolFont{symbolsA}{bold}{OMS}{txsy}{bx}{n}                                               %\RequirePackage{txfonts}<txfonts.sty> txsy = cmsy
+\SetSymbolFont{lettersA}{bold}{U}{txmia}{bx}{it}                                                %\RequirePackage{txfonts}<txfonts.sty> txmia = msbm
+\SetSymbolFont{lettersP}{bold}{OML}{antt}{bx}{it}                                               %\RequirePackage{antt}<antt.sty>
+%\SetSymbolFont{AMSbb}{bold}{U}{pxsyb}{bx}{n}                                                   %\RequirePackage{pxfonts}<pxfonts.sty> pxsyb=MSBM
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%

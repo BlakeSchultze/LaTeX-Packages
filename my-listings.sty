@@ -127,8 +127,8 @@
 \DeclareCaptionFont{green}{\color{green}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareCaptionLabelFormat{stdlisting}{\bothIfFirst{#1}{ }#2}
-\DeclareCaptionLabelFormat{Matlab}{\cftMatlabtoctitle}
-\DeclareCaptionLabelFormat{Terminal}{\cftTerminaltoctitle}
+\DeclareCaptionLabelFormat{Matlab}{\cftMatlab@toctitle}
+\DeclareCaptionLabelFormat{Terminal}{\cftTerminal@toctitle}
 %\DeclareCaptionLabelFormat{emptylabel}{\bothIfFirst{#1}{}#2}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareCaptionFormat{stdlisting}{#1#2#3\par}
@@ -207,30 +207,27 @@
         IfBooleanTF={#1}
                 {tcbbashboxStyle={\@tcb@default@boxrule@linewidth}{single}{tcbbashboxColorset-colfill}{tcbbashboxColorset-colinteriorborder}}
                 {tcbbashboxStyle},
+        IfBooleanTF={#2}{top=3.0mm}{},
+        width=#3,
         listing options={style=terminalStyle, language=bash-extended, name=bash-extended},
         listing remove caption=false, listing and comment, listing engine=listings,
         every listing line*={\textcolor{lstterminalColorset-fillcolor}>},
+        IfValueTF={#5}
+                {comment={#5}}
+                {listing only},
         IfBooleanTF={#2}
                 {blend before title code={}}
-                {blend before title code={\cftTerminaltitleblend{\@title@sep}}},
+                {blend before title code={\cftTerminal@titleblend{\@title@sep}}},
         IfBooleanTF={#2}
         {title={}}
         {
                 IfValueTF={#4}
-                        {title={\cftXtcbtitle@font{#4}}}
+                        {title={\cftX@tcbtitle@font*{#4}}}
                         {title={\space}}
         },
-        IfBooleanTF={#2}{top=3.0mm}{},
-        width=#3,
-        %IfValueTF={#4}
-%               {list entry={\cftTerminalfont\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminal\@title@sep#4}}
-%               {list entry={\cftTerminalfont\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminal}},\cftMatlablistentry{\@title@sep#1}
         IfValueTF={#4}
-                {list entry={\cftTerminalfont\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminal\@title@sep#4}}
-                {list entry={\cftTerminalfont\protect\numberline{\thelstlisting}\@tcblisting@terminal@caption@title\ \theTerminal}},
-        IfValueTF={#5}
-                {comment={#5}}
-                {listing only},
+                {list entry={\cftTerminal@listentry{\@title@sep#4}}}
+                {list entry={\cftTerminal@listentry{\@title@sep}}},
         %after={\unskip\ignorespaces}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -255,13 +252,13 @@
         },
         listing options=
         {
-                style=matlabStyle, language=matlab-extended, title={\cftMatlabtoctitle\@tcb@title@sep#5},
+                style=matlabStyle, language=matlab-extended, title={\cftMatlab@tcbtitle\@tcb@title@sep#5},
                 label={#6}, firstnumber={#2}, firstline={#3}, lastline={#4},
         },
         listing file={#7}, listing engine=listings, listing only, listing remove caption=false,
-        blend before title code={\cftMatlabtitleblend{\@title@sep}},
-        list entry={\cftMatlablistentry{\@title@sep#1}},
-        title={\cftXtcbtitle@font*{#1}},
+        blend before title code={\cftMatlab@titleblend{\@title@sep}},
+        list entry={\cftMatlab@listentry{\@title@sep#1}},
+        title={\cftX@tcbtitle@font*{#1}},
         after={\par\medskip\smallskip}
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
