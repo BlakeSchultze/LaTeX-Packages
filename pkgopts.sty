@@ -1,12 +1,12 @@
 %*****************************************************************************************************************************************%
 %*********************************************************** `pkgopts.sty' ***************************************************************%
 %*****************************************************************************************************************************************%
-% Expands upon the 'kvoptions' package to add another '\DeclareXOption' package option key type and associated definition/management commands corresponding to a 'X=Choice' type key, analagous to a key defined using the 'define@choicekey' command of the 'keyval' package, thereby providing key/value package option equivalents to each of the primary key types defined by the 'keyval' package.  This package also 
+% Expands upon the 'kvoptions' package to add another '\DeclareXOption' package option key type and associated definition/management commands corresponding to a 'X=Choice' type key, analagous to a key defined using the 'define@choicekey' command of the 'keyval' package, thereby providing key/value package option equivalents to each of the primary key types defined by the 'keyval' package.  This package also
 %*****************************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
 %*****************************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{pkgopts}                    	%
+\ProvidesPackage{pkgopts}                       %
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
@@ -26,6 +26,7 @@
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\fullyexpand#1{\romannumeral - `0#1}
+\def\xp@cmd#1#2{\expandafter#1\expandafter#2}
 \def\shown#1{\expandafter\show\csname\string#1\endcsname}
 \def\showthen#1{\expandafter\showthe\csname\string#1\endcsname}
 \def\don#1{\csname\string#1\endcsname}
@@ -42,21 +43,22 @@
 \xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
 \def\pkgname{my-latex}%
 \newcommand\@pkgopts@packages{etoolbox,kvoptions}
+\def\minispace{\space\!}
 %*****************************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePackageOnce[1]
-{%    
+{%
         \@ifpackageloaded{#1}{}%
         {%
-        	\RequirePackage{#1}%
-		\ifdefined\@loaded@packages%
+                \RequirePackage{#1}%
+                \ifdefined\@loaded@packages%
                         \edef\@loaded@packages{\@loaded@packages,#1}%
-		\else%
+                \else%
                         \edef\@loaded@packages{#1}%
-		\fi
-        }%	
+                \fi
+        }%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePackageList[1]{\@for\next:=#1\do{\expandafter\RequirePackageOnce\expandafter{\next}}}
@@ -89,9 +91,9 @@
 \def\@DeclareChoiceOption(#1)#2[#3]#4%
 {%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
         \ifstrempty{#1}
-        	{\def\@current@prefix{\KVO@prefix}}%
-        	{\def\@current@prefix{#1}}%
-	\ifstrempty{#3}
+                {\def\@current@prefix{\KVO@prefix}}%
+                {\def\@current@prefix{#1}}%
+        \ifstrempty{#3}
                 {\DeclareStringOption{#2}}%
                 {\DeclareStringOption{#2}[#3]}%
         \ifundef{\@defined@Choice@Options}%
@@ -104,9 +106,9 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\DeclareBoolOptionPair[2][false]%
 {%\DeclareBoolOptionPair[<init>]{<key>}
-	\DeclareBoolOption[#1]{#2}
-	\DeclareComplementaryOption{#2off}{#2}
-	\DeclareComplementaryOption{no#2}{#2}
+        \DeclareBoolOption[#1]{#2}
+        \DeclareComplementaryOption{#2off}{#2}
+        \DeclareComplementaryOption{no#2}{#2}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessChoiceOption[2][\KVO@prefix]%
@@ -114,11 +116,11 @@
         \expandafter\ifdefempty\expandafter{\csname#1#2\endcsname}%
                 {}{\csname #1#2true\endcsname}%
         \expandafter\csname if\csname @\next @prefix\endcsname\next\endcsname\relax%
-	        \xdef\@valid@choice@options{\csname @#1valid@#2@choice@options\endcsname}%
-	        \@for\@valid@option:=\@valid@choice@options\do%
-	        	{\expandafter\ifx\expandafter\@valid@option\csname #1#2\endcsname\def\@validated{true}\fi}%
-		\ifdefined\@validated\else\DeclareChoiceOptionError[#1]{#2}\fi
-        \fi%   
+                \xdef\@valid@choice@options{\csname @#1valid@#2@choice@options\endcsname}%
+                \@for\@valid@option:=\@valid@choice@options\do%
+                        {\expandafter\ifx\expandafter\@valid@option\csname #1#2\endcsname\def\@validated{true}\fi}%
+                \ifdefined\@validated\else\DeclareChoiceOptionError[#1]{#2}\fi
+        \fi%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\csname @\next @prefix\endcsname]{\next}}}
@@ -135,7 +137,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintChoiceInfo[2][]%
 {%\ProcessChoiceOption[<prefix>]{<key>}
-	\ifstrempty{#1}
+        \ifstrempty{#1}
                 {\def\@choicekey@prefix{\csname @#2@prefix\endcsname}}
                 {\def\@choicekey@prefix{#1}}
         \indent \underline{Choice key (family@key)} : \@choicekey@prefix#2\\
@@ -146,14 +148,14 @@
                 \indent\indent \underline{Selected Choice} = \expandafter\csname\@choicekey@prefix#2\endcsname\\
         \else%
                 \indent\indent \underline{Provided} = false\\%
-        \fi%        
+        \fi%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintChoicesInfo%
 {%
-	\noindent \underline{Defined Choice Keys} : \@defined@Choice@Options\\%
+        \noindent \underline{Defined Choice Keys} : \@defined@Choice@Options\\%
         \@for\next:=\@defined@Choice@Options%
-        	\do{\PrintChoiceInfo[\csname @\next @prefix\endcsname]{\next}}%
+                \do{\PrintChoiceInfo[\csname @\next @prefix\endcsname]{\next}}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintPackageList{\noindent \underline{Loaded Packages} : \@loaded@packages}
@@ -166,16 +168,16 @@
                 {\def\thedocumentclass{report}}%
                 {\def\thedocumentclass{\csname #1documentclass\endcsname}}%
         \ifmylatex@article
-		\def\thedocumentclass{article}
-	\fi
-	\ifmylatex@report
-		\def\thedocumentclass{report}
+                \def\thedocumentclass{article}
+        \fi
+        \ifmylatex@report
+                \def\thedocumentclass{report}
         \fi
         \ifmylatex@standalone
                 \documentclass[class=\thedocumentclass, crop=false]{standalone}
-	\else
+        \else
                 \documentclass{\thedocumentclass}
-	\fi
+        \fi
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%

@@ -148,7 +148,7 @@
                 \if\pgfmathresult 1\relax
                         \hyperlink{\@page@one@target@name}{#3}%
                 \else
-                \hyperlink{\@page@n@target@name#2}{#3}%
+                        \hyperlink{\@page@n@target@name#2}{#3}%
                 \fi
         \endgroup%
 }
@@ -235,8 +235,8 @@
                                         \doublespacing%
                                         \shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}%
                                         \vspace{1mm}%
-                              \else%
-                                    \vspace{-6mm}%
+                                \else%
+                                        \vspace{-6mm}%
                                         \shadowtext{\raggedright#3{#4}}%
                                         \vspace{-4mm}%
                                 \fi%
@@ -357,7 +357,8 @@
                 {\def\@title@sep{}}%
                 {\def\@title@sep{\@tcb@title@sep}}%
         \def\titleargwrapper{#2}%
-        \begin{figboxfigure}[reset, tcbfigureStyle]{\titleargwrapper}[#3]%
+        %\begin{figboxfigure}[reset, tcbfigureStyle]{\titleargwrapper}[#3]%
+        \begin{figboxfigure}[reset, tcbfigureStyle]{#2}[#3]%
                 \includegraphics[width=\@tcb@figboxfigure@width]{#1}%
         \end{figboxfigure}%
 }
@@ -441,13 +442,11 @@ linewidth=4pt, linecolor=current-coldraw,
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtcolorbox{tcbContentsBox}
 {%
-        reset, enhanced, capture=minipage, boxrule=3pt, breakable, @set@tcb@property@colors=tcbBlueScheme, %colback=stdbackground, colframe=black,
-        before=\par\bigskip\smallskip\noindent, after=\par\medskip, fonttitle=\sffamily\bfseries,
+        reset, enhanced, capture=minipage, boxrule=3pt, breakable, @set@tcb@property@colors=tcbBlueScheme,
+        before=\par\bigskip\smallskip\noindent, after=\par\medskip, %fontupper=\tcbX@title@fontfamily,
+        fonttitle=\tcbX@title@fontdef,
         top=1mm, bottom=0.5pt, left=6mm, left skip=1mm, %colback=stdbackground,
-        %code={\setul{1.15pt}{0.5pt}\colorlet{current-coltext}{white}\colorlet{current-coltextshadow}{black}},
-        %code={\setul{1.15pt}{0.5pt}\colorlet{current-coltext}{white}\colorlet{current-coltextshadow}{black}},
-        %tcbborder={\@tcb@default@boxrule@linewidth}{single}{tcbBlueScheme-colframeborder}{tcbBlueScheme-colinteriorborder},
-        titleframeComboInteriorSetup, 
+        titleframeComboInteriorSetup,
         titleframeComboSetup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -475,43 +474,112 @@ linewidth=4pt, linecolor=current-coldraw,
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ o m O{fig:fig\thefigure}}
+%\DeclareTColorBox[list inside=figbox, list type=figbox]{figbox}{ O{} m O{fig:fig\thefigure}}
+\DeclareTColorBox{figbox}{ O{} m O{fig:fig\thefigure}}
 {
-        #1, capture=hbox,
+        tcbfigboxStyle={\@tcb@boxrule@linewidth}{single}{tcbfigboxColorset-colframeborder}{tcbfigboxColorset-colinteriorborder},
+        left skip=0pt, #1,
+        capture=hbox, label={#3}, every float=\centering,
         code=
         {
-                %\def\thearg{#2}%
+                %\@set@current@tcb@colors{tcbfigureColorset}
+                %\ifdefempty{#2}
+                %        {\def\@title@sep{}}
+                 %       {\def\@title@sep{\@tcb@title@sep}}
+        },
+        %blend before title code={WGEWhWHweg\cftfigbox@titleblend{WGEWhWHweg\@title@sep}WGEWhWHweg},
+        %title={\cftfigbox@hypertitle{\@title@sep}{#2}},%\cftfigbox@contentsline{\@title@sep#2}
+        title={\cftfigbox@contentsline{#2}\cftfigbox@hypertitle*{}{#2}}%,
+        %title={\cftX@tcbtitle@font*{#2}},
+        %title={\cftfigbox@tcbtitle@font*{#2}},
+        %list entry={adasdasd\cftfigbox@listentry{#2}}%\hspace{\cftfigboxindent}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ o m O{fig:fig\thefigure}}
+{
+        #1, capture=hbox, label={#3}, every float=\centering,
+        code=
+        {
                 \@set@current@tcb@colors{tcbfigureColorset}
-        	\ifdefempty{#2}
+                %\ifdefempty{#2}
+%                        {\def\@title@sep{}}
+%                        {\def\@title@sep{\@tcb@title@sep}}
+                \ifstrempty{#2}
                         {\def\@title@sep{}}
                         {\def\@title@sep{\@tcb@title@sep}}
         },
-        %blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
-        blend before title code={\cftfigboxfigure@titleblend{\@title@sep}},
-        label={#3},
-        %blend before title code={\cftMatlab@titleblend{\@title@sep}},
-        %list entry={\cftMatlab@listentry{\@title@sep#1}},
-        title={\bfmseries\cftX@tcbtitle@font*{#2}},
-        %title={\BreakableShadowText[white](black){#2}},
-        %list entry={\hspace{\cftfigboxfigure@indent}\normalsize\bfseries\protect\numberline{\thefigboxfigure}#3},%\hspace{\cftfigboxfigureindent}
-        list entry={\hspace{\cftfigboxfigureindent}\cftfigboxfigure@listentry{\@title@sep}#2}, %\hspace{\cftfigboxfigureindent}
-        %list text={\cftfigboxfigure@listentry{\@title@sep}#2},
-        every float=\centering
+        %blend before title code={\cftfigboxfigure@titleblend{\@title@sep}},
+        blend before title code={\cftfigboxfigure@hyperblend*'\@tcb@subtitle@font'{\@title@sep}\unskip\ignorespaces},
+        %title={\cftfigbox@contentsline{\@title@sep#2}\cftfigbox@hypertitle{\@title@sep}{#2}}]%
+        %title={\cftX@tcbtitle@font*{#2}},
+        %title={\shadowmathfy{#2}},
+        title={\cftfigboxfigure@hyperblend@title*{}{#2}},
+        list entry={\hspace{\cftfigboxfigureindent}\cftfigboxfigure@listentry{\@title@sep}#2}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox[blend into=tables]{IBPtable}{O{} m m O{}}
+{
+        tabular*=
+        {%
+                \def\@save@arraystretch{\arraystretch}%
+                %\renewcommand{\arraystretch}{\@tcb@arraystretch}
+                \setlength\doublerulesep{0pt}%
+                \setlength{\arrayrulewidth}{0.75pt}%
+        }{#2},
+        %halign=center, valign=center,
+        IBPStyle={\@tcb@default@boxrule@linewidth}{single}{IBPColorset-colframeborder}{IBPColorset-colinteriorborder},
+        %halign=center, valign=center,
+        code=
+        {%
+        	\def\@title@sep{}
+        	\ifdefempty{#3}%
+        	{%
+        		\vspace{5mm}%
+        		\tocX@hypertarget[0pt]{table}[IBPtable]%
+                        %\def\@title@sep{}%
+        		\setlength{\@tcbIBP@leftright@skip}{0mm}%
+        	}
+        	{%
+        		\vspace{5mm}%
+                        \tocX@hypertarget[0pt]{table}[IBPtable]%
+                        \def\@title@sep{\@tcb@title@sep}%
+                        \setlength{\@tcbIBP@leftright@skip}{\maxof{0.5\@tcbIBP@math@content@width - 4mm}{0mm}}%
+       	 	}
+       		\ifdefempty{#4}%
+                {}
+                {%
+	                \def\@title@sep{\@tcb@title@sep}%
+	                \addtolength{\@tcbIBP@leftright@skip}{-0.5\@tcbIBP@math@content@width + 4mm}%
+                }%
+                
+        },
+        %box align=center, 
+        %box align=bottom,
+        extrude left by=\@tcbIBP@leftright@skip,
+        extrude right by=\@tcbIBP@leftright@skip,
+        every float=\centering,
+        label={tab:tab\thetable},
+        blend before title code={\cftIBPtable@hyperblend*{\@title@sep}},
+        title={#3},
+        extrude right by=1mm, 
+       	%halign=center, 
+       	%valign=top,
+        %valign=bottom,
+        list entry={\cftIBPtable@listentry{\@title@sep#4}}
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=figures]{boxedfigure}{ o m m O{fig:fig\thefigure}}
         {#1, capture=hbox, label={#4}, title={#2}, list text={\normalsize\bfseries#3}, every float=\centering}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=tables]{boxedtable}{ o m m O{h!} O{tab:tab\thetable}}
-{
-        #1, float=#4, every float=\centering, capture=hbox,
+{%boxedtable[tcb settings]{tcb title text}{toc title text}[table placement][alternative reference label]
+        #1, float=#4, every float=\centering, capture=hbox, label={#5},
         code=
         {
                 \ifdefempty{#2}
-                {\def\@title@sep{}}
+                        {\def\@title@sep{}}
                         {\def\@title@sep{\@tcb@title@sep}}
         },
-        label={#5},
         title={\shadow{#2}},
         blend before title code={\sffamily\BreakableShadowText[white](black){##1\@title@sep}},
         list entry={\normalsize\bfseries\protect\numberline{\thetable}#3}
@@ -522,7 +590,7 @@ linewidth=4pt, linecolor=current-coldraw,
 {float=#4, capture=hbox, label={#5}, title={#2}, list entry={\normalsize\bfseries\protect\numberline{\thelstlisting}#3}, every float=\centering, #1}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
-%******************************************************** \newkeycommand commands ********************************************************%
+%*********************************************** \newkeycommand/\newkeyenvironment commands **********************************************%
 %*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\autohyperlink
@@ -543,9 +611,6 @@ linewidth=4pt, linecolor=current-coldraw,
                 \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
         }%
 }
-%*****************************************************************************************************************************************%
-%*********************************************** Coverpage and Document Type Environments ************************************************%
-%*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{thedocument}
 [enum type={documentation, homework, default}, author={Blake Edward Schultze}, title=, subtitle=, course number=, course title=, instructor=, assignment=, semester=][1]
@@ -608,6 +673,9 @@ linewidth=4pt, linecolor=current-coldraw,
         \fancyhead[R]{\@header@image}%
         \cfoot[\thepage]{\thepage}
 }{\enddocument}%
+%*****************************************************************************************************************************************%
+%*********************************************** Coverpage and Document Type Environments ************************************************%
+%*****************************************************************************************************************************************%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                                    1 2 3
 \DeclareDocumentEnvironment{documentation-coverpage}{m m m}
@@ -724,21 +792,33 @@ linewidth=4pt, linecolor=current-coldraw,
         \begin{legendList}
 }{\end{legendList}\end{tcbsection}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2               3                  4                      5   6 7
-\DeclareDocumentEnvironment{tcbenvironment}{s D<>{\textwidth} D''{tcbBlueScheme} G{tcbenvironmentStyle} d|| o d()}
+%                                           1 2  3               4                  5                      6 7   8
+\DeclareDocumentEnvironment{tcbenvironment}{s t! D<>{\textwidth} D''{tcbBlueScheme} G{tcbenvironmentStyle} o d() d|| }
 {%tcbenvironment[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-        \@set@current@tcb@colors{#3}%
-        %\tcbset{#4={#3}, width=#2}%drop fuzzy shadow=#3-colboxshadow, 
-        \tcbset{#4, width=#2}%drop fuzzy shadow=#3-colboxshadow,
-        %\@set@current@tcb@colors{#3}%
-        %\IfValueTF{#5}{\tcbset{title=\tcbXtitle@font{#5}}}{}%
+        \@set@current@tcb@colors{#4}%
+        %\tcbset{#4={#3}, width=#2}%drop fuzzy shadow=#3-colboxshadow,
+        \tcbset{#5, width=#3}%drop fuzzy shadow=#3-colboxshadow,
+        %\IfBooleanTF{#2}%
+%                {\tcbset{#5, hbox}}%
+%                {\tcbset{#5, width=#3}}%%\@set@current@tcb@colors{#3}%
+        %\IfValueTF{#5}{\tcbset{title=\tcbX@title@font{#5}}}{}%
         \IfValueTF{#6}{\tcbset{#6}}{}%
         \IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}%
-        %\tcolorbox%[title=\tcbXtitle@font{#5}]%
+        %\tcolorbox%[title=\tcbX@title@font{#5}]%
         %\tcolorbox[title={{#5}}]%
-        \IfValueTF{#5}%
-                {\tcolorbox[title=\tcbXtitle@font{#5}]}%
+        %\IfBooleanTF{#2}%
+        %        {\tcbsetforeverylayer{capture=hbox}}%
+        %        {}%%\@set@current@tcb@colors{#3}%
+        \IfValueTF{#8}%                        
+                {\tcolorbox[title=\shadowText{#8}]}%
                 {\tcolorbox[title={}]}%
+%        \IfValueTF{#8}%
+%                {\def\@env@title{\shadowText{#8}}}%
+%                {\def\@env@title{}}%
+%        \tcolorbox[title=\@env@title]
+%        \IfBooleanTF{#2}%
+%                {\tcolorbox[title=\shadowText{#8}]}%
+%                {\tcolorbox[title={}]}%
         \vspace{1mm}%
 }{\endtcolorbox\setlength{\parindent}{\@macro@length}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -975,12 +1055,10 @@ linewidth=4pt, linecolor=current-coldraw,
                 {\def\@title@sep{}}%
                 {\def\@title@sep{\@tcb@title@sep}}%
         \refstepcounter{figbox}%
-        \ignorespaces%
-        \tcolorbox[tcbfigboxStyle={\@tcb@boxrule@linewidth}{single}{tcbfigboxColorset-colframeborder}{tcbfigboxColorset-colinteriorborder},
-                %left skip=\@tcbfigbox@skip,
-                left skip=0pt,
-                title={\cftfigbox@contentsline{\@title@sep#2}\cftfigbox@hypertitle{\@title@sep}{#2}}]%
-}{\endtcolorbox}
+        %\ignorespaces%
+        \figbox{\@title@sep#2}
+}{\endfigbox}
+%}{\endtcolorbox}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfunctionargspec}{m o}
 {%\tcbfunctionargspec{option}[option argument]
@@ -1071,8 +1149,8 @@ linewidth=4pt, linecolor=current-coldraw,
         %\IfValueTF{#6}{\tcbset{#6}}{}
         \IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}%
         \IfValueTF{#6}%
-        	{\tcolorbox[#4, width=#2, title={#5}, #6]}%
-        	{\tcolorbox[#4, width=#2, title={#5}]}%
+                {\tcolorbox[#4, width=#2, title={#5}, #6]}%
+                {\tcolorbox[#4, width=#2, title={#5}]}%
         \IfBooleanTF{#1}%
                 {\hspace{0pt}\begin{longtable}{H{\@function@defbox@first@column} H{\@function@defbox@second@column}}}%
                 {\hspace{0pt}\begin{longtable}{p{\@function@defbox@first@column} p{\@function@defbox@second@column}}}%

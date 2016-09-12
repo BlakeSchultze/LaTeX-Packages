@@ -720,35 +720,49 @@
 %% Generates table for the 'tabular method' of 'integration by parts' (IBP), saving the position of each table entry as a tikz node using tikz's
 %% 'remember picture' capability, then connecting the nodes with the appropriate IBP arrows.  The resulting IBP table is then given a color
 %% background and enclosing it in a color frame box.
-\newenviron{tcbIBP}[4][]
-{%
-        \setlength\doublerulesep{0pt}
-        \setlength{\arrayrulewidth}{0.75pt}
-        \setcounter{@IBP@rows@counter}{0}
-        \@set@current@tcb@colors{IBPColorset}
-        \setstretch{1.5}
+%                                   1 2  3   4 5 6 7
+\DeclareDocumentEnvironment{tcbIBP}{s t! d() o m m m}
+{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
+        \setlength\doublerulesep{0pt}%
+        \setlength{\arrayrulewidth}{0.75pt}%
+        \setcounter{@IBP@rows@counter}{0}%
+        \refstepcounter{IBPtable}%
+        \@set@current@tcb@colors{IBPColorset}%
+        \def\@save@baselinestretch{\baselinestretch}%
+        \renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
         \arrayrulecolor{IBPColorset-coldraw}%
-        \ifstrempty{#1}
-        {\def\IBPtitle{\cftIBPtable@tcbtitle@font{: \bmath{\int #2#3#4}}}}%
+	\def\IBP@text@content{}%
+        \IfBooleanTF{#2}{\def\IBP@math@content{}}%
         {%
-                \ifstrequal{#1}{*}
-                        {\def\IBPtitle{\cftIBPtable@tcbtitle@font{}}}
-                        {\def\IBPtitle{\cftIBPtable@tcbtitle@font{: \bmath{#1}}}}
-        }%\cftX@tcbtitle@font \shadowText<\sffamily>[black](white){\tablename\space\thetable\space\IBPtitle}
-        \boxedtable[IBPStyle={\@tcb@default@boxrule@linewidth}{single}{IBPColorset-colframeborder}{IBPColorset-colinteriorborder},
-                blend before title code={\cftIBPtable@tcbtitle@font{\tablename\space\thetable\space\IBPtitle}}]
-                {\space}{\IBPtableLongName\space\thetable}
-                \centering
-                \tabular{>{$}c<{$} c @{\hskip\@tcbIBP@column@sep} c  >{$}c<{$}}%
-                        \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcbIBP@before@hrule@skip]%
-                    \hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline\\[\@tcbIBP@after@hrule@skip]%
-                    \addIBProw{#2}{#3}\\
-                    \tcbIBPbody%
-                \endtabular%
-}{
-        \endboxedtable%
-        \@draw@IBP@arrows%
-        %\patchcmd\fnum@table{\thetable}{\arabic{table}}{}{}
+        	\IfValueTF{#3}%
+       	 	{%
+        		\def\IBP@math@content{\protect\BreakableShadowText*{#3}}%
+        		\def\IBP@text@content{#3}%
+        	}%
+                {
+        		\IfValueTF{#4}%
+                        	{\def\IBP@math@content{\protect\shadowmath*!{#4}}}%
+                        	{\def\IBP@math@content{\protect\shadowmath*!{\int #5#6#7}}}%
+        	}%      	            
+        	\IfBooleanTF{#1}%
+        		{\preto{\IBP@math@content}{\\[0.3em]}}{}%
+        }%      
+        \savebox{\@IBP@math@content@box}{\IBP@math@content}%
+        \savebox{\@IBP@text@content@box}{\IBP@text@content}%
+        %\setlength{\@macro@width}{\wd\@IBPtable@box}%
+        \setlength{\@tcbIBP@math@content@width}{\wd\@IBP@math@content@box}%
+        \setlength{\@tcbIBP@text@content@width}{\wd\@IBP@text@content@box}%       
+        \centering%
+        \IBPtable{>{$}c<{$} c @{\hspace{\@tcbIBP@column@separation}} c  >{$}c<{$}}{\IBP@math@content}[\IBP@text@content]%
+                \centering%
+                \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcbIBP@before@hrule@skip]%
+                \hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline\\[\@tcbIBP@after@hrule@skip]%
+                \addIBProw{#5}{#6}\\%
+}{%
+        \endIBPtable%
+        \@draw@IBP@arrows\\%
+        \renewcommand{\baselinestretch}{\@save@arraystretch}%
+        \renewcommand{\arraystretch}{\@save@arraystretch}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 % From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex

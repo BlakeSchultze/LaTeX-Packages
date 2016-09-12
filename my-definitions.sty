@@ -37,6 +37,7 @@
     {C:/Users/Blake/Documents/LaTeX/Testing/}
     {C:/Users/Blake/Documents/LaTeX/Testing/Test_Images/}
     {C:/Users/Blake/Documents/LaTeX/Vignetters&Flourishes/}
+    {C:/Users/Blake/Documents/LaTeX/Documentation/}
 }
 %*****************************************************************************************************************************************%
 %***************************************************** Package setup/settings/styles *****************************************************%
@@ -123,17 +124,17 @@
 \AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\ifmylatex@coverpage
-	\AfterEndEnvironment{coverpage}
-	{%
-	        \ifmylatex@toc\addTOC\fi%
-	        \ifmylatex@frontbackmatter\addFrontbackMatter\fi%
-	}
+        \AfterEndEnvironment{coverpage}
+        {%
+                \ifmylatex@toc\addTOC\fi%
+                \ifmylatex@frontbackmatter\addFrontbackMatter\fi%
+        }
 %\else
-%	\AtBeginDocument
-%	{%
-%		\ifmylatex@toc\addTOC\fi%
+%       \AtBeginDocument
+%       {%
+%               \ifmylatex@toc\addTOC\fi%
 %                \ifmylatex@frontbackmatter\addFrontbackMatter\fi%
-%	}
+%       }
 %\fi
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\BeforeClosingMainAux
@@ -158,6 +159,20 @@
 }
 \def\convertto#1#2{\strip@pt\dimexpr 1#1*65536/\number\dimexpr 1#2}     % Convert value of #1 to units of #2
 \long\def\addto#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
+\def\addtolist#1#2{%
+  \lst@lAddTo#1{#2}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\RA#1|#2|#3|#4;{%
+  \addtolist{\alist}{#1#2,}%
+  \expandafter\gdef\csname#1#2\endcsname{\textit{#1}&#2&#3&#4\cr\relax}
+  \lst@BubbleSort{\alist}
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\def\RB#1|#2|#3|#4;{%
+   \addtolist{\alist}{#2#1,}%
+   \expandafter\gdef\csname#2#1\endcsname{\textit{#1}&#2&#3&#4\cr\relax}
+   \lst@BubbleSort{\alist}
+}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %--------------------------------------------------- Counter Increment/Print Commands ----------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -189,6 +204,9 @@
 \def\@glsl@baselinestretch{1.5}                                 % Sets \baselinestretch for acronym/glossary entries and multiline descriptions
 \def\@idx@baselinestretch{0.0}                                  % Sets \baselinestretch for index entries and multiline descriptions
 \def\@tcbfigbox@figure@sep{\hskip1em\relax}
+\def\@tcb@arraystretch{1.8}
+\def\@tcb@baselinestretch{3.75}
+\def\@Chapter@heading@rounded@arclength{180}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Coverpage/Header Images/Formats/Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -245,6 +263,7 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \def\@tcb@text@font{\normalsize\bfmseries}
 \def\@tcb@title@font{\Large\sffamily\bfmseries}
+\def\@tcb@subtitle@font{\sffamily\bfmseries}
 \def\@tcb@toctitle@font{\sffamily}
 \def\@tcb@list@entry@font{\normalsize\bfmseries}
 \def\@tcb@solutionVerb@font{\normalsize\bfmseries}
@@ -483,7 +502,7 @@
 \@init@skip{@horiz@IBP@arrows@yShift}{0.65ex}
 \@init@skip{@tcbIBP@column@sep}{2.5cm}
 \@init@skip{@tcbIBP@before@hrule@skip}{-0.3em}
-\@init@skip{@tcbIBP@after@hrule@skip}{-2.0em}
+\@init@skip{@tcbIBP@after@hrule@skip}{-2.25em}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@skip{@backmatter@group@label@node@lmargin}{-3pt}
 \@init@skip{@backmatter@group@entries@lmargin}{-3pt}
@@ -565,7 +584,9 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@Chapter@heading@height}[1.75cm]%2cm
 \@init@length{@Chapter@heading@baseskip}[2.675cm]
-\@init@length{@Chapter@heading@inner@sep}[12pt]
+\@init@length{@Chapter@heading@inner@sep}[14pt]
+\@init@length{@Chapter@heading@inner@xsep}[14pt]
+\@init@length{@Chapter@heading@inner@ysep}[8pt]
 \@init@length{@Chapter@heading@rounded@corners}[18pt]
 \@init@length{@Chapter@heading@linewidth}[2.0pt]
 \@init@length{@Chapter@heading@title@linewidth}[2.0pt]
@@ -694,24 +715,24 @@
         }{}%
         \IfValueTF{#3}{\@init@length{@tcb@default@#2@linewidth}[#3]}{}%
         \IfValueTF{#4}%
-        	{\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{#4}}%
-        	{\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{\@setlength@operation@names}}%
+                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{#4}}%
+                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{\@setlength@operation@names}}%
         \expandafter\newcommand\csname @tcb@set@#2@linewidths\endcsname[1]%
         {%
-        	\expandafter\setlength\csname @tcb@#2@linewidth\endcsname{##1}%
-	        \@ifundefined{@tcb@quarter@#2@linewidth}{}%
-			{\@setlength@operations@by@name{quarter}{@tcb@quarter@#2@linewidth}{##1}}%
-	        \@ifundefined{@tcb@half@#2@linewidth}{}%
-	      		{\@setlength@operations@by@name{half}{@tcb@half@#2@linewidth}{##1}}%
-	        \@ifundefined{@tcb@threequarter@#2@linewidth}{}%
-			{\@setlength@operations@by@name{threequarter}{@tcb@threequarter@#2@linewidth}{##1}}%
-	        \@ifundefined{@tcb@oneandhalf@#2@linewidth}{}%
-			{\@setlength@operations@by@name{oneandhalf}{@tcb@oneandhalf@#2@linewidth}{##1}}%
-	        \@ifundefined{@tcb@oneandthreequarter@#2@linewidth}{}%
-			{\@setlength@operations@by@name{oneandthreequarter}{@tcb@oneandthreequarter@#2@linewidth}{##1}}%
-	        \@ifundefined{@tcb@twice@#2@linewidth}{}%
-			{\@setlength@operations@by@name{twice}{@tcb@twice@#2@linewidth}{##1}}%
-	}%
+                \expandafter\setlength\csname @tcb@#2@linewidth\endcsname{##1}%
+                \@ifundefined{@tcb@quarter@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{quarter}{@tcb@quarter@#2@linewidth}{##1}}%
+                \@ifundefined{@tcb@half@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{half}{@tcb@half@#2@linewidth}{##1}}%
+                \@ifundefined{@tcb@threequarter@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{threequarter}{@tcb@threequarter@#2@linewidth}{##1}}%
+                \@ifundefined{@tcb@oneandhalf@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{oneandhalf}{@tcb@oneandhalf@#2@linewidth}{##1}}%
+                \@ifundefined{@tcb@oneandthreequarter@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{oneandthreequarter}{@tcb@oneandthreequarter@#2@linewidth}{##1}}%
+                \@ifundefined{@tcb@twice@#2@linewidth}{}%
+                        {\@setlength@operations@by@name{twice}{@tcb@twice@#2@linewidth}{##1}}%
+        }%
         \IfValueTF{#3}{\csname @tcb@set@#2@linewidths\endcsname{#3}}{}%
 }
 \@init@length{@tcb@figbox@left@skip}[4mm+12pt]
@@ -751,7 +772,13 @@
 \@init@length{@enum@leftmargin}[0.25in]
 \@init@length{@enum@itemsep}[1pt]
 \@init@length{@enum@parsep}[0pt]
+\@init@length{@tcbIBP@left@distance}
+\@init@length{@tcbIBP@column@separation}[2.5cm]
+\@init@length{@tcbIBP@leftright@skip}
+\@init@length{@tcbIBP@text@content@width}
+\@init@length{@tcbIBP@math@content@width}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
+\let\@sorted@list\@empty
 \let\l@lstlisting\l@listings
 \let\@tcbfigbox@width=\@macro@width
 \let\@tcbfigbox@skip=\@macro@length
@@ -839,6 +866,9 @@
 \newsavebox\@coverpage@savebox@author@date@deptlogo
 \newsavebox\@frontbackmatter@savebox@
 \newsavebox\glossbox
+%\newsavebox\@IBPtable@box
+\newsavebox\@IBP@text@content@box
+\newsavebox\@IBP@math@content@box
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------------------------- Tokens -----------------------------------------------------------------%
 %-----------------------------------------------------------------------------------------------------------------------------------------%
@@ -941,6 +971,22 @@
   \makebox[0pt][l]{\makebox[\tabcolsep]{\tdashfill\hfil}}%
   \\[-\arraystretch\dimexpr\ht\strutbox+\dp\strutbox\relax]%
 }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\readahead} [2]
+  {\afterassignment\@gobble\futurelet#1{#2}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\printcsvlist}[2][,]{%
+  \def\itemdelim{\def\itemdelim{#1}}% Item delimiter delayed by one cycle
+  \renewcommand*{\do}[1]{\itemdelim##1}% How each item is processed
+  \docsvlist{#2}}% Process CSV list
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\test}[1]{%
+  \ifcase\numexpr1\noexpand#11\relax
+        % -
+  \or   % other
+  \or   % +
+  \else % digit
+  \fi}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %\newcommand\hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline
 %\def\tcbrulesep{\vskip0.25pt}          % used in

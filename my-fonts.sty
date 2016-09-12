@@ -192,7 +192,6 @@
         \endgroup
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%\usefont{<encoding>}{<family>}{<series>}{<shape>} c
 %                                       1       2              3       4        5      6
 \DeclareDocumentCommand{\useshadowfont}{O{navy} D<>{\textsize} D(){T1} D(){pag} D(){b} m}
 {%
@@ -211,74 +210,78 @@
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\shadowfypars#1\par#2\relax%
 {%
-        %\begingroup\catcode`\$=11
         \ifstrempty{#1} {}{\shadowfywords#1 \relax\relax}%
         \ifstrempty{#2}{}{\par\shadowfypars#2\relax}%
-        %\expandafter\@firstoftwo\unskip%
-        %\expandafter\@secondoftwo\unskip%
-%       \endgroup
-%       \ifx#1\relax\else%
-%               \shadowfywords#1 \relax\relax%
-%       \fi%
-%       \ifx\relax#2\else\par\shadowfypars#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadowfywords#1 #2\relax%
+\long\def\shadowfywords#1 #2\relax%
 {%
-        %\begingroup\catcode`\$=11
         \ifstrempty{#1}{}{\shadowfyletters#1\relax\relax}%
         \ifstrempty{#2}{}{\ \shadowfywords#2\relax}%
         \unskip%
-%       \endgroup
-%       \expandafter\@firstoftwo%\catcode`$=11
-%       \def\@left@char{\StrLeft{#2}{1}}
-%       \IfStrEq{\@left@char}{$}{hello}{}
-%       %\IfStrEq{\StrLeft{#2}{1}}{$}{hello}{}
-%       \catcode`$=12
-%       \ifx#1\relax\else%
-%               \shadowfyletters#1\relax\relax%
-%       \fi%
-%       \ifx\relax#2\else\ \shadowfywords#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadowfyletters#1#2\relax%
+\long\def\shadowfyletters#1#2\relax%
 {%
-%       \begingroup\catcode`\$=11
-%       \@ifnextchar\$%
-%       \@ifnextchar\textdollar%
-%       \@ifnextchar\mathdollar%
-%               {whoop\@gobble}{}%
         \shadow{#1}%
-%       \mathshadow{#1}%
-%       \ifmmode{\dagger}\else \shadow{#1}%
-%       \ifstrempty{#2}%
-%               {}%
-%               {\shadowfyletters#2\relax}%
-%      \unskip%
-        \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%\fi%
-%       \endgroup
+        \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfypars#1\par#2\relax%
+{%
+        %\ifstrempty{#1} {}{\shadowmathfylines#1\\\relax}%
+        %\ifstrempty{#1} {}{\shadowmathfywords#1\relax}%
+        \ifstrempty{#1}{}{\shadowmathfymathparse#1 $$\relax}%
+        \ifstrempty{#2}{}{\par\shadowmathfypars#2\relax}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfylines#1\\#2\relax%
+{%
+        \ifstrempty{#1}{}{\shadowmathfymathparse#1 $$\relax}%
+        \ifstrempty{#2}{}{\\\shadowmathfylines#2\relax}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfymathparse#1 $#2$#3\relax%
+{%
+        \ifstrempty{#1}{}{\shadowfypars#1\par\relax\relax}
+        %\shadowfywords#1 \relax\relax
+        \ifstrempty{#2}{}{\space\mathshadow{#2}\space}%      
+	\ifstrempty{#3}{}{\shadowmathfywords#3\relax}%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfywords#1 #2\relax%
+{%
+        \ifstrempty{#1}{}{\shadowmathfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\shadowmathfymathparse #2\relax}%
+        %\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfyletters#1#2\relax%
+{%
+        \shadow{#1}%
+        \ifx\relax#2\else\shadowmathfyletters#2\relax\fi
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \long\def\doubleshadowfypars#1\par#2\relax%
 {%
-        \ifstrempty{#1} {}{\doubleshadowfywords#1 \relax\relax}%
+        \ifstrempty{#1}{}{\doubleshadowfywords#1 \relax\relax}%
         \ifstrempty{#2}{}{\par\doubleshadowfypars#2\relax}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\doubleshadowfywords#1 #2\relax%
+\long\def\doubleshadowfywords#1 #2\relax%
 {%
         \ifstrempty{#1}{}{\doubleshadowfyletters#1\relax\relax}%
         \ifstrempty{#2}{}{\ \doubleshadowfywords#2\relax}%
         \unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\doubleshadowfyletters#1#2\relax%
+\long\def\doubleshadowfyletters#1#2\relax%
 {%
         \doubleshadow{#1}%
         \ifx\relax#2\else\doubleshadowfyletters#2\relax\fi\unskip%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\shadow#1%
+\long\def\shadow#1%
 {%
         \kern\shadowHoffset%
         \raisebox{\st@shadowoffsety}%
@@ -288,11 +291,11 @@
                         {\color{\st@shadowcolor}{#1}}%
         }%
         \kern-\st@shadowoffsetx%
-        %\unskip\ignorespaces%
 }
-\def\mathshadow#1{\shadow{$\boldsymbol{#1}$}}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\doubleshadow#1%
+\long\def\mathshadow#1{\shadow{\ensuremath{#1}}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadow#1%
 {%
         \kern\st@doubleshadowoffsetx%
         \raisebox{\st@doubleshadowoffsety}%
@@ -302,10 +305,10 @@
                         {\color{\st@doubleshadowcolor}{#1}}%
         }%
         \kern-\st@doubleshadowoffsetx%
-        %\unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\shadowfy[1]{\expandafter\shadowfypars#1\par\relax\relax}
+\newcommand\shadowmathfy[1]{\expandafter\shadowmathfypars#1\par\relax\relax\relax}
 \newcommand\doubleshadowfy[1]{\expandafter\doubleshadowfypars#1\par\relax\relax}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \shadowoffset{0.5pt}
@@ -319,70 +322,65 @@
 %                                            1 2          3         4        5          6
 \DeclareDocumentCommand{\setshadowTextProps}{s D<>{0.5pt} O{0.65pt} O{0.2pt} D''{white} D(){black}}
 {%\setshadowTextProps<offset>[offset x][offset y]{shadow color}
-        %\IfBooleanTF{#1}%
-        %{%
-                \shadowoffset{#2}%
-                \shadowoffsetx{#3}%
-                \shadowoffsety{#4}%
-                \shadowbasecolor{#5}%
-                \shadowcolor{#6}%
-%       }%
-%       {%
-%               \setlength\shadowHoffset{#2}%
-%               \setlength\shadowVoffset{#3}%
-%               \def\primarycolor{#5}%
-%               \def\secondarycolor{#6}%
-%       }%
+	\shadowoffset{#2}%
+	\shadowoffsetx{#3}%
+	\shadowoffsety{#4}%
+	\shadowbasecolor{#5}%
+	\shadowcolor{#6}%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-\def\minispace{\space\!}
 %-----------------------------------------------------------------------------------------------------------------------------------------%
-%                                             1 2              3           4          5                  6                          7   8
-\DeclareDocumentCommand{\BreakableShadowText}{s D''{\sffamily} D<>{0.75pt} D<>{0.1pt} O{current-coltext} D(){current-coltextshadow} d:: m}
+%                                             1 2  3            4           5          6 7   8   9
+\DeclareDocumentCommand{\BreakableShadowText}{s t! D''{current} D<>{0.75pt} D<>{0.1pt} o d() d:: m}
 {%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}
-        %\setlength\shadowHoffset{#3}%
-        %\setlength\shadowVoffset{#4}%
-        %\def\primarycolor{#5}%
-        %\def\secondarycolor{#6}%
-        \shadowoffsetx{#3}%
-        \shadowoffsety{#4}%
-        \shadowbasecolor{#5}%
-        \shadowcolor{#6}%
-        %\setshadowTextProps[#3][#4]'#5'(#6)
-        %\IfValueTF{#7}{\expandafter\def\expandafter\@text@arg\expandafter{\BreakableShadowText'#2'<#3><#4>[#5](#7){#8}}}{\def\@text@arg{#8}}%
-        \IfBooleanTF{#1}%
-        %{#2\shadowfy{\underline{#7}}\unskip}%
+        \shadowoffsetx{#4}%
+        \shadowoffsety{#5}%   
+        \IfBooleanTF{#1}%  
+        	{\shadowbasecolor{#3-coltitle}}%
+        	{\shadowbasecolor{#3-coltext}}%
+        \shadowcolor{#3-coltextshadow}%
+        \IfValueTF{#6}{\shadowbasecolor{#6}}{}%
+        \IfValueTF{#7}{\shadowcolor{#7}}{}%
+        \IfBooleanTF{#2}%
         {%
-                \IfValueTF{#7}%
-                {#2\doubleshadowcolor{#7}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#8}\kern2\st@doubleshadowoffsetx}}%
-                {\underline{#2\shadowfy{#8}}}%
+                \IfValueTF{#8}%
+                {\doubleshadowcolor{#8}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#9}\kern2\st@doubleshadowoffsetx}}%
+                {\underline{\shadowmathfy{#9}}}%
         }%
         {%
-                \IfValueTF{#7}%
-                {#2\doubleshadowcolor{#7}\doubleshadowfy{#8}}%
-                {#2\shadowfy{#8}}%
+                \IfValueTF{#8}%
+                {\doubleshadowcolor{#8}\doubleshadowfy{#9}}%
+                {\shadowmathfy{#9}}%
         }%
-        %\unskip\ignorespaces%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %                                    1 2                  3            4         5            6 7   8
 \DeclareDocumentCommand{\shadowText}{s D::{\anttmcap16pt} D<>{0.65pt} D<>{0.2pt} D''{current} o d() m}
 {%\shadowText|title font|'color style'{title text}
-        %\IfBooleanTF{#1}%
-        %{%
-        %
-        %\ignorespaces\unskip\setshadowTextProps[#3][#4]{#5}%
         \ignorespaces\unskip\setshadowTextProps[#3][#4]'#5-coltext'(#5-coltextshadow)%
+        \IfBooleanTF{#1}
+                {\ignorespaces\unskip\shadowbasecolor{#5-coltitle}}%
+                {\ignorespaces\unskip\shadowbasecolor{#5-coltext}}%
         \IfValueTF{#6}%
-                {\shadowcolor{#6}}%
-                {\shadowcolor{#5-coltextshadow}}%
+                {\ignorespaces\unskip\shadowcolor{#6}}%
+                {}%
         \IfValueTF{#7}%
                 {\ignorespaces\unskip#2\shadowbasecolor{#7}}%
-                {\ignorespaces\unskip#2\shadowbasecolor{#5-coltext}}%
-        %\IfValueTF{#7}%
-%                {\ignorespaces\unskip#2\color{#7}}%
-%                {\ignorespaces\unskip#2\color{#5-coltext}}%
+                {}%
         \ignorespaces\unskip\color{\st@textcolor}\shadowtext{#8}\ignorespaces\unskip%
+}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\shadowmath}{s t! O{current} d'' d() m}
+{%
+        \IfBooleanTF{#1}
+                {\shadowbasecolor{#3-coltitle}}%
+                {\shadowbasecolor{#3-coltext}}%
+        \shadowcolor{#3-coltextshadow}%
+        \IfValueTF{#4}{\shadowbasecolor{#4}}{}%
+        \IfBooleanTF{#5}{\shadowbasecolor{#5}}{}%
+        \IfBooleanTF{#2}
+                {\mathshadow{\bmath{#6}}}%
+                {\mathshadow{#6}}%       
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %*****************************************************************************************************************************************%
