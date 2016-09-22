@@ -1,16 +1,16 @@
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %*********************************************************** `my-nomencl.sty' ************************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 % This is an adaptation of the 'nomencl' package, used to generate a "List of Abbreviations" and add it to a document's back matter in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-nomencl}
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
-%*****************************************************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newif\if@printeqref
 \newif\if@printpageref
 \newif\if@intoc
@@ -33,7 +33,7 @@
       \def\pagedeclaration#1{, stranica\nobreakspace#1}%
       \def\nomname{Popis simbola}}
 \DeclareOption{danish}{%
-	\def\eqdeclaration#1{, se ligning\nobreakspace(#1)}%
+        \def\eqdeclaration#1{, se ligning\nobreakspace(#1)}%
       \def\pagedeclaration#1{, side\nobreakspace#1}%
       \def\nomname{Symbolliste}}
 \DeclareOption{english}{%
@@ -49,17 +49,17 @@
       \def\pagedeclaration#1{, Seite\nobreakspace#1}%
       \def\nomname{Symbolverzeichnis}}
 \DeclareOption{italian}{%
-	\def\eqdeclaration#1{, vedi equazione\nobreakspace(#1)}%
-	\def\pagedeclaration#1{, pagina\nobreakspace#1}%
-	\def\nomname{Elenco dei simboli}}
+        \def\eqdeclaration#1{, vedi equazione\nobreakspace(#1)}%
+        \def\pagedeclaration#1{, pagina\nobreakspace#1}%
+        \def\nomname{Elenco dei simboli}}
 \DeclareOption{polish}{%
-  	\def\eqdeclaration#1{, porownaj rownanie\nobreakspace(#1)}%
-  	\def\pagedeclaration#1{, strona\nobreakspace#1}%
-  	\def\nomname{Lista symboli}}
+        \def\eqdeclaration#1{, porownaj rownanie\nobreakspace(#1)}%
+        \def\pagedeclaration#1{, strona\nobreakspace#1}%
+        \def\nomname{Lista symboli}}
 \DeclareOption{portuguese}{%
-  	\def\eqdeclaration#1{, veja equa\c{c}\~ao\nobreakspace(#1)}%
-  	\def\pagedeclaration#1{, p\'agina\nobreakspace#1}%
-  	\def\nomname{Nomenclatura}}
+        \def\eqdeclaration#1{, veja equa\c{c}\~ao\nobreakspace(#1)}%
+        \def\pagedeclaration#1{, p\'agina\nobreakspace#1}%
+        \def\nomname{Nomenclatura}}
 \DeclareOption{russian}{%
       \def\eqdeclaration#1{, \cyrs\cyrm.\nobreakspace(#1)}%
       \def\pagedeclaration#1{, \cyrs\cyrt\cyrr.\nobreakspace#1}%
@@ -76,18 +76,18 @@
       \def\nomname{\CYRP\cyre\cyrr\cyre\cyrl\cyrii\cyrk%
          \ \cyrp\cyro\cyrz\cyrn\cyra\cyrch\cyre\cyrn\cyrsftsn}}
 \DeclareOption*{\PackageWarning{my-nomencl}{Unknown \CurrentOption}}
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \ExecuteOptions{noncompatible,notintoc,norefeq,norefpage,prefix,cfg,english}
 \ProcessOptions\relax
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`\!=12
 %\catcode`|=12
-%\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition %-----------------------------------------------------------------------------------------------------------------------------------------%
-%*****************************************************************************************************************************************%
+%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition %------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \newdimen\nomlabelwidth
 \nomlabelwidth1cm\relax
 \newdimen\nom@tempdim
@@ -130,14 +130,14 @@
  \endgroup
  \@esphack}
 \def\nomgroup#1{}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \def\printnomenclature
 {%
-  	\setstretch{\@nomecl@baselinestretch}%
-	\thispagestyle{fancy}\fancyhead[L]{\@lhead@font\@listof@abbreviations@lhead@title}%
-  	\@ifnextchar[%
-    		{\@printnomenclature}
-    		{\@printnomenclature[\nomlabelwidth]}
+        \setstretch{\@nomecl@baselinestretch}%
+        \thispagestyle{fancy}\fancyhead[L]{\@lhead@font\@listof@abbreviations@lhead@title}%
+        \@ifnextchar[%
+                {\@printnomenclature}
+                {\@printnomenclature[\nomlabelwidth]}
 }
 \def\@printnomenclature[#1]{
   \nom@tempdim#1\relax
@@ -171,47 +171,47 @@
   \InputIfFileExists{nomencl.cfg}{%
     \typeout{Using the configuration file nomencl.cfg}}{}
 \fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\abbreviation}{o m m m}
 {
-	\unskip\ignorespaces\ifcsdef{page#2}
-	{%
-		\addtocounter{@num@this@acronym@#2}{1}%
-		\edef\thispagenum{\the\value{@num@this@acronym@#2}}%
-		\newcounter{@num@this@acronym@#2#4}%
-		\setcounter{@num@this@acronym@#2#4}{\thepage}%
-		\hyperlink{page#2}{#2}%
-		\csappto{page#2}{, \hyperlink{#2totext#4}{\the\value{@num@this@acronym@#2#4}}}%
-		\raisebox{\textsize}{\hypertarget{#2totext#4}{\unskip}}%
-	}%
-	{%
-		\newcounter{@num@this@acronym@#2}%
-		\setcounter{@num@this@acronym@#2}{1}%%
-		\edef\thispagenum{\the\value{@num@this@acronym@#2}}%
-		\newcounter{@num@this@acronym@#2#4}%
-		\setcounter{@num@this@acronym@#2#4}{\thepage}%
-		\csdef{page#2}{\hyperlink{#2totext}{\the\value{@num@this@acronym@#2#4}}}%
-		\raisebox{\textsize}{\hypertarget{#2totext}{\unskip}}%
-		\hyperlink{page#2}{#2}%
-		\IfValueTF{#1}%
-		{%
-			\nomenclature%
-			[#1]{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-			{\expandafter\protect\expandafter#3\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
-		}%
-		{%
-			\nomenclature%
-			{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-			{\expandafter\protect\expandafter#3,\,\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
-		}%
-	}%
+        \unskip\ignorespaces\ifcsdef{page#2}
+        {%
+                \addtocounter{@num@this@acronym@#2}{1}%
+                \edef\thispagenum{\the\value{@num@this@acronym@#2}}%
+                \newcounter{@num@this@acronym@#2#4}%
+                \setcounter{@num@this@acronym@#2#4}{\thepage}%
+                \hyperlink{page#2}{#2}%
+                \csappto{page#2}{, \hyperlink{#2totext#4}{\the\value{@num@this@acronym@#2#4}}}%
+                \raisebox{\textsize}{\hypertarget{#2totext#4}{\unskip}}%
+        }%
+        {%
+                \newcounter{@num@this@acronym@#2}%
+                \setcounter{@num@this@acronym@#2}{1}%%
+                \edef\thispagenum{\the\value{@num@this@acronym@#2}}%
+                \newcounter{@num@this@acronym@#2#4}%
+                \setcounter{@num@this@acronym@#2#4}{\thepage}%
+                \csdef{page#2}{\hyperlink{#2totext}{\the\value{@num@this@acronym@#2#4}}}%
+                \raisebox{\textsize}{\hypertarget{#2totext}{\unskip}}%
+                \hyperlink{page#2}{#2}%
+                \IfValueTF{#1}%
+                {%
+                        \nomenclature%
+                        [#1]{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+                        {\expandafter\protect\expandafter#3\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
+                }%
+                {%
+                        \nomenclature%
+                        {\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+                        {\expandafter\protect\expandafter#3\,\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
+                }%
+        }%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%*****************************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
 %*************************************************** End of 'my-nomencl.sty' package *****************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \makeatother
 \endinput
 %% End of file `my-nomencl.sty'.

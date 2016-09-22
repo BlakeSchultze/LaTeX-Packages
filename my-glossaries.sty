@@ -1,10 +1,10 @@
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %********************************************************** `my-glossaries.sty' **********************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 % This is an adaptation of the 'glossaries' package, used to generate (1) a glossary of terms and (2) a glossary of acronyms and add these to a document's back matter (in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %*************************************** Define provided package name and LaTeX/package dependencies *************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{my-glossaries}
 \RequirePackage{ifthen}
@@ -19,24 +19,24 @@
 \RequirePackage{my-glossary-hypernav}
 \DeclareOption*{\PackageWarning{my-glossaries}{Unknown \CurrentOption}}
 %\ProcessOptions\relax
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \newcommand*{\@gls@loadmcols}{\RequirePackage{glossary-mcols}}
 \newcommand*{\@gls@loadlong}{\RequirePackage{glossary-long}}
 \IfFileExists{supertabular.sty}
-	{\newcommand*{\@gls@loadsuper}{\RequirePackage{glossary-super}}}
-	{\newcommand*{\@gls@loadsuper}{}}
+        {\newcommand*{\@gls@loadsuper}{\RequirePackage{glossary-super}}}
+        {\newcommand*{\@gls@loadsuper}{}}
 \newcommand*{\@gls@loadlist}{\RequirePackage{glossary-list}}
 %\newcommand*{\@gls@loadtree}{\RequirePackage{glossary-tree}}
 \newcommand*{\@gls@loadtree}{\RequirePackage{my-glossary-tree}}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`\!=12
 %\catcode`|=12
-\makeatletter							% Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%\AtBeginDocument{\input{glsentries.def}}							% Import the master list of glossary terms and acronyms defined previously
-%*****************************************************************************************************************************************%
+\makeatletter                                                   % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%\AtBeginDocument{\input{glsentries.def}}                                                       % Import the master list of glossary terms and acronyms defined previously
+%******************************************************************************************************************************%
 %****************************************** Package options and corresponding Boolean variables ******************************************%
-%*****************************************************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newif\if@gls@docloaded
 \newif\ifglstranslate
 \newif\if@glsisacronymlist
@@ -109,10 +109,10 @@
 \@gls@declareoption{index}{%
   \let\@gls@do@indexdef\@gls@indexdef
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%*****************************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
 %***************************************************** Processing of package options *****************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \define@boolkey{my-glossaries.sty}[gls]{toc}[true]{}
 \define@boolkey{my-glossaries.sty}[gls]{numberline}[true]{}
 \define@choicekey{my-glossaries.sty}{section}{part,chapter,section,%
@@ -206,31 +206,31 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \setkeys[gls]{sanitize}{#1}%
   }%
 }
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %************************************************************ Processing of package options/keys *************************************************************%
-%*****************************************************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
 \@ifpackageloaded{doc}%
-	{\@gls@docloadedtrue}%
-	{\@ifclassloaded{nlctdoc}{\@gls@docloadedtrue}{\@gls@docloadedfalse}}%
+        {\@gls@docloadedtrue}%
+        {\@ifclassloaded{nlctdoc}{\@gls@docloadedtrue}{\@gls@docloadedfalse}}%
 \if@gls@docloaded
-  	\let\glsorg@theglossary\theglossary
-  	\let\glsorg@endtheglossary\endtheglossary
-  	\let\glsorg@PrintChanges\PrintChanges
-  	\renewcommand{\PrintChanges}
-  	{%
-    		\begingroup
-      	\let\theglossary\glsorg@theglossary
-      	\let\endtheglossary\glsorg@endtheglossary
-      	\glsorg@PrintChanges
-    		\endgroup
-  	}
+        \let\glsorg@theglossary\theglossary
+        \let\glsorg@endtheglossary\endtheglossary
+        \let\glsorg@PrintChanges\PrintChanges
+        \renewcommand{\PrintChanges}
+        {%
+                \begingroup
+        \let\theglossary\glsorg@theglossary
+        \let\endtheglossary\glsorg@endtheglossary
+        \glsorg@PrintChanges
+                \endgroup
+        }
 \fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \@ifclassloaded{memoir}
-	{\glsucmarktrue}
-	{\glsucmarkfalse}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+        {\glsucmarktrue}
+        {\glsucmarkfalse}
+%------------------------------------------------------------------------------------------------------------------------------%
 \@ifpackageloaded{hyperref} {%
   \newcommand*{\glsdisplaynumberlist}[1]{%
     \GlossariesWarning
@@ -277,9 +277,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     }%
   }
 }
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %**************************************************************** Definition of command keys *****************************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \define@boolkey[gls]{sanitize}{description}[true]{%
   \GlossariesWarning{sanitize={description} package option deprecated}%
   \ifgls@sanitize@description
@@ -328,9 +328,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \glssubentrycounterfalse
 \glssanitizesorttrue
 \define@key{printgloss}{type}{\def\@glo@type{#1}}
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 \newtoks\glskeylisttok
 \newtoks\glslabeltok
 \newtoks\glsshorttok
@@ -360,15 +360,15 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \@gls@entry@field{#1}{numberlist}%
   }%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\glsnumlistsep}{, }
 \newcommand*{\glsnumlistlastsep}{ \& }
 \newcommand*{\glshyperlink}[2][\glsentrytext{\@glo@label}]{%
  \def\@glo@label{#2}%
  \@glslink{\glolinkprefix\glsdetoklabel{#2}}{#1}}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newrobustcmd*{\glsadd}[2][]{%
   \@gls@adjustmode
   \glsdoifexists{#2}%
@@ -381,38 +381,38 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \@do@wrglossary{#2}%
   }%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 %                                       1   2   3 4 5 6
 \DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m }
 {% [][options]{label}{abbreviation}{long form}{description}
-	\newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
-  	\newacronym{#3}{#4}{#5}%
-  	\glsseedual{#3}{gls-#3}%
+        \newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
+        \newacronym{#3}{#4}{#5}%
+        \glsseedual{#3}{gls-#3}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\glsdual}{s O{} m O{}}
 {% [][options]{label}{abbreviation}{long form}{description}
-	\IfBooleanTF{#1}
-		{\gls[#2]{#3}[#4]\glslink{gls-#3}{}}
-		{\gls[#2]{gls-#3}[#4]\glslink{#3}{}}%
+        \IfBooleanTF{#1}
+                {\gls[#2]{#3}[#4]\glslink{gls-#3}{}}
+                {\gls[#2]{gls-#3}[#4]\glslink{#3}{}}%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\Glsdual}{s m}
 {% [][options]{label}{abbreviation}{long form}{description}
-	\IfBooleanTF{#1}
-		{\Gls{#2}}
-		{\Gls{gls-#2}}
+        \IfBooleanTF{#1}
+                {\Gls{#2}}
+                {\Gls{gls-#2}}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\GLSdual}{s m}
 {% [][options]{label}{abbreviation}{long form}{description}
-	\IfBooleanTF{#1}
-		{\GLS{#2}}
-		{\GLS{gls-#2}}
+        \IfBooleanTF{#1}
+                {\GLS{#2}}
+                {\GLS{gls-#2}}
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newrobustcmd*{\glsadddual}[2][]{%
   \@gls@adjustmode
   \glsdoifexists{#2}%
@@ -424,9 +424,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \@do@wrglossary{#2}%
   }%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \def\@gls@fixbraces#1#2#3\@nil{%
   \ifx#2[\relax
    \@@gls@fixbraces#1#2#3\@end@fixbraces
@@ -479,9 +479,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \@gls@encapchar glsseeformat\@gls@xref}{Z}}%
 \fi
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\@do@seedualglossary}[2]{%
 \def\@gls@xref{#2}%
 \@onelevel@sanitize\@gls@xref
@@ -554,56 +554,56 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \forallglossaries{\@@glo@type}{\printnoidxglossary[type=\@@glo@type]}%
 }
 \newcommand*{\@printgloss@setsort}{}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\@printglossary}[2]{%	
-	\def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
-  	\ifglstoc
-    		\ifglsnumberline
-			\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\protect\numberline{}\glossarytitle}}%*****%
-    		\else
-     			\def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\glossarytitle}}%**************************%
-    		\fi
-    	\else
-    		\def\linkedglossarytitle{\glossarytitle}%
-  	\fi
-  	\doublespacing%
-  	\def\glossarytoctitle{\glossarytitle}%
-  	\let\org@glossarytitle\glossarytitle
-  	\def\@glossarystyle{}%
-  	\def\gls@dotoctitle{\glssettoctitle{\@glo@type}}%
-  	\let\@org@glossaryentrynumbers\glossaryentrynumbers
-  	\bgroup
-	\setkeys{printgloss}{#1}%
-	\@printgloss@setsort
-	\ifx\glossarytitle\org@glossarytitle
-  	\else
-    	\expandafter\let\csname @glotype@\@glo@type @title\endcsname
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@printglossary}[2]{%
+        \def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
+        \ifglstoc
+                \ifglsnumberline
+                        \def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\protect\numberline{}\glossarytitle}}%*****%
+                \else
+                        \def\linkedglossarytitle{\phantomsection\addcontentsline{toc}{chapter}{\glossarytitle}}%**************************%
+                \fi
+        \else
+                \def\linkedglossarytitle{\glossarytitle}%
+        \fi
+        \doublespacing%
+        \def\glossarytoctitle{\glossarytitle}%
+        \let\org@glossarytitle\glossarytitle
+        \def\@glossarystyle{}%
+        \def\gls@dotoctitle{\glssettoctitle{\@glo@type}}%
+        \let\@org@glossaryentrynumbers\glossaryentrynumbers
+        \bgroup
+        \setkeys{printgloss}{#1}%
+        \@printgloss@setsort
+        \ifx\glossarytitle\org@glossarytitle
+        \else
+        \expandafter\let\csname @glotype@\@glo@type @title\endcsname
                     \glossarytitle
-  	\fi
-    	\let\currentglossary\@glo@type
-    	\let\org@glossaryentrynumbers\glossaryentrynumbers
-    	\let\glsnonextpages\@glsnonextpages
- 	\let\glsnextpages\@glsnextpages
-    	\let\nopostdesc\@nopostdesc
-    	\gls@dotoctitle
-    	\@glossarystyle
-    	\let\gls@org@glossaryentryfield\glossentry
-    	\let\gls@org@glossarysubentryfield\subglossentry
-    	\renewcommand{\glossentry}[1]{%	
+        \fi
+        \let\currentglossary\@glo@type
+        \let\org@glossaryentrynumbers\glossaryentrynumbers
+        \let\glsnonextpages\@glsnonextpages
+        \let\glsnextpages\@glsnextpages
+        \let\nopostdesc\@nopostdesc
+        \gls@dotoctitle
+        \@glossarystyle
+        \let\gls@org@glossaryentryfield\glossentry
+        \let\gls@org@glossarysubentryfield\subglossentry
+        \renewcommand{\glossentry}[1]{%
   \xdef\glscurrententrylabel{\glsdetoklabel{##1}}%
-      	\gls@org@glossaryentryfield{##1}%
-    	}%
-    	\renewcommand{\subglossentry}[2]{%
-      	\xdef\glscurrententrylabel{\glsdetoklabel{##2}}%
-      	\gls@org@glossarysubentryfield{##1}{##2}%
-    	}%
-    	#2%
-  	%\edef\glsheadername{\glossarytitle}
-  	\egroup
-  	\edef\glsheadername{\glossarytitle}\global\let\glossaryentrynumbers\@org@glossaryentrynumbers
-  	\global\let\warn@noprintglossary\relax
+        \gls@org@glossaryentryfield{##1}%
+        }%
+        \renewcommand{\subglossentry}[2]{%
+        \xdef\glscurrententrylabel{\glsdetoklabel{##2}}%
+        \gls@org@glossarysubentryfield{##1}{##2}%
+        }%
+        #2%
+        %\edef\glsheadername{\glossarytitle}
+        \egroup
+        \edef\glsheadername{\glossarytitle}\global\let\glossaryentrynumbers\@org@glossaryentrynumbers
+        \global\let\warn@noprintglossary\relax
 }
 \newcommand*{\glsdefaulttype}{main}
 \newcommand*{\acronymtype}{\glsdefaulttype}
@@ -614,13 +614,13 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     {%
       \providecommand*{\printacronyms}[1][]{%
         \edef\glsheadername{\@listof@acronyms@toctitle}
-	\printglossary[type=\acronymtype,#1]}%
+        \printglossary[type=\acronymtype,#1]}%
     }%
   \fi
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\@print@glossary}{%
   \makeatletter
   \@input@{\jobname.\csname @glotype@\@glo@type @in\endcsname}%
@@ -666,11 +666,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     hasn't been used,^^Jthe glossaries will not be updated}%
   }%
 }
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \ifcsundef{chapter}%
   {\newcommand*{\@@glossarysec}{section}}%
   {\newcommand*{\@@glossarysec}{chapter}}
@@ -681,7 +681,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\glossaryentrynumbers}[1]{#1\gls@save@numberlist{#1}}
 \newcommand*\@glo@seeautonumberlist{}
 \newcommand*{\glspostdescription}{%
-  \ifglsnopostdot\else,\spacefactor\sfcode`\. \fi
+  \ifglsnopostdot\else\spacefactor\sfcode`\. \fi
 }
 \newcommand*{\@gls@counterwithin}{}
 \newcommand*{\@glo@default@sorttype}{standard}
@@ -4859,40 +4859,40 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \ifdefstring{\glsorder}{letter}%
       {\def\@gls@order{-l }}%
       {\let\@gls@order\@empty}
-     	\ifdefstrequal{#1}{\acronymtype}
-	{%
-		\edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
-			-s my-glossaries.ist\space
-	       	-t \jobname.alg\space%\csuse{@glotype@#1@log}
-	       	-o \jobname.acr\space%\csuse{@glotype@#1@in}
-	       	\jobname.acn%\csuse{@glotype@#1@out}
-			}%
-	     }%
-	     \@gls@dothiswrite
-	}%
-	{%
-		\ifdefstrequal{#1}{\glsdefaulttype}
-		{%
-			\edef\@gls@dothiswrite{\noexpand\write18{makeglossaries \@gls@order
-				-s my-glossaries.ist\space
-		       	-t \jobname.glg\space%\csuse{@glotype@#1@log}
-		       	-o \jobname.gls\space%\csuse{@glotype@#1@in}
-		       	\jobname.glo %\csuse{@glotype@#1@out}
-				}%
-		      }%
-		      \@gls@dothiswrite
-		}%
-		{%
-			\edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
-				-s my-glossaries.ist\space
-		       	-t \jobname.slg\space%\csuse{@glotype@#1@log}
-		       	-o \jobname.sls\space%\csuse{@glotype@#1@in}
-		       	\jobname.slo %\csuse{@glotype@#1@out}
-				}%
-		      }%
-		      \@gls@dothiswrite
-		}%
-	}%
+        \ifdefstrequal{#1}{\acronymtype}
+        {%
+                \edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
+                        -s my-glossaries.ist\space
+                -t \jobname.alg\space%\csuse{@glotype@#1@log}
+                -o \jobname.acr\space%\csuse{@glotype@#1@in}
+                \jobname.acn%\csuse{@glotype@#1@out}
+                        }%
+             }%
+             \@gls@dothiswrite
+        }%
+        {%
+                \ifdefstrequal{#1}{\glsdefaulttype}
+                {%
+                        \edef\@gls@dothiswrite{\noexpand\write18{makeglossaries \@gls@order
+                                -s my-glossaries.ist\space
+                        -t \jobname.glg\space%\csuse{@glotype@#1@log}
+                        -o \jobname.gls\space%\csuse{@glotype@#1@in}
+                        \jobname.glo %\csuse{@glotype@#1@out}
+                                }%
+                      }%
+                      \@gls@dothiswrite
+                }%
+                {%
+                        \edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
+                                -s my-glossaries.ist\space
+                        -t \jobname.slg\space%\csuse{@glotype@#1@log}
+                        -o \jobname.sls\space%\csuse{@glotype@#1@in}
+                        \jobname.slo %\csuse{@glotype@#1@out}
+                                }%
+                      }%
+                      \@gls@dothiswrite
+                }%
+        }%
    }%
    {%
      \GlossariesWarning{Can't make glossary `#1', it doesn't exist}%
@@ -6216,9 +6216,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\GenericAcronymFields}{description={\the\glslongtok}}
 \newcommand*{\acronymentry}[1]{\acronymfont{\glsentryshort{#1}}}
 \newcommand*{\acronymsort}[2]{#1}
-%*****************************************************************************************************************************************%
-%*****************************************************************************************************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
+%******************************************************************************************************************************%
+%******************************************************************************************************************************%
 \newcommand*{\setacronymstyle}[1]{%
   \ifcsundef{@glsacr@dispstyle@#1}
   {%
@@ -7434,11 +7434,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \csname ifglscompatible-2.07\endcsname
   \RequirePackage{glossaries-compatible-207}
 \fi
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%*****************************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
 %*************************************************** End of 'my-glossaries.sty' Package **************************************************%
-%*****************************************************************************************************************************************%
+%******************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
 \endinput
-%-----------------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
