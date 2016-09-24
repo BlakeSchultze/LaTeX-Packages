@@ -53,10 +53,25 @@
 \def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
 \def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
 \xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
-\def\pkgname{my-latex}%
-\newcommand\@pkgopts@packages{etoolbox,kvoptions}
 \def\minispace{\space\!}
 %------------------------------------------------------------------------------------------------------------------------------%
+\def\@add@to@deflist#1#2%
+{
+	\ifundef{#2}%
+                {\edef#2{#1}}%
+                {\edef#2{#2,#1}}%
+
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\@add@to@deflist}[2]%
+%{
+%        \ifundef{#2}%
+%                {\edef\@defined@Choice@Options{#1}}%
+%                {\edef\@defined@Choice@Options{#2,#1}}%
+%
+%}
+\def\pkgname{my-latex}%
+\newcommand\@pkgopts@packages{etoolbox,kvoptions}
 \def\choicetestoptions{choiceone,choicetwo,choicethree}
 \def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
 \def\@known@documentclasses{report,article,journal,proceedings}
@@ -70,11 +85,12 @@
         \@ifpackageloaded{#1}{}%
         {%
                 \RequirePackage{#1}%
-                \ifdefined\@loaded@packages%
-                        \edef\@loaded@packages{\@loaded@packages,#1}%
-                \else%
-                        \edef\@loaded@packages{#1}%
-                \fi
+                \@add@to@deflist{#1}{\@loaded@packages}        
+%                \ifdefined\@loaded@packages%
+%                        \edef\@loaded@packages{\@loaded@packages,#1}%
+%                \else%
+%                        \edef\@loaded@packages{#1}%
+%                \fi
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -113,9 +129,10 @@
         \ifstrempty{#3}
                 {\DeclareStringOption{#2}}%
                 {\DeclareStringOption{#2}[#3]}%
-        \ifundef{\@defined@Choice@Options}%
-                {\edef\@defined@Choice@Options{#2}}%
-                {\edef\@defined@Choice@Options{\@defined@Choice@Options,#2}}%
+        \@add@to@deflist{#2}{\@defined@Choice@Options}
+        %\ifundef{\@defined@Choice@Options}%
+%                {\edef\@defined@Choice@Options{#2}}%
+%                {\edef\@defined@Choice@Options{\@defined@Choice@Options,#2}}%
         \expandafter\newif\csname if\@current@prefix#2\endcsname%->\if<prefix><key>
         \expandafter\gdef\csname @\@current@prefix valid@#2@choice@options\endcsname{#4}%
         \expandafter\xdef\csname @#2@prefix\endcsname{\@current@prefix}%
@@ -129,9 +146,10 @@
         \DeclareBoolOption[#1]{#2}
         \DeclareComplementaryOption{#2off}{#2}
         \DeclareComplementaryOption{no#2}{#2}
-        \ifundef{\@defined@Bool@Option@Pairs}%
-                {\edef\@defined@Bool@Option@Pairs{#2}}%
-                {\edef\@defined@Bool@Option@Pairs{\@defined@Bool@Option@Pairs,#2}}%
+        \@add@to@deflist{#2}{\@defined@Bool@Option@Pairs}
+        %\ifundef{\@defined@Bool@Option@Pairs}%
+%                {\edef\@defined@Bool@Option@Pairs{#2}}%
+%                {\edef\@defined@Bool@Option@Pairs{\@defined@Bool@Option@Pairs,#2}}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessChoiceOption[2][\KVO@prefix]%

@@ -220,12 +220,13 @@
                 % Skip added BEFORE each group entry if \par is included, otherwise skip is added after group entry
                 \par\vskip\@gls@before@entry@sep%
                 \hskip\@gls@entry@hskip%
+                \@frontbackmatter@entry@text@font%
                 \makebox[0pt][r]
                 {%
                         \makebox[\glstreeindent][l]%
                         {\glsentryitem{##1}\glstreenamefmt{\glstarget{##1}{}}}
                 }%
-                \glossentryname{##1}\space\@frontbackmatter@entry@text@font\ifglshassymbol{##1}{(\glossentrysymbol{##1})\space}{}%
+                \glossentryname{##1}\space\ifglshassymbol{##1}{(\glossentrysymbol{##1})\space}{}%
                 \@entry@name@text@sep%
                 \@frontbackmatter@entry@text@font\glossentrydesc{##1}\glspostdescription%
                 \frontbackmatterhfill##2%

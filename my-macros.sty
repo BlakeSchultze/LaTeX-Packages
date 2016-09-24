@@ -1,18 +1,18 @@
 %******************************************************************************************************************************%
-%*********************************************************** `my-macros.sty' *************************************************************%
+%****************************************************** `my-macros.sty' *******************************************************%
 %******************************************************************************************************************************%
 % Provides definitions of standardized/universal document type environments used in place of the standard 'document' environment (e.g. 'homework', 'documentation', etc.), with options to include a coverpage and automatically configure document dimensions/properties/content, as well as the package macros/commands/environments/etc.
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define provided package name and LaTeX/package dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define provided package name and LaTeX/package dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-macros}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \DeclareOption*{\PackageWarning{my-macros}{Unknown \CurrentOption}}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Processing of package options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Processing of package options ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -21,11 +21,11 @@
 %\catcode`|=12
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 
 %------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------------------- Command Definitions ----------------------------------------------------------%
+%----------------------------------------------------- Command Definitions ----------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@document@dimensions}{}
 {
@@ -87,35 +87,26 @@
         \fi
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@problem@settings}{s o o t'}
-{%\@problem@settings<* problem indicator>[<ch. #>][<problem #>]<' (sub)problem part indicator>
+\DeclareDocumentCommand{\printTrailingEnvCode}{s m}
+{%
+        %\underline{Trailing Environment Code for \texttt{#2}}\\
+        \underline%
+        {%
+                Code Executed After %
+                \texttt%
+                {%
+                        \textcolor{blue}{\textbackslash end\{}%
+                        \textcolor{green}{#2}%
+                        \textcolor{blue}{\}}%
+                } %
+                Closure of \textcolor{green}{\texttt{#2}} Environment%
+        }\\[0.5em]
+        Content Generated Around ``a'':
+        \AfterEndEnvironment{#2}{\qq}%
         \IfBooleanTF{#1}%
-        {%
-                \IfValueTF{#3}%
-                {%
-                        \IfBooleanTF{#4}%
-                        {\def\problem@type{problemparts}}%
-                        {%
-                                \setcounter{@prob@part@counter}{1}%
-                                \setcounter{@chap@counter}{#2}%
-                                \setcounter{@prob@counter}{#3}%
-                                \def\problem@type{chapterproblems}%
-                        }%
-                }%
-                {%
-                	\ifnumcomp{\value{@chap@counter}}{>}{0}%
-		                {\def\problem@type{chapterproblems}}%
-		                {\def\problem@type{problems}}%
-                }%
-        }%
-        {%
-                \IfBooleanTF{#4}%
-                {%
-                        \IfValueTF{#3}%
-                        {\def\problem@type{problempartssubproblems}}%
-                        {\def\problem@type{subproblemparts}}%
-                }{\def\problem@type{subproblems}}%
-        }%
+                {\ensuremath{\begin{#2}a\end{#2}\qq}}%
+                {\begin{#2}a\end{#2}\qq}%
+\\
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 % Calculate length of alignat environment
@@ -159,7 +150,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbhypertarget}{o m m}
 {%
-        \IfValueTF{#1}
+        \IfValueTF{#1}%
         	{\hypertarget{#2}{\color{#1}#3}}%
         	{\hypertarget{#2}{#3}}%
 }
@@ -309,6 +300,37 @@
         \tikz[baseline=(char.base)]%
         {%
                 \node[shape=#2, font=\small, fill=fillednumshape-colfill, draw=\@line@color, thick, minimum size=#7, inner sep=#8, align=flush center] (char) {\textcolor{fillednumshape-colfilltext}{\hspace{0pt}\bfseries\shapecontents}};%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@problem@settings}{s o o t'}
+{%\@problem@settings<* problem indicator>[<ch. #>][<problem #>]<' (sub)problem part indicator>
+        \IfBooleanTF{#1}%
+        {%
+                \IfValueTF{#3}%
+                {%
+                        \IfBooleanTF{#4}%
+                        {\def\problem@type{problemparts}}%
+                        {%
+                                \setcounter{@prob@part@counter}{1}%
+                                \setcounter{@chap@counter}{#2}%
+                                \setcounter{@prob@counter}{#3}%
+                                \def\problem@type{chapterproblems}%
+                        }%
+                }%
+                {%
+                        \ifnumcomp{\value{@chap@counter}}{>}{0}%
+                                {\def\problem@type{chapterproblems}}%
+                                {\def\problem@type{problems}}%
+                }%
+        }%
+        {%
+                \IfBooleanTF{#4}%
+                {%
+                        \IfValueTF{#3}%
+                        {\def\problem@type{problempartssubproblems}}%
+                        {\def\problem@type{subproblemparts}}%
+                }{\def\problem@type{subproblems}}%
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -483,6 +505,7 @@ linewidth=4pt, linecolor=current-coldraw,
         tcbfigboxStyle={\@tcb@boxrule@linewidth}{single}{tcbfigboxColorset-colframeborder}{tcbfigboxColorset-colinteriorborder},
         #1, label={#3},
         title={\cftfigbox@contentsline{#2}\cftfigbox@hypertitle*{}{#2}}%,
+        %list entry={as\hspace{\cftfigboxindent}\cftfigbox@listentry{#2}}%,
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ O{} m O{fig:fig\thefigure}}
@@ -1113,6 +1136,7 @@ linewidth=4pt, linecolor=current-coldraw,
                 {\fillednumshape*[#2](#3)'#4'{#5}(#6)<#7>}%
                 {\fillednumshape[#2](#3)'#4'{#5}(#6)<#7>}%
 }
+%\tcblistboxentrylabel*[#2](#3)'\@current@tcb@coloring'{@tcb@functions@counter}(#8)<#9>%
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                          1 2  3          4   5                          6   7
 \DeclareDocumentEnvironment{tcbeqnlistbox}{s t- O{\arabic} d() D''{tcbeqnlistboxColorset} d"" d||}
@@ -1202,33 +1226,44 @@ linewidth=4pt, linecolor=current-coldraw,
         \IfValueTF{#7}{\setcounter{@tcb@functions@counter}{#7}}{}
         \IfBooleanTF{#1}
         {%
+	        \@tcb@functions@arg@font%
+	        \hspace{\@function@entry@label@skip}%
+	        \tcblistboxentrylabel*[#2](#3)'\@current@tcb@coloring'{@tcb@functions@counter}(#8)<#9>%
                 &\hspace{\@current@listbox@column@sep}%
                 \parbox[c]{\@current@listbox@second@column}%
-                {\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
+                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@entry@skip]%
         }
         {%
+                \@tcb@functions@arg@font%
+                \hspace{\@function@entry@label@skip}%
+                \tcblistboxentrylabel[#2](#3)'\@current@tcb@coloring'{#5}(#8)<#9>%
                 &\hspace{\@current@listbox@column@sep}%
                 \parbox[c]{\@current@listbox@second@column}%
-                {\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
+                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@entry@skip]%
+                %{\large\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont#6}\\[\@function@entry@skip]%
         }
-%       \IfBooleanTF{#2}{}{\\[-0.8em]}
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%                                           1      2                                            3                 4                                             5 6                            7                             8                                           8
+%1  2      3                           4                 5                            6 7                             8                                           8                                    9
 \DeclareDocumentCommand{\tcbfunctiondesc}
-{D''{c} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{0.6em}}
+{s D''{t!} O{\usefont{T1}{cmr}{bx}{n}} D(){Description:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{0.6em}}
 {%\tcbfunctiondesc[text formatting]{lst col label}(last col text) <1st col width><last col width>
-        \parbox[t!]{#6}{#2\fontsize{12}{5.0mm}\selectfont#3}%
-        &\hspace{\@current@listbox@column@sep}\parbox[t!]{#7}{#4\fontsize{13}{4.5mm}\selectfont#5}\\[\@function@desc@skip]
+        \IfBooleanTF{#1}%
+        	{\gdef\@description@prefix{}}%
+                {\gdef\@description@prefix{\textmathdash\space}}%
+        \parbox[#2]{#7}{\@tcb@functions@header@font#4}%
+        &%
+        \hspace{\@current@listbox@column@sep}%
+        \parbox[#2]{#8}{\@tcb@functions@text@font\@description@prefix#6}\\[\@function@desc@skip]
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                        1      2                                 3                4                         5                                    6                                     7
-\DeclareDocumentCommand{\tcbfunctionsep}{D''{c} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{1.2em}}
+\DeclareDocumentCommand{\tcbfunctionsep}{D''{t} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{1.2em}}
 {%\tcbfunctionsep[<text formatting>]{<lst col label>}(<last col label) <<1st col width>><<last col width>>
         \setlength{\@macro@width}{\widthof{#3}}
         \setlength{\@function@entry@label@skip}{\dimexpr\@macro@width / 2\relax}
-        \parbox[t]{#5}{#2\selectfont#3}
-        &\hspace{\@current@listbox@column@sep}\parbox[t]{#6}{#2\selectfont#4}\\[\@function@sep@skip]%
+        \parbox[#1]{#5}{\@tcb@functions@header@font#3}
+        &\hspace{\@current@listbox@column@sep}\parbox[#1]{#6}{\@tcb@functions@header@font#4}\\[\@function@sep@skip]%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfuncdefboxTitle}{m o}{\IfValueTF{#2}{#1\\[0.5em]\large USAGE: #2}{#1}}

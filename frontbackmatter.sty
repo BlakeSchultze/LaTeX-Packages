@@ -3,17 +3,17 @@
 %******************************************************************************************************************************%
 % Provides macros/commands for adding, configuring, and printing the Table of Contents and back matter material (e.g. index, glossary, acronym/symbol/abbreviation lists, etc.).  The entries added to the Table of Contents and its settings/appearance are configured using the 'tocloft' package and additional supplemental macros/commands designed to interact/interface with the package.  The back matter material is added, configured, and printed using the 'my-glossaries', 'my-imakeidx', and 'my-nomencl' packages (where each 'my-X' package is an adaptation of the 'X' package) as well as the definitions/macros/commands which these packages depend/rely on.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{frontbackmatter}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{frontbackmatter}{Unknown `\CurrentOption'}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -21,7 +21,7 @@
 \catcode`|=12
 %\catcode`\!=12
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 %%\captionsetup[longtable]{labelfont=bf,textfont=it,labelsep=newline}
 %\contentsuse{name}{ext}
@@ -33,320 +33,29 @@
 \setglossarystyle{\@gls@glossary@style}
 %\setStyleFile{my-glossaries}
 %\def\istfilename{my-glossaries.ist}    %------------------------------------------------------------------------------------------------------------------------------%
-%\begingroup\let\newcounter\@gobble\let\setcounter\@gobbletwo
-%        \globaldefs\@ne \let\c@loldepth\@ne
-%        \newlistof{listings}{lol}{\lstlistlistingname}
-%\endgroup
-\newlistof{listings}{lol}{\lstlistlistingname}
-\newlistof{problems}{probs}{\listproblemsname}
-\newlistentry{chapterproblems}{probs}{1}
-\newlistentry[problems]{subproblems}{probs}{2}
-\newlistentry[problems]{problemparts}{probs}{2}
-\newlistentry[problemparts]{problempartssubproblems}{probs}{3}
-\newlistentry[subproblems]{subproblemparts}{probs}{3}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\bookmark@hyperaddress[1]{bookmark@#1\csname the#1\endcsname}
-\newcommand\cft@hyperaddress[1]{#1\csname the#1\endcsname}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\cftX@page@fontfamily{\normalfont}
-\newcommand\cftX@page@fontstyle{\bfmseries}
-\newcommand\cftX@page@fontsize{\normalsize}
-\newcommand\cftX@page@fontdef{\cftX@page@fontsize\cftX@page@fontfamily\cftX@page@fontsize}
-\newcommand\cftX@toctitle@fontfamily{\normalfont}
-\newcommand\cftX@toctitle@fontstyle{\bfmseries}
-\newcommand\cftX@toctitle@fontsize{\normalsize}
-\newcommand\cftX@toctitle@fontdef{\cftX@toctitle@fontsize\cftX@toctitle@fontfamily\cftX@toctitle@fontstyle}
-\newcommand\cftX@tcbtitle@fontfamily{\sffamily}
-\newcommand\cftX@tcbtitle@fontstyle{\bfmseries}
-\newcommand\cftX@tcbtitle@fontsize{\large}
-\newcommand\cftX@tcbtitle@fontdef{\cftX@tcbtitle@fontsize\cftX@tcbtitle@fontfamily\cftX@tcbtitle@fontstyle}
-\newcommand\tcbX@title@fontfamily{\anttmcap16pt}
-\newcommand\tcbX@title@fontstyle{\bfmseries}
-\newcommand\tcbX@title@fontsize{\Large}
-\newcommand\tcbX@title@fontdef{\tcbX@title@fontstyle\tcbX@title@fontfamily}
-\newcommand\cftX@fontfamily{\bfmseries}
-\newcommand\cftX@fontstyle{\normalfont}
-\newcommand\cftX@fontsize{\normalsize}
-\newcommand\cftX@fontdef{\cftX@fontsize\cftX@fontstyle\cftX@fontfamily}
-\newcommand\tcbX@fontfamily{\bfmseries}
-\newcommand\tcbX@fontstyle{\normalfont}
-\newcommand\tcbX@fontsize{\normalsize}
-\newcommand\tcbX@fontdef{\tcbX@fontsize\tcbX@fontfamily\tcbX@fontstyle}
-\newcommand{\cftZtitlefont}{\cftmedfont}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@tcbtitle@font}{s m o}%
-{%\cftX@tcbtitle@font*<coltitle base shadow text>{title text}[currently unused]
-        \IfBooleanTF{#1}%
-                {\cftX@tcbtitle@fontfamily\BreakableShadowText<0.35pt><0.2pt>[current-coltitle](current-coltextshadow){#2}}%
-                {\cftX@tcbtitle@fontfamily\BreakableShadowText<0.35pt><0.2pt>[current-coltext](current-coltextshadow){#2}}%
-}
-\DeclareDocumentCommand{\tcbX@title@font}{s m o}%
-{%\tcbX@title@font*<coltitle base shadow text>{title text}[currently unused]
-        \ifstrempty{#2}{\relax}%
+\newcommand{\tocnumbersoff}[1]
+{
+	\IfStrEqCase{#1}%
         {%
-                \IfBooleanTF{#1}%
-                        {\anttmcap16pt\BreakableShadowText<0.35pt><0.2pt>[current-coltitle](current-coltextshadow){#2}}%
-                        {\anttmcap16pt\BreakableShadowText<0.35pt><0.2pt>[current-coltext](current-coltextshadow){#2}}%
+                {chapter}{\setcounter{chapnumdepth}{0}}%
+                {section}{\setcounter{secnumdepth}{0}}%
+                {subsection}{\setcounter{subsecnumdepth}{0}}%
+                {subsubsection}{\setcounter{subsubsecnumdepth}{0}}%
+                {paragraph}{\setcounter{paranumdepth}{0}}%
+                {subparagraph}{\setcounter{subparanumdepth}{0}}%
+                {figure}{\setcounter{fignumdepth}{0}}%
+                {subfigure}{\setcounter{subfignumdepth}{0}}%
+                {table}{\setcounter{tabnumdepth}{0}}%
+                {subtable}{\setcounter{subtabnumdepth}{0}}%
         }%
+        [{\setcounter{#1numdepth}{0}}]%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@hypertarget}{O{10pt} m}%
-{%\cftX@names{list entry}{name}[explicit long name]
-        \raisebox{#1}{\hypertarget{\cft@hyperaddress{#2}}{}}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\toc@hyperaddress}{m m}{#1.\thechapter.\@nameuse{the#2}}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tocX@hypertarget}{O{10pt} m o}%
-{%\cftX@names{list entry}{name}[explicit long name]
-        \IfValueTF{#3}% If alternative "long" name is provided for appropriate contexts (like ToC), otherwise base "name" is always used
-                {\raisebox{#1}{\hypertarget{#2.\thechapter.\@nameuse{the#3}}{}}}%
-                {\raisebox{#1}{\hypertarget{#2.\thechapter.\@nameuse{the#2}}{}}}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                    1 2 3
-\DeclareDocumentCommand{\cftX@names}{m m o}%
-{%\cftX@names{list entry}{name}[explicit long name]
-        \@namedef{cft#1@name}{#2}%
-        \IfValueTF{#3}% If alternative "long" name is provided for appropriate contexts (like ToC), otherwise base "name" is always used
-                {\@namedef{cft#1@longname}{#3}}%
-                {\@namedef{cft#1@longname}{#2}}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@toctitle}{s m o}%
-{%\cftX@toctitle{list entry}[alternative counter]
-        \@namedef{cft#2@toctitle}%
-        {%
-                \@nameuse{cft#2@longname}\space%
-                \IfValueTF{#3}%
-                        {\@nameuse{the#3}}%
-                        {\@nameuse{the#2}}%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@tcbtitle}{s m o}%
-{%\cftX@tcbtitle{list entry}[alternative counter]
-        \@namedef{cft#2@tcbtitle}%
-        {%
-                \@nameuse{cft#2@name}\space%
-                \IfValueTF{#3}%
-                        {\@nameuse{the#3}}%
-                        {\@nameuse{the#2}}%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@numberline@prefix}{m O{}}%
-{%\cftX@numberline{list entry}[optional prefix]
-        \@namedef{cft#1@numberline@prefix}{#2}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@numberline}{m o}%
-{%\cftX@numberline{list entry}[alternative counter]
-        \@namedef{cft#1@numberline}%
-        {%
-                \protect\numberline%
-                {%
-                        \raisebox{10pt}{\protect\hypertarget{\cft@hyperaddress{#1}}{}}%
-                        \@nameuse{cft#1@numberline@prefix}
-                        \IfValueTF{#2}%
-                                {\@nameuse{the#2}}%
-                                {\@nameuse{the#1}}%
-                }%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2 3
-\DeclareDocumentCommand{\cftX@contentsline}{s m m}%
-{%\cftX@contentsline<*>{file extension}{list entry}
-        \@namedef{cft#3@contentsline}##1%
-        {%
-                \expandafter\phantomsection\expandafter\addcontentsline{#2}{#3}%
-                {%
-                        \@nameuse{cft#3@numberline}
-                        \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
-                        ##1%
-                }%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                        1 2 3
-\DeclareDocumentCommand{\cftX@listentry}{s m g}%
-%\newcommand{\cftX@listentry}[1]
-{%\cftX@listentry<*>{list entry}
-        \@namedef{cft#2@listentry}##1%
-        %\expandafter\DeclareDocumentCommand\expandafter{\csname cft#2@listentry\endcsname}{s m}%
-        {%
-                \@nameuse{cft#2@toctitle@font}
-                \@nameuse{cft#2@numberline}%
-                \IfBooleanTF{#1}{\space}{}%
-                \@nameuse{cft#2@toctitle}
-                ##1%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                         1 2
-%\DeclareDocumentCommand{\cftX@titleblend}{s m}%
-\newcommand{\cftX@titleblend}[1]
-{%\cftX@titleblend<*>{list entry}
-        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@titleblend\endcsname}{s m}%
-        {%
-                \IfBooleanTF{##1}%
-                        {\csname cft#1@tcbtitle@font\endcsname*{\csname cft#1@tcbtitle\endcsname##2}}%
-                        {\csname cft#1@tcbtitle@font\endcsname{\csname cft#1@tcbtitle\endcsname##2}}%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\cftX@hypertitle}[1]
-{%\cftX@hypertitle{list entry}
-        %                                                                                   1 2                     3        4          5 6
-        \expandafter%
-        \DeclareDocumentCommand\csname cft#1@hypertitle\endcsname{s D''{\@tcb@title@font} O{white} D(){black} m m}%
-        {%\cft#1hypertitle|title font|[text color](text shadow color){title/description separator}{title description}
-                \expandafter\hyperlink\expandafter%
-                        {\cft@hyperaddress{#1}}%
-                        {%
-                                \IfBooleanTF{##1}%
-                                        {##2\csname cft#1@tcbtitle@font\endcsname*{\csname cft#1@tcbtitle\endcsname##5##6}}%
-                                        {##2\csname cft#1@tcbtitle@font\endcsname{\csname cft#1@tcbtitle\endcsname##5##6}}%
-                        }
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\cftX@hyperblend}[1]
-{%\cftX@hypertitle{list entry}
-        %                                                                                   1 2                     3        4          5
-        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@hyperblend\endcsname}{s D''{\@tcb@title@font} O{white} D(){black} m}%
-        {%
-        	\expandafter\hyperlink\expandafter%
-                {\cft@hyperaddress{#1}}%
-                {%
-                        %\IfBooleanTF{##1}%
-%                               {##2\BreakableShadowText*[##3](##4){\csname cft#1@tcbtitle\endcsname##5}}%
-%                                       {##2\BreakableShadowText[##3](##4){\csname cft#1@tcbtitle\endcsname##5}}%
-                        \IfBooleanTF{##1}%
-                                {\csname cft#1@tcbtitle@font\endcsname*{\csname cft#1@tcbtitle\endcsname##5}}%
-                                {\csname cft#1@tcbtitle@font\endcsname{\csname cft#1@tcbtitle\endcsname##5}}%
-                        %\IfBooleanTF{##1}{\@tcb@title@sep}{}%
-                        \unskip\ignorespaces%
-                }%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\cftX@hyperblend@title}{s m}
-\newcommand{\cftX@hyperblend@title}[1]
-{%
-	\expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@hyperblend@title\endcsname}{s m m}%
-        {%
-                \expandafter\hyperlink\expandafter%
-                        {\cft@hyperaddress{#1}}%
-                        {%
-                                \IfBooleanTF{##1}%
-                                        {\csname cft#1@tcbtitle@font\endcsname*{##2##3}}%
-                                        {\csname cft#1@tcbtitle@font\endcsname{##2##3}}%
-                        }%
-        }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\cftX@listsettings}{s m m}
-{%
-        \ifundef\@nameuse{toclevel@#2}
-                {\@namedef{toclevel@#2}{#3}}{}
-        \IfBooleanTF{#1}%
-                {\pgfmathsetlengthmacro\cftX@indent{(\@nameuse{toclevel@#2} + 1) * \cft@indent@unit@em}}%
-                {\pgfmathsetlengthmacro\cftX@indent{\@nameuse{toclevel@#2} * \cft@indent@unit@em}}%
-        \setlength{\@nameuse{cft#2indent}}{\cftX@indent}%
-        \@namedef{cft#2pagefont}{\cftX@page@fontdef}
-        \@namedef{cft#2@fontfamily}{\cftX@fontfamily}
-        \@namedef{cft#2@fontsize}{\cftX@fontsize}
-        \@namedef{cft#2font}{\cftX@toctitle@fontdef}
-        \@namedef{cft#2@toctitle@font}{\cftX@toctitle@fontdef}
-        \@namedef{cft#2@tcbtitle@font}{\cftX@tcbtitle@font}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                     1 2 3 4 5 6 7 8   9
-\DeclareDocumentCommand{\cftX@create}{s o m m m m o d() G{} }%
-{%\cftX@create[number within]{list entry}{file extension}{toc level-1}{name}[long name](alt. numberline counter){}
-        \IfValueTF{#2}%
-                {\newlistentry[#2]{#3}{#4}{#5}}%                If list entry should be numbered within another list entry
-                {\newlistentry{#3}{#4}{#5}}%                    If list entry should not be numbered within any other list entry
-        \IfBooleanTF{#1}%
-                {\cftX@configure*{#3}{#4}{#5}{#6}[#7](#8){#9}}%
-                {\cftX@configure{#3}{#4}{#5}{#6}[#7](#8){#9}}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                        1 2 3 4 5 6 7   8
-\DeclareDocumentCommand{\cftX@configure}{s m m m m o d() G{} }%
-{%\cftX@create[number within]{list entry}{file extension}{toc level-1}{name}[long name](alt. numberline counter){}
-        \IfValueTF{#6}%
-                {\cftX@names{#2}{#5}[#6]}%                       If a long name should be used in appropriate contexts
-                {\cftX@names{#2}{#5}}%                           If same <name> should be used in all contexts
-        \cftX@toctitle{#2}%
-        \cftX@tcbtitle{#2}%
-        \cftX@numberline@prefix{#2}[#8]%
-        \addtolength{\@nameuse{cft#2numwidth}}{\widthof{#8}}%\csname cft#3numwidth\endcsname
-        \IfValueTF{#7}%
-                {\cftX@numberline{#2}[#7]}%                     Provide the argument of the ToC 'numberline' explicitly
-                {\cftX@numberline{#2}}%                         Use default '\the<list entry>' counter value as ToC 'numberline' argument
-        \cftX@contentsline{#3}{#2}%
-        \IfBooleanTF{#1}%
-                {\cftX@listsettings*{#2}{#4}}%
-                {\cftX@listsettings{#2}{#4}}%
-        \cftX@listentry{#2}%
-        \cftX@titleblend{#2}%
-        \cftX@hyperblend{#2}%
-        \cftX@hyperblend@title{#2}%
-        \cftX@hypertitle{#2}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\cftX@create{Chapter}{toc}{0}{\ChapterName}
-\cftX@create[Chapter]{Section}{toc}{1}{\SectionName}
-\cftX@create[Section]{Subsection}{toc}{2}{\SubsectionName}
-\cftX@create{Topic}{toc}{0}{\TopicName}{\TopicName\space}
-\cftX@create{Part}{toc}{0}{\PartName}{\PartName\space}
-\cftX@create*{figbox}{lof}{0}{\FigboxName}
-\cftX@create[figbox]{figboxfigure}{lof}{1}{\FigboxFigureName}%(figure)
-\cftX@create{boxedtable}{lot}{1}{\tablename}%(figure)
-\cftX@create{IBPtable}{lot}{1}{\IBPtableName}[\IBPtableLongName](table)
-\cftX@create{Matlab}{lol}{1}{\MatlabListingName}(lstlisting)
-\cftX@create{Terminal}{lol}{1}{\TerminalListingName}(lstlisting)
-%------------------------------------------------------------------------------------------------------------------------------%
-\cftX@configure{tab}{lot}{1}{\tablename}
-\cftX@toctitle*{figboxfigure}[figure]
-\cftX@tcbtitle*{figboxfigure}[figure]
-\cftX@listentry*{figboxfigure}
-\cftX@contentsline*{toc}{Section}
-
-%\cftX@listsettings{Part}{\Roman}
-%\cftX@listentry*{figbox}
-%\cftX@listentry{IBPtable}
-%\cftX@listentry{Terminal}
-%\cftX@listentry{Matlab}
-%\cftX@titleblend{figbox}
-%%\cftX@titleblend{figboxfigure}
-%\cftX@titleblend{IBPtable}
-%\cftX@titleblend{Matlab}
-%\cftX@titleblend{Terminal}
-%\cftX@hyperblend{IBPtable}
-%%\cftX@hyperblend{figboxfigure}
-%\cftX@hyperblend@title{figboxfigure}
-%\cftX@hyperblend@title{IBPtable}
-%\cftX@tcbtitle{problems}
-
-%\cftX@hypertitles*{figbox}
-%\cftX@hypertitles*{figboxfigure}
-%\cftX@hypertitles*{IBPtable}
-%\cftX@hypertitles*{Matlab}
-%\cftX@hypertitles*{Terminal}
-
-%\@namedef{cftfigboxfigurepagefont}{\LARGE}%
-%\renewcommand{\@nameuse{cft#2pagefont}}{\LARGE\cftX@page@font}%
-%\addtolength{\cftfigboxfigurenumwidth}{5.0em}
 \setcounter{tocdepth}{4}
 \setcounter{lofdepth}{4}
 %\setcounter{loldepth}{4}
 \setcounter{probsdepth}{4}
+%\tocnumbersoff{section}
+%\setcounter{secnumdepth}{0}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -384,31 +93,33 @@
 \setlength\cftafterprobstitleskip{2.5mm}                                  % Vertical skip before Table of Contents title
 %------------------------------------------------------------------------------------------------------------------------------%
 \setlength\cftbeforeChapterskip{2.5mm}                                       % Vertical skip before Table of Contents title
-\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip}                   % Vertical skip before Table of Contents title
-\newcommand*{\@Section@finish@skip}{\par\bigskip}
-\newcommand*{\@Subsection@finish@skip}{\par\bigskip}
-\newcommand*{\@Topic@finish@skip}{\par\bigskip\bigskip}
+\setlength\cftbeforechapskip{2.5mm}                                       % Vertical skip before Table of Contents title
+\setlength\cftbeforePartskip{2.5mm}                                       % Vertical skip before Table of Contents title
+\setlength\cftbeforeTopicskip{2.5mm}                                       % Vertical skip before Table of Contents title
 %------------------------------------------------------------------------------------------------------------------------------%
+%\setlength\cftchapindent{1.5em}
+%\setlength\cftsecindent{3.0em}
 \setlength\cftfigindent{1.5em}
-\setlength\cftproblemsindent{1.5em}
-\setlength\cftchapterproblemsindent{1.5em}
-\setlength\cftsubproblemsindent{3.0em}
-\setlength\cftproblempartsindent{3.0em}
-\setlength\cftproblempartssubproblemsindent{4.5em}
-\setlength\cftsubproblempartsindent{4.5em}
+\setlength\cftproblemsindent{0em}
+\setlength\cftchapterproblemsindent{0em}
+\setlength\cftsubproblemsindent{1.5em}
+\setlength\cftproblempartsindent{1.5em}
+\setlength\cftproblempartssubproblemsindent{3.0em}
+\setlength\cftsubproblempartsindent{3.0em}
 \setlength\cftlistingsindent{1.5em}
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cftPartdotsep}{\cftnodots}
 \renewcommand{\cftTopicdotsep}{\cftnodots}
-\renewcommand{\cftChapterdotsep}{\cftnodots}
+%\renewcommand{\cftChapterdotsep}{\cftnodots}
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cftPartleader}{\nobreak\cftdotfill{\cftPartdotsep}\space}
 \renewcommand{\cftTopicleader}{\nobreak\cftdotfill{\cftTopicdotsep}\space}
 \renewcommand{\cftChapterleader}{\nobreak\cftdotfill{\cftChapterdotsep}\space}
 %------------------------------------------------------------------------------------------------------------------------------%
-\setlength{\cftchapterproblemsnumwidth}{2.0em}
-\setlength{\cftproblemsnumwidth}{2.0em}
-\setlength{\cftfigboxfigurenumwidth}{5.5em}
+%\setlength{\cftchapterproblemsnumwidth}{2.0em}
+%\setlength{\cftproblemsnumwidth}{2.0em}
+%\setlength{\cftfigboxfigurenumwidth}{40.5em}
+%\addtolength{\cftfigboxfigurenumwidth}{5.5em}
 %\setlength{\cftPartnumwidth}{4.0em}
 %\setlength{\cftTopicnumwidth}{4.0em}
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -421,18 +132,13 @@
 \renewcommand{\lstlistoflistings}{\listoflistings}              % ? print list of listings, defined to be an alias for \listoflistings (minted)
 \renewcommand{\lstlistlistingname}{\LOLName}                    % The header name for the list of listings.
 \newcommand{\listproblemsname}{\LOPName}                        % List of homework problems/solutions
+\newcommand{\listfunctionsname}{\LODName}                        % List of homework problems/solutions
 \renewcommand{\indexname}{\IndexName}
 %\renewcommand{\indexname}{}
-\renewcommand{\tablename}{\IBPtableName}                        % Table toc title
-\renewcommand{\figurename}{\FigureName}                         % Figure toc title
+%------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\bibname{\BibName}                                 % Bibliography toc title
-\renewcommand\partname{\PartName}                               % Part toc title
-\renewcommand\chaptername{\ChapterName}                         % Chapter toc title
 \renewcommand\appendixname{\AppendixName}                       % Appendix toc title
 \renewcommand\abstractname{\AbstractName}                       % Abstract toc title
-\renewcommand{\lstlistingname}{\CodeListingName}                % The caption label for listings.
-%\renewcommand{\thelstlisting}{\CodeListingName}                % The caption label for listings.
-
 %------------------------------------------------------------------------------------------------------------------------------%
 \ifcsdef{listoflistingscaption}                                 % Caption of listing float entry in ToC (minted)
         {\renewcommand{\listoflistingscaption}{\LOLName}}       %
@@ -440,9 +146,6 @@
 \ifcsdef{listingscaption}                                       % Caption of listing float entry (minted)
         {\renewcommand{\listingscaption}{\CodeListingName}}     %
         {\newcommand{\listingscaption}{\CodeListingName}}       %
-\newcommand{\problemsname}{\ProblemName}                        % The caption label for listings.
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\thePart}{\Roman{Part}}                           % Change the Part counter printing to capital Roman numerals
 %------------------------------------------------------------------------------------------------------------------------------%
 \newrobustcmd{\toctitletarget}[1]%
 {%
@@ -464,222 +167,11 @@
     \@starttoc{toc}%
     \pagestyle{empty}\if@restonecol\twocolumn\fi
 }
+%------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document sectioning command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
-%                                             1
-\DeclareDocumentCommand{\Chapter@tikzpicture}{m}
-{%{Chapter title}
-        \begin{tikzpicture}[remember picture, overlay]%
-                \node[xshift=\@Chapter@heading@xshift, yshift=\@Chapter@heading@yshift] at (current page.north west)%
-                {%
-                        \begin{tikzpicture}[remember picture, overlay]%
-                                \draw[fill=chapterHeading-colback, line width=\@Chapter@heading@linewidth, draw=black]
-                                        (0,0) rectangle (\@Chapter@heading@width, \@Chapter@heading@height);,%
-                                \node%
-                                [%
-                                        anchor=east, draw=chapterHeading-coldraw, fill=chapterHeading-colbacktitle,
-                                        rounded rectangle, rounded rectangle arc length=\@Chapter@heading@rounded@arclength,
-                                        xshift=\@Chapter@heading@title@xshift, %inner sep=\@Chapter@heading@inner@sep,
-                                        inner xsep=\@Chapter@heading@inner@xsep, inner ysep=\@Chapter@heading@inner@ysep,
-                                        line width=\@Chapter@heading@title@linewidth
-                                ]
-                                %{\cftX@tcbtitle@font{#1}};%                               
-                                %{\BreakableShadowText<0.65pt><0.2pt>[current-coltext](current-coltextshadow){#1}};% 
-                                {\@Chapter@heading@font\shadowText:\sffamily:[black](black){\@Chapter@heading@font#1}};%
-                                %{\@Chapter@heading@font\textbfmsf{#1}};%                               
-                        \end{tikzpicture}%
-                 };%
-        \end{tikzpicture}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                 1 2  3                  4   5 6
-\DeclareDocumentCommand{\Chapter}{s t! D''{tcbBlueScheme} d() m o}
-{%*<clear page>!<add vskip after>'color scheme'[overwrite toc title]{Chapter title}(hypertarget label prefix)
-        \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{}{\clearpage}%
-        \refstepcounter{Chapter}%
-        \refstepcounter{chapter}%
-        \def\currentChaptername{#5}%
-        \IfValueTF{#4}%
-                {\hypertarget{\@Chapter@link@name#4}{}}%
-                {\hypertarget{\@Chapter@link@name#5}{}}%
-        \IfValueTF{#6}%
-                {\phantomsection\addcontentsline{toc}{Chapter}{\protect\numberline{\theChapter}#6}}%
-                {\phantomsection\addcontentsline{toc}{Chapter}{\protect\numberline{\theChapter}#5}}%
-        \Chapter@tikzpicture{\theChapter\space\space\currentChaptername}
-        \fancyhead[L]{\@lhead@font\theChapter\; \currentChaptername}%
-        \IfBooleanTF{#2}{}{\@Chapter@finish@skip}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                 1 2  3                  4   5 6
-\DeclareDocumentCommand{\Section}{s t! D''{tcbBlueScheme} d() m o}
-{%*<clear page>!<add vskip after>'color scheme'{Section title}(hypertarget label prefix)[description text]
-        \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{\clearpage}{}%
-        \refstepcounter{Section}%
-        \refstepcounter{section}%
-        \def\currentSectionname{#5}%
-        \IfValueTF{#4}%
-                {\hypertarget{\@Section@link@name#4}{}}%
-                {\hypertarget{\@Section@link@name#5}{}}%
-        \IfValueTF{#6}%
-{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\raisebox{\textsize}{\protect\hypertarget{toc\theSection}{}}\theSection}#5}}%
-{\phantomsection\addcontentsline{toc}{Section}{\protect\numberline{\raisebox{\textsize}{\protect\hypertarget{toc\theSection}{}}\theSection}#5}}%
-%{\cftSection@contentsline{#5}}
-%{\cftSection@contentsline{#5}}
-        \IfValueTF{#6}%
-        {%
-                \begin{tcbsection}{\tcbhyperlink[stddkblue]{toc\theSection}{\shadowcolor{black}\shadowtext{\theSection\ : #5}}}%
-                        [after skip=\@Section@after@skip]%
-                        #6%
-                \end{tcbsection}%
-        }%
-        {%
-                \begin{tcbsection}{\tcbhyperlink[stddkblue]{toc\theSection}{\shadowcolor{black}\shadowtext{\theSection\ : #5}}}%
-                        [bottom=0mm, after skip=\@Section@after@skip]%
-                \end{tcbsection}%
-        }%
-        \fancyhead[L]{\@lhead@font\theSection\; \currentChaptername : #5}%
-        \IfBooleanTF{#2}{}{\@Section@finish@skip}%
-        %\ignorespaces\par\bigskip%\@Section@finish@skip
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                    1 2  3                  4   5 6
-\DeclareDocumentCommand{\Subsection}{s t! D''{tcbBlueScheme} d() m o}
-{%*<clear page>!<add vskip after>'color scheme'{Subsection title}(hypertarget label prefix)[description text]
-        \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{\par\bigskip}{}%
-        \refstepcounter{Subsection}%
-        \refstepcounter{subsection}%
-        \def\currentSubsectionname{#5}%
-        \IfValueTF{#4}%
-                {\hypertarget{\@Subsection@link@name#4}{}}%
-                {\hypertarget{\@Subsection@link@name#5}{}}%
-        \IfValueTF{#6}%
-                {\phantomsection\addcontentsline{toc}{Subsection}{\protect\numberline{\theSubsection}#6}}%
-                {\phantomsection\addcontentsline{toc}{Subsection}{\protect\numberline{\theSubsection}#5}}%
-        \savebox{\@frontbackmatter@savebox@}{\cftmedfont\theSubsection\space#5\hspace{2mm}}%
-        \begin{tcolorbox}[tcbSubsectionStyle]%
-                \usebox{\@frontbackmatter@savebox@}%
-        \end{tcolorbox}%
-        \fancyhead[L]{\@lhead@font\theSubsection\; \currentChaptername :  \currentSectionname, #5}%
-        \IfBooleanTF{#2}{}{\@Subsection@finish@skip}%
-        %\ignorespaces\par\bigskip%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%                               1 2  3                  4   5 6
-\DeclareDocumentCommand{\Topic}{s t! D''{tcbBlueScheme} d() m o}
-{%*<clear page>!<add vskip after>{Section title}(hypertarget label prefix)[description text]
-        \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{}{\clearpage}%
-        \refstepcounter{Topic}%
-        \def\currentTopicname{#5}%
-        \IfValueTF{#4}%
-                {\hypertarget{\@Topic@link@name#4}{}}%
-                {\hypertarget{\@Topic@link@name#5}{}}%
-        \IfValueTF{#6}%
-                {\phantomsection\addcontentsline{toc}{Topic}{\cftTopic@numberline#6}}%
-                {\phantomsection\addcontentsline{toc}{Topic}{\cftTopic@numberline#5}}%
-                %{\phantomsection\addcontentsline{toc}{Topic}{\protect\numberline{\TopicName\space\theTopic}#4}}%
-                %{\phantomsection\addcontentsline{toc}{Topic}{\protect\numberline{\TopicName\space\theTopic}#5}}%
-        \Chapter@tikzpicture{\theTopic\ \currentTopicname}
-        \fancyhead[L]{\@lhead@font\theTopic\; \currentTopicname}%
-        \IfBooleanTF{#2}{}{\@Topic@finish@skip}%
-        %\par\bigskip\bigskip%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newkeycommand\MajorSection
-[enum type={Part,Topic}, bool clearpage=false, hyperlabel=Part, color scheme=tcbBlueScheme][1]
-{%
-        \@set@current@tcb@colors{\commandkey{color scheme}}%
-        \edef\@section@type{\commandkey{type}}
-        %\ifcommandkey{label}
-        %\IfBooleanTF{#1}{}{\clearpage}%
-        %\ifnumcomp{\commandkey{clearpage}}{=}{1}{\clearpage}{}%
-        %\refstepcounter{\@section@type}%
-        \refstepcounter{\commandkey{type}}%
-        %\def\currentTopicname{#3}%
-        \expandafter\def\csname current\@section@type name\endcsname{#1}%
-        \hypertarget{\@Topic@link@name#1}{}
-        %\IfValueTF{#5}%
-        %        {\hypertarget{\@Topic@link@name#1}{}}%
-        %        {\hypertarget{\@Topic@link@name#1}{}}%
-        %\IfValueTF{#3}%
-        %        {\phantomsection\addcontentsline{toc}{\@section@type}{\protect\numberline{\TopicName \theTopic}#1}}%
-        %        {\phantomsection\addcontentsline{toc}{\@section@type}{\protect\numberline{\TopicName \theTopic}#1}}%
-        \phantomsection\addcontentsline{toc}{\commandkey{type}}{\cftPart@numberline#1}
-        %\Chapter@tikzpicture{\theTopic\ \currentTopicname}
-        %\fancyhead[L]{\@lhead@font\theTopic\; \currentTopicname}%
-        %\IfBooleanTF{#2}{}{\@Topic@finish@skip}%
-        %\par\bigskip\bigskip%
-}
-%******************************************************************************************************************************%
-%****************************************** Index/Glossary/Acronyms/Nomenclature style file generation ***********************************%
-%******************************************************************************************************************************%
-\DeclareDocumentCommand{\problem@type@command}{m}
-{%
-        \IfStrEqCase{#1}%
-        {%
-                {problems}{\def\problem@numbering{\arabic{@prob@counter}}}%
-                {chapterproblems}{\def\problem@numbering{\arabic{@chap@counter}.\arabic{@prob@counter}}}%
-                {subproblems}{\def\problem@numbering{\alph{@subprob@counter}}}%
-                {problemparts}{\def\problem@numbering{\roman{@prob@part@counter}}}%
-                {problempartssubproblems}{\def\problem@numbering{\alph{@subprob@counter}}}%
-                {subproblemparts}{\def\problem@numbering{\roman{@prob@part@counter}}}%
-        }[\def\problem@numbering{\arabic{@prob@counter}}]%
-        \IfStrEqCase{#1}%
-        {%
-                {problems}{\def\problem@toctitle{\problemsname\space\problem@numbering}}%
-                {chapterproblems}{\def\problem@toctitle{\problemsname\space\problem@numbering}}%
-                {subproblems}{\def\problem@toctitle{(\problem@numbering)}}%
-                {problemparts}{\def\problem@toctitle{(\problem@numbering)}}%
-                {problempartssubproblems}{\def\problem@toctitle{(\problem@numbering)}}%
-                {subproblemparts}{\def\problem@toctitle{(\problem@numbering)}}%
-        }[\def\problem@toctitle{\problemsname\space\problem@numbering}]%
-        %\refstepcounter{#1}%
-        \raisebox{10pt}
-        {%
-                \phantomsection\addcontentsline{probs}{#1}%
-                {%
-                        \expandafter\protect\expandafter\numberline\expandafter%
-                        {%
-				\raisebox{10pt}%
-                                        {\unskip\ignorespaces\protect\hypertarget{prob\arabic{@count@problem}}{}}%
-                                        %
-                        }% 
-                        \cftX@toctitle@fontdef\problem@toctitle%\problemsname\space\problem@numbering                     
-                }%
-        }%
-        \hyperlink{prob\arabic{@count@problem}}%
-        {%
-                %\raisebox{10pt}{\hypertarget{bookmark@#1\csname the#1\endcsname}{}}%
-                \raisebox{10pt}{\hypertarget{\bookmark@hyperaddress{#1}}{}}%
-                \color{current-coltext}%
-                (\problem@numbering)\space\ignorespaces%
-        }%
-        \bookmark[dest=\bookmark@hyperaddress{#1}, rellevel=1]%
-                {\problemsname\space\problem@numbering}%
-	\IfStrEqCase{#1}%
-        {%
-                {problems}{\refstepcounter{@prob@counter}}%
-                {chapterproblems}{\refstepcounter{@prob@counter}}%
-                {subproblems}{\refstepcounter{@subprob@counter}}%
-                {problemparts}{\refstepcounter{@prob@part@counter}}%
-                {problempartssubproblems}{\refstepcounter{@subprob@counter}}%
-                {subproblemparts}{\refstepcounter{@prob@part@counter}}%
-        }%
-        %        \IfStrEqCase{#1}%
-%        {%
-%                {problems}{}%
-%                {chapterproblems}{}%
-%                {subproblems}{\refstepcounter{@subprob@counter}}%
-%                {problemparts}{\refstepcounter{@prob@part@counter}}%
-%                {problempartssubproblems}{\refstepcounter{@subprob@counter}}%
-%                {subproblemparts}{\refstepcounter{@prob@part@counter}}%
-%        }[]%
-}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -748,44 +240,6 @@
         \iftotallstlistings\lstlistoflistings\fi                                                %\listoflistings        % minted
         \iftotal@count@problems\listofproblems\fi
         \clearpage\hypertarget{\@page@one@target@name}{}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\remove@fncychap}{s}
-{
-        \ChRuleWidth{0.0pt}
-%\ChNameVar{\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont}
- % \ChNameVar{\flushleft\Large}
-  %\ChNumVar{\flushleft\Large\fontsize{14}{14}\usefont{OT1}{pzc}{m}{n}\selectfont}
-  %\ChTitleVar{\flushleft\Large\fontsize{14}{14}\usefont{OT1}{pzc}{m}{n}\selectfont}
-   %\ChNameVar{}
-  %\ChNumVar{}
-  \ChTitleVar{}
-  %\ChTitleAsIs
-        \def\@makeschapterhead##1{%
-  \vspace*{50\p@}%
-  {\parindent \z@ \raggedright
-    \normalfont
-    \interlinepenalty\@M
-    \DOTIS{##1}
-    \vskip 0\p@
-  }}
-  \renewcommand{\DOCH}{%
-    \flushleft
-    \CNV\FmN{\@chapapp}\space \CNoV\thechapter
-    \par\nobreak
-    \vskip 40\p@}
-  \renewcommand{\DOTI}[1]{%
-    \CTV\flushleft\mghrulefill{\RW}\par\nobreak
-    \vskip -3\p@
-    \CTV\FmTi{##1}\par\nobreak
-    \mghrulefill{\RW}\par\nobreak
-    \vskip 38\p@}
-  \renewcommand{\DOTIS}[1]{%
-    \CTV\flushleft\mghrulefill{\RW}\par\nobreak
-    \vskip -3\p@
-    \CTV\FmTi{##1}\par\nobreak
-    \mghrulefill{\RW}\par\nobreak
-    \vskip 38\p@}
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\printFrontbackMatter}{}

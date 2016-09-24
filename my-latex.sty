@@ -1,5 +1,5 @@
 %******************************************************************************************************************************%
-%************************************************************ `my-latex.sty' *************************************************************%
+%******************************************************* `my-latex.sty' *******************************************************%
 %******************************************************************************************************************************%
 % Top level "super package" encapsulating the various component (sub)packages, each being responsible for a particular aspect/application, and providing access to the \documentclass and (sub)package options through corresponding 'my-latex' package options: adding "\RequirePackage[option list]{my-latex}" to a LaTeX document loads 'my-latex' and its component (sub)packages and the options specified in the "option list" are then forwarded to the relevant (sub)packages.  The package options corresponding to \documentclass and component package options are then applied directly, while those associated with lower level (sub)packages are propagated to the corresponding (sub)packages, either (1) directly as an explicit package option at the point where they're loaded or (2) indirectly through appropriate register variables (typically Booleans) and/or control sequence definitions. This hierarchal design is a convenient mechanism for providing centralized control over various options/settings and because the register variables and control sequences used to propagate package options have global scope, a low-level subpackage can access these directly without requiring they be passed explicitly through each level of the (sub)package hierarchy as additional package options.
 %
@@ -7,7 +7,7 @@
 %
 % Note that the order in which the /documentclass related options/properties are applied and the order in which the component packages are loaded here is important; although there is some flexibility in this ordering, the dependencies between these component packages imposes a strict load order on most of these packages and this ordering should not be modified.  There are some unexpected dependencies on the 'my-glossaries' package which have yet to be identified but as long as the current ordering is maintained, this does not cause a problem.
 %******************************************************************************************************************************%
-%************************************* Define provided package name and LaTeX/package dependencies ***************************************%
+%******************************** Define provided package name and LaTeX/package dependencies *********************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-latex}
@@ -15,17 +15,18 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackageList{\@pkgopts@packages}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \SetupKeyvalOptions{family=mylatex, prefix=mylatex@}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareBoolOption{report}
 \DeclareBoolOption{article}%
 \DeclareBoolOption{isorot}
+\DeclareBoolOption[false]{countinchaps}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareComplementaryOption{rotating}{isorot}
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -104,6 +105,7 @@
 \RequirePackage[acronym,toc,symbols]            % Adapatation of 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
         {my-glossaries}                         % Options: automake, xindy/makeindex, section=chapter/(sub)section, nopostdot/main/nonumberlist
 \RequirePackage[intoc]{my-nomencl}              % Nomenclature/abbreviations list similar to acronms/glossary
+\RequirePackage{mainmatter}                % 
 \RequirePackage{frontbackmatter}                % Table of Contents, List of Tables/Figures/Acronyms/Symbols/Abbreviations, Index, Glossary etc.
 \RequirePackage{my-math}                        % Custom math characters/symbols, delimiters, operators, (e/x/g)defs, commands, and environments
 \RequirePackage{my-polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
