@@ -507,7 +507,7 @@
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\linespread@settings
-[enum context={doc,IBP,PLD,problem,solution,figbox,listing,code}, bool restore=false, arrayrulewidth=,baselinestretch=,arraystretch=]%
+[enum context={doc,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code}, bool restore=false, arrayrulewidth=,baselinestretch=,arraystretch=]%
 {%
         %\begingroup
         \xdef\@context@name{\commandkey{context}}
@@ -1328,7 +1328,8 @@ linewidth=4pt, linecolor=current-coldraw,
         }%
         {\tcolorbox[title={}, #6]}%
         \vspace{1mm}%
-}{\endtcolorbox\setlength{\parindent}{\@macro@length}}
+        %\par\smallskip
+}{\endtcolorbox\setlength{\parindent}{\@macro@length}\par\smallskip}
 %------------------------------------------------------------------------------------------------------------------------------%
 \define@boolkey[tcb]{paragraph}{indent}%
 {%
@@ -1624,7 +1625,7 @@ linewidth=4pt, linecolor=current-coldraw,
         \IfBooleanTF{#1}
         {%
                 \@tcb@functions@arg@font%
-                \hspace{\@function@entry@label@skip}%
+                \hspace{\@function@entry@label@hskip}%
 
                 \tcblistboxentrylabel*[#2](#3)%
                         '\@current@tcb@coloring'%
@@ -1633,11 +1634,11 @@ linewidth=4pt, linecolor=current-coldraw,
                         <\@filledenumshape@inner@sep>%
                 &\hspace{\@current@listbox@column@sep}%
                 \parbox[c]{\@current@listbox@second@column}%
-                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@entry@skip]%
+                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@argdef@crskip]%
         }
         {%
                 \@tcb@functions@arg@font%
-                \hspace{\@function@entry@label@skip}%
+                \hspace{\@function@entry@label@hskip}%
                 \tcblistboxentrylabel[#2](#3)%
                         '\@current@tcb@coloring'%
                         {#5}%
@@ -1645,7 +1646,7 @@ linewidth=4pt, linecolor=current-coldraw,
                         <\@filledenumshape@inner@sep>%
                 &\hspace{\@current@listbox@column@sep}%
                 \parbox[c]{\@current@listbox@second@column}%
-                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@entry@skip]%
+                {\@tcb@functions@text@font\textmathdash\space#6}\\[\@function@argdef@crskip]%
         }
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -1659,16 +1660,16 @@ linewidth=4pt, linecolor=current-coldraw,
         \parbox[#2]{#7}{\@tcb@functions@header@font#4}%
         &%
         \hspace{\@current@listbox@column@sep}%
-        \parbox[#2]{#8}{\@tcb@functions@text@font\@description@prefix#6}\\[\@function@desc@skip]
+        \parbox[#2]{#8}{\@tcb@functions@text@font\@description@prefix#6}\\[\@function@desc@crskip]
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                        1      2                                 3                4                         5                                    6                                     7
 \DeclareDocumentCommand{\tcbfunctionsep}{D''{t} O{\large\usefont{T1}{cmr}{bx}{n}} G{\ul{Options}:} D(){\ul{Option Details}:} D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{1.2em}}
 {%\tcbfunctionsep[<text formatting>]{<lst col label>}(<last col label) <<1st col width>><<last col width>>
         \setlength{\@macro@width}{\widthof{#3}}
-        \setlength{\@function@entry@label@skip}{\dimexpr\@macro@width / 2\relax}
+        \setlength{\@function@entry@label@hskip}{\dimexpr\@macro@width / 2\relax}
         \parbox[#1]{#5}{\@tcb@functions@header@font#3}
-        &\hspace{\@current@listbox@column@sep}\parbox[#1]{#6}{\@tcb@functions@header@font#4}\\[\@function@sep@skip]%
+        &\hspace{\@current@listbox@column@sep}\parbox[#1]{#6}{\@tcb@functions@header@font#4}\\[\@function@sep@crskip]%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfuncdefboxTitle}{s m o}%
@@ -1686,6 +1687,7 @@ linewidth=4pt, linecolor=current-coldraw,
 \newkeyenvironment{tcbcode}
 [enum type={script,function,details}, usage=, firstcol=, secondcol=, bool usagenewline=true, colorscheme=, title=][0]%[1]%
 {%
+        \begingroup\linespread@settings[context=code]\endgroup%
         \bookmarksetupnext{keeplevel}%
         \refstepcounter{@count@function}
         \xdef\@the@envtype{\commandkey{type}}%

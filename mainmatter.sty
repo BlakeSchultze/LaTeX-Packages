@@ -331,12 +331,18 @@
 %                                           1 2 3
 \DeclareDocumentCommand{\cftX@contentsline}{s m m}%
 {%\cftX@contentsline<*>{file extension}{list entry}
+        \@namedef{cft#3@contentsline@title}%
+        {%
+                \@nameuse{cft#3@numberline}%
+                \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
+        }%
         \@namedef{cft#3@contentsline}##1%
         {%
                 \expandafter\raisebox{10pt}{\phantomsection}\expandafter\addcontentsline{#2}{#3}%
                 {%
-                        \@nameuse{cft#3@numberline}%
-                        \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
+                        \@nameuse{cft#3@contentsline@title}%
+                        %\@nameuse{cft#3@numberline}%
+                        %\IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
                         ##1%
                 }%
         }%
@@ -697,20 +703,47 @@
 \newcommand{\funcdetailssname}{\FunctionDetailName}                        % The caption label for listings.
 \newcommand{\scriptdefsname}{\ScriptDefName}                        % The caption label for listings.
 %------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*{\@Chapter@finish@skip}{\par\bigskip\bigskip}                   % Vertical skip before Table of Contents title
+\newcommand*{\@Chapter@finish@skip}{\par\bigskip}                   % Vertical skip before Table of Contents title
 \newcommand*{\@Section@finish@skip}{\par\bigskip}
 \newcommand*{\@Subsection@finish@skip}{\par\bigskip}
-\newcommand*{\@Topic@finish@skip}{\par\bigskip\bigskip}
-\newcommand*{\@Part@finish@skip}{\par\bigskip\bigskip}
+\newcommand*{\@Topic@finish@skip}{\par\bigskip}
+\newcommand*{\@Part@finish@skip}{\par\bigskip}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document sectioning command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
+%                                                         1  2
+%3                                       4                          5 6
+\DeclareDocumentCommand{\@header@tikzpicture@pagenum@node}{s D<>{\@major@section@heading@xshift} D<>{\@major@section@heading@node@yshift} O{current page.south} m D<>{\@major@section@heading@baseheight}}
+{%{Chapter title}
+        \begin{tikzpicture}[remember picture,overlay]%[remember picture]%
+                %\draw (0,0) rectangle (2,2) (1.5,1.5) rectangle (.5,.5);
+                \node (pagenumnode) [xshift=0mm, yshift=#3] at (#4)%
+                {%
+                        \begin{tikzpicture}[remember picture,overlay]%[#2]%[remember picture]%%[remember picture]%
+                        \node%
+                        [%
+                                circle,
+                                anchor=center,
+                                draw=majorSectionHeading-coldraw,
+                                fill=white,
+                                minimum size=9mm,
+                                xshift=5.67cm,
+                                yshift=0.735cm,
+                                line width=\@major@section@heading@title@linewidth,
+                                font=\@major@section@heading@font
+                        ]%
+                        {};
+                        \end{tikzpicture}%
+                 };%
+        \end{tikzpicture}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
 %                                                 1  2   3   4   5                                 6        7
-\DeclareDocumentCommand{\@header@tikzpicture@rect@node}{s O{} m}
+\DeclareDocumentCommand{\@header@tikzpicture@rect@node}{s O{}}
 {%{Chapter title}
                 \draw[fill=majorSectionHeading-colback, line width=\@major@section@heading@linewidth, draw=black]
-                        (0,0) rectangle (\@major@section@heading@width, \@major@section@heading@baseheight);,%
+                        (0,0) rectangle (\@major@section@heading@width, \@major@section@heading@height);,%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                                 1  2   3   4   5                                 6        7
@@ -718,7 +751,7 @@
 {%{Chapter title}
                 \node%
                 [%
-                        anchor=\@major@section@header@title@anchor,
+                        anchor=\@major@section@heading@anchor,
                         draw=majorSectionHeading-coldraw, fill=majorSectionHeading-colbacktitle,
                         rounded rectangle, rounded rectangle arc length=\@major@section@heading@rounded@arclength,
                         xshift=\@major@section@heading@title@xshift, %inner sep=\@major@section@heading@inner@sep,
@@ -732,59 +765,47 @@
 \DeclareDocumentCommand{\@header@tikzpicture@node}{s O{} m}
 {%{Chapter title}
 	\begin{tikzpicture}[#2]%[remember picture]%%[remember picture]%
-		\@header@tikzpicture@rect@node[#2]{#3}%
-		\@header@tikzpicture@title@node[#2]{#3}%
-		%\draw[fill=majorSectionHeading-colback, line width=\@major@section@heading@linewidth, draw=black]
-%			(0,0) rectangle (\@major@section@heading@width, \@major@section@heading@baseheight);,%
-%		\node%
-%		[%
-%			anchor=\@major@section@header@title@anchor,
-%			draw=majorSectionHeading-coldraw, fill=majorSectionHeading-colbacktitle,
-%			rounded rectangle, rounded rectangle arc length=\@major@section@heading@rounded@arclength,
-%			xshift=\@major@section@heading@title@xshift, %inner sep=\@major@section@heading@inner@sep,
-%			inner xsep=\@major@section@heading@inner@xsep, inner ysep=\@major@section@heading@inner@ysep,
-%			line width=\@major@section@heading@title@linewidth, font=\@major@section@heading@font
-%		]%
-%		{#3};%
+		\@header@tikzpicture@rect@node[#2]%
+		\IfBooleanTF{#1}{}{\@header@tikzpicture@title@node[#2]{#3}}%
 	\end{tikzpicture}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%                                                 1  2   3   4   5                                 6        7
-\DeclareDocumentCommand{\@header@tikzpicture@nodewrap}{D<>{\@major@section@heading@xshift} D<>{\@major@section@heading@node@yshift} O{current page.north west} m}
+%                                                      1 2
+% 3                                      4                          5 6
+\DeclareDocumentCommand{\@header@tikzpicture@nodewrap}{s D<>{\@major@section@heading@xshift} D<>{\@major@section@heading@node@yshift} O{current page.north west} m D<>{\@major@section@heading@baseheight}}
 {%{Chapter title}
+        \setlength\@major@section@heading@height{#6}%2cm
         \begin{tikzpicture}[remember picture,overlay]%[remember picture]%
-                \node[xshift=#1, yshift=#2] at (#3)%
+                \node (secheading) [xshift=#2, yshift=#3] at (#4)%
                 {%
-                        \@header@tikzpicture@node[remember picture,overlay]%
-                                {#4}
+                        \IfBooleanTF{#1}
+                        	{\@header@tikzpicture@node*[remember picture,overlay]{#5}}%
+                        	{\@header@tikzpicture@node[remember picture,overlay]{#5}}%
                  };%
         \end{tikzpicture}%
-        \par\smallskip%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2 3   4   5                                 6        7
 \DeclareDocumentCommand{\@major@section@heading@positioning}{s m o}
 {%
 	\IfValueTF{#3}%
-        	{\edef\@major@section@header@title@anchor{#3}}%
-        	{\edef\@major@section@header@title@anchor{\csuse{@#2@heading@anchor}}}%
-        \IfStrEqCase{\@major@section@header@title@anchor}%
+        	{\edef\@major@section@heading@anchor{#3}}%
+        	{\edef\@major@section@heading@anchor{\csuse{@#2@heading@anchor}}}%
+        \IfStrEqCase{\@major@section@heading@anchor}%
         {%
         	{east}%
                 {%
-                        \def\@major@section@heading@anchor{east}%
                         \setlength{\@major@section@heading@title@xshift}{\@major@section@heading@east@title@xshift}
                 }%
         	{west}%
         	{%
-        		\def\@major@section@heading@anchor{west}%
-                	\setlength{\@major@section@heading@title@xshift}{\@major@section@heading@west@title@xshift}
+        		\setlength{\@major@section@heading@title@xshift}{\@major@section@heading@west@title@xshift}
         	}%
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2 3   4   5                                 6        7
-\DeclareDocumentCommand{\@header@tikzpicture}{s m d|| d:: D''{\@major@section@heading@font} O{black} D(){white}}
+\DeclareDocumentCommand{\@header@tikzpicture}{s m d|| d:: D''{\@major@section@heading@font} O{black} D(){white} D<>{\@major@section@heading@baseheight} D<>{\@major@section@heading@node@yshift} }
 {%{Chapter title}
         \@nameuse{if@cft#2@numberline@prefix@}%
                 \def\@title@sep{\@tcb@title@sep}%
@@ -819,16 +840,11 @@
         {\def\@header@title@line{\@font@command{\@header@title@text}}}%
         \def\@major@section@heading@anchor{west}%
         \@major@section@heading@positioning{#2}%
-        %\@major@section@heading@east@title@xshift
         \@premeasure@savebox*[@major@section@heading]{\@header@tikzpicture@node{\bookmarkX@hypertarget{#2}\@header@title@line}}%
         \setlength\@major@section@heading@total@height{\ht\@major@section@heading@savebox}%
         \setlength\@major@section@heading@title@node@height%
         	{\dimexpr\@major@section@heading@total@height-\@major@section@heading@baseheight\relax}%
-        %\the\@major@section@heading@title@node@height\\
-        %\the\@premeasured@savebox@height\\
-        %\the\@major@section@heading@total@height\\
-        %\the\ht\@major@section@heading@savebox\\
-        %\arabic{@major@sections@this@page}\\%
+        \setlength\@major@section@heading@height{#8}%2cm
         \ifnumcomp{\value{@major@sections@this@page}}{>}{0}%
         {%
         	\def\@tikzpicture@yshift{\csuse{@#2@heading@yshift}}%@Part@heading@yshift
@@ -840,52 +856,45 @@
         			-0.5\@major@section@heading@title@node@height%+10pt
         			-\value{@major@sections@this@page}\@major@section@heading@basesep
         			+2\@major@section@heading@basesep
-        			%\textsize + 1.5\textsize
         		\relax%
         	}%
         	\setlength\@Section@heading@yshift%
-        		{\@major@section@heading@title@node@height+\value{@major@sections@this@page}\@major@section@heading@basesep}%
-                %\addtolength\@Section@heading@yshift{\textsize}   
-        	%@major@section@heading@baseyshift
+        	{%
+        		\@major@section@heading@title@node@height
+        		+\value{@major@sections@this@page}\@major@section@heading@basesep
+        	}%
         }%
         {%
         	\def\@tikzpicture@yshift{\csuse{@#2@heading@yshift}}%@Part@heading@yshift
                 \setlength\@major@section@heading@node@yshift{\@major@section@heading@baseyshift}%
+                \setlength\@Section@heading@yshift{-3.0mm}%
         }%
         \stepcounter{@major@sections@this@page}%
         \@set@major@section@header@colors{#2}%
-        \@header@tikzpicture@nodewrap{\bookmarkX@hypertarget{#2}\@header@title@line}%
-        %\begin{tikzpicture}[remember picture,overlay]%[remember picture]%
-%                \node[xshift=\@major@section@heading@xshift, yshift=\@major@section@heading@node@yshift] at (current page.north west)%
-%                {%
-%                        \@header@tikzpicture@node[remember picture,overlay]%
-%                        	{\bookmarkX@hypertarget{#2}\@header@title@line}
-%                 };%
-%        \end{tikzpicture}%
+        \@header@tikzpicture@nodewrap%
+		<\@major@section@heading@xshift>%
+		<#9>%
+		{\bookmarkX@hypertarget{#2}\@header@title@line}%
+		<#8>%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                 1 2  3                  4   5 6 7
 \DeclareDocumentCommand{\Chapter}{s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'[overwrite toc title]{Chapter title}(hypertarget label prefix)
-        \gdef\@current@doc@section{Chapter}
-        \gdef\cftX@BKM@title{\cftChapter@numberline}
-        \xdef\@BKM@calling@cmd{\@current@doc@section}
-        \bookmarksetupnext{level=2}
+        \gdef\@current@doc@section{Chapter}%
+        \gdef\cftX@BKM@title{\cftChapter@numberline}%
+        \xdef\@BKM@calling@cmd{\@current@doc@section}%
+        \bookmarksetupnext{level=2}%
         \@set@current@tcb@colors{#3}%
         \IfBooleanTF{#1}{}{\clearpage}%
-        \refstepcounter{chapter}%
-        \setcounter{\@current@doc@section}{\the\value{chapter}}
+        \refsteplinkedcounter{Chapter}{chapter}%
         \gdef\currentChaptername{#5}%
         \IfValueTF{#4}%
                 {\docsectionX@hypertarget{\@current@doc@section}{#4}}%
                 {\docsectionX@hypertarget{\@current@doc@section}{#5}}%
-        %\docsectionX@hypertarget{Chapter}
         \IfValueTF{#6}%
-                {\cftChapter@contentsline{#6}}
-                {\cftChapter@contentsline{#5}}
-        %\IfValueTF{#6}%
-%                {\def\@\cftChapter@contentsline{#6}}
-%                {\cftChapter@contentsline{#5}}
+                {\cftChapter@contentsline{#6}}%
+                {\cftChapter@contentsline{#5}}%
         \@header@tikzpicture*{\@current@doc@section}%
         \fancyhead[L]{\@lhead@font\theChapter\; \currentChaptername}%
         \IfBooleanTF{#2}{}{\@Chapter@finish@skip}%
@@ -894,7 +903,27 @@
 %                                 1 2  3                  4   5 6 7
 \DeclareDocumentCommand{\Section}{s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'{Section title}(hypertarget label prefix)[description text]
-        %\vspace{0.5\@major@section@heading@title@node@height}
+        \IfBooleanTF{#1}{\clearpage}{}%
+        \ifnumcomp{\value{@major@sections@this@page}}{>}{1}%
+        {%
+                \setlength\@Section@heading@yshift%
+                {%
+                        \@major@section@heading@title@node@height
+                        +\value{@major@sections@this@page}\@Section@heading@basesep
+                        +3\@major@section@heading@basesep
+                }%
+        }%
+        {
+	        \ifnumcomp{\value{@major@sections@this@page}}{=}{1}%
+	        {%
+	                \setlength\@Section@heading@yshift%
+	                {%
+	                        \value{@major@sections@this@page}\@Section@heading@basesep%\@major@section@heading@basesep
+	                        -2\@major@section@heading@basesep
+	                }%
+	        }%
+	        {\setlength\@Section@heading@yshift{\@Section@heading@basesep}}%
+        }
         \vspace{\@Section@heading@yshift}%
         \setlength{\@Section@heading@yshift}{0pt}%
         \gdef\@current@doc@section{Section}%
@@ -902,9 +931,7 @@
         \gdef\@BKM@calling@cmd{\@current@doc@section}%
         \bookmarksetupnext{level=3}%
         \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{\clearpage}{}%
-        \refstepcounter{Section}%
-        \refstepcounter{section}%
+        \refsteplinkedcounter{Section}{section}%
         \gdef\currentSectionname{#5}%
         \IfValueTF{#4}%
                 {\docsectionX@hypertarget[0pt]{Section}{#4}}%
@@ -935,8 +962,7 @@
         \bookmarksetupnext{level=4}%
         \@set@current@tcb@colors{#3}%
         \IfBooleanTF{#1}{\par\bigskip}{}%
-        \refstepcounter{Subsection}%
-        \refstepcounter{subsection}%
+        \refsteplinkedcounter{Subsection}{subsection}%
         \gdef\currentSubsectionname{#5}%
         \IfValueTF{#4}%
                 {\docsectionX@hypertarget{Subsection}{#4}}%
@@ -979,64 +1005,106 @@
         %\par\bigskip\bigskip%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%                               1 2  3                  4   5 6
-\DeclareDocumentCommand{\Part}{s t! D''{tcbBlueScheme} d() m o}
+%                              1 2  3  4                  5   6 7
+\DeclareDocumentCommand{\Part}{s t! t+ D''{tcbBlueScheme} d() m o}
 {%*<clear page>!<add vskip after>{Section title}(hypertarget label prefix)[description text]
-        \gdef\@current@doc@section{Part}
-        \gdef\cftX@BKM@title{\cftPart@numberline}
-        \gdef\@BKM@calling@cmd{Part}
-        \bookmarksetupnext{level=0}
-        \@set@current@tcb@colors{#3}%
-        \IfBooleanTF{#1}{}{\clearpage}%
-        \setcounter{Part}{\value{part}}%
-        \refstepcounter{Part}%
-        \refstepcounter{part}%
-        \gdef\currentPartname{#5}%
-        \IfValueTF{#4}%
-                {\docsectionX@hypertarget{Part}{#4}}%
-                {\docsectionX@hypertarget{Part}{#5}}%
-        \IfValueTF{#6}%
-                {\cftPart@contentsline{#6}}
-                {\cftPart@contentsline{#5}}
-        \@header@tikzpicture*{\@current@doc@section}%
-        \fancyhead[L]{\@lhead@font\thePart\; \currentPartname}%
-        \IfBooleanTF{#2}{}{\@Part@finish@skip}%
-        %\par\bigskip\bigskip%
+        \IfBooleanTF{#3}%
+	{%
+	        \gdef\@current@doc@section{Part}
+	        \gdef\cftX@BKM@title{\cftPart@numberline}
+	        \gdef\@BKM@calling@cmd{Part}
+	        \bookmarksetupnext{level=0}
+	        \@set@current@tcb@colors{#4}%
+	        \IfBooleanTF{#1}{}{\clearpage}%
+	        \refsteplinkedcounter{Part}{part}%
+	        \gdef\currentPartname{#6}%
+	        \IfValueTF{#5}%
+	                {\docsectionX@hypertarget{Part}{#5}}%
+	                {\docsectionX@hypertarget{Part}{#6}}%
+	        \IfValueTF{#7}%
+	                {\cftPart@contentsline{#7}}
+	                {\cftPart@contentsline{#6}}
+	        \@header@tikzpicture*{\@current@doc@section}%
+	        \fancyhead[L]{\@lhead@font\thePart\; \currentPartname}%
+	        \IfBooleanTF{#2}{}{\@Part@finish@skip}%
+	}
+	{\part{#6}}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\docSection
-[enum type={Part,Topic}, bool clearpage=false, hyperlabel=Part, color scheme=tcbBlueScheme][1]
+[enum type={Part,Topic,Chapter,Section,Subsection}, bool clearpage=false, title=,hyperlabel=Part, color scheme=tcbBlueScheme][1]
 {%
         \@set@current@tcb@colors{\commandkey{color scheme}}%
-        \edef\@section@type{\commandkey{type}}
-        %\ifcommandkey{label}
-        %\IfBooleanTF{#1}{}{\clearpage}%
-        %\ifnumcomp{\commandkey{clearpage}}{=}{1}{\clearpage}{}%
-        %\refstepcounter{\@section@type}%
-        \refstepcounter{\commandkey{type}}%
-        %\def\currentTopicname{#3}%
-        \expandafter\gdef\csname current\@section@type name\endcsname{#1}%
-        %\hypertarget{\@Topic@link@name#1}{}
-        %\IfValueTF{#5}%
-        %        {\hypertarget{\@Topic@link@name#1}{}}%
-        %        {\hypertarget{\@Topic@link@name#1}{}}%
-        %\IfValueTF{#3}%
-        %        {\phantomsection\addcontentsline{toc}{\@section@type}{\protect\numberline{\TopicName \theTopic}#1}}%
-        %        {\phantomsection\addcontentsline{toc}{\@section@type}{\protect\numberline{\TopicName \theTopic}#1}}%
-        \phantomsection\addcontentsline{toc}{\commandkey{type}}{\cftPart@numberline#1}
-        %\@header@tikzpicture{\theTopic\ \currentTopicname}
-        %\fancyhead[L]{\@lhead@font\theTopic\; \currentTopicname}%
-        %\IfBooleanTF{#2}{}{\@Topic@finish@skip}%
+        \xdef\@current@doc@section{\commandkey{type}}
+        \xdef\@current@doc@section@title{\commandkey{title}}
+        %\xdef\@current@doc@section@title{\commandkey{title}}
+        \gdef\cftX@BKM@title{\csname cft\@current@doc@section @numberline\endcsname}
+        \gdef\@BKM@calling@cmd{\@current@doc@section}
+        \bookmarksetupnext{level=0}
+        \ifnumcomp{\commandkey{clearpage}}{>}{0}{\clearpage}{}%
+        \IfStrEqCase{\@current@doc@section}%
+        {%
+                {Part}
+                {
+                	\setcounter{\@current@doc@section}{\value{part}}%
+		        \refstepcounter{\@current@doc@section}%
+		        \refstepcounter{part}%
+                        \edef\currentPartname{\@current@doc@section@title}
+                        \edef\@lhead@title{\thePart\; \currentPartname}
+                }%
+                {Topic}
+                {
+                        \setcounter{\@current@doc@section}{\value{part}}%
+                        \refstepcounter{\@current@doc@section}%
+                        \refstepcounter{part}%
+                        \edef\currentTopicname{\@current@doc@section@title}
+                        \edef\@lhead@title{\theTopic\; \currentTopicname}
+                }%
+                {Chapter}
+                {
+                        \refstepcounter{chapter}%
+		        \setcounter{\@current@doc@section}{\the\value{chapter}}
+		        \setcounter{\@current@doc@section}{\value{part}}%
+                        \refstepcounter{\@current@doc@section}%
+                        \refstepcounter{part}%
+                        \edef\currentChaptername{\@current@doc@section@title}
+                        \edef\@lhead@title{\theChapter\; \currentChaptername}
+                }%
+                {Section}
+                {
+                        \setcounter{\@current@doc@section}{\value{part}}%
+                        \refstepcounter{\@current@doc@section}%
+                        \refstepcounter{part}%
+                        \edef\currentSectionname{\@current@doc@section@title}
+                        \edef\@lhead@title{\theSection\; \currentChaptername : \@current@doc@section@title}
+                }%
+                {Subsection}
+                {
+                        \setcounter{\@current@doc@section}{\value{part}}%
+                        \refstepcounter{\@current@doc@section}%
+                        \refstepcounter{part}%
+                        \edef\currentSubsectionname{\@current@doc@section@title}
+                        \edef\@lhead@title{\theSubsection\; \currentChaptername :  \currentSectionname, \@current@doc@section@title}
+                }%
+
+        }
+        \docsectionX@hypertarget{\@current@doc@section}{\@current@doc@section@title}%
+        \csname cft\@current@doc@section @contentsline\endcsname{\@current@doc@section@title}
+        \@header@tikzpicture*{\@current@doc@section}%
+        \fancyhead[L]{\@lhead@font\@lhead@title}%
+        %\IfBooleanTF{#2}{}{\@Part@finish@skip}%
         %\par\bigskip\bigskip%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@part[#1]#2{%
     \ifnum \c@secnumdepth >-2\relax
       \refstepcounter{part}%
-      \setcounter{Part}{\value{part}}
-      \cftPart@contentsline{#1}%\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
+      \refstepcounter{Part}%
+      \cftPart@contentsline{#1}
+      %\addcontentsline{toc}{part}{\thepart\hspace{1em}#1}%
     \else
-      \cftPart@contentsline{#1}%\addcontentsline{toc}{part}{#1}%
+      \cftPart@contentsline{#1}
+      %\addcontentsline{toc}{part}{#1}%
     \fi
     \markboth{}{}%
     {\centering
@@ -1049,6 +1117,8 @@
      \fi
      \Huge \bfseries #2\par}%
     \@endpart}
+%------------------------------------------------------------------------------------------------------------------------------%
+
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\part{%
   \gdef\cftX@BKM@title{\cftPart@numberline}
@@ -1065,9 +1135,33 @@
   \else
     \@tempswafalse
   \fi
-  \@header@tikzpicture@nodewrap{\bookmarkX@hypertarget{Part}\thepart}%
-  %\unskip\ignorespaces\flushleft\@header@tikzpicture@node{\bookmarkX@hypertarget{Part}\thepart}
+  \refstepcounter{Part}%
+  \def\@font@command{\shadowText:\@major@section@heading@font:[black](white)}%
+  \def\@the@title%
+  {%
+	\@font@command%
+	{%
+		\tcbhyperlink[white]%
+			{\cftPart@toc@hyperaddress}%
+			{\phantomsection\thePart}%
+	}%
+  }%
+  \setlength\@major@section@heading@node@yshift%
+        {\dimexpr\@major@section@heading@baseyshift-0.5\@major@section@heading@baseheight\relax}%
+  \@set@major@section@header@colors{Part}%
+  \def\@major@section@heading@anchor{west}%
+  \@major@section@heading@positioning{Part}%
+  \@header@tikzpicture@nodewrap{\bookmarkX@hypertarget{Part}\@the@title}%
+        <1.5\@major@section@heading@baseheight>%
+  \setlength\@major@section@heading@node@yshift%
+  	{\dimexpr\@major@section@heading@baseyshift + \@major@section@heading@baseheight\relax}%
+  \@header@tikzpicture@nodewrap*%
+	[current page.south west]%
+	{\thepart}%
+	<1.5\@major@section@heading@baseheight>%
+  \@header@tikzpicture@pagenum@node{\thepage}%
   \null\vfil
+  \addtocounter{Part}{-1}%
   \secdef\@part\@spart
 }
 %------------------------------------------------------------------------------------------------------------------------------%

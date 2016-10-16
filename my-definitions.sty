@@ -212,6 +212,11 @@
 \def\@counter@print#1#2{#1{#2}\relax}                                   % Generate string from counter value
 \def\@increment@tcbfigure@counter#1{\addtocounter{@num@tcbfigures}{1}}  % Used to keep track of # of images in each row
 \def\@print@before@increment#1#2{#1{#2}\addtocounter{#2}{1}}            % Print/increment counter #2 w/ format #1 (e.g. \alph)
+\def\refsteplinkedcounter#1#2%
+{%
+        \refstepcounter{#2}%
+        \setcounter{#1}{\the\value{#2}}%
+}
 \def\@managed@counters{figure,table,lstlisting}
 \def\@countinchap@counters{figure,table,lstlisting}
 %\newlist\mylistB
@@ -253,8 +258,8 @@
 \def\@tcb@rounded@arclength{180}
 \def\@major@section@heading@rounded@arclength{180}
 \def\@major@section@heading@anchor{east}%
-\def\@Part@heading@anchor{east}
-\def\@Topic@heading@anchor{west}
+\def\@Part@heading@anchor{west}
+\def\@Topic@heading@anchor{east}
 \def\@Chapter@heading@anchor{west}
 \def\@nomecl@baselinestretch{0.0}                               % Sets \baselinestretch for abbreviation entries
 %
@@ -276,11 +281,17 @@
 \xdef\@figbox@baselinestretch{1.5}
 \xdef\@figbox@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
 \xdef\@figbox@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
-\xdef\@listing@baselinestretch{1.5}
+\xdef\@listing@baselinestretch{1.1}
 \xdef\@listing@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
 \xdef\@listing@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
-\xdef\@code@baselinestretch{1.5}
-\xdef\@code@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@Terminal@baselinestretch{1.2}
+\xdef\@Terminal@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@Terminal@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@Matlab@baselinestretch{1.1}
+\xdef\@Matlab@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@Matlab@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@code@baselinestretch{1.2}
+\xdef\@code@arraystretch{1.0}                               % Sets \baselinestretch for abbreviation entries
 \xdef\@code@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Coverpage/Header Images/Formats/Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
