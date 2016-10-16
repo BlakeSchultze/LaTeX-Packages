@@ -24,17 +24,45 @@
 %******************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %******************************************************************************************************************************%
+%\newtoggle{validated}
+\newif\ifvalidated\validatedfalse
+\newif\if@choicevals@validated\@choicevals@validatedfalse
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\fullyexpand#1{\romannumeral - `0#1}
-\def\xp@cmd#1#2{\expandafter#1\expandafter#2}
 \def\shown#1{\expandafter\show\csname\string#1\endcsname}
 \def\showthen#1{\expandafter\showthe\csname\string#1\endcsname}
 \def\don#1{\csname\string#1\endcsname}
 \def\defn#1{\expandafter\def\csname\string#1\endcsname}
 \def\@nil{}
+\def\@nilbrackets[#1]{}
+\def\@identity#1{#1}
 \long\def\firstofone#1{#1}
 \long\def\firstoftwo#1#2{#1}
 \long\def\secondoftwo#1#2{#2}
+\long\def\firstofthree#1#2#3{#1}
+\long\def\secondofthree#1#2#3{#2}
+\long\def\thirdofthree#1#2#3{#3}
+\long\def\firsttwoofthree#1#2#3{#1#2}
+\long\def\secondtwoofthree#1#2#3{#2#3}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\xp@def#1#2{\expandafter\def\csname#1\endcsname{#2}}
+\def\xp@edef#1#2{\expandafter\edef\csname#1\endcsname{#2}}
+\def\xp@gdef#1#2{\expandafter\gdef\csname#1\endcsname{#2}}
+\def\xp@xdef#1#2{\expandafter\xdef\csname#1\endcsname{#2}}
+\def\xp@cmd#1#2{\expandafter#1\expandafter#2}
+\def\xp@newif#1{\expandafter\newif\csname#1\endcsname}
+\def\xp@ifx#1#2{\expandafter\ifx\expandafter#1\expandafter\csname#2\endcsname}
+\def\xp@ifdefempty#1#2#3%
+{%
+        \expandafter\ifdefempty\expandafter{\csname#1\endcsname}%
+                {#2}{#3}%
+}
+\def\xp@ifstrempty#1#2#3%
+{%
+        \expandafter\ifstrempty\expandafter{\fullyexpand{#1}}%
+                {#2}{#3}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
 \def\@csname#1{\csname #1\endcsname}
 \def\thecsname#1{\expandafter\secondoftwo\string#1}
   \def\x{\endgroup
@@ -50,6 +78,84 @@
     }%
   }%
 %------------------------------------------------------------------------------------------------------------------------------%
+\def\@edef@argone@argtwo<#1,#2>%
+{%
+        \edef\@arg@one{#1}%
+        \edef\@arg@two{#2}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@edef@argthree@argfour<#1,#2>%
+{%
+        \edef\@arg@three{#1}%
+        \edef\@arg@four{#2}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@edef@arg@one@to@four<#1,#2,#3,#4>%
+{%
+        \edef\@arg@one{#1}%
+        \edef\@arg@two{#2}%
+        \edef\@arg@three{#3}%
+        \edef\@arg@four{#4}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@set@csv@length<#1,#2>%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \setlength{#1}{\@arg@two}%
+}
+\def\@set@keyval@length<#1=#2>%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \setlength{#1}{\@arg@two}%
+}
+\def\@let@csv@macro@pair<#1,#2>%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \expandafter\let\csname#1\endcsname=\@arg@two%
+}
+\def\@let@keyval@macro@pair<#1=#2>%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \expandafter\let\csname#1\endcsname=\@arg@two%
+}
+\def\@def@csv@pair#1,#2%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \@namedef{#1}{\@arg@two}%
+}
+\def\@def@keyval@lpair#1=#2%
+{%
+        \@edef@argone@argtwo<#1,#2>%
+        \@namedef{#1}{\@arg@two}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@set@length@pair<#1,#2>=<#3,#4>%
+{%
+        %\@edef@arg@one@to@four<#1,#2,#3,#4>%
+        %\@set@csv@length<\@arg@one,\@arg@three>%
+        %\@set@csv@length<\@arg@two,\@arg@four>%
+        %\@set@csv@length<#1,#3>%
+        %\@set@csv@length<#2,#4>%
+        \setlength{#1}{#3}%
+        \setlength{#2}{#4}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@let@macro@pair<#1,#2>=<#3,#4>%
+{%
+        \@edef@arg@one@to@four<#1,#2,#3,#4>%
+        \expandafter\let\csname\@arg@one\endcsname=\@arg@three%
+        \expandafter\let\csname\@arg@two\endcsname=\@arg@four%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@def@macro@pair<#1,#2>=<#3,#4>%
+{%
+       \@edef@arg@one@to@four<#1,#2,#3,#4>%
+       \expandafter\@namedef\expandafter{\@arg@one}{\@arg@three}%
+       \expandafter\@namedef\expandafter{\@arg@two}{\@arg@four}%
+       %\@namedef{#1}{#3}%
+       %\@namedef{#2}{#4}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
 \def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
 \def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
 \xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
@@ -57,25 +163,100 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@add@to@deflist#1#2%
 {
-	\ifundef{#2}%
+        \ifundef{#2}%
                 {\edef#2{#1}}%
                 {\edef#2{#2,#1}}%
 
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand{\@add@to@deflist}[2]%
-%{
-%        \ifundef{#2}%
-%                {\edef\@defined@Choice@Options{#1}}%
-%                {\edef\@defined@Choice@Options{#2,#1}}%
-%
-%}
 \def\pkgname{my-latex}%
-\newcommand\@pkgopts@packages{etoolbox,kvoptions}
-\def\choicetestoptions{choiceone,choicetwo,choicethree}
-\def\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
-\def\@known@documentclasses{report,article,journal,proceedings}
-\def\@chapter@heading@styles{Sonny,Lenny,Glenn,Conny,Rejne,Bjarne,Bjornstrup,PetersLenny}
+\newcommand\@pkgopts@packages{etoolbox,kvoptions,pgffor}
+\gdef\choicetestoptions{choiceone,choicetwo,choicethree}
+\gdef\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
+\gdef\@supported@chaphead@styles{Sonny,Lenny,Glenn,Conny,Rejne,Bjarne,Bjornstrup,PetersLenny}
+\gdef\@known@documentclasses{report,article,journal,proceedings}
+%------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@known@fontname@fontcode@pairs%
+{
+        {Adobe Courier}/pcr,
+        {Adobe Helvetica}/phv,
+        {Adobe New Century Schoolbok}/pnc,
+        {Adobe Palatino}/ppt,
+        {Adobe Times Roman}/ptr,
+        {Avant Garde}/pag,
+        {Bera Sans}/fvs,
+        {Bera Serif}/fve,
+        {Bookman}/pbk,
+        {Charter}/bch,
+        {CM Bright}/cmbr,
+        {CM Roman}/cmr,
+        {CM Sans}/cmss,
+        {CM Sans Serif}/cmss,
+        {CM Typewriter}/cmtt,
+        {CM Typewriter Light}/cmtl,
+        {Computer Modern Bright}/cmbr,
+        {Computer Modern Roman}/cmr,
+        {Computer Modern Sans}/cmss,
+        {Computer Modern Sans Serif}/cmss,
+        {Computer Modern Typewriter}/cmtt,
+        {Computer Modern Typewriter Light}/cmtl,
+        {Courier}/pcr,
+        {Fourier}/put,
+        {Helvetica}/phv,
+        {ITC Bookman}/pbk,
+        {ITC Avant Garde Gothic}/pag,
+        {Latin Modern Dunhill}/lmdh,
+        {Latin Modern Roman}/lmr,
+        {Latin Modern Sans Serif}/lmss,
+        {Latin Modern Sans Typewriter}/lmtt,
+	{LM Dunhill}/lmdh,
+        {LM Roman}/lmr,
+        {LM Sans Serif}/lmss,
+        {LM Sans Typewriter}/lmtt,
+        {New Century Schoolbook}/pnc,
+	{Palatino}/ppl,
+        {TEX Gyre Termes}/qtm,
+        {TEX Gyre Pagella}/qpl,
+        {TEX Gyre Bonum}/qbk,
+        {TEX Gyre Schola}/qcs,
+        {TEX Gyre Adventor}/qag,
+        {TEX Gyre Heros}/qhv,
+        {TEX Gyre Cursor}/qcr,
+        {Times}/ptm,
+        {URW Classico}/uop,
+        {Utopia}/put
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@known@ss@fontname@fontcode@pairs%
+{
+        {CM Sans}/cmss,
+        {CM Sans Serif}/cmss,
+        {Computer Modern Sans}/cmss,
+        {Computer Modern Sans Serif}/cmss,
+        {Latin Modern Sans Serif}/lmss,
+        {LM Sans Serif}/lmss
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@known@tt@fontname@fontcode@pairs%
+{
+        {CM Typewriter}/cmtt,
+        {CM Typewriter Light}/cmtl,
+        {Computer Modern Typewriter}/cmtt,
+        {Computer Modern Typewriter Light}/cmtl,
+        {Latin Modern Sans Typewriter}/lmtt,
+        {LM Sans Typewriter}/lmtt
+}
+%Mathematical Formula Fonts
+%Abbreviation    Font Name
+%cmm     Computer Modern (math italic)
+%cmsy    Computer Modern (math symbols)
+%zplm    Palatino (math)
+%------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@known@font@encodings{OT1,OT2,OT3,OT4,OT6,T1,T2A,T2B,T2C,TS1,TS3,X2,OML,OMS,OMX,LY1,LV1,LG3,PD1,PU,U}
+\gdef\@known@font@series{l,m,b,bx}
+\gdef\@known@font@shapes{n,it,sl,sc}
+\gdef\@known@size@clo@defs{10,11,12}
+%------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %******************************************************************************************************************************%
@@ -85,12 +266,7 @@
         \@ifpackageloaded{#1}{}%
         {%
                 \RequirePackage{#1}%
-                \@add@to@deflist{#1}{\@loaded@packages}        
-%                \ifdefined\@loaded@packages%
-%                        \edef\@loaded@packages{\@loaded@packages,#1}%
-%                \else%
-%                        \edef\@loaded@packages{#1}%
-%                \fi
+                \@add@to@deflist{#1}{\@loaded@packages}
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -98,7 +274,6 @@
 %******************************************************************************************************************************%
 %************************************************************* Package Body **************************************************************%
 %******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\DeclareChoiceOptionMessage[2][\KVO@prefix]%
 {%\DeclareChoiceOptionMessage[<prefix>]{<key>}
         \gdef\msgtext{\string\DeclareChoiceOption\space Error%
@@ -117,27 +292,30 @@
         \DeclareChoiceOptionMessage[#1]{#2}%
         \DeclareChoiceOptionHelp[#1]{#2}%
         \@PackageError\pkgname\msgtext\hlptext%
+}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\DeclareChoiceValOptionMessage[2][\KVO@prefix]%
+{%\DeclareChoiceOptionMessage[<prefix>]{<key>}
+        \gdef\msgtext{\string\DeclareChoiceValOption\space Error%
+        \MessageBreak Invalid choice '#1#2\space=\space\@nameuse{#1#2}'}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\DeclareChoiceOption{\@ifnextchar(\@DeclareChoiceOption\@DeclareChoiceOption(\KVO@prefix)}%
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@DeclareChoiceOption(#1)#2[#3]#4%
-{%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
-        \ifstrempty{#1}
-                {\def\@current@prefix{\KVO@prefix}}%
-                {\def\@current@prefix{#1}}%
-        \ifstrempty{#3}
-                {\DeclareStringOption{#2}}%
-                {\DeclareStringOption{#2}[#3]}%
-        \@add@to@deflist{#2}{\@defined@Choice@Options}
-        %\ifundef{\@defined@Choice@Options}%
-%                {\edef\@defined@Choice@Options{#2}}%
-%                {\edef\@defined@Choice@Options{\@defined@Choice@Options,#2}}%
-        \expandafter\newif\csname if\@current@prefix#2\endcsname%->\if<prefix><key>
-        \expandafter\gdef\csname @\@current@prefix valid@#2@choice@options\endcsname{#4}%
-        \expandafter\xdef\csname @#2@prefix\endcsname{\@current@prefix}%
+\newcommand\DeclareChoiceValOptionHelp[2][\KVO@prefix]%
+{%\DeclareChoiceOptionHelp[<prefix>]{<key>}
+        \gdef\hlptext{\string\DeclareChoiceValOption\space Help:%
+        \IndentedMessageBreak Valid '#1#2' Options:%
+        \MessageBreak\IndentedMessageBreak #2\space=\space{\@nameuse{#1valid@#2@choiceval@options}}}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\DeclareChoiceValOptionError[2][\KVO@prefix]%
+{%\DeclareChoiceOptionError[<prefix>]{<key>}
+        \DeclareChoiceValOptionMessage[#1]{#2}%
+        \DeclareChoiceValOptionHelp[#1]{#2}%
+        \@PackageError\pkgname\msgtext\hlptext%
+}%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \newcommand\DeclareBoolOptionPair[2][false]%
 {%\DeclareBoolOptionPair[<init>]{<key>} --> \ifmylatex@#2, \ifmylatex@no#2, \ifmylatex@#2off
        % \ifstrempty{#1}
@@ -147,24 +325,82 @@
         \DeclareComplementaryOption{#2off}{#2}
         \DeclareComplementaryOption{no#2}{#2}
         \@add@to@deflist{#2}{\@defined@Bool@Option@Pairs}
-        %\ifundef{\@defined@Bool@Option@Pairs}%
-%                {\edef\@defined@Bool@Option@Pairs{#2}}%
-%                {\edef\@defined@Bool@Option@Pairs{\@defined@Bool@Option@Pairs,#2}}%
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\DeclareChoiceOption{\@ifnextchar(\@DeclareChoiceOption\@DeclareChoiceOption(\KVO@prefix)}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@DeclareChoiceOption(#1)#2[#3]#4
+{%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
+        \ifstrempty{#1}
+                {\def\@current@prefix{\KVO@prefix}}%
+                {\def\@current@prefix{#1}}%
+        \ifstrempty{#3}
+                {\DeclareStringOption{#2}}%
+                {\DeclareStringOption[#3]{#2}[#3]}%
+        \@add@to@deflist{#2}{\@defined@Choice@Options}
+        \xp@newif{if\@current@prefix#2}%->\if<prefix><key>
+        \xp@gdef{@\@current@prefix valid@#2@choice@options}{#4}%
+        \xp@xdef{@#2@prefix}{\@current@prefix}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessChoiceOption[2][\KVO@prefix]%
 {%\ProcessChoiceOption[<prefix>]{<key>}
-        \expandafter\ifdefempty\expandafter{\csname#1#2\endcsname}%
+        \validatedfalse
+        \xp@ifdefempty{#1#2}%
                 {}{\@nameuse{#1#2true}}%
         \@nameuse{if\@nameuse{@\next @prefix}\next}%
-                \xdef\@valid@choice@options{\@nameuse{@#1valid@#2@choice@options}}%
-                \@for\@valid@option:=\@valid@choice@options\do%
-                        {\expandafter\ifx\expandafter\@valid@option\csname #1#2\endcsname\def\@validated{true}\fi}%
-                \ifdefined\@validated\else\DeclareChoiceOptionError[#1]{#2}\fi
+                \ValidateChoiceCS%
+	                {\csuse{#1#2}}%
+	                {@#1valid@#2@choice@options}%
+	                {}{\DeclareChoiceOptionError[#1]{#2}}%
         \fi%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\csname @\next @prefix\endcsname]{\next}}}
+\newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\@csname{@\next @prefix}]{\next}}}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\def\DeclareChoiceValOption{\@ifnextchar({\@DeclareChoiceValOption}{\@DeclareChoiceValOption(\KVO@prefix)}}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@DeclareChoiceValOption(#1)#2[#3]#4%
+{%\DeclareChoiceValOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
+        \xp@xdef{\@current@prefix#2@default@choice}{#3}
+        \xp@xdef{\@current@prefix valid@#2@choiceval@options}{#4}
+        \ifstrempty{#1}
+                {\def\@current@prefix{\KVO@prefix}}%
+                {\def\@current@prefix{#1}}%
+        \ifstrempty{#3}
+        	{\DeclareStringOption{#2}}%
+        	{\DeclareStringOption[#3]{#2}[#3]}%
+        \ValidateChoicePair{1}{#3}{#4}%
+	{%
+		\xp@xdef{\@current@prefix#2@default@val}{\@validated@index@value}%
+		\xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}%
+	}{}%
+        \@add@to@deflist{#2}{\@defined@ChoiceVal@Options}
+        \xp@newif{if\@current@prefix#2}%->\if<prefix><key>
+        \xp@xdef{@#2@prefix}{\@current@prefix}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceValOption[2][\KVO@prefix]%
+{%\ProcessChoiceValOption[<prefix>]{<key>}
+        \validatedfalse%
+        \xp@ifdefempty{#1#2}%
+                {}{\@nameuse{#1#2true}}%
+        \@nameuse{if\@nameuse{@\next @prefix}\next}%
+                \xdef\@valid@choiceval@options{\@nameuse{#1valid@#2@choiceval@options}}%
+                \xdef\@current@choiceval@option{\csname mylatex@#2\endcsname}
+        	\ValidateChoicePair{1}{\@current@choiceval@option}{\@valid@choiceval@options}%
+	        	{\xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}}%
+			{\DeclareChoiceValOptionError[#1]{#2}}%
+	\fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceValOptions%
+	{\@for\next:=\@defined@ChoiceVal@Options\do{\ProcessChoiceValOption[\csname @\next @prefix\endcsname]{\next}}}
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessPackageOptions[1][]%
 {%\ProcessPackageOptions[family]
@@ -175,6 +411,7 @@
         \ifstrempty{#1}%
                 {\ProcessKeyvalOptions*}%
                 {\ProcessKeyvalOptions{#1}}%
+        \ProcessChoiceValOptions%
         \ProcessChoiceOptions%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -247,11 +484,124 @@
         \ifmylatex@report
                 \def\thedocumentclass{report}
         \fi
+        %\PassOptionsToClass{landscape}{article}
+        %\PassOptionsToClass{landscape}{report}
         \ifmylatex@standalone
-                \documentclass[class=\thedocumentclass, crop=false]{standalone}
+                \documentclass[\the@doc@sizeX,class=\thedocumentclass, crop=false]{standalone}
         \else
-                \documentclass{\thedocumentclass}
+                \documentclass{\the@doc@sizeX,\thedocumentclass}%
         \fi
+}
+\newcommand{\ValidateChoiceCS}[4]%
+{%
+	\validatedfalse%
+	\xdef\@valid@choices{\csuse{#2}}%
+	\xdef\@test@choice{#1}%
+        \foreach \@current@choice [count=\@count] in \@valid@choices%
+	{%
+		%\ifcsstrequal{\@current@choice}{#1}%
+                \ifdefequal{\@current@choice}{\@test@choice}%
+                {%
+			\global\validatedtrue\breakforeach%
+                        \xp@xdef{@validated@index}{\@count}%
+		}{}%
+	}%
+	\ifvalidated#3\else#4\fi%
+        %\ifvalidated Validated\else Not Validated\fi\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%\def\@known@font@series{l,m,b,bx}
+\newcommand\ValidateChoiceDef[4]%
+{%
+        \validatedfalse%
+        \xdef\@test@cs{#1}
+        \foreach \@current@choice [count=\@count] in #2%
+        {%
+                %\ifcsstrequal{\@current@choice}{#1}%
+                \ifdefequal{\@current@choice}{\@test@cs}%
+                {%
+                        \global\validatedtrue\breakforeach%
+                        \xp@xdef{@validated@index}{\@count}%
+                }{}%
+        }%
+        \ifvalidated#3\else#4\fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\ValidateChoicePair}[5]%
+{%
+        \validatedfalse%
+        \xdef\@test@cs{#2}
+        \foreach \@current@choice/\@current@choice@val [count=\@count] in #3%
+        {%
+                \ifnumcomp{#1}{=}{1}%
+	        {%	   
+                        \ifdefequal{\@current@choice}{\@test@cs}%
+                        {%
+                                \global\validatedtrue\breakforeach%
+                                \xp@xdef{@validated@index}{\@count}%
+                                \xp@xdef{@validated@index@choice}{\@current@choice}%
+                                \xp@xdef{@validated@index@value}{\@current@choice@val}%
+                        }{}%
+		}{}%
+		\ifnumcomp{#1}{=}{2}%
+                {%
+                        \ifdefequal{\@current@choice@val}{\@test@cs}%
+                        {%
+                                \global\validatedtrue\breakforeach%
+                                \xp@xdef{@validated@index}{\@count}%
+                                \xp@xdef{@validated@index@choice}{\@current@choice}%
+                                \xp@xdef{@validated@index@value}{\@current@choice@val}%
+                        }{}%
+                }{}%
+        }
+        \ifvalidated#4\else#5\fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\SetDefaultFont%
+{%
+	%\xdef\@fts{lmr\@doc@fontsize}
+	\def\@doc@default@font
+	{%
+		\fontencoding{\@doc@fontencoding}%
+		\fontfamily{\@doc@fontfamily}%
+		\fontseries{\@doc@fontseries}%
+		\fontshape{\@doc@fontshape}%
+		\fontsize{\@doc@fontsize}{\baselineskip}%
+		\selectfont%
+                \renewcommand{\familydefault}{\@doc@fontfamily}
+	}
+	\fontcolor{current-coltext}%
+        \renewcommand{\rm}{\@doc@default@font}%
+        %\@doc@default@font%
+}
+\newcommand\SetDocFontSettings[1][\pkgopts@prefix]%
+{%
+	\xdef\@doc@fontencoding{\mylatex@fontencoding}
+        \xdef\@doc@fontname{\mylatex@fontname}
+        \ifdefempty{\mylatex@fontfamily}
+		{\xdef\@doc@fontfamily{\mylatex@fontname@choiceval@value}}
+		{\xdef\@doc@fontfamily{\mylatex@fontfamily}}
+        \xdef\@doc@fontseries{\mylatex@fontseries}
+        \xdef\@doc@fontshape{\mylatex@fontshape}
+        %\xdef\@doc@fontsize{\mylatex@fontsize}
+        \xdef\@doc@sizeX{\mylatex@sizeXdoc}      
+	\xdef\@fts{cmr\@doc@sizeX}%{qx-anttr}%{cmu10}
+	\xdef\the@doc@sizeX{\@doc@sizeX pt}
+        \ifmylatex@sizeXdoc
+        	\xdef\@doc@fontsize{\@doc@sizeX pt}
+        \else
+        	\xdef\@doc@fontsize{\mylatex@fontsize}
+	\fi
+        %\DeclareSymbolFontAlphabet{\mathrm}    {operators}
+	%\DeclareSymbolFontAlphabet{\mathnormal}{letters}
+	%\DeclareSymbolFontAlphabet{\mathcal}   {symbols}
+	%\DeclareMathAlphabet      {\mathbf}{OT1}{cmr}{bx}{n}
+	%\DeclareMathAlphabet      {\mathsf}{OT1}{cmss}{m}{n}
+	%\DeclareMathAlphabet      {\mathit}{OT1}{cmr}{m}{it}
+	%\DeclareMathAlphabet      {\mathtt}{OT1}{cmtt}{m}{n}
+	%\DeclareSymbolFont{operators}   {OT1}{cmr} {m}{n}
+	%\DeclareSymbolFont{letters}     {OML}{cmm} {m}{it}
+	%\DeclareSymbolFont{symbols}     {OMS}{cmsy}{m}{n}
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%

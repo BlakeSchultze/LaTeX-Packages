@@ -25,9 +25,6 @@
 %%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-polynom}[2006/04/20 0.17 (CH,HA)]
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newlength{\@pld@open@delimiter@height}\setlength{\@pld@open@delimiter@height}{5.25mm}
-\newtoggle{@pld@print@zero@coefficients}\toggletrue{@pld@print@zero@coefficients}
 %\let\@pld@open@delimiter=\rparen
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@AddTo#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
@@ -101,96 +98,121 @@
                  \pld@RestoreAftergroup#1\polyremainder\relax
     \endgroup\ignorespaces}}
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\newbox{\@pld@box}
 \newbox{\@pld@computation@box}
 \newbox\@pld@remainder@box
 \newbox\@pld@conclusion@box
-\newlength\@pld@computation@box@height
+\newtoggle{@pld@print@zero@coefficients}\toggletrue{@pld@print@zero@coefficients}
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\newlength{\@pld@open@delimiter@height}\setlength{\@pld@open@delimiter@height}{5.25mm}
 \newlength\@pld@computation@box@width
-\newlength\@pld@remainder@box@height
 \newlength\@pld@remainder@box@width
-\newlength\@pld@solution@box@height
 \newlength\@pld@solution@box@width
-\newlength\@pld@conclusion@box@height
 \newlength\@pld@conclusion@box@width
 \newlength\@pld@divisor@width
 \def\@pld@divisor@kern{2pt}
-\def\@pld@rparen@kern{-3.55pt}
-\def\@pld@vert@kern{-1.95pt}
-\def\@subline@sep{0.5pt}
-\def\@rparen@scale{1.2}
-\def\@remainder@box@shift{1.825pt}
-%\def\@pld@divisor@kern{2pt}
-%\def\@pld@rparen@kern{-3.05pt}
-%\def\@pld@vert@kern{-1.25pt}
-%\def\@subline@sep{1pt}
-\def\theremainder{\polyprint\pld@remainder}
+\def\@pld@after@rparen@kern{-3.55pt}
+\def\@pld@after@vert@kern{-1.95pt}
+\def\@the@remainder{\polyprint\pld@remainder}
+\def\@the@divisor{\polyprint\pld@divisor}
+\def\@the@polya{\polyprint\pld@polya}
 %-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*\polylongdiv[1][]%
 {%
-    	\let\pld@stage\maxdimen \polyset{#1}%
-    	\pld@GetPoly{\pld@polya\pld@polyb}%
-	{%
-		\pld@LongDividePoly\pld@polya\pld@polyb%
-		\unskip\pld@PrintLongDiv\ignorespaces
-		\setlength{\@pld@computation@box@width}{\wd\@pld@computation@box}%
-		\ignorespaces		%		
-		\renewcommand{\ULthickness}{0.35pt}%
-		\renewcommand{\baselinestretch}{0.85}%
-		\ifx\pld@remainder\@empty\relax%
-		\else%
-			\savebox{\@pld@remainder@box}%
-			{%1.825
-				%\kern-2pt%
-				\raisebox{-\@remainder@box@shift-\@subline@sep}%
-				{%	
-					\uline
-					{%
-						\kern2mm%
-						\raisebox{\@remainder@box@shift+\@subline@sep}{+}{}%
-						\kern1mm%
-						\raisebox{\@remainder@box@shift+\@subline@sep}%
-						{%
-							$%
-								\frac{\let\strut\@empty%
-								\polyprint\pld@remainder}%
-								{\let\strut\@empty\polyprint\pld@divisor}%
-							$%
-						}%
-					}%				
-				}%
-			}%
-		\fi%
-		\setlength{\@pld@remainder@box@width}{\wd\@pld@remainder@box}%
-		\setlength{\@pld@divisor@width}{\widthof{$\displaystyle \@pld@remainder@box$}}%
-		\setlength{\@pld@solution@box@width}{\wd\@pld@computation@box + \wd\@pld@remainder@box+\@pld@divisor@width + 10mm}%
-		\ifx\pld@remainder\@empty\relax%
-			\savebox{\@pld@conclusion@box}%
-			{%
-				\begin{tcolorbox}[hbox, pldStyle on Layer 2]%
-					$%
-						\hence%
-						\dfrac{\polyprint\pld@polya}{\polyprint\pld@divisor}%
-						=%
-						\polyprint\pld@quotient%								
-					$%
-				\end{tcolorbox}%
-			}%
-		\else%
-			\savebox{\@pld@conclusion@box}%
-			{%
-				\begin{tcolorbox}[hbox, pldStyle on Layer 2]%
-					$%
-						\hence%
-						\dfrac{\polyprint\pld@polya}{\polyprint\pld@divisor}%
-						=%
-						\polyprint\pld@quotient + \dfrac{\polyprint\pld@remainder}{\polyprint\pld@divisor}		%								
-					$%
-				\end{tcolorbox}%
-			}%
-		\fi%
-		\setlength{\@pld@conclusion@box@width}{\wd\@pld@conclusion@box}%
-	}
+        \let\pld@stage\maxdimen \polyset{#1}%
+        \pld@GetPoly{\pld@polya\pld@polyb}%
+        {%
+                \pld@LongDividePoly\pld@polya\pld@polyb%
+                \pld@PrintLongDiv%
+                \setlength{\@pld@computation@box@width}{\wd\@pld@computation@box}%
+                \ifx\pld@remainder\@empty\relax%
+                \else%
+                        \savebox{\@pld@remainder@box}%
+                        {%
+                                \raisebox{-\@remainder@box@vskip}%
+                                {%
+                                        \fontcolor{\@PLD@math@color}%
+                                        \@PLD@math@font%
+                                        \uline
+                                        {%
+                                                \kern\@pld@remainder@kern%
+                                                \raisebox{\@remainder@plussign@vskip}{\ensuremath{+}}%
+                                                \kern\@pld@remainder@kern%
+                                                \raisebox{\@remainder@frac@vskip}%
+                                                {%
+                                                        \ensuremath%
+                                                        {%
+                                                                \tfrac%
+                                                                {\let\strut\@empty\@the@remainder}%
+                                                                {\let\strut\@empty\@the@divisor}%
+                                                        }%
+                                                }%
+                                        }%
+                                }%
+                        }%
+                \fi%
+                \setlength{\@pld@remainder@box@width}{\wd\@pld@remainder@box}%
+                \setlength{\@pld@divisor@width}{\widthof{$\displaystyle \@pld@remainder@box$}}%
+                \setlength{\@pld@solution@box@width}{\wd\@pld@computation@box + \wd\@pld@remainder@box+\@pld@divisor@width + 10mm}%
+                \ifx\pld@remainder\@empty\relax%
+                        \savebox{\@pld@conclusion@box}%
+                        {%
+                                \fontcolor{\@PLD@math@color}%
+                                \@PLD@math@font%
+                                \ensuremath%
+                                {%
+                                        \hence%
+                                        \dfrac{\@the@polya}{\@the@divisor}%
+                                        =%
+                                        \polyprint\pld@quotient%
+                                }%
+                        }%
+                \else%
+                        \savebox{\@pld@conclusion@box}%
+                        {%
+                                \fontcolor{\@PLD@math@color}%
+                                \@PLD@math@font%
+                                \ensuremath%
+                                {%
+                                        \hence%
+                                        \dfrac{\@the@polya}{\@the@divisor}%
+                                        =%
+                                        \polyprint\pld@quotient%
+                                        + \dfrac{\@the@remainder}{\@the@divisor}%              %
+                                }%
+                        }%
+                \fi%
+                \setlength{\@pld@conclusion@box@width}{\wd\@pld@conclusion@box}%
+        }%
+}
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\def\pld@PrintLongDiv
+{%
+        \savebox{\@pld@computation@box}%
+        {%
+                \fontcolor{\@PLD@math@color}%
+                \@PLD@math@font%
+                \ensuremath
+                {%
+                        \hbox
+                        {%
+                                \vtop
+                                {%
+                                        \begingroup%
+                                        \offinterlineskip \tabskip=\z@%
+                                                \edef\pld@fakeline{\expandafter\pld@ConvertFake\pld@fakeline&\relax&}%
+                                        \halign%
+                                        {%
+                                                \strut\pld@firsttrue\hfil$##$%
+                                                &\pld@firsttrue\hfil$##$%
+                                                &&\hfil$##$\cr%
+                                                \pld@fakeline\cr \noalign{\vskip-\normalbaselineskip}%
+                                                \pld@allines%
+                                        }%
+                                        \endgroup%
+                                }%
+                        }%
+                }%
+        }%
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*\polylonggcd[1][]{%
@@ -213,6 +235,9 @@
 \newcommand*\polyprint{%
     \pld@GetPoly{\pld@polya}%
                 {\ensuremath{\pld@PrintPoly\pld@polya}}}
+\newcommand*\polyprintsmall{%
+    \pld@GetPoly{\pld@polya}%
+                {\scriptscriptstyle\ensuremath{\scriptscriptstyle\pld@PrintSmallPoly\pld@polya}}}
 \newcommand*\polyadd[1]{%
     \pld@GetPoly{\pld@polya\pld@polyb}%
                 {\let#1\pld@polya \pld@ExtendPoly#1\pld@polyb
@@ -420,6 +445,10 @@
     \ifx\@empty#1\@empty 0\else
         \pld@firsttrue \expandafter\pld@PrintMonoms#1+\relax+%
     \fi}
+\def\pld@PrintSmallPoly#1{%
+    \ifx\@empty#1\@empty 0\else
+        \pld@firsttrue \scriptscriptstyle\expandafter\pld@PrintMonoms#1+\relax+%
+    \fi}
 \def\pld@PrintPolyWithDelimsArg#1{%
     \def\pld@temp{#1}\pld@PrintPolyWithDelims\pld@temp}
 \def\pld@PrintPolyWithDelims#1{%
@@ -492,43 +521,43 @@
     \fi}
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@CF@loop#1+{%
-	\ifx\relax#1%
-	\else
-		\begingroup
-			\pld@AccuSetX11%
-	          	\def\pld@frac{{}{}}\let\pld@symbols\@empty\let\pld@vars\@empty
-	          	\pld@false
-	          	#1%
-	          	\let\pld@temp\@empty
-			\iftoggle{@pld@print@zero@coefficients}
-	          	{%	
+        \ifx\relax#1%
+        \else
+                \begingroup
+                        \pld@AccuSetX11%
+                        \def\pld@frac{{}{}}\let\pld@symbols\@empty\let\pld@vars\@empty
+                        \pld@false
+                        #1%
+                        \let\pld@temp\@empty
+                        \iftoggle{@pld@print@zero@coefficients}
+                        {%
                         \pld@AccuIfOne{}{\pld@AccuGet\pld@temp\edef\pld@temp{\noexpand\pld@R\pld@temp}}%
-	          		\pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi
-	           		\expandafter\pld@CF@loop@\pld@symbols\relax\@empty
-	        		\expandafter\pld@CF@loop@\pld@vars\relax\@empty
-	           		\ifx\@empty\pld@temp
-	             		\def\pld@temp{\pld@R11}%
-	          		\fi%
-	          	}
-	    		{%
-	    			\pld@AccuIfZero{}%
-		          	{\pld@AccuIfOne{}{\pld@AccuGet\pld@temp
-		                            \edef\pld@temp{\noexpand\pld@R\pld@temp}}%
-		           	\pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi
-		           	\expandafter\pld@CF@loop@\pld@symbols\relax\@empty
-		           	\expandafter\pld@CF@loop@\pld@vars\relax\@empty
-		           	\ifx\@empty\pld@temp
-		        		\def\pld@temp{\pld@R11}%
-		           	\fi}%
-	    		}
-	          	\global\let\@gtempa\pld@temp
-		\endgroup
-		\ifx\@empty\@gtempa%
-		\else
-			\pld@ExtendPoly\pld@tempoly\@gtempa
-		\fi
-		\expandafter\pld@CF@loop
-    	\fi%
+                                \pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi%
+                                \expandafter\pld@CF@loop@\pld@symbols\relax\@empty%
+                                \expandafter\pld@CF@loop@\pld@vars\relax\@empty%
+                                \ifx\@empty\pld@temp%
+                                \def\pld@temp{\pld@R11}%
+                                \fi%
+                        }%
+                        {%
+                                \pld@AccuIfZero{}%
+                                {\pld@AccuIfOne{}{\pld@AccuGet\pld@temp%
+                                            \edef\pld@temp{\noexpand\pld@R\pld@temp}}%
+                                \pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi%
+                                \expandafter\pld@CF@loop@\pld@symbols\relax\@empty%
+                                \expandafter\pld@CF@loop@\pld@vars\relax\@empty%
+                                \ifx\@empty\pld@temp%
+                                        \def\pld@temp{\pld@R11}%
+                                \fi}%
+                        }%
+                        \global\let\@gtempa\pld@temp%
+                \endgroup
+                \ifx\@empty\@gtempa%
+                \else
+                        \pld@ExtendPoly\pld@tempoly\@gtempa
+                \fi
+                \expandafter\pld@CF@loop
+        \fi%
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@CF@loop@#1#2{%
@@ -601,18 +630,18 @@
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@CMAddToTempoly
 {%
-	\iftoggle{@pld@print@zero@coefficients}
-    	{
-    		\pld@AccuGet\pld@temp
-		\edef\pld@temp{\noexpand\pld@R\pld@temp}
-    	}
-	{
-		\pld@AccuIfZero{\let\pld@temp\@empty}%
-		{%
-			\pld@AccuGet\pld@temp
-				\edef\pld@temp{\noexpand\pld@R\pld@temp}
-		}%
-	}
+        \iftoggle{@pld@print@zero@coefficients}
+        {
+                \pld@AccuGet\pld@temp
+                \edef\pld@temp{\noexpand\pld@R\pld@temp}
+        }
+        {
+                \pld@AccuIfZero{\let\pld@temp\@empty}%
+                {%
+                        \pld@AccuGet\pld@temp
+                                \edef\pld@temp{\noexpand\pld@R\pld@temp}
+                }%
+        }
     \pld@CondenseMonomials\pld@false\pld@symbols
     \ifx\pld@symbols\@empty \else
         \pld@ExtendPoly\pld@temp\pld@symbols
@@ -945,8 +974,8 @@
     \pld@next}
 \def\pld@SubtractPoly@r#1+\relax+\@empty%
 {
-	\pld@AddToPoly\pld@tempoly{#1}%
-	\def\pld@last@remainder{#1}
+        \pld@AddToPoly\pld@tempoly{#1}%
+        \def\pld@last@remainder{#1}
 }
 \def\pld@InsertFake#1{%
     \let\pld@temp\@empty
@@ -1016,35 +1045,6 @@
         \phantom{\copy\z@}%
     \fi}
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-\def\pld@PrintLongDiv
-{%
-	\savebox{\@pld@computation@box}%
-	{%
-		\ensuremath
-		{%
-			\hbox
-			{%
-				\vtop
-				{%
-					\begingroup
-	       				\offinterlineskip \tabskip=\z@
-						\edef\pld@fakeline{\expandafter\pld@ConvertFake\pld@fakeline&\relax&}%
-	       				\halign
-	       				{
-	       					\strut\pld@firsttrue\hfil$##$%
-	                    			&\pld@firsttrue\hfil$##$%
-	                    			&&\hfil$##$\cr
-	               				\pld@fakeline\cr \noalign{\vskip-\normalbaselineskip}%
-	               				\pld@allines
-	                 			}%
-					\endgroup
-				}%
-			}%
-		}%	
-		\ignorespaces%
-	}%
-}
-%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@InsertItems#1#2#3{%
     \ifx\@empty#1\@empty
     \ifx\@empty#2\@empty \def\pld@monom{3#3}%
@@ -1108,87 +1108,272 @@
         \advance\@tempcnta\m@ne
     \fi}
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\def\pld@ArrangeResult@dimensions%
+{%
+        \def\@pld@remainder@kern{1.25mm}
+        \def\@remainder@uline@base@sep{\@subline@base@sep}%
+        \def\@pld@divisor@kern{2pt}
+        \IfStrEqCase{\@PLD@math@fontsize}%normal=4.35pt/5.036pt, large=5.46pt, Large=7.35pt, LARGE=8.98pt
+        {
+                {normalsize}
+                {%
+                        \def\@subline@base@sep{-2.25pt}
+                        \def\@remainder@terms@base@sep{5.545pt}
+                        \def\@pld@open@delimiter@min@height{4.0mm}%
+                        \def\@remainder@uline@yshift{-0.505pt}%{5.042pt}%{7.34pt}%
+                        \def\@remainder@frac@yshift{2.0pt}%
+                        \def\@quotient@sep{3.0pt}%
+                        \def\@subline@sep{2.5pt}%
+                        \def\@pld@after@rparen@kern{-3.28pt}%
+                        \def\@pld@after@vert@kern{-1.45pt}%
+                }
+                {large}
+                {%
+                        \def\@subline@base@sep{-0.5pt}
+                        \def\@remainder@terms@base@sep{2.15pt}
+                        \def\@pld@open@delimiter@min@height{4.9mm}%
+                        \def\@remainder@uline@yshift{8.525pt}%{10.64pt}%{7.34pt}%
+                        \def\@remainder@frac@yshift{2.5pt}%
+                        \def\@quotient@sep{4.0pt}%
+                        \def\@subline@sep{4.0pt}%
+                        \def\@pld@after@rparen@kern{-4.2pt}%
+                        \def\@pld@after@vert@kern{-1.85pt}%
+                }
+                {Large}
+                {%
+                        \def\@subline@base@sep{-0.5pt}
+                        \def\@remainder@terms@base@sep{2.3pt}
+                        \def\@pld@open@delimiter@min@height{5.75mm}%
+                        \def\@remainder@uline@yshift{10.41pt}%
+                        \def\@remainder@frac@yshift{2.5pt}%
+                        \def\@quotient@sep{5.0pt}%
+                        \def\@subline@sep{4.0pt}%
+                        \def\@pld@after@rparen@kern{-4.91pt}%
+                        \def\@pld@after@vert@kern{-2.25pt}%
+                }
+                {LARGE}
+                {%
+                        \def\@subline@base@sep{-0.5pt}
+                        \def\@remainder@terms@base@sep{2.44pt}
+                        \def\@pld@open@delimiter@min@height{6.6mm}%
+                        \def\@remainder@uline@yshift{12.05pt}%
+                        \def\@remainder@frac@yshift{3.0pt}%
+                        \def\@quotient@sep{5.0pt}%
+                        \def\@subline@sep{4.0pt}%%
+                        \def\@pld@after@rparen@kern{-5.57pt}%
+                        \def\@pld@after@vert@kern{-2.6pt}%
+                }%
+        }%
+        \setlength{\@pld@open@delimiter@height}{\dimexpr \@pld@open@delimiter@min@height + \@quotient@sep\relax}%
+        %
+        \def\@subline@vskip{\dimexpr\@subline@base@sep + \@subline@sep\relax}
+        \def\@remainder@box@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@remainder@uline@yshift\relax}
+        \def\@remainder@plussign@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@subline@base@sep\relax}
+        \def\@remainder@frac@vskip{\dimexpr\@remainder@plussign@vskip + \@remainder@frac@yshift\relax}
+	%\setlength{\@pld@open@delimiter@height}{\dimexpr \@pld@open@delimiter@min@height + \@quotient@sep\relax}%
+%        %
+%        \def\@subline@vskip{\dimexpr\@subline@base@sep + \@subline@sep\relax}
+%        \def\@remainder@box@vskip{\dimexpr\@subline@vskip + \@remainder@uline@yshift\relax}
+%        \def\@remainder@plussign@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@subline@base@sep\relax}
+%        \def\@remainder@frac@vskip{\dimexpr\@remainder@plussign@vskip + \@remainder@frac@yshift\relax}
+}
+%--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@ArrangeResult#1%
 {%
-	\ifx\pld@remainder\@empty
-		\@tempcnta\pld@maxcol\relax
-        	\pld@InsertItems@do\pld@lastline
+        \ifx\pld@remainder\@empty
+                \@tempcnta\pld@maxcol\relax
+                \pld@InsertItems@do\pld@lastline
             {\pld@firsttrue\pld@PLD{\pld@R{0}{1}}}%
-	\fi
-	\ifnum\pld@currstage>\z@
-		\pld@Extend\pld@allines{\pld@lastline\cr}%
-	\else
-        	\pld@InsertFake\pld@lastline
-    	\fi
-    	\pld@iftopresult
-		\ifdefequal{\@pld@open@delimiter}{\rparen}    			
-            	{\def\pld@lastline{\pld@PrintPoly\pld@divisor\kern\@pld@divisor@kern\boldsymbol{\stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}}\kern\@pld@rparen@kern&}}{}
-	      \ifdefequal{\@pld@open@delimiter}{\vert}	
-            	{\def\pld@lastline{\pld@PrintPoly\pld@divisor\kern\@pld@divisor@kern\boldsymbol{\stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}}\kern\@pld@vert@kern&}}{}
-	      \ifdefequal{\@pld@open@delimiter}{\lvert}	
-            	{\def\pld@lastline{\pld@PrintPoly\pld@divisor\kern\@pld@divisor@kern\boldsymbol{\stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}}\kern\@pld@vert@kern&}}{}
-	      \ifdefequal{\@pld@open@delimiter}{\rvert}
-			{\def\pld@lastline{\pld@PrintPoly\pld@divisor\kern\@pld@divisor@kern\boldsymbol{\stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}}\kern\@pld@vert@kern&}}{}	
-    	\else
-        	\let\pld@lastline\@empty
-        	\ifx B\pld@style\else
-           	 	\def\pld@lastline{\pld@leftdelim\strut\pld@rightxdelim&}%
-        	\fi
-    	\fi
-    	\expandafter\pld@AR@col\expandafter\pld@PLD
-	\expandafter\pld@lastline#1+\relax+%
-    	\pld@SplitQuotient
-    	\pld@iftopresult
-        	\let\pld@currentline\@empty
-        	\expandafter\pld@AR@col\expandafter\pld@PLD
-		\expandafter\pld@currentline\pld@quotient+\relax+%
-        	\expandafter\pld@AR@col\expandafter\pld@XPLD
-        	\expandafter\pld@currentline\pld@shadow+\relax+%
-        	\edef\pld@subline{%
-            \noalign{\vskip\@subline@sep}\noexpand\cline{\tw@-\pld@maxcol}}%
-        	\pld@Extend\pld@currentline{\expandafter\cr\pld@subline}%
-    	\else
-        	\@tempcnta-\@tempcnta
-        	\advance\@tempcnta\pld@maxcol\relax \advance\@tempcnta\@ne
-        	\edef\pld@span{\the\@tempcnta}%
-        	\ifx B\pld@style
-          		\pld@AddTo\pld@lastline{%
-            	&\multispan\pld@span${}=%
-            	\pld@PrintPolyWithDelims\pld@divisor
-            	\expandafter\pld@IfSum\expandafter{\pld@divisor}{}{\cdot}%
-            	\expandafter\pld@IfSum\expandafter{\pld@quotient}\pld@true
-            			\pld@false
-            			\pld@if \pld@leftdelim
-              			\pld@PrintPolyShadow
-       				\pld@rightdelim
-		\else
-              	\pld@PrintPolyShadow
-		\fi
+        \fi
+        \ifnum\pld@currstage>\z@
+                \pld@Extend\pld@allines{\pld@lastline\cr}%
+        \else
+                \pld@InsertFake\pld@lastline
+        \fi
+        \pld@ArrangeResult@dimensions%
+        %\edef\@pld@open@delimiter@string{\@pld@open@delimiter}
+        %\edef\@pld@open@delimiter@check{\rparen}
+        %hello$\@pld@open@delimiter@string$
+        %\thecsname{\rparen}
+        %$\expandafter\thecsname\expandafter{\expandafter\noexpand\expandafter\expandonce\expandafter{\@pld@open@delimiter}}$
+        %$\noexpand\expandonce{\@pld@open@delimiter}$
+        %\shown{@pld@open@delimiter}
+        %\thecsname{\expandonce{\@pld@open@delimiter}}
+        %\thecsname{\expandonce{\rparen}}
+        \pld@iftopresult
+                %\ifstrequal{\@pld@open@delimiter}{\thecsname{\rparen}}
+                %\ifdefequal{\@pld@open@delimiter}{\rparen}
+%                \IfCSEqCase{@pld@open@delimiter}%
+%                {
+%                	{rparen}
+%                	{
+%                		\def\pld@lastline%
+%	                        {%
+%	                                \pld@PrintPoly\pld@divisor%
+%	                                \kern\@pld@divisor@kern%
+%	                                \boldsymbol%
+%	                                {%
+%	                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+%	                                }%
+%	                                \kern\@pld@after@rparen@kern&%
+%	                        }%
+%                	};
+%                        {vert}
+%                        {
+%	                        \def\pld@lastline%
+%	                        {%
+%	                                \pld@PrintPoly\pld@divisor%
+%	                                \kern\@pld@divisor@kern%
+%	                                \boldsymbol%
+%	                                {%
+%	                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+%	                                }%
+%	                                \kern\@pld@after@vert@kern&%
+%	                        }%
+%                        };
+%                        {lvert}
+%                        {
+%                                \def\pld@lastline%
+%                                {%
+%                                        \pld@PrintPoly\pld@divisor%
+%                                        \kern\@pld@divisor@kern%
+%                                        \boldsymbol%
+%                                        {%
+%                                                \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+%                                        }%
+%                                        \kern\@pld@after@vert@kern&%
+%                                }%
+%                        };
+%                        {rvert}
+%                        {
+%                                \def\pld@lastline%
+%                                {%
+%                                        \pld@PrintPoly\pld@divisor%
+%                                        \kern\@pld@divisor@kern%
+%                                        \boldsymbol%
+%                                        {%
+%                                                \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+%                                        }%
+%                                        \kern\@pld@after@vert@kern&%
+%                                }%
+%                        }
+%                }
+                %
+                %\ifcsequal{@pld@open@delimiter}{rparen}
+                \ifdefequal{\@pld@open@delimiter}{\rparen}
+                {%
+                        \def\pld@lastline%
+                        {%
+                                \pld@PrintPoly\pld@divisor%
+                                \kern\@pld@divisor@kern%
+                                \boldsymbol%
+                                {%
+                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+                                }%
+                                \kern\@pld@after@rparen@kern&%
+                        }%
+                }{}%
+                \ifdefequal{\@pld@open@delimiter}{\vert}
+                {%
+                        \def\pld@lastline%
+                        {%
+                                \pld@PrintPoly\pld@divisor%
+                                \kern\@pld@divisor@kern%
+                                \boldsymbol%
+                                {%
+                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+                                }%
+                                \kern\@pld@after@vert@kern&%
+                        }%
+                }{}%
+                \ifdefequal{\@pld@open@delimiter}{\lvert}
+                {%
+                        \def\pld@lastline%
+                        {%
+                                \pld@PrintPoly\pld@divisor%
+                                \kern\@pld@divisor@kern%
+                                \boldsymbol%
+                                {%
+                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+                                }%
+                                \kern\@pld@after@vert@kern&%
+                        }%
+                }{}%
+                \ifdefequal{\@pld@open@delimiter}{\rvert}
+                {%
+                        \def\pld@lastline%
+                        {%
+                                \pld@PrintPoly\pld@divisor%
+                                \kern\@pld@divisor@kern%
+                                \boldsymbol%
+                                {%
+                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
+                                }%
+                                \kern\@pld@after@vert@kern&%
+                        }%
+                }{}%
+        \else
+                \let\pld@lastline\@empty
+                \ifx B\pld@style\else
+                        \def\pld@lastline{\pld@leftdelim\strut\pld@rightxdelim&}%
+                \fi
+        \fi
+        \expandafter\pld@AR@col\expandafter\pld@PLD
+        \expandafter\pld@lastline#1+\relax+%
+        \pld@SplitQuotient
+        \pld@iftopresult
+                \let\pld@currentline\@empty
+                \expandafter\pld@AR@col\expandafter\pld@PLD
+                \expandafter\pld@currentline\pld@quotient+\relax+%
+                \expandafter\pld@AR@col\expandafter\pld@XPLD
+                \expandafter\pld@currentline\pld@shadow+\relax+%
+                \edef\pld@subline{%
+            \noalign{\vskip\@subline@vskip}%
+            %\noalign{\vskip-6pt}%
+            \noexpand\cline{\tw@-\pld@maxcol}}%
+                \pld@Extend\pld@currentline{\expandafter\cr\pld@subline}%\noalign{\vskip\@quotient@sep}
+        \else
+                \@tempcnta-\@tempcnta
+                \advance\@tempcnta\pld@maxcol\relax \advance\@tempcnta\@ne
+                \edef\pld@span{\the\@tempcnta}%
+                \ifx B\pld@style
+                        \pld@AddTo\pld@lastline{%
+                &\multispan\pld@span${}=%
+                \pld@PrintPolyWithDelims\pld@divisor
+                \expandafter\pld@IfSum\expandafter{\pld@divisor}{}{\cdot}%
+                \expandafter\pld@IfSum\expandafter{\pld@quotient}\pld@true
+                                \pld@false
+                                \pld@if \pld@leftdelim
+                                \pld@PrintPolyShadow
+                                \pld@rightdelim
+                \else
+                \pld@PrintPolyShadow
+                \fi
             \pld@firstfalse
-            	\expandafter\pld@PrintRemain\expandafter{\pld@remainder}$}%
-        	\else
-			\pld@AddTo\pld@lastline
-		   	{%
-				&\multispan\pld@span$\pld@leftxdelim\strut\pld@rightdelim
-				\pld@div
-				\pld@PrintPolyWithDelims\pld@divisor=
-				\pld@PrintPolyShadow
-			   	\ifx\pld@remainder\@empty%
-			  	\else
-					+{}%
-			          	\setbox\z@=\hbox
-					{%
-						$\displaystyle
-			            	\frac{\let\strut\@empty\pld@firsttrue \expandafter
-						\pld@PrintRemain\expandafter{\pld@remainder}}%
-						{\let\strut\@empty\pld@PrintPoly\pld@divisor}$%
-					}%
-			      	\dp\z@=\z@\box\z@
-				\fi
-			$}%
-		\fi
-	\fi
-    	\expandafter\pld@AR@\pld@allines\relax
+                \expandafter\pld@PrintRemain\expandafter{\pld@remainder}$}%
+                \else
+                        \pld@AddTo\pld@lastline
+                        {%
+                                &\multispan\pld@span$\pld@leftxdelim\strut\pld@rightdelim
+                                \pld@div
+                                \pld@PrintPolyWithDelims\pld@divisor=
+                                \pld@PrintPolyShadow
+                                \ifx\pld@remainder\@empty%
+                                \else
+                                        +{}%
+                                        \setbox\z@=\hbox
+                                        {%
+                                                $\displaystyle
+                                        \frac{\let\strut\@empty\pld@firsttrue \expandafter
+                                                \pld@PrintRemain\expandafter{\pld@remainder}}%
+                                                {\let\strut\@empty\pld@PrintPoly\pld@divisor}$%
+                                        }%
+                                \dp\z@=\z@\box\z@
+                                \fi
+                        $}%
+                \fi
+        \fi
+        \expandafter\pld@AR@\pld@allines\relax
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@AR@#1\cr#2\relax{%
@@ -1415,7 +1600,7 @@
 %                        \pld@AccuGet\pld@sub
 %                        \edef\pld@va{\noexpand\pld@R\pld@sub+}%
 %                        \expandafter\pld@AccuMul\pld@sub%
-	\begingroup
+        \begingroup
           \pld@AccuSetX{#3}{#4}%
           \pld@AccuMul{-#2}{#1}%
           \pld@AccuGet\pld@temp

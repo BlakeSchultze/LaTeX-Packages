@@ -43,9 +43,25 @@
 \gdef\@set@gradient@colors(#1){\expandafter\@@set@gradient@colors\expandafter(#1)}
 \gdef\BBBgradientbackground{stdblue,stdblue,stdblue,white}%
 \gdef\BYYgradientbackground{stdblue,stdyellow,stdyellow,white}%
-\gdef\GYYgradientbackground{stdgreen,stdyellow,stdyellow,white}%
+\gdef\CCYgradientbackground{cyan,cyan,stdyellow,white}%
+\gdef\CCCgradientbackground{cyan,cyan,cyan,white}%
+\gdef\GYYgradientbackground{green,stdyellow,stdyellow,white}%
+\gdef\GGYgradientbackground{green,green,stdyellow,white}%
+\gdef\GGGgradientbackground{green,green,green,white}%
 \gdef\PYYgradientbackground{stddkpeach,stdyellow,stdyellow,white}%
+\gdef\RRYgradientbackground{red,red,stdyellow,white}%
 \gdef\YYYgradientbackground{stdyellow,stdyellow,stdyellow,white}%
+\gdef\@create@gradient@background#1(#2,#3,#4,#5)%
+{%
+        \expandafter\gdef\csname#1\endcsname{#2,#3,#4,#5}%
+        %\@namedef{#1}{#2,#3,#4,#5}%
+        %stdyellow,stdyellow,stdyellow,white
+}%
+\gdef\@create@gradient@backgroundB(#1,#2,#3,#4)#5%
+{%
+        \expandafter\gdef\csname #5\endcsname{#1,#2,#3,#4}%
+        %stdyellow,stdyellow,stdyellow,white
+}%
 \gdef\@@set@env@border@colors(#1,#2)%
 {%
         \@set@specific@tcb@color{colframeborder}{#1}
@@ -56,6 +72,12 @@
 %\gdef\Plistboxbordercolors{stddkpeach,stdyellow}%
 %\gdef\Blistboxbordercolors{stddkpeach,stdyellow}%
 %\gdef\Glistboxbordercolors{stddkpeach,stdyellow}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\constructgradient[2]
+{%
+        \edef\@the@gradient@arg{{#1}(#2)}%
+        \expandafter\@create@gradient@background\@the@gradient@arg%
+}
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\@set@filled@num@colors[1]%
 {%
@@ -114,16 +136,16 @@
 \tikzset
 {
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Universal Text/Path/Draw/Arrow Settings/Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Universal Text/Path/Draw/Arrow Settings/Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-        ,>=stealth', thick, black!50, text=black, %arrows =-{Stealth[length=5mm]}, %arrows = -{Triangle[open, angle=60:3mm]},
+        %>=stealth',% thick, black!50, text=black, %arrows =-{Stealth[length=5mm]}, %arrows = -{Triangle[open, angle=60:3mm]},
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Diagram Node/Graph/Matrix Styles/Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
         skip loop/.style={to path={-- ++(0,#1) -| (\tikztotarget)}},
         every new ->/.style={shorten >=0pt},
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Diagram Node/Graph/Matrix Styles/Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
         fontscale/.style = {font=\relsize{#1}},
-        textonly/.style={minimum size=0pt, draw=diagram-text-coldraw, top color=diagram-text-topcolor, bottom color=diagram-text-bottomcolor},%, font=\large},inner sep=1pt, 
+        textonly/.style={minimum size=0pt, draw=diagram-text-coldraw, top color=diagram-text-topcolor, bottom color=diagram-text-bottomcolor},%, font=\large},inner sep=1pt,
 %------------------------------------------------------------------------------------------------------------------------------%
         D/.style={rectangle, minimum size=1pt, line width=4ex, very thick, draw=diagram-dir-coldraw, top color=diagram-dir-topcolor, bottom color=diagram-dir-bottomcolor, font=\itshape},
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -132,7 +154,7 @@
         end/.style={rectangle, rounded corners=5pt, minimum size=4mm, line width=4ex, very thick, draw=diagram-end-coldraw, top color=diagram-end-topcolor, bottom color=diagram-end-bottomcolor, font=\itshape},
 %------------------------------------------------------------------------------------------------------------------------------%
         pt/.style={draw,inner sep=0pt,minimum size=0.3pt,fill=diagram-point-colfill},
-graphs/every graph/.style={edges=rounded corners},
+        graphs/every graph/.style={edges=rounded corners},
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ tcolorbox Context Styles/Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -199,7 +221,7 @@ graphs/every graph/.style={edges=rounded corners},
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
         subtitleStyle/.style args={#1#2#3}
-		{subtitle style={colback=#1-colback, coltext=#1-coltext, boxrule=#2, left=#3, right=#3}},
+                {subtitle style={colback=#1-colback, coltext=#1-coltext, boxrule=#2, left=#3, right=#3}},
         subtitleStyle/.default={current}{-1pt}{4.1pt},
 %------------------------------------------------------------------------------------------------------------------------------%
         titleSepCode/.style=
@@ -231,8 +253,8 @@ graphs/every graph/.style={edges=rounded corners},
         filledTitleSepCode/.default={current-colbacktitle}{current-colinteriorborder}{\@title@interior@sep@linewidth},
 %------------------------------------------------------------------------------------------------------------------------------%
         attachBoxedTitleTopCenter/.style n args={2}
-        	{attach boxed title to top center={yshift=-#1-\tcboxedtitleheight/2, yshifttext=#2-\tcboxedtitleheight/2}},
-        attachBoxedTitleTopCenter/.default={1.0mm}{2.0mm},        
+                {attach boxed title to top center={yshift=-#1-\tcboxedtitleheight/2, yshifttext=#2-\tcboxedtitleheight/2}},
+        attachBoxedTitleTopCenter/.default={1.0mm}{2.0mm},
 %------------------------------------------------------------------------------------------------------------------------------%
         topLeftSectionTitleStyle/.style=
         {
@@ -244,7 +266,7 @@ graphs/every graph/.style={edges=rounded corners},
                                 \draw
                                 [
                                         #1-coldraw, line width=\@boxed@title@linewidth,
-                                        double=#1-coldoubleline, double distance=\@overlay@double@distance
+                                        double=#1-rulecolor, double distance=\@overlay@double@distance
                                 ]
                                 ([yshift=\@overlay@yshift]frame.north west)
                                 --([yshift=\@overlay@yshift]frame.north east);
@@ -255,7 +277,7 @@ graphs/every graph/.style={edges=rounded corners},
                         \draw
                         [
                                 #1-coldraw, line width=\@overlay@linewidth,
-                                double=#1-coldoubleline, double distance=\@overlay@double@distance
+                                double=#1-rulecolor, double distance=\@overlay@double@distance
                         ]
                         ([yshift=\@overlay@yshift]title.north east)
                         --([xshift=\@overlay@xshift,yshift=\@overlay@yshift]title.north-|frame.east)
@@ -267,7 +289,7 @@ graphs/every graph/.style={edges=rounded corners},
                         \draw
                         [
                                 #1-coldraw, line width=\@overlay@linewidth,
-                                double=#1-coldoubleline, double distance=\@overlay@double@distance
+                                double=#1-rulecolor, double distance=\@overlay@double@distance
                         ]
                         ([yshift=\@overlay@yshift]title.north east)
                         --([xshift=\@overlay@xshift,yshift=\@overlay@yshift]title.north-|frame.east)
@@ -278,7 +300,7 @@ graphs/every graph/.style={edges=rounded corners},
                         \draw
                         [
                                 #1-coldraw, line width=\@overlay@linewidth,
-                                double=#1-coldoubleline, double distance=\@overlay@double@distance
+                                double=#1-rulecolor, double distance=\@overlay@double@distance
                         ]
                         ([xshift=\@overlay@xshift]frame.north east)
                         --([xshift=\@overlay@xshift]frame.south east);
@@ -288,7 +310,7 @@ graphs/every graph/.style={edges=rounded corners},
                         \draw
                         [
                                 #1-coldraw, line width=\@overlay@linewidth,
-                                double=#1-coldoubleline, double distance=\@overlay@double@distance
+                                double=#1-rulecolor, double distance=\@overlay@double@distance
                         ]
                         ([xshift=\@overlay@xshift]frame.north east)
                         --([xshift=\@overlay@xshift]frame.south east)
@@ -379,16 +401,16 @@ graphs/every graph/.style={edges=rounded corners},
                 {
                         \node
                         [
-                                anchor=south west, fill=current-colframeborder, draw=current-colframe, rounded rectangle, 
-                                rounded rectangle arc length=\@Chapter@heading@rounded@arclength,
-                                inner xsep=8pt, outer xsep=-1.5pt, xshift=20pt, font=\bfseries\color{white}, line width=1.5pt
+                                anchor=south west, fill=current-colframeborder, draw=current-colframe, rounded rectangle,
+                                rounded rectangle arc length=\@tcb@rounded@arclength,
+                                inner xsep=8pt, outer xsep=-1.5pt, xshift=20pt, font=\bfseries\fontcolor{white}, line width=1.5pt
                         ] at (frame.north west) (tit)
-                        {\anttmcap16pt\BreakableShadowText*[current-coltitle](current-coltextshadow):black:{Contents\minispace:}};
-                        \draw[line width=8pt, rounded corners=\@frame@corner@radius, draw=current-colframe]%
+                        {\anttmcap16pt\BreakableShadowText*:\cftX@tcbtitle@fontfamily:[current-coltitle](current-coltextshadow)|black|{Contents\minispace:}};
+                        \draw[line width=8pt, rounded corners=\@tcb@frame@corner@radius, draw=current-colframe]%
                                 (tit.west)
                                 -| ([xshift=0pt, yshift=-6pt]frame.south west)
                                 -- ([xshift=\linewidth, yshift=-6pt]frame.south west);
-                        \draw[line width=2pt, rounded corners=\@frame@corner@radius, draw=current-colframeborder,
+                        \draw[line width=2pt, rounded corners=\@tcb@frame@corner@radius, draw=current-colframeborder,
                                 double=current-coldoubleline, double distance=0.75pt]%
                                 (tit.west)
                                 -| ([xshift=0pt, yshift=-6pt]frame.south west)
@@ -406,7 +428,7 @@ graphs/every graph/.style={edges=rounded corners},
         {
                 interior style=
                 {
-                        draw=#2, line width=#1, double=current-coldoubleline, double distance=\@interior@double@distance, 
+                        draw=#2, line width=#1, double=current-coldoubleline, double distance=\@interior@double@distance,
                         rounded corners=\@tcb@interior@corner@radius
                 }
         },
@@ -430,7 +452,7 @@ graphs/every graph/.style={edges=rounded corners},
                 code={\@set@gradient@colors(#3)},
                 interior style=
                 {
-                        draw=#2, line width=#1, double=current-coldoubleline, double distance=\@interior@double@distance, 
+                        draw=#2, line width=#1, double=current-coldoubleline, double distance=\@interior@double@distance,
                         rounded corners=\@tcb@interior@corner@radius,
                         top color=\@top@mix@color, middle color=\@middle@mix@color, bottom color=\@bottom@mix@color
                 }
@@ -508,21 +530,30 @@ graphs/every graph/.style={edges=rounded corners},
         },
         terminalSegmentationCode/.default={\@tcb@default@boxrule@linewidth}{single}{tcbbashboxColorset},
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%      %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Style Construction Components ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
         @BASIC@STYLE/.style =
         {
-                empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix, 
+                empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix,
                 drop lifted shadow=default-colbacktitle, coltitle=black, coltext=black, colframe=black, colback=white,
-                boxrule=2pt, boxsep=2pt, arc=6pt, top=2mm, bottom=2mm, left=2mm, right=2mm, before=\par\smallskip,
+                boxrule=2pt, boxsep=2pt, arc=\@tcb@corner@radius, top=2mm, bottom=2mm, left=2mm, right=2mm, before=\par\smallskip,
                 after=\par\smallskip, fonttitle=\large\bfseries, fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries
         },
 %------------------------------------------------------------------------------------------------------------------------------%
         @DEFAULT@STYLE/.style =
         {
-                empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix, arc = 6pt,
+                empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix, arc=\@tcb@corner@radius,
                 @set@tcb@property@colors={default}, after=\par\smallskip, before=\par\smallskip,
                 fonttitle=\large\bfseries, fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries
         },
+%------------------------------------------------------------------------------------------------------------------------------%
+        @CFTX@BASIC@STYLE/.style n args={3}%=
+        {
+                empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix,
+                box align=center, halign=center, valign=top,
+                arc=\@tcb@frame@corner@radius, @set@tcb@property@colors={#1}, after=#2, before=#3,
+                fonttitle=\@tcb@title@font, fontupper=\@tcb@text@font, fontlower=\@tcb@text@font
+        },
+        @CFTX@BASIC@STYLE/.default={current}{\par\smallskip}{\par\smallskip},
 %------------------------------------------------------------------------------------------------------------------------------%
         @set@tcb@property@colors/.style=
         {
@@ -542,8 +573,9 @@ graphs/every graph/.style={edges=rounded corners},
                 before upper=
                 {%
                         \def\@save@arraystretch{\arraystretch}
-                        \renewcommand{\arraystretch}{\@tcb@arraystretch}
+                        %\renewcommand{\arraystretch}{\@tcb@arraystretch}
                         \centering\tcb@hack@currenvir\tabular{#2}%
+                        %\linespread@settings[context=IBP]
                 },
                 after upper=\endtabular
         },
@@ -556,50 +588,50 @@ graphs/every graph/.style={edges=rounded corners},
                         {%
                                 {plain}%
                                 {%
-                                	\setlength\@tcb@single@border@linewidth{0pt}%
-                                	\setlength\@tcb@border@linewidth{0pt}%
-                                	\setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
+                                        \setlength\@tcb@single@border@linewidth{0pt}%
+                                        \setlength\@tcb@border@linewidth{0pt}%
+                                        \setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
                                         \setlength\@tcb@double@distance{0.0pt}%
                                         \setlength\@tcb@borderline@xshift{-\@tcb@half@interior@border@linewidth}%
                                 }%
                                 {single}%
                                 {%
-                                	\setlength\@tcb@border@linewidth{\@tcb@single@border@linewidth}%
+                                        \setlength\@tcb@border@linewidth{\@tcb@single@border@linewidth}%
                                         \setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
                                         \setlength\@tcb@double@distance{0.0pt}%
                                         \setlength\@tcb@borderline@xshift{-\@tcb@half@interior@border@linewidth}%
                                 }%
                                 {double}%
                                 {%%
-                                	\setlength\@tcb@border@linewidth{\@tcb@double@border@linewidth}%
+                                        \setlength\@tcb@border@linewidth{\@tcb@double@border@linewidth}%
                                         \setlength\@tcb@borderline@linewidth%
-                                        	{\dimexpr 0.5#1+ \@tcb@half@boxrule@linewidth\relax}%
+                                                {\dimexpr 0.5#1+ \@tcb@half@boxrule@linewidth\relax}%
                                         \setlength\@tcb@double@distance{\@interior@double@distance}%
                                         \setlength\@tcb@borderline@xshift%
                                                 {\dimexpr -1.5\@tcb@doubleinner@border@linewidth-\@tcb@double@distance\relax}%
                                 }%
                                 {inner}%
                                 {%
-                                	\setlength\@tcb@border@linewidth{\@tcb@inner@border@linewidth}%
+                                        \setlength\@tcb@border@linewidth{\@tcb@inner@border@linewidth}%
                                         \setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
                                         \setlength\@tcb@double@distance{0.0pt}%
                                         \setlength\@tcb@borderline@xshift{-\@tcb@half@interior@border@linewidth}%
                                 }%
                                 {doubleinner}%
                                 {%
-                                	\setlength\@tcb@border@linewidth{\@tcb@doubleinner@border@linewidth}%
+                                        \setlength\@tcb@border@linewidth{\@tcb@doubleinner@border@linewidth}%
                                         \setlength\@tcb@borderline@linewidth%
-                                        	{\dimexpr 0.5#1+ \@tcb@half@boxrule@linewidth\relax}%
+                                                {\dimexpr 0.5#1+ \@tcb@half@boxrule@linewidth\relax}%
                                         \setlength\@tcb@double@distance{\@interior@double@distance}%
                                         \setlength\@tcb@borderline@xshift%
-                                        	{\dimexpr -1.5\@tcb@doubleinner@border@linewidth-\@tcb@double@distance\relax}%
+                                                {\dimexpr -1.5\@tcb@doubleinner@border@linewidth-\@tcb@double@distance\relax}%
                                 }%
                         }%
                         [%
-                        	\setlength\@tcb@border@linewidth{\@tcb@single@border@linewidth}%
-                        	\setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
-                        	\setlength\@tcb@double@distance{0.0pt}%
-                        	\setlength\@tcb@borderline@xshift{-\@tcb@half@interior@border@linewidth}%
+                                \setlength\@tcb@border@linewidth{\@tcb@single@border@linewidth}%
+                                \setlength\@tcb@borderline@linewidth{\@tcb@half@interior@border@linewidth}%
+                                \setlength\@tcb@double@distance{0.0pt}%
+                                \setlength\@tcb@borderline@xshift{-\@tcb@half@interior@border@linewidth}%
                         ]%
                         \@tcb@set@boxrule@linewidths{#1}%
                         \@tcb@set@interior@border@linewidths{\@tcb@half@boxrule@linewidth}%
@@ -608,11 +640,11 @@ graphs/every graph/.style={edges=rounded corners},
                         \@tcb@set@segrule@linewidths{\@tcb@border@linewidth}%
                         \@tcb@set@doubleinner@border@linewidths{2.0pt}%
                         \setlength\@tcb@doubleinner@border@xshift%
-                        	{\dimexpr#1/2 + \@tcb@half@doubleinner@border@linewidth + \@interior@double@distance/2\relax}%
+                                {\dimexpr#1/2 + \@tcb@half@doubleinner@border@linewidth + \@interior@double@distance/2\relax}%
                         \setlength\@tcb@single@border@xshift%
                                 {\dimexpr\@tcb@half@boxrule@linewidth - \@tcb@half@border@linewidth + \@tcb@quarter@interior@border@linewidth}%
-                	\setlength\@tcb@titlerule@xshift%
-                                {\dimexpr\@tcb@half@effective@boxrule@linewidth + \@tcb@borderline@xshift}%   
+                        \setlength\@tcb@titlerule@xshift%
+                                {\dimexpr\@tcb@half@effective@boxrule@linewidth + \@tcb@borderline@xshift}%
                         \setlength\@tcb@titlerule@yshift{\dimexpr\@tcb@half@titlerule@linewidth}%
                         %
                         \setlength\@tcb@segrule@xshift{\dimexpr \@tcb@half@boxrule@linewidth\relax}%
@@ -702,14 +734,14 @@ graphs/every graph/.style={edges=rounded corners},
         {
                 boxrule=#1,
                 borderline={\@tcb@single@border@linewidth}{\@tcb@single@border@xshift}%
-                	{draw=#2, rounded corners=\@tcb@frame@corner@radius}
+                        {draw=#2, rounded corners=\@tcb@frame@corner@radius}
         },
         tcbsingleborder/.default={\@tcb@default@boxrule@linewidth}{current-colframeborder},
 %------------------------------------------------------------------------------------------------------------------------------%
         tcbsingletitleborder/.style n args={3}%=
         {
                 titlerule=\@tcb@titlerule@linewidth,
-                title style={draw=#2-colinteriorborder, fill=#2-colbacktitle, line width=\@tcb@interior@border@linewidth}, 
+                title style={draw=#2-colinteriorborder, fill=#2-colbacktitle, line width=\@tcb@interior@border@linewidth},
                 title code app=
                 {
                         enhanced,
@@ -724,11 +756,11 @@ graphs/every graph/.style={edges=rounded corners},
         {
                 boxrule=#1,
                 borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 - 0.25pt\relax}%
-                	{#2, rounded corners=\@tcb@frame@corner@radius},
+                        {#2, rounded corners=\@tcb@frame@corner@radius},
                 borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 - 0.25pt + \@interior@double@distance/2\relax}%
-                	{#3, rounded corners=\@tcb@frame@corner@radius},
+                        {#3, rounded corners=\@tcb@frame@corner@radius},
                 borderline={\@tcb@double@border@linewidth}{\dimexpr#1 / 2 - 0.25pt + \@interior@double@distance\relax}%
-                	{#2, rounded corners=\@tcb@frame@corner@radius}
+                        {#2, rounded corners=\@tcb@frame@corner@radius}
         },
         tcbdoubleborder/.default={\@tcb@default@boxrule@linewidth}{current-colframeborder}{current-coldoubleline},
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -762,7 +794,8 @@ graphs/every graph/.style={edges=rounded corners},
         tcbinnertitleborder/.style n args={3}%=
         {
                 titlerule=\@tcb@titlerule@linewidth,
-                title style={draw=#2-colinteriorborder, fill=#2-colbacktitle, line width=\@tcb@interior@border@linewidth}, title code app=
+                title style={draw=#2-colinteriorborder, fill=#2-colbacktitle, line width=\@tcb@interior@border@linewidth},
+                title code app=
                 {
                         enhanced,
                         \draw[draw=#3, rounded corners=\@tcb@interior@corner@radius, line width=\@tcb@border@linewidth]
@@ -783,26 +816,26 @@ graphs/every graph/.style={edges=rounded corners},
         tcbdoubleinnertitleborder/.style n args={3}%=
         {
                 titlerule=\@tcb@titlerule@linewidth,
-                title code=
+                title style={draw=#2-colinteriorborder, fill=#2-colbacktitle, line width=#1},
+                title code app=
                 {
                         enhanced,
-                        \filldraw[draw=#2-colframe, fill=#2-colbacktitle,
-                                rounded corners=\@tcb@interior@corner@radius, line width=\@tcb@boxrule@linewidth]
-                                ([xshift=0pt, yshift=\@tcb@interior@border@linewidth]title.south west)
-                                --([xshift=0pt, yshift=0pt]title.north west)
-                                --([xshift=0pt, yshift=0pt]title.north east)
-                                --([xshift=0pt, yshift=\@tcb@interior@border@linewidth]title.south east);,
-                	
+                        \iftoggle{tcbtitle@included}
+                        {
+                                \draw[draw=#3, rounded corners=\@tcb@interior@corner@radius, line width=\@tcb@doubleinner@border@linewidth]
+                                ([xshift=-\@tcb@titlerule@xshift, yshift=-\@tcb@titlerule@yshift]title.south west)
+                                --([xshift=\@tcb@titlerule@xshift, yshift=-\@tcb@titlerule@yshift]title.south east);
+                        }{}%
                 },
                 finish=
                 {
-                        \IfStrEq{\@the@title}{title}
+                        \iftoggle{tcbtitle@included}
                         {\draw[draw=#3, rounded corners=\@tcb@interior@corner@radius, double=#2-coldoubleline,
                                 double distance=\@interior@double@distance, line width=\@tcb@doubleinner@border@linewidth]
                                 ([xshift=-\@tcb@titlerule@xshift, yshift=-\@tcb@titlerule@yshift]title.south west)
                                 --([xshift=\@tcb@titlerule@xshift, yshift=-\@tcb@titlerule@yshift]title.south east);
                         }{}
-                }            
+                }
         },
         tcbdoubleinnertitleborder/.default={\@tcb@default@boxrule@linewidth}{current}{current-colframeborder},
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%      %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Multipurpose Environment Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -821,8 +854,6 @@ graphs/every graph/.style={edges=rounded corners},
                 },
                 tcbborder={#1}{#2}{#3}{#4},
                 tcbtitleborder={#1}{angledbox}{#3}{#4},
-                %interior style={top color=blue!3!white, middle color=blue!10!white, bottom color=blue!19!white}
-                %biColorInteriorStyle,
                 biColorInteriorStyle={\@interior@border@linewidth}{#4}{#5},
                 top=1.0mm, bottom=-0.0mm, before skip=0mm, after skip=4mm, after=\par\bigskip\vspace{10mm},
                 pad before break*=1.5mm, enlarge top at break by=0.0mm, enlarge bottom at break by=-1.0mm
@@ -847,17 +878,31 @@ graphs/every graph/.style={edges=rounded corners},
                 empty, no shadow, breakable, attach boxed title to top left,
                 width=\linewidth, @set@tcb@property@colors, topLeftSectionTitleStyle, pad at break*=0mm,
                 fontupper=\normalsize\normalfont, fontlower=\normalsize\normalfont, fonttitle=\Large\bfseries, toptitle=0mm,
-                boxsep=0pt, boxrule=2pt, arc=6pt, top=4pt, bottom=2mm, left=4mm, right=3mm,
-                before skip=0mm, before=\par, after=\par\bigskip, before upper=\par\smallskip
+                boxsep=0pt, boxrule=2pt, arc=\@tcb@corner@radius, top=4pt, bottom=2mm, left=4mm, right=3mm,
+                before=\par, after=\par, 
+                before upper=\par\medskip
         },
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%      %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Composite/Complete Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+        tcbSubsectionStyle/.style =
+        {
+                enhanced, colframe=white, colback=white, colbacktitle=white, before skip=-1mm, after skip=3mm,
+                top=0mm, bottom=1.5mm, left=1.5mm, right=2.5mm, width=1.05\wd\@frontbackmatter@savebox,
+                interior code=
+                {%
+                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south east) -- +(-0.5cm,0pt);%
+                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south east) -- +(0pt,0.5cm);%
+                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0.5cm,0pt);%
+                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0pt,0.5cm);%
+                }
+        },
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%      %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Composite/Complete Styles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
         definitionStyle/.style =
         {
                 @BASIC@STYLE,
                 @set@tcb@property@colors=definitionColorset, boxsep=3mm, before skip=3mm, after skip=0mm,
-                before title=\bfseries, arc=6pt, boxrule=5pt, toptitle=-0.25mm, bottomtitle=-1mm,
+                before title=\bfseries, arc=\@tcb@corner@radius, boxrule=5pt, toptitle=-0.25mm, bottomtitle=-1mm,
                 lefttitle=2mm, top=3mm, fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
                 subtitleStyle=definitionColorset, titleSepCode, frameCodeSetup=definitionColorset,
                 interiorMultilineStyle
@@ -869,7 +914,7 @@ graphs/every graph/.style={edges=rounded corners},
                 arc=\@tcb@frame@corner@radius, boxrule=2pt, boxsep=3mm,
                 fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{current-colboxshadow},
                 tcbborder={#1}{#2}{#3}{#4},
-        	tcbtitleborder={#1}{#2}{#3}{#4},
+                tcbtitleborder={#1}{#2}{#3}{#4},
                 biColorInteriorStyle={\@tcb@boxrule@linewidth}{#4}{\BYYgradientbackground},
                 top=1.0mm, bottom=-0.0mm, before skip=0mm, after=\par\bigskip\bigskip,
                 pad before break*=1.5mm, enlarge top at break by=0.0mm, enlarge bottom at break by=-1.0mm
@@ -888,29 +933,29 @@ graphs/every graph/.style={edges=rounded corners},
         {
                 enhanced, @set@tcb@property@colors=IBPColorset, hbox, every float=\centering,
                 halign=center, valign=center, box align=center,
+                code=
+                {%
+                        \setlength\@tcbIBP@left@distance%
+                                {\dimexpr 2#1 + 2\@tcb@single@border@linewidth + 2\@tcb@half@boxrule@linewidth\relax}%
+                },
                 fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{IBPColorset-colboxshadow},
-                fonttitle=\@tcb@title@font, arc=6pt, boxrule=#1, boxsep=2pt,
+                fonttitle=\@tcb@title@font, arc=\@tcb@corner@radius, boxrule=#1, boxsep=2pt,
                 top=-0.5mm, bottom=1.5mm, toptitle=1.0mm, bottomtitle=1.0mm, lefttitle=4.0mm, righttitle=2.5mm,
                 tcbborder={#1}{#2}{#3}{#4}, extrude right by=#1,
                 tcbtitleborder={#1}{#2}{#3}{#4},
-                interiorStyle={\@tcb@half@boxrule@linewidth}{#4},
-                code=
-                {%
-                	\setlength\@tcbIBP@left@distance%
-                		{\dimexpr 2#1 + 2\@tcb@single@border@linewidth + 2\@tcb@half@boxrule@linewidth\relax}%
-                },
+                interiorStyle={\@tcb@half@boxrule@linewidth}{#4}
         },
         IBPStyle/.default={\@tcb@default@boxrule@linewidth}{single}{IBPColorset-colframeborder}{IBPColorset-colinteriorborder},
 %------------------------------------------------------------------------------------------------------------------------------%
         indexStyle/.style =
         {%
-               	@set@tcb@property@colors=tcbIndexColorset, boxrule=3pt, boxsep=2mm, top=-0mm, left=2mm,
+                @set@tcb@property@colors=tcbIndexColorset, boxrule=3pt, boxsep=2mm, top=-0mm, left=2mm,
                 toptitle=0mm, bottomtitle=0mm, lefttitle=3mm, left skip=0mm, after skip=1mm
         },
 %------------------------------------------------------------------------------------------------------------------------------%
         MatlabStyle/.style n args={4}%=
         {
-                enhanced, breakable, @set@tcb@property@colors=MatlabColorset, fonttitle=\@tcb@title@font, arc=6pt,
+                enhanced, breakable, @set@tcb@property@colors=MatlabColorset, fonttitle=\@tcb@title@font, arc=\@tcb@corner@radius,
                 width=\@Matlab@style@width, boxsep=2pt, left=\@Matlab@style@left@frame@skip, right=2mm, top=1.0mm, bottom=1.0mm,
                 lifted shadow={1.5mm}{-2.75mm}{3.25mm}{0.1mm}{MatlabColorset-colboxshadow},
                 tcbborder={#1}{#2}{#3}{#4},
@@ -926,41 +971,61 @@ graphs/every graph/.style={edges=rounded corners},
                 boxrule=3pt, boxsep=2mm, top=1.5mm, left=2mm, left skip=0mm, toptitle=0mm, bottomtitle=0mm, lefttitle=3mm
         },
 %------------------------------------------------------------------------------------------------------------------------------%
-        pldStyle/.style=
+        PLDStyle/.style n args={4}%=
         {
-                @DEFAULT@STYLE, @set@tcb@property@colors=pldColorset, breakable=false,
-                fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
-                before title=\bfseries, lefttitle=2mm, toptitle=0.25mm, bottomtitle=-3mm,
-                arc=6pt, boxrule=10pt, boxsep=1mm, left=2mm, right=3mm, top=1mm, bottom=1mm,
-                before skip=3mm, after skip=0mm, after=\par\smallskip, toprule=6pt, bottomrule=7pt,
-                #1, frameCodeSetup=pldColorset, interiorMultilineStyle%=pldColorset
-                %titleSepCode=pldColorset / filledTitleSepCode=pldColorset (pldTitledStyle)
+                empty, enhanced, breakable=false, fonttitle=\tcbX@title@fontdef, @set@tcb@property@colors={current},
+                every float=\centering, halign upper=flush center, halign lower=flush center, halign title=flush left,
+                %adjusted title=flush left,
+                valign=center, box align=center, center, %tcbox width=forced center,
+                arc=\@tcb@frame@corner@radius, boxrule=2pt,
+                fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{current-colboxshadow},
+                tcbborder={\@tcb@default@boxrule@linewidth}{doubleinner}{current-colframeborder}{current-colinteriorborder},
+                tcbtitleborder={\@tcb@default@boxrule@linewidth}{doubleinner}{current-colframeborder}{current-colinteriorborder},
+                biColorInteriorStyle={\@tcb@boxrule@linewidth}{current-colinteriorborder}{\BYYgradientbackground},
+                segmentation style=
+                {%
+                        draw=pldColorset-colframe, solid,
+                        line width=\@tcb@doubleinner@border@linewidth,
+                        double=pldColorset-colframeborder,
+                        double distance=2\@tcb@doubleinner@border@linewidth+\@interior@double@distance
+                },
+                finish=
+                {
+                        \if@include@conclusion@
+                                \draw
+                                [
+                                        draw=pldColorset-coldoubleline,
+                                        line width=\@interior@double@distance,
+                                        rounded corners=\@tcb@interior@corner@radius,
+                                ]
+                                ([xshift=-\@tcb@titlerule@xshift, yshift=-0pt]segmentation.west)
+                                --([xshift=\@tcb@titlerule@xshift, yshift=-0pt]segmentation.east);
+                        \fi
+                },
+                %fontupper=\normalsize\bfseries,
+                %fonttitle=\tcbX@title@font,%\large\bfseries,
+                before title=\bfmseries, lefttitle=2.0mm, toptitle=2.5mm, bottomtitle=2.0mm
         },
+        PLDStyle/.default={\@tcb@default@boxrule@linewidth}{doubleinner}{current-colframeborder}{current-colinteriorborder},
 %------------------------------------------------------------------------------------------------------------------------------%
-        pldTitledStyle/.style =
+        PLDcontentStyle/.style =
         {
-                @DEFAULT@STYLE, @set@tcb@property@colors=pldColorset,
-                boxsep=1mm, left=2mm, right=3mm, top=1mm, bottom=1mm, %before=\par,
-                before skip= 3mm, after skip =0mm, before title=\bfseries, arc=6pt, boxrule=10pt, toprule= 6pt, bottomrule= 7pt,
-                lefttitle = 2mm, toptitle=1.75mm,  bottomtitle=-2mm,
-                fontupper=\normalsize\bfseries, fonttitle=\large\bfseries,
-                after =\par\smallskip, breakable=false, titleSepCode, frameCodeSetup, interiorMultilineStyle
-        },
-%------------------------------------------------------------------------------------------------------------------------------%
-        pldStyle on Layer 2/.style =
-        {
-                reset, @DEFAULT@STYLE, @set@tcb@property@colors=pldColorset, before skip=-10mm,
-                after skip=0mm, boxsep=-1mm, boxrule=3pt, left=3mm, right=3mm, top=3mm, bottom=2mm,
-                title filled, righttitle=3mm, lefttitle=4mm, toptitle=2.5mm, bottomtitle=-2mm,
-                fontupper=\normalsize\bfseries, fontlower=\bfseries, fonttitle=\bfseries
+                empty, enhanced, @set@tcb@property@colors=pldColorset, breakable=false, every float=\centering, box align=center,
+                halign=center, halign upper=flush center, halign lower=flush center, valign=center, center, %tcbox width=forced center,
+                boxsep=2mm, %left=0mm, right=0mm,
+                %title filled, righttitle=3mm, lefttitle=4mm, toptitle=2.5mm, bottomtitle=-2mm,
+                tcbborder={\@tcb@default@boxrule@linewidth}{single}{current-colframeborder}{current-colinteriorborder},%current-colinteriorborder
+                tcbtitleborder={\@tcb@default@boxrule@linewidth}{single}{current-colframeborder}{current-colinteriorborder},
+                interiorStyle={\@tcb@interior@border@linewidth}{current-colinteriorborder},
+                fonttitle=\tcbX@title@fontdef,fontupper=\LARGE\bfmseries, fontlower=\LARGE\bfmseries%, fonttitle=\bfmseries
         },
 %------------------------------------------------------------------------------------------------------------------------------%
         problemStyle/.style =
         {
                 reset, @DEFAULT@STYLE, @set@tcb@property@colors=problemColorset,
                 width=\linewidth, after skip=1mm, before skip=1mm, no shadow,
-                boxrule=2pt, boxsep=2pt, arc=6pt, fontupper=\fontsize{11}{\baselinestretch}\bfseries,
-                before=\par\smallskip, after=\par\smallskip,
+                boxrule=2pt, boxsep=2pt, arc=\@tcb@corner@radius, fontupper=\fontsize{11}{\baselinestretch}\bfseries,
+                before=\par\smallskip, after=\par,
                 top=2mm, bottom=2mm, left=2mm, right=2mm, before skip=0mm
         },
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -969,7 +1034,7 @@ graphs/every graph/.style={edges=rounded corners},
                 reset, enhanced, @set@tcb@property@colors=tcbbashboxColorset, width=\@terminal@style@width,
                 fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.2mm}{tcbbashboxColorset-colboxshadow},
                 fontupper=\ttfamily, fontlower=\upshape, fonttitle=\@tcb@title@font,
-                arc=6pt, boxrule=#1, boxsep=#1, bottom=0.5mm, before lower=\vspace{-#1},
+                arc=\@tcb@corner@radius, boxrule=#1, boxsep=#1, bottom=0.5mm, before lower=\vspace{-#1},
                 left=0mm, leftupper=0.0mm, leftlower=1.0mm, right=0mm, rightlower=1.0mm, rightupper=0.0mm,
                 valign=top, valign upper=top, valign lower=top,
                 terminalSegmentationCode={#1}{#2}{tcbbashboxColorset},
@@ -991,12 +1056,13 @@ graphs/every graph/.style={edges=rounded corners},
                 empty, enhanced, unbreakable, segmentation empty, every float=\centering, hyphenationfix,
                 @set@tcb@property@colors=tcbdiagramColorset, box align=center, valign=top, center title,
                 before upper app=\centering, fonttitle=\@tcb@title@font, fontupper=\@tcb@node@font, fontlower=\@tcb@node@font,
-                arc=6pt, boxrule=#1, boxsep=2pt,top=3mm, bottom=3.0mm, before=\par\medskip, after=\par\medskip,
+                arc=\@tcb@corner@radius, boxrule=#1, boxsep=2pt,top=3mm, bottom=3.0mm, %before=\par, after=\par\medskip,
                 left skip=0mm, right skip=0mm, lefttitle=2mm, righttitle=2mm, toptitle=1.5mm, bottomtitle=0.5mm,
                 fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{tcbdiagramColorset-colboxshadow},
                 interiorStyle={\@interior@border@linewidth}{tcbdiagramColorset-colinteriorborder},
                 tcbborder={#1}{#2}{#3}{#4},
-                tcbtitleborder={#1}{#2}{#3}{#4}
+                tcbtitleborder={#1}{#2}{#3}{#4},
+                before skip=1mm,after skip=1mm
         },
         tcbdiagramStyle/.default={\@tcb@default@boxrule@linewidth}{single}{tcbdiagramColorset-colframeborder}{tcbdiagramColorset-colinteriorborder},
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -1027,16 +1093,17 @@ graphs/every graph/.style={edges=rounded corners},
                 empty, enhanced, breakable, segmentation empty, every float=\centering, hyphenationfix,
                 @set@tcb@property@colors=#1,
                 drop fuzzy shadow=#1-colboxshadow,
-                boxrule=2pt, boxsep=2pt, arc=6pt, top=2mm, bottom=2mm, left=2mm, right=2mm,
-                before=\par\smallskip, after=\par\smallskip, fonttitle=\large\bfseries,
-                fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries
+                boxrule=2pt, boxsep=2pt, arc=\@tcb@corner@radius, top=2mm, left skip=2pt,bottom=2mm, left=2mm, right=2mm,
+                %before=\par\bigskip, after=\par\bigskip,
+                %before skip=5mm, after skip=5mm,
+                fonttitle=\large\bfseries, fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries
         },
         tcbequationStyle/.default={current},
 %------------------------------------------------------------------------------------------------------------------------------%
         tcbeqnlistboxStyle/.style =
         {
                 @DEFAULT@STYLE, box align=center, valign=top, @set@tcb@property@colors, fontupper=\@tcb@solutionVerb@font,
-		top=2mm, toptitle=1.0mm, bottomtitle=1mm, hbox, after=\par\medskip, before = \vspace{-5mm},
+                top=2mm, toptitle=1.0mm, bottomtitle=1mm, hbox, after=\par\medskip, before = \vspace{-5mm},
                 drop fuzzy shadow=current-colboxshadow
         },
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -1046,7 +1113,7 @@ graphs/every graph/.style={edges=rounded corners},
                 box align=center, halign=center, valign=top, center title, @set@tcb@property@colors=tcbfigboxColorset,
                 fuzzy shadow={1.25mm}{-1.5mm}{-0.5mm}{0.3mm}{tcbfigboxColorset-colboxshadow},
                 fonttitle=\@tcb@title@font, fontupper=\@tcb@text@font, fontlower=\@tcb@text@font,
-                arc=6pt, top=2mm, bottom=1.0mm, left=0mm, left skip=0pt,
+                arc=\@tcb@corner@radius, top=2mm, bottom=1.0mm, left=0mm, left skip=0pt,
                 before=\par, after=\par\medskip,
                 lefttitle=2mm, righttitle=2mm, toptitle=1.5mm, bottomtitle=0.5mm,
                 tcbborder={#1}{#2}{#3}{#4},
@@ -1058,7 +1125,7 @@ graphs/every graph/.style={edges=rounded corners},
         tcbfigureStyle/.style n args={4}%=
         {
                 reset, @DEFAULT@STYLE, enhanced, @set@tcb@property@colors=tcbfigureColorset,
-                title filled, fonttitle=\bfseries\sffamily, toptitle=1mm, bottomtitle=0.5mm, before skip=0mm, after skip=0mm,
+                title filled, fonttitle=\bfseries\sffamily, toptitle=0mm, bottomtitle=0.5mm, before skip=0mm, after skip=0mm,
                 top=2mm, bottom=3mm, left=1mm, right=1mm, left skip=0mm, boxrule=#1, boxsep=1.5mm,
                 tcbborder={#1}{#2}{#3}{#4},
                 tcbtitleborder={#1}{#2}{#3}{#4},
@@ -1068,27 +1135,24 @@ graphs/every graph/.style={edges=rounded corners},
 %------------------------------------------------------------------------------------------------------------------------------%
         tcbfuncdefboxStyle/.style =
         {
-                enhanced, breakable, @set@tcb@property@colors=#1,
-                titleSepCode, frameCodeSetup, interiorStyle,
-                arc=6pt, boxrule=5pt,
-                before skip=3mm, after skip=-1mm, top=-8.0mm, bottom=-2.0mm, left=4.0mm,
+                enhanced, breakable, @set@tcb@property@colors=#1, titleSepCode, frameCodeSetup, interiorStyle,
+                arc=\@tcb@corner@radius, boxrule=5pt, width=\linewidth, before skip=3mm, after skip=-1mm, top=-8.0mm, bottom=-2.0mm, left=4.0mm,
                 before title=\bfseries, toptitle=-0.5mm, bottomtitle=-1.75mm, lefttitle=1mm,
-                fontupper=\normalsize\bfseries, fonttitle=\Large\bfseries, after=\par\smallskip,
+                fontupper=\normalsize\bfseries, fonttitle=\Large\bfseries, before=\par\smallskip, after=\par\smallskip
         },
         tcbfuncdefboxStyle/.default={current},
 %------------------------------------------------------------------------------------------------------------------------------%
         tcbfuncdetailboxStyle/.style=
         {
-                @BASIC@STYLE, breakable=unlimited, @set@tcb@property@colors, colframe=black,
-                arc=6pt, boxrule=5pt, boxsep=3mm, before skip=0mm, after skip=2.25mm,
-                top=-7mm, bottom=-1mm, before=\vspace{0mm}, pad after break=1.0mm, pad at break=1.0mm, pad before break*=1.5mm, 
-                %extras first ={pad before break*=2.5mm, pad after break=2.0mm, enlarge top at break by=2.0mm},
-                %extras middle={pad before break=2.5mm, pad after break=-2.0mm, enlarge top at break by=2.0mm},
-                %extras last={pad before break*=2.5mm, pad after break=-6.0mm},
+                @BASIC@STYLE, no shadow, breakable=unlimited, @set@tcb@property@colors=#1, colframe=black, width=\linewidth,
+                arc=\@tcb@corner@radius, boxrule=5pt, boxsep=3mm, before skip=0mm, after skip=2.25mm, before=\vspace{0mm},
+                top=-7mm, bottom=-2.5mm, pad after break=1.0mm, pad at break=1.0mm, pad before break*=2.5mm,
                 toptitle=2.25mm,  bottomtitle=1mm, lefttitle=0mm, before title=\bfseries,
-                fontupper=\normalsize\bfseries, fonttitle=\LARGE\bfseries,
-                attachBoxedTitleTopCenter, topCenterBoxedTitleStyle, interiorMultilineStyle
+                drop fuzzy shadow=current-colboxshadow,
+                fontupper=\normalsize\bfseries, fonttitle=\LARGE\bfseries, before=\par\smallskip, after=\par\bigskip,
+                attachBoxedTitleTopCenter, topCenterBoxedTitleStyle, interiorMultilineStyle, left=-10mm, lefttitle=4mm
         },
+        tcbfuncdetailboxStyle/.default={current},
 %------------------------------------------------------------------------------------------------------------------------------%
         tcbfunctionenvStyle/.style=
         {
@@ -1122,7 +1186,7 @@ graphs/every graph/.style={edges=rounded corners},
                 colback=tcblistingsCaptionColorset-colback, colframe=tcblistingsCaptionColorset-colframe,
                 coltext=tcblistingsCaptionColorset-coltext,
                 before skip=1mm, after skip=-8.5mm, left skip=0mm, right skip=0mm,
-                boxsep=3pt, boxrule=2pt, arc=6pt, width=#1, before=\par\smallskip,
+                boxsep=3pt, boxrule=2pt, arc=\@tcb@corner@radius, width=#1, before=\par\smallskip,
                 left=2mm, right=3mm, top=0mm, bottom=0mm, fontupper=\normalsize\bfseries
         },
         tcblistingCaptionStyle/.default={\@tcblistings@captionwidth},
@@ -1132,24 +1196,11 @@ graphs/every graph/.style={edges=rounded corners},
                 enhanced, breakable, segmentation empty, every float=\centering, hbox,
                 @set@tcb@property@colors=tcbsolutionColorset,
                 lifted shadow={1.0mm}{-2.0mm}{2.5mm}{0.3mm}{tcbsolutionColorset-colboxshadow},
-                hyphenationfix, arc=6pt, boxrule=2pt, boxsep=2pt, box align=center, valign=top,
+                hyphenationfix, arc=\@tcb@corner@radius, boxrule=2pt, boxsep=2pt, box align=center, valign=top,
                 fonttitle=\large\bfseries, fontupper=\normalsize\bfseries, fontlower=\normalsize\bfseries,
                 before=\par\medskip, after=\par\bigskip
         },
-%------------------------------------------------------------------------------------------------------------------------------%
-        tcbSubsectionStyle/.style =
-        {
-                enhanced, colframe=white, colback=white, colbacktitle=white, before skip=-1mm, after skip=3mm,
-                top=0mm, bottom=1.5mm, left=1.5mm, right=2.5mm, width=1.05\wd\@frontbackmatter@savebox@,
-                interior code=
-                {%
-                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south east) -- +(-0.5cm,0pt);%
-                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south east) -- +(0pt,0.5cm);%
-                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0.5cm,0pt);%
-                        \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0pt,0.5cm);%
-                }
-        }
-}        
+}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
 %*********************************************** End of 'my-styles.sty' package ***********************************************%

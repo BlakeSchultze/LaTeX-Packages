@@ -33,6 +33,7 @@
     {./Images/}
     {C:/Users/Blake/Documents/Education/Baylor/Logos/}
     {C:/Users/Blake/Documents/LaTeX/}
+    {C:/Users/Blake/Documents/LaTeX/ImageCollection/}
     {C:/Users/Blake/Documents/MATLAB/}
     {C:/Users/Blake/Documents/LaTeX/Testing/}
     {C:/Users/Blake/Documents/LaTeX/Testing/Test_Images/}
@@ -114,36 +115,66 @@
 %----------------------------------------------------- Hooks and command patches ----------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %\bookmark[dest=mypage]{go to my page}
-\AddEverypageHook{\hypertarget{\@page@n@target@name\thepage}{}}
-%------------------------------------------------------------------------------------------------------------------------------%
-\AtEndPreamble{\ifmylatex@frontbackmatter\makeFrontbackMatter\fi}
-%------------------------------------------------------------------------------------------------------------------------------%
-\AfterPreamble
-{
-        \@config@countinchap@counters
-	\@config@cftX@counterwithout@list
+\AddEverypageHook%
+{%
+	\hypertarget{\@page@n@target@name\thepage}{}%
+	\resetcounter{@major@sections@this@page}%                                 
 }
 %------------------------------------------------------------------------------------------------------------------------------%
+\AtEndPreamble
+{
+        \ifmylatex@frontbackmatter\makeFrontbackMatter\fi
+        \@format@counters
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\AfterPreamble
+{%
+        \cftX@sectioning@settings*!>{Part}
+        \cftX@sectioning@settings*!>{part}
+        \cftX@sectioning@settings*!>{Topic}
+        \cftX@sectioning@settings>{Chapter}%
+        \cftX@sectioning@settings>{chap}
+        \cftX@sectioning@settings{Section}%
+        \cftX@sectioning@settings{Subsection}%
+        \cftX@sectioning@settings*!>{backmatter}
+        \@connect@cft@lists{chap}{Chapter}
+        \@connect@cft@lists{sec}{Section}
+        \@connect@cft@lists{subsec}{Subsection}
+        \renewcommand{\cftpartpagefont}{\cftPartpagefont}
+        \@config@countinchap@counters
+        \@config@cftX@counterwithout@list
+        \cftZ@listof@settings
+        %\preto{\part}{\bookmarksetupnext{level=0}}%
+        \preto{\chapter}{\bookmarksetupnext{level=2}}%
+        \preto{\section}{\bookmarksetupnext{level=3}}%
+}
 \AtBeginDocument
 {%
-        \pagenumbering{arabic}%
+        \pagenumbering{\@doc@pagenumbering}%
+        \ULsettings[init=true]%
+        \@set@current@tcb@colors{default}%
+        \SetDefaultFont
+	%\renewcommand{\baselinestretch}{1.05}
         \input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
 }                                                        %------------------------------------------------------------------------------------------------------------------------------%
 \AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
 %------------------------------------------------------------------------------------------------------------------------------%
 \AfterEndEnvironment{coverpage}
 {%
-	\ifmylatex@toc\addTOC\fi%
-	\ifmylatex@frontbackmatter\addFrontbackMatter\fi%
+        \ifmylatex@toc\addTOC\fi%
+        \ifmylatex@frontbackmatter
+                \addFrontbackMatter
+        \fi%
+        \@doc@default@font%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%\BeforeClosingMainAux
-%{%
-%        %\ifmylatex@toc\addTOC\fi%
-%        %\ifmylatex@frontbackmatter\addFrontbackMatter\fi%
-%}
-%\etexcmds@newif{expanded}
-%------------------------------------------------------------------------------------------------------------------------------%
+\ExplSyntaxOn
+\NewDocumentCommand{\seq@myloop}{ m }
+ {
+  \seq_set_split:Nnn \l_tmpa_seq { , } { #1 }
+  \seq_map_inline:Nn \l_tmpa_seq { \current@item {##1} }
+ }
+\ExplSyntaxOff
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
 %************************************************ Plain TeX macro definitions *************************************************%
@@ -174,33 +205,23 @@
    \expandafter\gdef\csname#2#1\endcsname{\textit{#1}&#2&#3&#4\cr\relax}
    \lst@BubbleSort{\alist}
 }
-\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}	%Print code executed after environment #1 closes
+\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}     %Print code executed after environment #1 closes
 %------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------- Counter Increment/Print Commands ----------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@counter@print#1#2{#1{#2}\relax}                                   % Generate string from counter value
 \def\@increment@tcbfigure@counter#1{\addtocounter{@num@tcbfigures}{1}}  % Used to keep track of # of images in each row
-\def\@print@before@increment#1#2{#1{#2}\addtocounter{#2}{1}}            % Print/increment value of counter #2 using format #1 (e.g. \alph)
+\def\@print@before@increment#1#2{#1{#2}\addtocounter{#2}{1}}            % Print/increment counter #2 w/ format #1 (e.g. \alph)
 \def\@managed@counters{figure,table,lstlisting}
 \def\@countinchap@counters{figure,table,lstlisting}
-\DeclareDocumentCommand{\@counterwithinout@counter@list}{s m}
-{
-        \IfBooleanTF{#1}
-        {
-                \@for\@current@counter:=#2\do%
-                {\expandafter\ifdefined\csname\@current@counter\endcsname\expandafter\counterwithout\expandafter{\@current@counter}{chapter}\fi}
-        }
-        {     	\@for\@current@counter:=#2\do%
-                {\expandafter\ifdefined\csname\@current@counter\endcsname\expandafter\counterwithin\expandafter{\@current@counter}{chapter}\fi}
-        }
-}
+%\newlist\mylistB
 \def\@config@countinchap@counters%
 {
-	\ifmylatex@countinchaps%
-		\@counterwithinout@counter@list{\@managed@counters}%
+        \ifmylatex@countinchaps%
+                \@counterwithinout@counter@list{\@managed@counters}%
         \else%
-        	\@counterwithinout@counter@list*{\@managed@counters}%
-	\fi%
+                \@counterwithinout@counter@list*{\@managed@counters}%
+        \fi%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -211,6 +232,7 @@
 \def\tinyvdots{\vstretch{0.65}{\ensuremath{\vdots}}}%\vstretch{0.65}{}}
 \def\textbfendash{\textbf{\textendash}}
 \def\textmathdash{\ensuremath{-}}
+\def\tcbcodehline<#1>{\midrule\midrule\midrule\\[#1]}
 \def\usernamelabel{$<$\emph{user name}$>$}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Spacing/Skip/Separation Lengths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -226,13 +248,40 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------- Front/back Matter Contexts -------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
+\def\@tcb@arraystretch{1.5}
+\def\@tcb@baselinestretch{1.75}
+\def\@tcb@rounded@arclength{180}
+\def\@major@section@heading@rounded@arclength{180}
+\def\@major@section@heading@anchor{east}%
+\def\@Part@heading@anchor{east}
+\def\@Topic@heading@anchor{west}
+\def\@Chapter@heading@anchor{west}
 \def\@nomecl@baselinestretch{0.0}                               % Sets \baselinestretch for abbreviation entries
-\def\@glsl@baselinestretch{1.5}                                 % Sets \baselinestretch for acronym/glossary entries and multiline descriptions
-\def\@idx@baselinestretch{0.0}                                  % Sets \baselinestretch for index entries and multiline descriptions
-\def\@tcbfigbox@figure@sep{\hskip1em\relax}
-\def\@tcb@arraystretch{1.8}
-\def\@tcb@baselinestretch{3.75}
-\def\@Chapter@heading@rounded@arclength{180}
+%
+\xdef\@doc@baselinestretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@doc@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\gdef\@doc@arrayrulewidth{\@ul@thickness}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@IBP@baselinestretch{1.8}               % Sets \baselinestretch for abbreviation entries
+\xdef\@IBP@arraystretch{1.5}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@IBP@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@PLD@baselinestretch{0.85}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@PLD@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\gdef\@PLD@arrayrulewidth{\@ul@thickness}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@problem@baselinestretch{1.2}
+\xdef\@problem@arraystretch{1.5}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@problem@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@solution@baselinestretch{1.5}
+\xdef\@solution@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@solution@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@figbox@baselinestretch{1.5}
+\xdef\@figbox@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@figbox@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@listing@baselinestretch{1.5}
+\xdef\@listing@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@listing@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@code@baselinestretch{1.5}
+\xdef\@code@arraystretch{1.2}                               % Sets \baselinestretch for abbreviation entries
+\xdef\@code@arrayrulewidth{0.75pt}                               % Sets \baselinestretch for abbreviation entries
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Coverpage/Header Images/Formats/Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -251,6 +300,8 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------- Generic/Universal Contexts -------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
+\def\textsize{\dimexpr\f@size pt\relax}
+\edef\currentfont{\the\font}
 \def\textbfit#1{\textbf{\textit{#1}}}
 \def\textbfsf#1{\textsf{\textbf{#1}}}
 \def\textbfmit#1{\textbfm{\textit{#1}}}
@@ -260,8 +311,26 @@
 \def\bfroman@fmt{\textbf{(\roman*)}}
 \def\stdemph#1{\normalem{\emph{#1}}}                                            %
 \def\fakebold#1{\setbox0=\hbox{$#1$}#1\kern-\wd0\kern\bshft#1\kern-\wd0\kern\bshft#1}
-\def\textsize{\dimexpr\f@size pt\relax}
-\def\@reset@ul@settings{\setul{0.75pt}{0.75pt}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@rule@fontsize{11}
+\def\@ul@default@thickness{0.75pt}
+\def\@ul@default@sep{0.75pt}
+\def\@ul@default@depth{2.0pt}
+\def\@ul@default@color{black}
+\def\@tikzUL@default@thickness{0.75pt}
+\def\@tikzUL@default@sep{0.75pt}
+\def\@tikzUL@default@depth{1.0pt}
+\def\@tikzUL@default@color{black}
+\def\@tikzUL@color{\@tikzUL@default@color}
+\def\@pld@ul@thickness{0.75pt}
+\def\@pld@ul@depth{0.0pt}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\fontcolor#1%
+{%
+        \def\@curr@font@color{#1}%
+        \color{#1}%
+}
+\def\@use@curr@font@color{\color{\@curr@font@color}}%
 \def\primarycolor{white}
 \def\secondarycolor{black}
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -279,7 +348,7 @@
 \def\@frontbackmatter@group@label@font{\midlarge\sffamily\bfseries}%\midlarge\fontsize{10.95}{\baselinestretch}\bfseries
 \def\@frontbackmatter@navhyperlink@font{\navhyperlinkfont}
 \def\@frontbackmatter@entry@text@sep{$-$\space\space}
-\def\@Chapter@heading@font{\LARGE\sffamily\bfseries}%\color{chapterHeading-coltitle}
+\def\@major@section@heading@font{\LARGE\sffamily\bfseries}%\fontcolor{majorSectionHeading-coltitle}
 \def\@nom@abbreviation@font{\sffamily\bfmseries}
 \def\@nom@long@name@font{\normalsize\normalfont}
 \def\@acronym@font#1{\textnormal{#1}}
@@ -297,10 +366,13 @@
 \def\@tcb@functions@header@font{\usefont{T1}{cmr}{bx}{n}\fontsize{12}{5.0mm}\selectfont}
 \def\@tcb@functions@text@font{\usefont{T1}{cmr}{m}{n}\fontsize{12}{5.0mm}\selectfont}
 \def\@tcb@functions@arg@font{\usefont{T1}{cmr}{m}{n}\fontsize{12}{\baselinestretch}\selectfont}
-%\fontsize{12}{5.0mm}
-%\fontsize{13}{4.5mm}\selectfont%
-%\fontsize{12}{\baselinestretch}
-%\large
+\def\@PLD@math@font@cmdlist{LARGE,large,Large,normalsize}
+\def\@PLD@math@font@cmdlist@parse%
+{%
+        LARGE%
+}
+\def\@PLD@math@fontsize{large}
+\def\@PLD@math@font{\@nameuse{\@PLD@math@fontsize}}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Front/Back Matter List/TOC/Header/Caption Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -309,10 +381,10 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\TOCName{Table of Contents}
 \def\LOLName{List of Code Listings}
-\def\LODName{List of Function/Script Definitions}
+\def\LOFUNCSName{List of Function/Script Definitions}
 \def\LOTName{List of Tables}
 \def\LOFName{List of Figures}
-\def\LOPName{List of Problems}
+\def\LOPROBSName{List of Problems}
 \def\AbbreviationsName{List of Abbreviations}
 \def\AcronymsName{List of Acronyms}
 \def\SymbolsName{List of Symbols}
@@ -332,15 +404,20 @@
 \def\FigboxFigureName{Figure}
 \def\TableName{Table}
 \def\IBPtableName{IBP Table}
+\def\PLDtableName{PLD Table}
 \def\CodeListingName{Code Listing}
 \def\TerminalListingName{Terminal Listing}
 \def\MatlabListingName{Matlab Listing}
 \def\ProblemName{Problem}
 \def\FunctionDefName{Function Definition}
-\def\FunctionDetailName{Function Detail}
+\def\FunctionDetailName{Function Details}
 \def\ScriptDefName{Script Definition}
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\IBPtableLongName{Integration by Parts Table}
+\def\PLDtableLongName{Polynomial Long Division Table}
+\def\FunctionDefLongName{Function Definition}
+\def\FunctionDetailLongName{Function Details}
+\def\ScriptDefLongName{Script Definition}
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\DefinitionName{Definition}
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -355,7 +432,7 @@
 \def\@listof@symbols@toctitle{\SymbolsName}
 \def\@listof@acronyms@toctitle{\AcronymsName}
 \def\@listof@abbreviations@toctitle{\AbbreviationsName}                         % was \large
-\def\@listof@problems@toctitle{\LOPName}
+\def\@listof@problems@toctitle{\LOPROBSName}
 \def\@listof@listings@toctitle{\LOLName}                                        % The header name for the list of listings.
 %------------------------------------------------------------------------------------------------------------------------------%
 %----------------------------------------------- Front/Back Matter Header Names -----------------------------------------------%
@@ -368,8 +445,8 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %----------------------------------------------- Front/Back Matter Caption Names ----------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@tcblisting@terminal@caption@title{Terminal Listing}                               % The header name for the list of listings.
-\def\@tcblisting@Matlab@caption@title{Matlab Listing}                                   % Caption of listing float entry (minted)
+\def\@tcblisting@terminal@caption@title{\TerminalListingName}                       % The header name for the list of listings.
+\def\@tcblisting@Matlab@caption@title{\MatlabListingName}                           % Caption of listing float entry (minted)
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@stdlisting@caption@labelformat{stdlisting}                                   % Caption of listing float entry (minted)
 \def\@terminal@caption@labelformat{terminal}                                   % Caption of listing float entry (minted)
@@ -379,11 +456,19 @@
 \def\@tcblisting@caption@format{tcblisting}                                   % Caption of listing float entry (minted)
 \def\@terminal@caption@format{tcblisting}                                   % Caption of listing float entry (minted)
 %\edef\@Matlab@caption@format{tcblisting}                                   % Caption of listing float entry (minted)
-\newcommand\@Matlab@caption@format{tcblisting}
+\def\@Matlab@caption@format{tcblisting}
 %------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------------- CSV Lists ---------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%\def\cftZ@listof@members{lof,lol,lot,probs,funcs}
+%\gdef\cftZ@listof@members{}
+%\gdef\@listof@list{lof/probs,lot/lof,lol/lot,funcs/lol,probs/funcs}
+\def\cftX@sectioning@listentries{Part,Topic,Chapter,Section,Subsection}
 \def\@setlength@operation@names{quarter, half, threequarter, oneandhalf, oneandthreequarter, twice}
 \def\@setlength@operation@nameval@pairs{quarter/0.25, half/0.5, threequarter/0.75, oneandhalf/1.5, oneandthreequarter/1.75, twice/2.0}
 \def\@tcb@X@border@shifts{border, x, y}
+\gdef\@BKM@calling@cmd{}
+\gdef\cftX@BKM@title{}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------ Front/Back Matter Separators ------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -396,36 +481,17 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Reference/hyperlink/hyperlabel labels/names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\def\@page@one@target@name{FIRSTPAGE}
+\def\@doc@pagenumbering{arabic}
+\def\@coverpage@target@name{COVERPAGE}
+\def\@tocstart@target@name{TOC}
 \def\@page@n@target@name{PAGE}
-\def\@Chapter@link@name{chap-}
-\def\@Section@link@name{sec-}
-\def\@Subsection@link@name{subsec-}
-\def\@Topic@link@name{topic-}
-\def\@toc@link@label@prefix{toc-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@definition@label{Definition \the\value{@tcb@definition@counter}\relax: }
-\def\@theorem@label{Theorem \the\value{@tcb@theorem@counter}\relax: }
-\def\@corollary@label{Corollary \the\value{@tcb@corollary@counter}\relax: }
-\def\@equation@label{Equation \the\value{@tcb@equation@counter}\relax: }
-\def\@solution@label{Solution \the\value{@tcb@solution@counter}\relax: }
+\def\@page@one@target@name{FIRSTPAGE}
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@default@fig@ref@label{fig:fig\the\value{figure}}
 \def\@default@table@ref@label{tab\the\value{table}}
 \def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
 \def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
 \def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
-%\def\@terminal@listing@label{\bfseries\lstterminaltitle\ \arabic{@tcb@terminal@listing@counter}: }
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@index@style@base{my-index}
-\def\@glossary@style@base{my-glossary}
-\def\@acronym@style@base{my-acronyms}
-\def\@index@style@ext{mst}
-\def\@glossary@style@ext{ist}
-\def\@acronym@style@ext{ist}
-\edef\@index@style@file{\@index@style@base.\@index@style@ext}
-\edef\@glossary@style@file{\@glossary@style@base.\@glossary@style@ext}
-\edef\@acronym@style@file{\@acronym@style@base.\@acronym@style@ext}
 %------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Verbatim/Color/Shadow Box Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -436,9 +502,9 @@
 \def\begin@VerbBox{\aftergroup\end@VerbBox}                                             % \VerbBox
 \def\end@VerbBox{\the\do@VerbBox{\box\@fancybox}}                                       % \VerbBox
 \def\VerbBox#1{\do@VerbBox{#1}\afterassignment\begin@VerbBox\setbox\@fancybox=\hbox}    % \VerbBox
-\def\Sbox{\global\setbox\@Sbox\hbox\bgroup\ignorespaces}                                % \Sbox: equivalent to \sbox with global storage
-\def\beginsbox#1{\setbox#1\hbox\bgroup\ignorespaces}                                    % \Sbox: equivalent to \sbox with global storage
-\def\endsbox{\endSbox}                                                                  % \Sbox: equivalent to \sbox with global storage
+\def\Sbox{\global\setbox\@Sbox\hbox\bgroup\ignorespaces}                                % \Sbox: ~= \sbox with global storage
+\def\beginsbox#1{\setbox#1\hbox\bgroup\ignorespaces}                                    % \Sbox: ~= \sbox with global storage
+\def\endsbox{\endSbox}                                                                  % \Sbox: ~= \sbox with global storage
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\endSbox
 {%
@@ -475,487 +541,22 @@
         \advance\dimen@ .5\fboxrule\hbox
         {%
             \copy\@fancybox\kern.5\fboxrule\lower\shadowsize
-            \hbox{\color{BaylorGreenCMYK}\vrule\@height\ht\@fancybox\@depth\dp\@fancybox \@width\dimen@}%
+            \hbox{\fontcolor{BaylorGreenCMYK}\vrule\@height\ht\@fancybox\@depth\dp\@fancybox \@width\dimen@}%
         }
         \vskip\dimexpr-\dimen@+0.5\fboxrule\relax\moveright\shadowsize
-        \vbox{\color{BaylorGreenCMYK}\hrule\@width\wd\@fancybox\@height\dimen@}
+        \vbox{\fontcolor{BaylorGreenCMYK}\hrule\@width\wd\@fancybox\@height\dimen@}
     }
 }
 %******************************************************************************************************************************%
 %**************** Define commands used to define/initialize counters, dimensions, and length register variables ***************%
 %******************************************************************************************************************************%
-\DeclareDocumentCommand{\@init@counter}{m O{0}}{\newcounter{#1}\setcounter{#1}{#2}}
-\DeclareDocumentCommand{\@init@skip}{m m O{0pt} O{0pt}}{\expandafter\newskip\csname #1\endcsname\csname #1\endcsname=#2 plus #3 minus #4}
-\DeclareDocumentCommand{\@init@dimen}{m O{0pt}}{\expandafter\newdimen\csname #1\endcsname\expandafter\setlength\csname #1\endcsname{#2}}
-\DeclareDocumentCommand{\@init@length}{m O{0pt}}{\expandafter\newlength\csname #1\endcsname\expandafter\setlength\csname #1\endcsname{#2}}
-%%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@counter@without}{s t! m o}%
-{%\@cftX@namenums@parser{list entry}{name}[long name]{numberline prefix}(alt. numberline counter)/alt. title counter/
-        \IfValueTF{#4}%
-        {\def\@detaching@from{#4}}%
-        {%
-                \IfBooleanTF{#1}%
-                    {\def\@detaching@from{section}}%
-                    {\def\@detaching@from{chapter}}%
-        }%
-        \IfBooleanTF{#2}%
-                {\AtBeginDocument{\expandafter\counterwithout\expandafter{#3}{\@detaching@from}}}%
-                {\AfterPreamble{\expandafter\counterwithout\expandafter{#3}{\@detaching@from}}}%%
-}
+\DeclareDocumentCommand{\@process@multiarg}{m}{\@process@multiarg@command#1}
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@setlength@operations@by@name}{m m m}
+\DeclareDocumentCommand{\@process@multiarg@list}{m >{\SplitList{;}} m}
 {%
-        \IfStrEqCase{#1}%
-        {%
-                {quarter}{\setlength{\@csname{#2}}{\dimexpr#3 / 4\relax}}%
-                {half}{\setlength{\@csname{#2}}{\dimexpr#3 / 2\relax}}%
-                {threequarter}{\setlength{\@csname{#2}}{\dimexpr#3 * 3/4\relax}}%
-                {oneandhalf}{\setlength{\@csname{#2}}{\dimexpr#3 * 3/2\relax}}%
-                {oneandthreequarter}{\setlength{\@csname{#2}}{\dimexpr#3 * 7/4\relax}}%
-                {twice}{\setlength{\@csname{#2}}{\dimexpr#3 * 2\relax}}%
-        }[Unknown length operation name #1 given]%
-        %}[\errmessage{Unknown length operation name #2 given}]%
+        \def\@process@multiarg@command{#1}
+        \ProcessList{#2}{\@process@multiarg}%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@tcb@init@X@linewidths}{s m o g}
-{%
-        \@init@length{@tcb@#2@linewidth}%
-        \IfBooleanTF{#1}%
-        {%
-                \@init@length{@tcb@#2@xshift}%
-                \@init@length{@tcb@#2@yshift}%
-        }{}%
-        \IfValueTF{#3}{\@init@length{@tcb@default@#2@linewidth}[#3]}{}%
-        \IfValueTF{#4}%
-                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{#4}}%
-                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{\@setlength@operation@names}}%
-        \expandafter\newcommand\csname @tcb@set@#2@linewidths\endcsname[1]%
-        {%
-                \expandafter\setlength\csname @tcb@#2@linewidth\endcsname{##1}%
-                \@ifundefined{@tcb@quarter@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{quarter}{@tcb@quarter@#2@linewidth}{##1}}%
-                \@ifundefined{@tcb@half@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{half}{@tcb@half@#2@linewidth}{##1}}%
-                \@ifundefined{@tcb@threequarter@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{threequarter}{@tcb@threequarter@#2@linewidth}{##1}}%
-                \@ifundefined{@tcb@oneandhalf@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{oneandhalf}{@tcb@oneandhalf@#2@linewidth}{##1}}%
-                \@ifundefined{@tcb@oneandthreequarter@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{oneandthreequarter}{@tcb@oneandthreequarter@#2@linewidth}{##1}}%
-                \@ifundefined{@tcb@twice@#2@linewidth}{}%
-                        {\@setlength@operations@by@name{twice}{@tcb@twice@#2@linewidth}{##1}}%
-        }%
-        \IfValueTF{#3}{\csname @tcb@set@#2@linewidths\endcsname{#3}}{}%
-}
-%%------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\@tcb@set@X@border@shifts}{s m m}
-%{
-%       \expandafter\newcommand\csname @tcb@set@#2@border@xshift\endcsname[1]
-%               {\expandafter\setlength\csname @tcb@#2@xshift\endcsname{##1}}
-%       \expandafter\newcommand\csname @tcb@set@#2@border@yshift\endcsname[1]
-%                {\expandafter\setlength\csname @tcb@#2@yshift\endcsname{##1}}
-%        \expandafter\DeclareDocumentCommand\expandafter{\csname @tcb@set@#2@border@shifts\endcsname}{d<> d<>}%
-%       {
-%
-%       }
-%}
-%******************************************************************************************************************************%
-%************************************** Define/initialize/set internal register variables *************************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
-% Generic temporary/default registers used for macro development
-\newcounter{@macro@counter}                                  % Generic counter register for temporarily storing a counter value
-\newskip\@macro@skip                                         % Generic skip register for temporarily storing skip distance
-\newdimen\@macro@dimension                                    % Generic dimension register for temporarily storing dimension
-\newlength\@macro@length                                      % Generic length register for temporarily storing length dimension
-\newlength\@macro@width                                       % Generic length register for temporarily storing width dimension
-\newlength\@macro@height                                     % Generic length register for temporarily storing height dimension
-\newlength\@macro@depth                                        % Generic length register for temporarily storing depth distance
-\newlength\@macro@shift                                    % Generic length register for temporarily storing shift distance
-\newlength\@macro@total@width                                % Generic length register for temporarily storing width dimension
-\newlength\@macro@length@diff                                 % Generic length register for temporarily storing length dimension
-\newlength\@env@BODY@width                                 % Generic length register for temporarily storing width dimension
-%------------------------------------------------------------------------------------------------------------------------------%
-%--------------------------------------------------------- Counters -----------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%\setcounter{secnumdepth}{0}
-\@init@counter{@tcb@figbox@counter}[0]                                  % Number of a problem
-%\newcommand\the@tcb@figbox@counter{\arabic{@tcb@figbox@counter}}       % Number of a problem
-\@init@counter{@index@entry@counter}                                    % Counter used for glossary shifting of first group entry tcolorbox box
-\@init@counter{@chap@counter}                                           % Number of a problem
-\@init@counter{@count@problem}                                          % Number of a problem
-\@init@counter{@prob@counter}[1]                                        % Number of a problem
-\@init@counter{@prob@part@counter}[1]                                   % Part # of a problem for multipart problems (i.e., (i), (ii),...)
-\@init@counter{@subprob@counter}[1]                                     % Subproblem letter (i.e. (a), (b), (c), ...)
-\@init@counter{@eqn@list@counter}[1]                                    % Counter used in labeling equation list
-\@init@counter{@thm@list@counter}[1]                                    % Counter used in labeling parts of theorem
-\@init@counter{@tcb@eqn@list@counter}[1]                                % Counter used in 'tcbeqnlistbox' environment
-\@init@counter{@tcb@functions@counter}[1]                               % Counter used in 'tcbeqnlistbox' environment
-\@init@counter{@tcb@definition@counter}[0]                              % Counter used for numbering tcb definitionColorset
-\@init@counter{@tcb@theorem@counter}[0]                                 % Counter used for numbering tcb theoremColorset
-\@init@counter{@tcb@corollary@counter}[0]                               % Counter used for numbering tcb corollaries
-\@init@counter{@tcb@equation@counter}[0]                                % Counter used for numbering tcb equations
-\@init@counter{@tcb@solution@counter}[0]                                % Counter used for numbering tcb solutions
-%\@init@counter{@tcb@figbox@counter}[0]                                 % Number of a problem
-\@init@counter{@tcb@listings@counter}[0]                                % Number of tcblistings (e.g. Matlab, bash/terminal, etc.)
-%\@init@counter{@tcb@terminal@listing@counter}[1]                       % Counter used for numbering tcb solutions
-%\@init@counter{@bash@keywords@counter}[3]                              % Number of a problem
-%\@init@counter{@matlab@keywords@counter}[10]                           % Number of a problem
-%\@init@counter{@git@keywords@counter}[3]                               % Number of a problem
-\@init@counter{@pld@instances}                                          % # of polynomial division tcolorbox tables
-\DeclareTotalCounter{@count@problem}
-\newaliascnt{@num@tcbfigures}{@macro@counter}
-%\newaliascnt{Chapter}{chapter}
-%------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------- Skips/Glues ---------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@skip{@diag@IBP@arrows@leftXShift}{0.0em}
-\@init@skip{@diag@IBP@arrows@rightXShift}{-0.3em}
-\@init@skip{@diag@IBP@arrows@leftYShift}{0.4ex}
-\@init@skip{@diag@IBP@arrows@rightYShift}{0.6ex}
-\@init@skip{@horiz@IBP@arrows@leftXShift}{0.8em}
-\@init@skip{@horiz@IBP@arrows@rightXShift}{0.1em}
-\@init@skip{@horiz@IBP@arrows@yShift}{0.65ex}
-\@init@skip{@tcbIBP@column@sep}{2.5cm}
-\@init@skip{@tcbIBP@before@hrule@skip}{-0.3em}
-\@init@skip{@tcbIBP@after@hrule@skip}{-2.25em}
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@skip{@backmatter@group@label@node@lmargin}{-3pt}
-\@init@skip{@backmatter@group@entries@lmargin}{-3pt}
-\@init@skip{@idx@baseline@skip}{1.5em}
-\@init@skip{@idx@group@sep}{6pt}
-\@init@skip{@idx@before@group@label@skip}{8pt}
-\@init@skip{@idx@after@group@label@skip}{0pt}
-\ifmylatex@fncychap
-        \@init@skip{@idx@top@skip}{-48mm}
-\else
-        \@init@skip{@idx@top@skip}{-34mm}
-\fi
-\@init@skip{@gls@before@hypernav@skip}{0pt}
-\@init@skip{@gls@after@hypernav@skip}{8pt}
-\@init@skip{@gls@before@group@label@skip}{0pt}
-\@init@skip{@gls@after@group@label@skip}{0pt}
-\@init@skip{@gls@entry@hskip}{2mm}
-\@init@skip{@gls@before@entry@sep}{0pt}
-\@init@skip{@gls@after@entry@sep}{6pt}
-\@init@skip{@gls@group@sep}{2pt}
-%------------------------------------------------------------------------------------------------------------------------------%
-%----------------------------------------------------- Lengths/Dimensions -----------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newdimen\sizeoffont
-\newdimen\rozmiar
-\@init@dimen{@filledenumshape@min@size}[5mm]
-\@init@dimen{@filledenumshape@inner@sep}[0.25pt]
-\@init@dimen{@function@desc@skip}[-0.0em]
-\@init@dimen{@function@sep@skip}[-1.15em]
-\@init@dimen{@function@entry@label@skip}
-\@init@dimen{@function@entry@skip}[-1.5em]
-%------------------------------------------------------------------------------------------------------------------------------%
-%\setlength\dashlinedash{0.2pt}
-%\setlength\dashlinegap{4.5pt}
-\@init@length{@coverpage@vskip}
-\@init@length{@coverpage@free@vspace}
-\@init@length{@coverpage@top}
-\@init@length{@coverpage@bottom}
-\@init@length{@coverpage@uni@logo@height}
-\@init@length{@coverpage@dept@logo@height}
-\@init@length{@coverpage@title@height}
-\@init@length{@coverpage@description@height}
-\@init@length{@coverpage@author@date@height}
-\@init@length{@coverpage@author@date@before@skip}[8.95mm]
-\@init@length{@coverpage@dept@logo@before@skip}[10mm]
-\@init@length{@coverpage@description@before@skip}[1mm]
-\@init@length{@coverpage@title@before@skip}[0pt]
-\@init@length{@coverpage@author@date@sep}[-4mm]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@coverpage@textwidth}[7.25in]
-\@init@length{@coverpage@hoffset}[-1.25in]
-\@init@length{@coverpage@textheight}[\paperheight]
-\@init@length{@coverpage@voffset}[-23.0pt]
-\@init@length{@coverpage@headsep}[0.0pt]
-\@init@length{@coverpage@topmargin}[-72pt]
-\@init@length{@coverpage@headheight}[0.0pt]
-\@init@length{@coverpage@footskip}[0.0pt]
-\@init@length{@coverpage@landscape@textwidth}[9.25in]
-\@init@length{@coverpage@landscape@hoffset}[-2.25in]
-\@init@length{@coverpage@landscape@textheight}[7.25in]
-\@init@length{@coverpage@landscape@voffset}[0.0pt]%-1.15in
-\@init@length{@coverpage@landscape@headsep}[12.0pt]
-\@init@length{@coverpage@landscape@topmargin}[-72pt]
-\@init@length{@coverpage@landscape@headheight}[29.0pt]
-\@init@length{@coverpage@landscape@footskip}[8.4pt]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@document@textwidth}[7.25in]
-\@init@length{@document@hoffset}[-1.25in]
-\@init@length{@document@textheight}[9.5in]
-\@init@length{@document@voffset}[-1.1in]
-\@init@length{@document@headsep}[1.5mm]
-\@init@length{@document@topmargin}[0.25in]
-\@init@length{@document@headheight}[0.25in]
-\@init@length{@document@footskip}[0.25cm]
-\@init@length{@document@landscape@textwidth}[9.25in]
-\@init@length{@document@landscape@hoffset}[-2.25in]
-\@init@length{@document@landscape@textheight}[7.25in]
-\@init@length{@document@landscape@voffset}[-1.1in]
-\@init@length{@document@landscape@headsep}[3.5mm]
-\@init@length{@document@landscape@topmargin}[0.25in]
-\@init@length{@document@landscape@headheight}[29pt]
-\@init@length{@document@landscape@footskip}[0.85cm]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@Chapter@heading@height}[1.75cm]%2cm
-\@init@length{@Chapter@heading@baseskip}[2.675cm]
-\@init@length{@Chapter@heading@inner@sep}[14pt]
-\@init@length{@Chapter@heading@inner@xsep}[14pt]
-\@init@length{@Chapter@heading@inner@ysep}[12pt]
-\@init@length{@Chapter@heading@rounded@corners}[18pt]
-\@init@length{@Chapter@heading@linewidth}[2.0pt]
-\@init@length{@Chapter@heading@title@linewidth}[2.0pt]
-\@init@length{@Chapter@heading@xshift}[3.15cm]
-\@init@length{@Chapter@heading@yshift}[\dimexpr\@Chapter@heading@baseskip - \@Chapter@heading@height + \@Chapter@heading@linewidth\relax]
-\@init@length{@Section@after@skip}[3mm]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{bshft}[.18pt]                                     % Used as shift distance in \fakebold command for "faking" a bold math font
-\@init@length{replength}[1.5pt]                         %
-\@init@length{shadowsize}[4pt]                          % Size of shadow in \@cshadowbox command
-%\@init@length{shadowHoffset}[.3pt]                              % Horizontal shadow offset in \shadowfy command creating shadowed text
-%\@init@length{shadowVoffset}[-.2pt]                             % Vertical shadow offset in \shadowfy command creating shadowed text
-\@init@length{@par@indent}[4ex]
-\@init@length{tcbparskip}[-0.33em]
-\@init@length{tcbparindent}[0.25in]
-\@init@length{cft@indent@unit@em}[1.5em]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{labelboxwidth}[3.1cm]
-\@init@length{colorboxwidth}[1.4cm]
-\@init@length{colorentrywidth}[\dimexpr\labelboxwidth + \colorboxwidth\relax]
-\@init@length{colorboxheight}[0.75cm]
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@title@interior@sep@linewidth}[2pt]
-\@init@length{@title@sep@xshift}[1pt]
-\@init@length{@title@sep@yshift}[\dimexpr 6.0pt\relax]
-\@init@length{@title@code@xshift}[0pt]
-\@init@length{@title@code@yshift}[0pt]
-\@init@length{@inner@angle@distance}[3mm]
-\@init@length{@outer@angle@distance}[5mm]
-\@init@length{@boxed@title@top}[4.0pt]
-\@init@length{@boxed@title@toprule}[2.0pt]
-\@init@length{@boxed@title@linewidth}[2pt]
-\@init@length{@frame@corner@radius}[6pt]
-\@init@length{@frame@border@linewidth}[2pt]
-\@init@length{@frame@outline@linewidth}[0.5pt]
-\@init@length{@frame@double@distance}[1.5pt]
-\@init@length{@interior@border@linewidth}[2pt]
-\@init@length{@interior@outline@linewidth}[0.5pt]
-\@init@length{@interior@corner@radius}[6pt]
-\@init@length{@interior@double@distance}[1.0pt]
-%\@init@length{@inner@frame@shift@y}[\dimexpr 1mm+2pt\relax]
-\@init@length{@topLeftSectionTitle@double@distance}[0.75pt]
-\@init@length{@overlay@xshift}[-0.5pt]
-\@init@length{@overlay@yshift}[-1pt]
-\@init@length{@overlay@linewidth}[1pt]
-\@init@length{@overlay@double@distance}[0.75pt]
-\@init@length{@tcb@frame@corner@radius}[6pt]
-\@init@length{@tcb@interior@corner@radius}[6pt]
-\@init@length{@tcb@title@corner@radius}[6pt]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@function@defbox@first@column}[3.0cm]
-\@init@length{@function@defbox@second@column}[16.5cm]%
-\@init@length{@function@defbox@column@sep}[0.25cm]
-\@init@length{@function@detail@box@first@column}[4.0cm]
-\@init@length{@function@detail@box@second@column}[15.5cm]%
-\@init@length{@function@detail@box@column@sep}[0.75cm]
-\@init@length{@enum@label@indent}[-6.0pt]
-\@init@length{@enum@topsep}[2.0pt]
-\@init@length{@enum@leftmargin}[0.25in]
-\@init@length{@enum@itemsep}[1pt]
-\@init@length{@enum@parsep}[0pt]
-\@init@length{@default@listbox@width}[14.5cm]
-\@init@length{@tcbIBP@left@distance}
-\@init@length{@tcbIBP@column@separation}[2.5cm]
-\@init@length{@tcbIBP@leftright@skip}
-\@init@length{@tcbIBP@text@content@width}
-\@init@length{@tcbIBP@math@content@width}
-\@init@length{@dualtcbIBP@text@leftcontent@width}
-\@init@length{@dualtcbIBP@text@rightcontent@width}
-\@init@length{@tcb@figbox@left@skip}[4mm+12pt]
-\@init@length{@tcb@figboxfigure@width}[4mm+12pt]
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%@tcb@#2@xshift
-%@tcb@#2@yshift
-%@tcb@default@#2@linewidth
-%@tcb@#2@linewidth
-%@tcb@\fractional@X@linewidth @#2@linewidth
-%@tcb@quarter@#2@linewidth
-%@tcb@half@#2@linewidth
-%@tcb@threequarter@#2@linewidth
-%@tcb@oneandhalf@#2@linewidth
-%@tcb@oneandthreequarter@#2@linewidth
-%@tcb@twice@#2@linewidth
-\@init@length{@tcb@default@borderline@linewidth}[2.0pt]
-\@init@length{@tcb@default@double@distance}[1.0pt]
-\@init@length{@tcb@double@distance}
-\@init@length{@tcb@borderline@linewidth}
-\@init@length{@tcb@borderline@xshift}
-
-\@init@length{@tcb@plain@border@linewidth}[1.5pt]
-\@init@length{@tcb@plain@interior@border@linewidth}[1.0pt]
-\@init@length{@tcb@plain@titlerule@linewidth}[1.0pt]
-\@init@length{@tcb@double@border@linewidth}[0.5pt]
-%------------------------------------------------------------------------------------------------------------------------------%
-\@tcb@init@X@linewidths{boxrule}[5.0pt]
-\@tcb@init@X@linewidths{interior@border}[\@tcb@default@borderline@linewidth]
-\@tcb@init@X@linewidths*{single@border}[\@tcb@default@borderline@linewidth]
-\@tcb@init@X@linewidths*{inner@border}[\@tcb@default@borderline@linewidth]
-\@tcb@init@X@linewidths*{doubleinner@border}[\@tcb@default@borderline@linewidth]
-\@tcb@init@X@linewidths{border}[\@tcb@default@borderline@linewidth]
-\@tcb@init@X@linewidths*{titlerule}[2pt]{half,quarter}
-\@tcb@init@X@linewidths*{segrule}{half,quarter}
-\@tcb@init@X@linewidths{effective@boxrule}{half,quarter}
-%------------------------------------------------------------------------------------------------------------------------------%
-\let\@sorted@list\@empty
-\let\l@lstlisting\l@listings
-\let\@tcbfigbox@width=\@macro@width
-\let\@tcbfigbox@skip=\@macro@length
-%------------------------------------------------------------------------------------------------------------------------------%
-\ifmylatex@landscape
-        \@init@length{@Chapter@heading@width}[\dimexpr\paperwidth + 2.0in\relax]
-        \@init@length{@Chapter@heading@title@xshift}[\dimexpr.9\paperwidth + 1.5in\relax]
-        %\setlength\@function@defbox@second@column{\dimexpr\linewidth - cm\relax}
-        %\setlength{\pdfpagewidth}{8.5in}
-        %\setlength{\pdfpageheight}{11in}
-        %\setlength{\paperheight}{}
-        %\setlength{\paperwidth}{}
-        \setlength{\linewidth}{\@document@landscape@textwidth}
-        %\setlength{\displaywidth}{\@document@textwidth}
-        \setlength{\textwidth}{\@document@landscape@textwidth}
-        \setlength{\textheight}{\@document@landscape@textheight}
-        \setlength{\hoffset}{\@document@landscape@hoffset}
-        \setlength{\voffset}{\@document@landscape@voffset}
-        \setlength{\topmargin}{\@document@landscape@topmargin}
-        \setlength{\headheight}{\@document@landscape@headheight}
-        \setlength{\headsep}{\@document@landscape@headsep}
-        \setlength{\footskip}{\@document@landscape@footskip}
-        %\setlength\abovedisplayskip{\parskip}%
-        %\setlength\belowdisplayskip{\abovedisplayskip}%
-        %\setlength\belowdisplayshortskip{\abovedisplayskip}%
-        %\setlength\abovedisplayshortskip{\abovedisplayskip}%
-        %\setlength{\baselineskip}{1in}
-        %\renewcommand{\baselinestretch}{<factor>}
-        %\renewcommand{\arraystretch}{1.25}
-        \setlength{\arrayrulewidth}{0.75pt}
-        \setlength\doublerulesep{0pt}
-        %\linespread{<factor>}
-        %\fontsize{<size>}{<baselineskip>}
-        \setlength{\parindent}{4mm}                                                                                     %\parindent=\z@
-        \setlength{\parskip}{3mm}                                              %\parskip\z@ \@plus .3\p@\relax%
-        %\setlength{\parfillskip}{6em}
-        %\setlength{\partopsep}{6em}                                          %\partopsep=\z@
-        %\setlength{\parsep}{6em}
-\else
-        \@init@length{@Chapter@heading@width}[\paperwidth]
-        \@init@length{@Chapter@heading@title@xshift}[.9\paperwidth]
-        %\@init@length{@function@defbox@second@column}[15.5cm]
-        %\setlength{\pdfpagewidth}{8.5in}
-        %\setlength{\pdfpageheight}{11in}
-        %\setlength{\paperheight}{}
-        %\setlength{\paperwidth}{}
-        \setlength{\linewidth}{\@document@textwidth}
-        %\setlength{\displaywidth}{\@document@textwidth}
-        \setlength{\textwidth}{\@document@textwidth}
-        \setlength{\textheight}{\@document@textheight}
-        \setlength{\hoffset}{\@document@hoffset}
-        \setlength{\voffset}{\@document@voffset}
-        \setlength{\topmargin}{\@document@topmargin}
-        \setlength{\headheight}{\@coverpage@headheight}
-        \setlength{\headsep}{\@document@headsep}
-        \setlength{\footskip}{\@document@footskip}
-        %\setlength\abovedisplayskip{\parskip}%
-        %\setlength\belowdisplayskip{\abovedisplayskip}%
-        %\setlength\belowdisplayshortskip{\abovedisplayskip}%
-        %\setlength\abovedisplayshortskip{\abovedisplayskip}%
-        %\setlength{\baselineskip}{1in}
-        %\renewcommand{\baselinestretch}{<factor>}
-        %\renewcommand{\arraystretch}{1.25}
-        \setlength{\arrayrulewidth}{0.75pt}
-        \setlength\doublerulesep{0pt}
-        %\linespread{<factor>}
-        %\fontsize{<size>}{<baselineskip>}
-        \setlength{\parindent}{4mm}                                                      %\parindent=\z@
-        \setlength{\parskip}{3mm}                                                      %\parskip\z@ \@plus .3\p@\relax%
-        %\setlength{\parfillskip}{6em}
-        %\setlength{\partopsep}{6em}                                                     %\partopsep=\z@
-        %\setlength{\parsep}{6em}
-\fi
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------ Boxes/Saveboxes -------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newbox\@fancybox
-\newbox\@Sbox
-\newsavebox\@coverpage@savebox@title@contents
-\newsavebox\@coverpage@savebox@title
-\newsavebox\@coverpage@savebox@unilogo
-\newsavebox\@coverpage@savebox@description
-\newsavebox\@coverpage@savebox@author@date
-\newsavebox\@coverpage@savebox@deptlogo
-\newsavebox\@coverpage@savebox@author@date@deptlogo
-\newsavebox\@frontbackmatter@savebox@
-\newsavebox\glossbox
-\newsavebox\@IBPtable@box
-\newsavebox\@IBP@text@content@box
-\newsavebox\@IBP@math@content@box
-\newsavebox\@dualtcbIBP@left@content@box
-\newsavebox\@dualtcbIBP@right@content@box
-\newsavebox{\@slant@savebox}
-%------------------------------------------------------------------------------------------------------------------------------%
-%----------------------------------------------------------- Tokens -----------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newtoks\do@VerbBox
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------ Booleans/Toggles ------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newtoggle{bxon}
-\newtoggle{bon}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\shadowoffset{0.5pt}
-\shadowoffsetx{0.65pt}
-\shadowoffsety{-0.2pt}
-\shadowcolor{BaylorGoldCMYK}
-\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-\newcolumntype{Y}{>{\raggedleft\arraybackslash}X}% see tabularx
-\newcolumntype{T}[1]{>{\RaggedRight\arraybackslash}p{#1}}% see tabularx
-\newcolumntype{H}[1]{>{\justify\arraybackslash}m{#1}}% see tabularx
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\verbtocs{\mycs}|label=\bfarabic@fmt, labelindent=-3pt, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=5pt, leftmargin=*|
-\setlistdepth{12}
-\newlist{legendList}{enumerate}{1}
-\newlist{fileList}{enumerate}{1}
-\newlist{ThinEnum}{enumerate}{12}
-\setlist[legendList,1]{label={}, itemsep=0pt, topsep=2pt, parsep=1pt, partopsep=0pt, labelindent=*}
-\setlist[fileList,1]{label=\bfarabic@fmt, itemsep=3.5pt, topsep=4pt, parsep=4pt, partopsep=2pt, labelindent=10pt, leftmargin=*}
-%\def\listStyle{label=\bfarabic,labelindent=-3pt, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=5pt, leftmargin=*}
-\setlist[ThinEnum, 1]{label=\bfarabic@fmt, labelindent=0pt, itemsep=\@enum@itemsep, partopsep=4pt, topsep=4pt, parsep=4pt, leftmargin=*}
-\setlist[ThinEnum, 2]{label=\bfalph@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 3]{label=\bfroman@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=0.2in}
-\setlist[ThinEnum, 4]{label=\bfarabic@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 5]{label=\bfalph@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 6]{label=\bfroman@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=0.2in}
-\setlist[ThinEnum, 7]{label=\bfarabic@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=0.2in}
-\setlist[ThinEnum, 8]{label=\bfalph@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=0.2in}
-\setlist[ThinEnum, 9]{label=\bfroman@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 10]{label=\bfarabic@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 11]{label=\bfalph@fmt, labelindent=\@enum@label@indent,  itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
-\setlist[ThinEnum, 12]{label=\bfroman@fmt, labelindent=\@enum@label@indent, itemsep=\@enum@itemsep, topsep=\@enum@topsep, parsep=\@enum@parsep, leftmargin=\@enum@leftmargin}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
 %************************************************** Define new LaTeX commands *************************************************%
@@ -963,8 +564,7 @@
 \newcommand{\csvdel}{}                                                          % Removes following token from input stream
 \newcommand{\gobblenext}[1]{\csvdel#1\@ifnextchar\bgroup{\gobblenext}{}}        % Gobble next "argument"
 \newcommand{\checknextarg}{\@ifnextchar\bgroup{\gobblenext}{}}                  % Check if another "argument" exists
-\newcommand\ifexpstrempty[1]%
-	{\expandafter\ifstrempty\expandafter{\romannumeral -`0#1 }}
+\newcommand{\resetcounter}[1]{\setcounter{#1}{0}}                         % Removes following token from input stream
 \newcommand{\pagereftop}[1]{\hyperlink{page.\getpagerefnumber{#1}}{\pageref*{#1}}}
 \newcommand{\probtag}[1]{\tag*{\bfseries(#1)}\addtocounter{equation}{-1}}       % Adds tag text (#1) to equation line
 \newcommand{\deftag}[1]{\tag*{\bfseries(#1)}\addtocounter{equation}{-1}}        % Adds tag text (#1) to equation line
@@ -982,20 +582,20 @@
 \newcommand{\myLaTeXe}{\hbox{\myLaTeX 2\raisebox{-.4ex}{$\varepsilon$}}}%
 \newcommand{\slantbox}[2][.5]%
 {%
-	\mbox%
-	{%
-	        \sbox{\@slant@savebox}{#2}%
-	        \hskip\wd\@slant@savebox%
-	        \pdfsave%
-	        \pdfsetmatrix{1 0 #1 1}%
-	        \llap{\usebox{\@slant@savebox}}%
-	        \pdfrestore%
-	}%
+        \mbox%
+        {%
+                \sbox{\@slant@savebox}{#2}%
+                \hskip\wd\@slant@savebox%
+                \pdfsave%
+                \pdfsetmatrix{1 0 #1 1}%
+                \llap{\usebox{\@slant@savebox}}%
+                \pdfrestore%
+        }%
 }
-\newcommand{\cshadowbox}{\VerbBox\@cshadowbox}                 % Create shadowed box (from fancybox package: fancybox.sty)
-\newcommand{\rulewidth}{.6pt}                               % Horizontal rule Line width of t(ab)dotfill/t(ab)dashfill
-\newcommand{\repfrac}{.33}                                % Sets dot/dash/etc. repetition length as fraction of \replength
-\newcommand{\dashfrac}[1]{\renewcommand\repfrac{#1}}        % Sets the dash length as a fraction of \replength
+\newcommand{\cshadowbox}{\VerbBox\@cshadowbox}                  % Create shadowed box (from fancybox package: fancybox.sty)
+\newcommand{\rulewidth}{.6pt}                                   % Horizontal rule Line width of t(ab)dotfill/t(ab)dashfill
+\newcommand{\repfrac}{.33}                                      % Sets dot/dash/etc. repetition length as fraction of \replength
+\newcommand{\dashfrac}[1]{\renewcommand\repfrac{#1}}            % Sets the dash length as a fraction of \replength
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\tdotfill[1][\repfrac]
 {%
@@ -1031,10 +631,12 @@
 \newcommand{\readahead} [2]
   {\afterassignment\@gobble\futurelet#1{#2}}
 %------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\printarg[1]{#1}
+%------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\printcsvlist}[2][,]{%
-  \def\itemdelim{\def\itemdelim{#1}}% Item delimiter delayed by one cycle
-  \renewcommand*{\do}[1]{\itemdelim##1}% How each item is processed
-  \docsvlist{#2}}% Process CSV list
+  \def\itemdelim{\def\itemdelim{#1}}%                                   Item delimiter delayed by one cycle
+  \renewcommand*{\do}[1]{\itemdelim##1}%                                How each item is processed
+  \docsvlist{#2}}%                                                      Process CSV list
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\test}[1]{%
   \ifcase\numexpr1\noexpand#11\relax
@@ -1044,15 +646,11 @@
   \else % digit
   \fi}
 %------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand\hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline
-%\def\tcbrulesep{\vskip0.25pt}          % used in
-%\def\hrulefill{\leavevmode\leaders\hrule height 4pt\hfill\kern\z@}
-%\def\@single@color@hrule#1{\begingroup\color{#1}\hrule\endgroup}
 \def\@bicolor@dbl@hrule#1#2%
 {%
-   \color{#1}\hrule\tcbruleskip%
-   \color{#2}\hrule\tcbruleskip%
-   \color{#1}\hrule%
+   \fontcolor{#1}\hrule\tcbruleskip%
+   \fontcolor{#2}\hrule\tcbruleskip%
+   \fontcolor{#1}\hrule%
 }
 \DeclareDocumentCommand{\@double@hline}{O{current} O{current-coldraw} O{current-rulecolor}}%
 {%
@@ -1065,20 +663,11 @@
 %*********************************************** Reefine existing LaTeX commands **********************************************%
 %******************************************************************************************************************************%
 \providecommand*{\pagedeclaration}[1]{\hyperlink{a#1}{#1}, \thepage}%\hypertarget{#1}{#1}\hyperlink{a#1}{#1}
-%\renewcommand*{\hypcapspace}{\baselineskip}
-\renewcommand{\normalsize}{\fontsize{9}{10}\selectfont}
-%\renewcommand{\arraystretch}{1.5}%
-\renewcommand{\baselinestretch}{1.2}%
-\renewcommand{\headrulewidth}{0.4pt}
-%\renewcommand{\footrulewidth}{0.4pt}
-\renewcommand{\ULdepth}{0.00pt}%
-%\renewcommand{\ULthickness}{0.35pt}%
-\renewcommand{\qedsymbol}{$\blacksquare$}                                           % Change the QED symbol of proof environment to black square
-\renewcommand{\proofname}{\textbfit{(Proof.)}}                              % Change the text printed at beginning of proof environment
-%\renewcommand\ellipsisgap{1.5\fontdimen3\font}
-%\renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}%
-\renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}
+\renewcommand{\qedsymbol}{$\blacksquare$}                                               % Proof env QED symbol -> black square
+\renewcommand{\proofname}{\textbfit{(Proof.)}}                                          % Proof env label format
+%\renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}
 %------------------------------------------------------------------------------------------------------------------------------%
+%\renewcommand{\tabularxcolumn}[1]{>{\small}m{#1}}%
 %******************************************************************************************************************************%
 %************************************************ Define Robust LaTeX commands ************************************************%
 %******************************************************************************************************************************%

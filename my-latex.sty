@@ -14,6 +14,7 @@
 \RequirePackage{pkgopts}                         % Defines two new "for" loop commands: \foreach and \breakforeach
 %------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackageList{\@pkgopts@packages}
+%\newtoggle{validated}
 %******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
@@ -50,10 +51,26 @@
 \DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareStringOption{documentclass}[report]
+\DeclareStringOption[(OT1,lmr,m,n,10)]{font}[(OT1,lmr,m,n,10)]
+%\DeclareStringOption[OT1]{fontencoding}[OT1]%\@known@font@encodings
+%\DeclareStringOption[]{fontfamily}[]
+\DeclareStringOption{fontfamily}[lmr]
+%\DeclareStringOption[lmr]{fontfamily}[lmr]
+%\DeclareStringOption[m]{fontseries}[m]
+%\DeclareStringOption[n]{fontshape}[n]
+\DeclareStringOption[10]{fontsize}[10]
 %------------------------------------------------------------------------------------------------------------------------------%
+\DeclareChoiceOption{sizeXdoc}[10]{\@known@size@clo@defs}
+\DeclareChoiceOption{fontencoding}[OT1]{\@known@font@encodings}
+\DeclareChoiceOption{fontseries}[m]{\@known@font@series}
+\DeclareChoiceOption{fontshape}[n]{\@known@font@shapes}
 \DeclareChoiceOption{backpagenumbering}[roman]{\@supported@page@numbering}
-\DeclareChoiceOption{fncychap}[Lenny]{\@chapter@heading@styles}
+\DeclareChoiceOption{fncychap}[Lenny]{\@supported@chaphead@styles}
 \DeclareChoiceOption{choiceopttest}[choicetwo]{\choicetestoptions}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareChoiceValOption{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
+%\DeclareChoiceValOption{fontname}[Latin Modern Roman]{\@known@fontname@fontcode@pairs}
+%\DeclareChoiceValOption[as]{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
@@ -72,7 +89,9 @@
         \PassOptionsToClass{crop}{report}
 \fi
 %%------------------------------------------------------------------------------------------------------------------------------%
+\SetDocFontSettings
 \SetDocumentClass
+%\SetDocFontSettings
 %------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@automake
         \PassOptionsToPackage{automake}{my-glossaries}
@@ -100,15 +119,18 @@
 \RequirePackage{my-colors}                      % Custom color definitions and mixed color variables
 \RequirePackage{my-color-schemes}               % Color set definitions (\colorlet}{<scheme name>Scheme-<property>) for tcb/tikz/etc. properties
 \RequirePackage{my-definitions}                 % Custom set of packages used in my-latex.sty development
+\RequirePackage{my-regvars}                     % Custom set of packages used in my-latex.sty development
+%\RequirePackage{polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
 \RequirePackage{my-fonts}                       % Custom assignment of fonts and math alphabets to established and new font names
 \RequirePackage{my-styles}                      % Custom color definition/naming and visual settings
 \RequirePackage[acronym,toc,symbols]            % Adapatation of 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
         {my-glossaries}                         % Options: automake, xindy/makeindex, section=chapter/(sub)section, nopostdot/main/nonumberlist
 \RequirePackage[intoc]{my-nomencl}              % Nomenclature/abbreviations list similar to acronms/glossary
-\RequirePackage{mainmatter}                % 
+\RequirePackage{mainmatter}                %
 \RequirePackage{frontbackmatter}                % Table of Contents, List of Tables/Figures/Acronyms/Symbols/Abbreviations, Index, Glossary etc.
 \RequirePackage{my-math}                        % Custom math characters/symbols, delimiters, operators, (e/x/g)defs, commands, and environments
 \RequirePackage{my-polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
+%\RequirePackage{polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
 \RequirePackage{my-lstautogobble}               % Adapted 'lstautogobble' package, automatically set 'listings' package's 'gobble=#' value
 \RequirePackage{my-listings}                    % Adapted 'listings' package for configuring code listing languages/settings/appearance
 %\RequirePackage{my-minted}                     % Adapted 'minted' package for configuring code listing languages/settings/appearance

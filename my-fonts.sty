@@ -93,8 +93,8 @@
 %\DeclareDocumentCommand{\unslanted}{o m}
 %\newcommand\unslanted[1]%
 %{%
-%	\def\@slant@val{-0.25}%
-%	\ifstrequal{#1}{delta}{\def\@slant@val{-0.15}}{}%
+%       \def\@slant@val{-0.25}%
+%       \ifstrequal{#1}{delta}{\def\@slant@val{-0.15}}{}%
 %        \ifstrequal{#1}{epsilon}{\def\@slant@val{-0.1}}{}%
 %        \ifstrequal{#1}{xi}{\def\@slant@val{-0.15}}{}%
 %        \ifstrequal{#1}{zeta}{\def\@slant@val{-0.15}}{}%%
@@ -150,6 +150,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %\renewcommand{\defaultfamily}{cmr}
+%\renewcommand{\familydefault}{lmr}
 \renewcommand{\rmdefault}{lmr}
 \renewcommand{\sfdefault}{lmss}
 \renewcommand{\ttdefault}{lmtt}
@@ -160,22 +161,46 @@
 %\renewcommand{\textsc}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont#1}}
 \newcommand{\textscsl}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont#1}}
 %------------------------------------------------------------------------------------------------------------------------------%
+%\tiny   F-tiny.png
+%\scriptsize     F-scriptsize.png
+%\footnotesize   F-footnotesize.png
+%\small
+%\renewcommand{\normalsize}{\fontsize{9}{10}\selectfont}
+%\renewcommand\normalsize{\fontsize{10}{10}\selectfont}
+%\renewcommand\normalsize{\fontsize{10}{10}}
+%\renewcommand{\normalsize}{\fontsize{9}{10}\selectfont}
 %\renewcommand\normalsize{\fontsize{10}{\baselinestretch}}
 \newcommand\default@fsize{\fontsize{10}{\baselinestretch}}
-\newcommand\midlarge{\fontsize{11}{\baselinestretch}}
-\renewcommand\large{\fontsize{12}{\baselinestretch}}
-\newcommand\midLarge{\fontsize{13}{\baselinestretch}}
-\renewcommand\Large{\fontsize{14}{\baselinestretch}}
-\newcommand\midLARGE{\fontsize{15}{\baselinestretch}}
-\renewcommand\LARGE{\fontsize{16}{\baselinestretch}}
-\newcommand\midhuge{\fontsize{17}{\baselinestretch}}
-\renewcommand\huge{\fontsize{18}{\baselinestretch}}
-\newcommand\midHuge{\fontsize{19}{\baselinestretch}}
-\renewcommand\Huge{\fontsize{20}{\baselinestretch}}
-\newcommand{\midHUGE}{\fontsize{21}{\baselinestretch}}
-\renewcommand{\HUGE}{\fontsize{22}{\baselinestretch}}
+\newcommand\midlarge{\fontsize{11}{\baselinestretch}\selectfont}
+\renewcommand\large{\fontsize{12}{\baselinestretch}\selectfont}
+\newcommand\midLarge{\fontsize{13}{\baselinestretch}\selectfont}
+\renewcommand\Large{\fontsize{14}{\baselinestretch}\selectfont}
+\newcommand\midLARGE{\fontsize{15}{\baselinestretch}\selectfont}
+\renewcommand\LARGE{\fontsize{16}{\baselinestretch}\selectfont}
+\newcommand\midhuge{\fontsize{17}{\baselinestretch}\selectfont}
+\renewcommand\huge{\fontsize{18}{\baselinestretch}\selectfont}
+\newcommand\midHuge{\fontsize{19}{\baselinestretch}\selectfont}
+\renewcommand\Huge{\fontsize{20}{\baselinestretch}\selectfont}
+\newcommand{\midHUGE}{\fontsize{21}{\baselinestretch}\selectfont}
+\renewcommand{\HUGE}{\fontsize{22}{\baselinestretch}\selectfont}
+%------------------------------------------------------------------------------------------------------------------------------%
+\WithSuffix\newcommand\normalsize*{\fontsize{10}{\baselinestretch}}
+\WithSuffix\newcommand\midlarge*{\fontsize{11}{\baselinestretch}}
+\WithSuffix\newcommand\large*{\fontsize{12}{\baselinestretch}}
+\WithSuffix\newcommand\midLarge*{\fontsize{13}{\baselinestretch}}
+\WithSuffix\newcommand\Large*{\fontsize{14}{\baselinestretch}}
+\WithSuffix\newcommand\midLARGE*{\fontsize{15}{\baselinestretch}}
+\WithSuffix\newcommand\LARGE*{\fontsize{16}{\baselinestretch}}
+\WithSuffix\newcommand\midhuge*{\fontsize{17}{\baselinestretch}}
+\WithSuffix\newcommand\huge*{\fontsize{18}{\baselinestretch}}
+\WithSuffix\newcommand\midHuge*{\fontsize{19}{\baselinestretch}}
+\WithSuffix\newcommand\Huge*{\fontsize{20}{\baselinestretch}}
+\WithSuffix\newcommand\midHUGE*{\fontsize{21}{\baselinestretch}}
+\WithSuffix\newcommand\HUGE*{\fontsize{22}{\baselinestretch}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\iffont}[3]{\ifthenelse{\equal{\f@family}{#1}}{#2}{#3}}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Color/Shadow/Appearance Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text Color/Shadow/Appearance Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\coloredtext}{s t! m m}
@@ -184,13 +209,13 @@
         \IfBooleanTF{#1}
         {%
                 \IfBooleanTF{#2}
-                        {\ignorespaces\color{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
-                        {\ignorespaces\color{#3}\textbf{#4}\unskip\ignorespaces}
+                        {\ignorespaces\fontcolor{#3}\textbf{\textit{#4}}\unskip\ignorespaces}
+                        {\ignorespaces\fontcolor{#3}\textbf{#4}\unskip\ignorespaces}
         }
         {%
                 \IfBooleanTF{#2}
-                        {\ignorespaces\color{#3}\textit{#4}\unskip\ignorespaces}
-                        {\ignorespaces\color{#3}#4\unskip\ignorespaces}
+                        {\ignorespaces\fontcolor{#3}\textit{#4}\unskip\ignorespaces}
+                        {\ignorespaces\fontcolor{#3}#4\unskip\ignorespaces}
         }
         \endgroup%
 }
@@ -199,8 +224,8 @@
 {%
         \begingroup
                 \leavevmode
-                \rlap{\kern-.4pt\raise.2pt\hbox{\color{white}#1}}%
-                \rlap{\kern.4pt\raise-.2pt\hbox{\color{DarkSlateGrey!70!}#1}}%
+                \rlap{\kern-.4pt\raise.2pt\hbox{\fontcolor{white}#1}}%
+                \rlap{\kern.4pt\raise-.2pt\hbox{\fontcolor{DarkSlateGrey!70!}#1}}%
                 \hbox{#1}%
         \endgroup
 }
@@ -319,8 +344,8 @@
         \raisebox{\st@shadowoffsety}%
         {%
                 \stackinset{c}{-\st@shadowoffsetx}{c}{-\st@shadowoffsety}%
-                        {\color{\st@textcolor}{#1}}%
-                        {\color{\st@shadowcolor}{#1}}%
+                        {\fontcolor{\st@textcolor}{#1}}%
+                        {\fontcolor{\st@shadowcolor}{#1}}%
         }%
         \kern-\st@shadowoffsetx%
 }
@@ -334,7 +359,7 @@
         {%
                 \stackinset{c}{\st@doubleshadowoffsetx}{c}{-\st@doubleshadowoffsety}%
                         {\shadow{#1}}%
-                        {\color{\st@doubleshadowcolor}{#1}}%
+                        {\fontcolor{\st@doubleshadowcolor}{#1}}%
         }%
         \kern-\st@doubleshadowoffsetx%
 }
@@ -349,7 +374,8 @@
 \doubleshadowoffset{0.5pt}
 \doubleshadowoffsetx{1.20pt}
 \doubleshadowoffsety{-0.0pt}
-\shadowbasecolor{black}
+\shadowbasecolor{white}
+\shadowcolor{black}
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                            1 2          3         4        5          6
 \DeclareDocumentCommand{\setshadowTextProps}{s D<>{0.5pt} O{0.65pt} O{0.2pt} D''{white} D(){black}}
@@ -363,26 +389,27 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2  3            4           5          6 7   8   9
-\DeclareDocumentCommand{\BreakableShadowText}{s t! D''{current} D<>{0.75pt} D<>{0.1pt} o d() d:: m}
-{%\BreakableShadowText[*]'font family/series/style/size'<horizontal offset><vertical offset>[text color](shadow color){text}
-        \shadowoffsetx{#4}%
-        \shadowoffsety{#5}%
+\DeclareDocumentCommand{\BreakableShadowText}{s t! D::{\tcbX@title@fontdef} D<>{0.75pt,0.1pt} D''{current} o d() d|| m}
+{%\BreakableShadowText[*]'font format'<horizontal offset><vertical offset>[text color](shadow color)|double shadow color|{text}
+        \@set@length@pair<\st@shadowoffsetx,\st@shadowoffsety>=<#4>%
+        %\shadowoffsetx{#4}%
+        %\shadowoffsety{#5}%
         \IfBooleanTF{#1}%
-                {\shadowbasecolor{#3-coltitle}}%
-                {\shadowbasecolor{#3-coltext}}%
-        \shadowcolor{#3-coltextshadow}%
+                {\shadowbasecolor{#5-coltitle}}%
+                {\shadowbasecolor{#5-coltext}}%
+        \shadowcolor{#5-coltextshadow}%
         \IfValueTF{#6}{\shadowbasecolor{#6}}{}%
         \IfValueTF{#7}{\shadowcolor{#7}}{}%
         \IfBooleanTF{#2}%
         {%
                 \IfValueTF{#8}%
-                {\doubleshadowcolor{#8}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#9}\kern2\st@doubleshadowoffsetx}}%
-                {\underline{\shadowmathfy{#9}}}%
+                {#3\doubleshadowcolor{#8}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#9}\kern2\st@doubleshadowoffsetx}}%
+                {#3\uline{\shadowmathfy{#9}}}%
         }%
         {%
                 \IfValueTF{#8}%
-                {\doubleshadowcolor{#8}\doubleshadowfy{#9}}%
-                {\shadowmathfy{#9}}%
+                {#3\doubleshadowcolor{#8}\doubleshadowfy{#9}}%
+                {#3\shadowmathfy{#9}}%
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -399,9 +426,10 @@
         \IfValueTF{#7}%
                 {\ignorespaces\unskip#2\shadowbasecolor{#7}}%
                 {}%
-        \ignorespaces\unskip\color{\st@textcolor}#2\shadowtext{#8}\ignorespaces\unskip%
+        \ignorespaces\unskip\fontcolor{\st@textcolor}#2\shadowtext{#8}\ignorespaces\unskip%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2  3          4   5   6
 \DeclareDocumentCommand{\shadowmath}{s t! O{current} d'' d() m}
 {%
         \IfBooleanTF{#1}
@@ -418,10 +446,16 @@
 %******************************************************************************************************************************%
 %************************************************************** Text Fonts ***************************************************************%
 %******************************************************************************************************************************%
+%\captiontitlefont{\small\itshape}
+%\captionnamefont{\small\bfseries}
+\captionsetup[figure]{labelfont={bf,small,sc},textfont={it,small}}%----------------------- added newly
+\captionsetup[subfloat]{labelfont={bf,small},textfont={it,small}}%----------------------- added newly
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTextFontCommand{\textbfm}{\bfmseries}
+%\DeclareTextFontCommand{\textbboard}{\bboardfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\doctext}{\@doc@default@font}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -438,7 +472,6 @@
 \DeclareTextCommand{\euro}{LGR}{\char"18\relax}
 \DeclareTextCommand{\Euro}{LGR}{\char"18\relax}
 %------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareTextFontCommand{\textbboard}{\bboardfamily}                                            %\RequirePackage{mbboard}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -454,17 +487,20 @@
 %*-anttb  Antykwa Toruńska Bold
 %*-anttbi  Antykwa Toruńska BoldItalic
 \def\antt@encoding{cs}
-\declarefont{anttn}{\antt@encoding-anttr}
+\declarefont{anttr}{\antt@encoding-anttr}
 \declarefont{anttb}{\antt@encoding-anttb}
-\declarefont{antti}{\antt@encoding-anttri}
+\declarefont{anttri}{\antt@encoding-anttri}
 \declarefont{anttc}{\antt@encoding-anttc}
-\declarefont{anttcap}{\antt@encoding-anttrcap}
+\declarefont{anttrcap}{\antt@encoding-anttrcap}
 \declarefont{anttmcap}{\antt@encoding-anttmcap}
 \declarefont{anttbcap}{\antt@encoding-anttbcap}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
-\font\rm qx-anttr \rm \baselineskip 14pt
+%\def\@fts{cmtt10}%{qx-anttr}%{cmu10}
+%\xdef\@fts{\csname mylatex@fontfamily\endcsname\csname mylatex@fontsize\endcsname}
+\font\rm \@fts \rm \baselineskip 10pt
+%\let\rm\sfdefault
 \font\rmsm qx-anttr at 9.5pt
 \font\rmc qx-anttcr at9pt
 \font\bf qx-anttm
@@ -489,8 +525,10 @@
 \font\coverpagemedfont qx-anttmcap at 13pt
 \font\coverpagebigfont qx-anttmcap at 17pt
 %------------------------------------------------------------------------------------------------------------------------------%
+\font\cftnormalfont qx-anttmcap at 10pt
+\font\cftmidfont qx-anttmcap at 2pt
 \font\cftmedfont qx-anttmcap at 14pt
-\font\cftbigfont qx-anttmcap at 18pt
+\font\cftbigfont qx-anttmcap at 20pt
 %------------------------------------------------------------------------------------------------------------------------------%
 \font\tcbsectionheaderfont qx-anttmcap at 14pt
 \font\tcbsectiontitlefont qx-anttmcap at 16pt
@@ -616,6 +654,7 @@
 \DeclareFontSubstitution                        {LS2}{stix}{m}{n}
 %\DeclareFontSubstitution{OT1}{mbb}{m}{n}                                                               %\RequirePackage{mbboard}
 %------------------------------------------------------------------------------------------------------------------------------%
+%\rmfamily{cmr}
 \DeclareMathAlphabet{\mathitst}         {LS1}{stix}     {m} {it}                                %\RequirePackage{stix}<stix.sty>
 \DeclareMathAlphabet{\mathrmst}         {LS1}{stix}     {m} {n}                                 %\RequirePackage{stix}<stix.sty>
 \DeclareMathAlphabet{\mathscript}       {LS1}{stixscr}  {m} {n}                                 %\RequirePackage{stix}<stix.sty>
@@ -1206,24 +1245,24 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\victorysym%
 {%
-	\sffamily
-	%Save the T's top bar in a \savestack
-	\savestack{\tbar}{%
-	\scalebox{2.8}[1]{\slantbox[.14]{$\RHD$}%
-	\kern-5pt%
-	\rule[1.28pt]{5pt}{2.55pt}%
-	\kern-5pt%
-	\slantbox[-.14]{$\LHD$}}}
-	%
-	\scalebox{5}{%
-	\stackinset{c}{4.3pt}{b}{-.3pt}{\slantbox[-.3]{\scalebox{1.2}[.18]{\reflectbox{$\int$}}}}{%
-	\stackinset{c}{-.25pt}{t}{-0.8pt}{\rmfamily.}{%
-	\stackinset{c}{-2.1pt}{b}{3.2pt}{\scalebox{1.1}[1.3]{\slantbox[-.4]{\tiny o}}}{%
-	\stackinset{c}{-1.1pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[-.6]{\scriptsize C}}}{%
-	\stackinset{c}{2.05pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[.6]{\reflectbox{\scriptsize C}}}}{%
-	\stackinset{c}{-.23pt}{c}{3.2pt}{\scalebox{1}[1.3]{%
-	  \Large \stackon[-1.25pt]{I}{\scalebox{.3}{\tbar}}}}{%
-	\scalebox{1.5}[1.1]{\reflectbox{\large\rmfamily V}}}%
+        \sffamily
+        %Save the T's top bar in a \savestack
+        \savestack{\tbar}{%
+        \scalebox{2.8}[1]{\slantbox[.14]{$\RHD$}%
+        \kern-5pt%
+        \rule[1.28pt]{5pt}{2.55pt}%
+        \kern-5pt%
+        \slantbox[-.14]{$\LHD$}}}
+        %
+        \scalebox{5}{%
+        \stackinset{c}{4.3pt}{b}{-.3pt}{\slantbox[-.3]{\scalebox{1.2}[.18]{\reflectbox{$\int$}}}}{%
+        \stackinset{c}{-.25pt}{t}{-0.8pt}{\rmfamily.}{%
+        \stackinset{c}{-2.1pt}{b}{3.2pt}{\scalebox{1.1}[1.3]{\slantbox[-.4]{\tiny o}}}{%
+        \stackinset{c}{-1.1pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[-.6]{\scriptsize C}}}{%
+        \stackinset{c}{2.05pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[.6]{\reflectbox{\scriptsize C}}}}{%
+        \stackinset{c}{-.23pt}{c}{3.2pt}{\scalebox{1}[1.3]{%
+          \Large \stackon[-1.25pt]{I}{\scalebox{.3}{\tbar}}}}{%
+        \scalebox{1.5}[1.1]{\reflectbox{\large\rmfamily V}}}%
 }}}}}}
 }
 %------------------------------------------------------------------------------------------------------------------------------%

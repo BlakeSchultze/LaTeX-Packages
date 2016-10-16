@@ -94,7 +94,130 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\xp@cmd#1#2{\expandafter#1\expandafter#2}
 %------------------------------------------------------------------------------------------------------------------------------%
-%1                         2                                     3                             4 5
+\newkeycommand\@circle@node
+[enum shape={circle,dart}, at={(0,0)}, name={c\Roman{@node@auto@naming}}, scale=1.0, size=6mm, linewidth=0.25pt, colorscheme=current, linewidth=0.5pt,fill=, draw=, outline=]
+{%
+        \refstepcounter{@node@auto@naming}%
+        \@set@current@tcb@colors{\commandkey{colorscheme}}%tcbBlueScheme
+        \ifcommandkey{draw}%
+                {\xdef\@@draw@@{\commandkey{draw}}}%
+                {\xdef\@@draw@@{current-coldraw}}%
+        \ifcommandkey{fill}%
+                {\xdef\@@fill@@{\commandkey{fill}}}%
+                {\xdef\@@fill@@{current-colfill}}%
+        \ifcommandkey{outline}{\xdef\@draw@{\commandkey{outline}}}{}%
+        \node at \commandkey{at}%
+        [
+            scale=\commandkey{scale},
+            name=\commandkey{name},%c\Roman{@node@auto@naming},
+            circle,
+            fill=\@@fill@@,
+            draw=\@@draw@@,
+            line width=\commandkey{linewidth},
+            %thick,
+            inner xsep = 1pt,
+            minimum size=\commandkey{size},
+            inner sep=0.0mm,
+            align=flush center
+        ] {};%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\@dart@node
+[enum shape={circle,dart}, at={(0,0)}, name={d\Roman{@node@auto@naming}}, scale=1.0, linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=]
+{%
+        %\refstepcounter{@node@auto@naming}
+        \@set@current@tcb@colors{\commandkey{colorscheme}}%tcbBlueScheme
+        \ifcommandkey{draw}%
+                {\xdef\@@draw@@{\commandkey{draw}}}%
+                {\xdef\@@draw@@{current-coldraw}}%
+        \ifcommandkey{fill}%
+                {\xdef\@@fill@@{\commandkey{fill}}}%
+                {\xdef\@@fill@@{current-colfill}}%
+        \ifcommandkey{outline}{\xdef\@@draw@@{\commandkey{outline}}}{}%
+        %\def\@@scale@@{\numexpr 2/3*\@scale@\relax}
+        %\pgfmathsetmacro\@@scale@@{0.67 * \@scale@ }
+        \node at \commandkey{at}%
+        [
+            anchor=base,
+            scale=\@@scale@@,
+            dart,
+            line width=\commandkey{linewidth},
+            draw=\@@draw@@,
+            fill=\@@fill@@,
+            yshift=-0.75pt,
+            shape border uses incircle,
+            shape border rotate=90
+        ] {};%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\@arrow@node
+[enum shape={circle,dart}, at={(0,0)}, name={a\Roman{@node@auto@naming}}, scale=1.0, linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=]
+{%
+        %\refstepcounter{@node@auto@naming}
+        \@set@current@tcb@colors{\commandkey{colorscheme}}%tcbBlueScheme
+        \ifcommandkey{draw}%
+                {\xdef\@@draw@@{\commandkey{draw}}}%
+                {\xdef\@@draw@@{current-coldraw}}%
+        \ifcommandkey{fill}%
+                {\xdef\@@fill@@{\commandkey{fill}}}%
+                {\xdef\@@fill@@{current-colfill}}%
+        \ifcommandkey{outline}{\edef\@@draw@@{\commandkey{outline}}}{}%
+        %\edef\@@scale@@{\numexpr 2/3*\@scale@\relax}
+        %\pgfmathmultiply{2}{\@scale@}
+        %\pgfmathdivide{\@scale@}{4}
+        %\pgfmathsetmacro\@@scale@@{0.67 * \@scale@ }
+        \node at \commandkey{at}%
+        [
+                anchor=base,
+                scale=\@@scale@@,%\pgfmathresult,%2/3*\@scale@,
+                single arrow,
+                line width=0.75*\commandkey{linewidth},
+                draw=\@@draw@@,
+                fill=\@@fill@@,
+                yshift=-0.75pt,
+                minimum height=8.0mm,
+                single arrow head extend=2mm,
+                single arrow head indent=.65mm,
+                shape border uses incircle,
+                shape border rotate=90
+        ] {};%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\BMKcircle
+[enum shape={arrow,circle,dart}, at={(0,0)}, scale=1.0, linewidth=0.5pt, colorscheme=current, fill={}, draw=, outline=]
+{%enum orientation={up,down,left,right},
+        \normalsize%
+        \xdef\@shape@{\commandkey{shape}}%
+        \xdef\@scale@{\commandkey{scale}}%
+        \xdef\@linewidth@{\commandkey{linewidth}}%
+        \xdef\@size@{\commandkey{size}}%
+        \xdef\@at@{\commandkey{at}}%
+        \pgfmathsetmacro\@@scale@@{0.67 * \@scale@ }
+        \ifcommandkey{draw}%
+                {\edef\@draw@{\commandkey{draw}}}%
+                {\edef\@draw@{current-coldraw}}%
+        \ifcommandkey{fill}%
+                {\edef\@fill@{\commandkey{fill}}}%
+                {\edef\@fill@{current-colfill}}%
+        \xdef\@colorscheme@{\commandkey{colorscheme}}%
+        \@set@current@tcb@colors{\@colorscheme@}%tcbBlueScheme
+        \ifcommandkey{outline}{\edef\@draw@{\commandkey{outline}}}{}%
+        \begin{tikzpicture}%[scale=1.5]
+                %\@circle@node[shape=circle, at={\@at@}, name=s, scale=\@scale@, size=13mm, draw=\@draw@, linewidth=\@linewidth@,fill=\@fill@]%at={(frame.north)},
+                \@circle@node[shape=circle,  name=s, scale=\@scale@, size=13mm, draw=\@draw@, linewidth=\@linewidth@,fill=\@fill@]%
+                \@circle@node[shape=circle, at={(s.center)}, name=t, scale=\@scale@, size=10mm, draw=\@draw@, linewidth=\@linewidth@,fill=white]%
+                \@circle@node[shape=circle, at={(s.center)}, name=u, scale=\@scale@, size=7.0mm, linewidth=\@linewidth@, draw=\@draw@, fill=\@fill@]%
+                \IfStrEqCase{\@shape@}%
+                {%
+                        {arrow}{\@arrow@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
+                        {dart}{\@dart@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
+                        {circle}{\@dart@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
+                }%
+        \end{tikzpicture}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\blockstructure}%
 {D<>{\@default@cube@scale} D(){\@default@cube@rotate@around@xyz} O{\@default@cube@sidelengths} m O{\@default@cube@colors} d||}
 {%{O{\@default@rotate@cube@around@xyz} D<>{\@cube@side@length} m O{black,yellow,red,blue}}

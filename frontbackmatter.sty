@@ -35,7 +35,7 @@
 %\def\istfilename{my-glossaries.ist}    %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\tocnumbersoff}[1]
 {
-	\IfStrEqCase{#1}%
+        \IfStrEqCase{#1}%
         {%
                 {chapter}{\setcounter{chapnumdepth}{0}}%
                 {section}{\setcounter{secnumdepth}{0}}%
@@ -52,89 +52,42 @@
 }
 \setcounter{tocdepth}{4}
 \setcounter{lofdepth}{4}
-%\setcounter{loldepth}{4}
+\setcounter{loldepth}{4}
+\setcounter{lotdepth}{4}
 \setcounter{probsdepth}{4}
+\setcounter{funcsdepth}{4}
 %\tocnumbersoff{section}
 %\setcounter{secnumdepth}{0}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cftaftertoctitle}{}
-\renewcommand{\cftafterloftitle}{}
-\renewcommand{\cftafterlottitle}{}
-\renewcommand{\cftafterloltitle}{}
-%------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\cfttoctitlefont}{\cftbigfont}
-\renewcommand{\cftloftitlefont}{\cftmedfont}
-\renewcommand{\cftlottitlefont}{\cftmedfont}
-\renewcommand{\cftloltitlefont}{\cftmedfont}
-\renewcommand{\cftprobstitlefont}{\cftmedfont}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\cftlistingsfont}{\normalsize\bfseries}
-\renewcommand{\cftproblemsfont}{\normalsize\bfseries}
-\renewcommand{\cftchapterproblemsfont}{\normalsize\bfseries}
-\renewcommand{\cftproblempartssubproblemsfont}{\normalsize\bfseries}
-\renewcommand{\cftsubproblempartsfont}{\normalsize\bfseries}
-\renewcommand{\cftsubproblemsfont}{\normalsize\bfseries}
-\renewcommand{\cftfigfont}{\normalsize\bfseries}
-\renewcommand{\cfttabfont}{\normalsize\bfseries}%{\LARGE\bfseries}
+\setlength\cftbeforetoctitleskip{-5mm}                                    % Vertical skip before Table of Contents title
+\setlength\cftaftertoctitleskip{-2.5mm}                                      % Vertical skip before Table of Contents title
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\cftparskip{1.5mm}                                                  % Vertical skip before Table of Contents title
 \renewcommand\cftparfillskip{1mm}                                              % Vertical skip before Table of Contents title
-\setlength\cftbeforetoctitleskip{-5mm}                                    % Vertical skip before Table of Contents title
-\setlength\cftaftertoctitleskip{-5mm}                                      % Vertical skip before Table of Contents title
-\setlength\cftbeforeloftitleskip{5.0mm}                                      % Vertical skip before Table of Contents title
-\setlength\cftbeforelottitleskip{5.0mm}                                     % Vertical skip before Table of Contents title
-\setlength\cftbeforeloltitleskip{5.0mm}                                       % Vertical skip before Table of Contents title
-\setlength\cftbeforeprobstitleskip{5.0mm}                                   % Vertical skip before Table of Contents title
-\setlength\cftafterloftitleskip{2.5mm}                                     % Vertical skip before Table of Contents title
-\setlength\cftafterlottitleskip{2.5mm}                                     % Vertical skip before Table of Contents title
-\setlength\cftafterloltitleskip{2.5mm}                                  % Vertical skip before Table of Contents title
-\setlength\cftafterprobstitleskip{2.5mm}                                  % Vertical skip before Table of Contents title
-%------------------------------------------------------------------------------------------------------------------------------%
-\setlength\cftbeforeChapterskip{2.5mm}                                       % Vertical skip before Table of Contents title
-\setlength\cftbeforechapskip{2.5mm}                                       % Vertical skip before Table of Contents title
-\setlength\cftbeforePartskip{2.5mm}                                       % Vertical skip before Table of Contents title
-\setlength\cftbeforeTopicskip{2.5mm}                                       % Vertical skip before Table of Contents title
-%------------------------------------------------------------------------------------------------------------------------------%
-%\setlength\cftchapindent{1.5em}
-%\setlength\cftsecindent{3.0em}
-\setlength\cftfigindent{1.5em}
-\setlength\cftproblemsindent{0em}
-\setlength\cftchapterproblemsindent{0em}
-\setlength\cftsubproblemsindent{1.5em}
-\setlength\cftproblempartsindent{1.5em}
-\setlength\cftproblempartssubproblemsindent{3.0em}
-\setlength\cftsubproblempartsindent{3.0em}
-\setlength\cftlistingsindent{1.5em}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\cftPartdotsep}{\cftnodots}
-\renewcommand{\cftTopicdotsep}{\cftnodots}
-%\renewcommand{\cftChapterdotsep}{\cftnodots}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\cftPartleader}{\nobreak\cftdotfill{\cftPartdotsep}\space}
-\renewcommand{\cftTopicleader}{\nobreak\cftdotfill{\cftTopicdotsep}\space}
-\renewcommand{\cftChapterleader}{\nobreak\cftdotfill{\cftChapterdotsep}\space}
-%------------------------------------------------------------------------------------------------------------------------------%
-%\setlength{\cftchapterproblemsnumwidth}{2.0em}
-%\setlength{\cftproblemsnumwidth}{2.0em}
-%\setlength{\cftfigboxfigurenumwidth}{40.5em}
-%\addtolength{\cftfigboxfigurenumwidth}{5.5em}
-%\setlength{\cftPartnumwidth}{4.0em}
-%\setlength{\cftTopicnumwidth}{4.0em}
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\contentsname}{\TOCName}
-\renewcommand{\listtablename}{\LOTName}
-\renewcommand{\listfigurename}{\LOFName}
+%------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\contentsname}{\doc@hypertargets{TOC}\TOCName\unskip}
+\renewcommand{\listtablename}{\doc@hypertargets{LOT}\LOTName}
+\renewcommand{\listfigurename}{\doc@hypertargets{LOF}\LOFName}
 \renewcommand{\nomname}{\AbbreviationsName}                     % was \large
-\renewcommand{\lstlistoflistings}{\listoflistings}              % ? print list of listings, defined to be an alias for \listoflistings (minted)
-\renewcommand{\lstlistlistingname}{\LOLName}                    % The header name for the list of listings.
-\newcommand{\listproblemsname}{\LOPName}                        % List of homework problems/solutions
-\newcommand{\listfunctionsname}{\LODName}                        % List of homework problems/solutions
+\renewcommand{\lstlistoflistings}{\listoflistings}              % ? print list of listings, defined to be an alias for \listoflistings (minted)\protect\vspace{-3cm}
+\renewcommand{\lstlistlistingname}{\doc@hypertargets{LOL}\LOLName}                    % The header name for the list of listings.
+\newcommand{\listproblemsname}{\doc@hypertargets{LOPROBS}\LOPROBSName}                        % List of homework problems/solutions
+\newcommand{\listfunctionsname}{\doc@hypertargets{LOFUNCS}\LOFUNCSName}                        % List of homework problems/solutions
+%\renewcommand{\listtablename}{\LOTName}
+%\renewcommand{\listfigurename}{\LOFName}
+%\renewcommand{\nomname}{\AbbreviationsName}                     % was \large
+%\renewcommand{\lstlistoflistings}{\listoflistings}              % ? print list of listings, defined to be an alias for \listoflistings (minted)
+%\renewcommand{\lstlistlistingname}{\LOLName}                    % The header name for the list of listings.
+%\newcommand{\listproblemsname}{\LOPROBSName}                        % List of homework problems/solutions
+%\newcommand{\listfunctionsname}{\LOFUNCSName}                        % List of homework problems/solutions
 \renewcommand{\indexname}{\IndexName}
-%\renewcommand{\indexname}{}
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\bibname{\BibName}                                 % Bibliography toc title
 \renewcommand\appendixname{\AppendixName}                       % Appendix toc title
@@ -147,17 +100,45 @@
         {\renewcommand{\listingscaption}{\CodeListingName}}     %
         {\newcommand{\listingscaption}{\CodeListingName}}       %
 %------------------------------------------------------------------------------------------------------------------------------%
-\newrobustcmd{\toctitletarget}[1]%
+\cftZ@listof@settings
+%------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd{\toctitletarget}[2]%[3][]%
 {%
-        \phantomsection\addcontentsline{toc}{chapter}{#1}\cftbigfont #1%
+        \bookmarksetupnext{level=0}%
+        \phantomsection\addcontentsline{toc}{backmatter}%
+        {%
+                \hspace{-1.5em}%
+                \protect\numberline{\raisebox{10pt}{\protect\hypertarget{#1}{}}}%
+                %\cftX@toctitle@fontdef%
+                #2%
+        }
+        \hyperlink{#1}{\shadowText:\cftbigfont:[black](white){#2}}%
 }
+%------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}        % \par\vspace{20pt plus 6pt minus 4pt}
 \newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
 \newcommand \Dotfill {\leavevmode \cleaders \hb@xt@ .33em{\hss .\hss }\hfill \kern \z@}
 \renewcommand{\glsnamefont}[1]{\textbfmsf{#1}\normalfont}
 \newcommand*{\@gls@navhyperlink@font}{\navhyperlinkfont}
+\newcommand*{\@gls@grouptitle@font}{\@frontbackmatter@group@label@font}
+\renewcommand*{\glsgetgrouptitle}[1]{%
+  \@gls@getgrouptitle{#1}{\@gls@grptitle}%
+  \@gls@grouptitle@font\@gls@grptitle
+}
 \newcommand*{\fbm@dotfill}{\nobreak\,\dotfill\space\nobreak}%
 \newcommand*{\fbm@nofill}{,\space}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@starttoc#1{%
+    \begingroup
+    \makeatletter
+    \if@filesw
+      \expandafter\newwrite\csname tf@#1\endcsname
+      \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
+    \fi
+    \@input{\jobname.#1}%
+    \@nobreakfalse
+  \endgroup%
+}
 %------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand*\tableofcontents
 {%
@@ -210,9 +191,9 @@
                 {%
                         makeindex %
                                 -s my-nomencl.ist\space%
-                        -t \jobname.nlg\space%
-                        -o \jobname.nls\space%
-                        \jobname.nlo%
+                                -t \jobname.nlg\space%
+                                -o \jobname.nls\space%
+                                \jobname.nlo%
                 }%
         }%
         \@gls@dothiswrite
@@ -229,17 +210,26 @@
 \DeclareDocumentCommand{\addTOC}{}
 {
         \tableofcontents
-        \addtocontents{toc}{~\hfill\textbf{Page}\par}
-        %\addcontentsline{toc}{chapter}{Bibliography}
-        %\addcontentsline{toc}{subsection}{Preface}
+        \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}
 }
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\@add@listof@list[1]
+{%
+        \@nameuse{cft#1@prev@totalcount@cmd}\else\expandafter\addtolength\csname cftbefore#1titleskip\endcsname{-10\p@}\fi%
+        \@nameuse{cft#1@totalcount@cmd}%
+                \@nameuse{cft#1@listof@cmd}%
+                \bookmark[dest=\bookmark@hyperaddress{\@nameuse{cft#1@target@name}}, level=1]{\@nameuse{cft#1@name@cmd}}%
+        \fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd\@add@listof@lists{\foreach \listname in \cftZ@listof@members{\@add@listof@list{\listname}}}
+%\newrobustcmd\@add@listof@lists{\foreach \listname/\prevlistname in \@listof@list{\@add@listof@list{\listname}{\prevlistname}}}
+%------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\addFrontbackMatter}{}
 {
-        \iftotalfigures\listoffigures\fi
-        \iftotaltables\listoftables\fi
-        \iftotallstlistings\lstlistoflistings\fi                                                %\listoflistings        % minted
-        \iftotal@count@problems\listofproblems\fi
-        \clearpage\hypertarget{\@page@one@target@name}{}%
+        \bookmark[startatroot, keeplevel, dest=\bookmark@hyperaddress{TOC}, rellevel=0]{\TOCName}
+        \@add@listof@lists%
+        \clearpage\hypertarget{\@page@one@target@name}{}%%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\printFrontbackMatter}{}
@@ -252,8 +242,7 @@
         %-----------------------------------------------------------------------------------------------------------------------------------%
         \clearpage
         \printsymbols[title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]
-        %\printglossary[type=symbols,title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]
-%-----------------------------------------------------------------------------------------------------------------------------------%
+        %-----------------------------------------------------------------------------------------------------------------------------------%
         \clearpage
         \printacronyms[title={\@listof@acronyms@toctitle}, toctitle={\@listof@acronyms@toctitle}]
         \clearpage
@@ -268,6 +257,7 @@
 %******************************************************************************************************************************%
 %************************************** Index/Glossary/Acronyms/Nomenclature style file generation ***************************************%
 %******************************************************************************************************************************%
+\DeclareDocumentCommand{\removebrackets}{o}{}
 %------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`!=12
 %\catcode`\$=\active
@@ -275,7 +265,7 @@
 %\IfFileExists{my-index.mst}{}
 %{
 \begin{filecontents*}{my-index.mst}
-        preamble "\\begin{tcolorbox}[indexStyle, title={\\raggedright\\toctitletarget{\\IndexName}}, before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries]
+        preamble "\\begin{tcolorbox}[indexStyle,title={\\raggedright\\toctitletarget{\\IndexName}{\\IndexName}}, before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries]
                         \\begin{theindex}"
         postamble "\\end{theindex}\\end{tcolorbox}"
         delim_0 "\\space\\IndexDotfill "
@@ -299,7 +289,7 @@
                 [%
                         glossariesStyle, before=\\par\\smallskip, after=\\par\\smallskip,
                         fonttitle=\\Large\\bfseries, fontupper=\\normalsize\\normalfont,
-                        title={\\phantomsection\\glossarysection[\\glossarytoctitle]{\\linkedglossarytitle\\cftbigfont\\glossarytitle}}%
+                        title={\\phantomsection\\glossarysection[\\glossarytoctitle]{\\linkedglossarytitle}}%
                 ]
                 \\begin{theglossary}\\glossaryheader\n"
         postamble "\%\n\\end{theglossary}\\end{tcolorbox}\\glossarypostamble\n"
@@ -333,7 +323,7 @@
 %{%
 \begin{filecontents*}{my-nomencl.ist}
         keyword    "\\nomenclatureentry"
-        preamble   "\\begin{tcolorbox}[nomenclatureStyle, title={\\toctitletarget{\\nomname}}, before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries]%
+        preamble   "\\begin{tcolorbox}[nomenclatureStyle, title={\\toctitletarget{\\nomname}{\\nomname}}, before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries]%
                         \\begin{thenomenclature} \n"%
         postamble  "\n\n\\end{thenomenclature}\\end{tcolorbox}\n"
         group_skip "\n"

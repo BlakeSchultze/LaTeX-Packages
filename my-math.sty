@@ -45,14 +45,6 @@
 \def\@delimiter@surrounding#1{\kern1pt#1\kern1pt}
 \def\@numset@surrounding#1{\kern-1.0pt#1\kern-1.0pt}
 \def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
-\def\@tcb@pld@title@label%
-{%
-        \flushleft%
-        \setul{1.5pt}{2.0pt} %
-        \setulcolor{black}%
-        \ul{Polynomial Division:} \\[0.3em]%
-        \centering\normalsize\normalfont%
-}
 \def\d#1{\kern1pt d#1}
 %\def\myastb{\myast}
 %\def\mymath#1§{$\boldsymbol{#1}$}
@@ -67,6 +59,8 @@
 %\def!#1!{hello}
 %\gdef$#1${\[\mathbf{#1}\]}
 \newlength\@pld@tcb@width
+\newlength\@pld@tcb@leftrightskip
+\newlength\@pld@tcb@extrude@right
 \newlength\@top@binom@height                                            % Height of 'n' in "n choose k" environment \nchoosek
 \newlength\@bottom@binom@height                                         % Height of 'k' in "n choose k" environment \nchoosek
 \newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}     % Height of math character 'X' in current font
@@ -645,12 +639,11 @@
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@add@IBP@node}{m}
-{%\renewcommand{\baselinestretch}{1.5}%
+{%
         \tikz[overlay, remember picture, baseline] \node (#1) {};}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\addIBProw}{m m s}
 {
-        %\renewcommand{\baselinestretch}{1.5}%
         \IfBooleanTF{#3}
         {
                 \textstyle#1\quad
@@ -670,19 +663,18 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@add@arrow@sign}{m}
 {
-        %\renewcommand{\baselinestretch}{1.5}%
         node [#1] \bgroup
         \iftoggle{@add@sub@TF}
-                {$\scriptscriptstyle\color{IBPColorset-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
-                {$\scriptscriptstyle\color{IBPColorset-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
+                {$\scriptscriptstyle\fontcolor{IBPColorset-colsymbols}+\unskip$\egroup;\togglefalse{@add@sub@TF}}
+                {$\scriptscriptstyle\fontcolor{IBPColorset-colsymbols}-\unskip$\egroup;\toggletrue{@add@sub@TF}}
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@draw@IBP@arrows}{}
 {%
-        %\renewcommand{\baselinestretch}{1.5}%
         \begin{tikzpicture}[overlay, remember picture]
                 \toggletrue{@add@sub@TF}
-                \forloop[1]{@current@IBP@row@counter}{1}{\value{@current@IBP@row@counter} < \value{@IBP@rows@counter}}
+                %\forloop{@current@IBP@row@counter}{1}{\value{@current@IBP@row@counter} < \value{@IBP@rows@counter}}
+                \forLoop{1}{\numexpr\value{@IBP@rows@counter}-1\relax}{@current@IBP@row@counter}
                 {
                         \draw[IBPdiagArrows]
                                 ($(Left \the\value{@current@IBP@row@counter}.west)+(\@diag@IBP@arrows@leftXShift, \@diag@IBP@arrows@leftYShift)$)
@@ -691,9 +683,9 @@
                         \@add@arrow@sign{above, midway}
                 }
                 \draw[IBPhorizArrows]
-                    ($(Right \the\numexpr\value{@current@IBP@row@counter}+1\relax.west)+(\@horiz@IBP@arrows@rightXShift, \@horiz@IBP@arrows@yShift)$)
+                    ($(Right \the\numexpr\value{@IBP@rows@counter}+1\relax.west)+(\@horiz@IBP@arrows@rightXShift, \@horiz@IBP@arrows@yShift)$)
                     --
-                    ($(Left \the\value{@current@IBP@row@counter}.east)+(-\@horiz@IBP@arrows@leftXShift, \@horiz@IBP@arrows@yShift)$)
+                    ($(Left \the\value{@IBP@rows@counter}.east)+(-\@horiz@IBP@arrows@leftXShift, \@horiz@IBP@arrows@yShift)$)
                 \@add@arrow@sign{below, pos=0.41}
     \end{tikzpicture}
 }
@@ -736,18 +728,31 @@
 {%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
         \setlength\doublerulesep{0pt}%
         \setlength{\arrayrulewidth}{0.75pt}%
-        \setcounter{@IBP@rows@counter}{0}%
+        %\linespread@settings[context=IBP]
+        %\setcounter{@IBP@rows@counter}{0}%
+        \resetcounter{@IBP@rows@counter}%
         \refstepcounter{IBPtable}%
         \@set@current@tcb@colors{IBPColorset}%
         \def\@save@baselinestretch{\baselinestretch}%
-        \renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
+        \def\@save@arraystretch{\arraystretch}%
+        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
+        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
+        %\renewcommand{\arraystretch}{\@tcb@arraystretch}%
+        %\setlength{\arrayrulewidth}{\@IBP@arrayrulewidth}%
+        %\renewcommand{\baselinestretch}{\@IBP@baselinestretch}%
+        %\renewcommand{\arraystretch}{\@IBP@arraystretch}%
+        %\setlength{\arrayrulewidth}{\@IBP@arrayrulewidth}%
+        %\renewcommand{\baselinestretch}{3.0}%
+        %\renewcommand{\arraystretch}{3.0}%
+        %\linespread@settings[context=IBP]
+        %\linespread@settingsB[IBP]
         \arrayrulecolor{IBPColorset-coldraw}%
         \def\IBP@text@content{}%
         \IfBooleanTF{#2}{\def\IBP@math@content{}}%
         {%
                 \IfValueTF{#3}%
                 {%
-                        \def\IBP@math@content{\protect\BreakableShadowText*{#3}}%
+                        \def\IBP@math@content{\protect\BreakableShadowText*:\cftX@tcbtitle@fontfamily:{#3}}%
                         \def\IBP@text@content{#3}%
                 }%
                 {
@@ -765,74 +770,62 @@
         \centering%
         %\tocX@hypertarget[65pt]{table}[IBPtable]
         \IBPtable{>{$}c<{$} c @{\hspace{\@tcbIBP@column@separation}} c  >{$}c<{$}}{\IBP@math@content}[\IBP@text@content]%
-                \centering%
+                \centering%\linespread@settings[context=IBP]%
                 \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcbIBP@before@hrule@skip]%
-                \hline\arrayrulecolor{IBPColorset-rulecolor}\hline\arrayrulecolor{IBPColorset-coldraw}\hline\\[\@tcbIBP@after@hrule@skip]%
+                \arrayrulecolor{IBPColorset-coldraw}\hline\arrayrulecolor{IBPColorset-rulecolor}%
+                \hline\arrayrulecolor{IBPColorset-coldraw}%
+                \hline\\[\@tcbIBP@after@hrule@skip]%
                 \addIBProw{#5}{#6}\\%
 }{%
         \endIBPtable%
         \@draw@IBP@arrows\\%
-        \renewcommand{\baselinestretch}{\@save@arraystretch}%
-        \renewcommand{\arraystretch}{\@save@arraystretch}%
+        %\renewcommand{\baselinestretch}{\@save@baselinestretch}%
+        %\renewcommand{\arraystretch}{\@save@arraystretch}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%\environbodyname\envbody
-\NewEnviron{collectedBODY}%
-{%
-        %\setlength{\@env@BODY@width}{\wd\envbody}%
-        %\savebox{\@IBPtable@box}{\BODY}
-        \unskip\ignorespaces\BODY%
-}
+\NewEnviron{collectedBODY}{\unskip\ignorespaces\BODY}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\dualtcbIBP}{s o m m}
 {%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
-        %\begin{collectedBODY}#2\end{collectedBODY}
-        %\begin{collectedBODY}#1\end{collectedBODY}
         \savebox{\@dualtcbIBP@left@content@box}{\begin{collectedBODY}#3\\[-2.5em]\end{collectedBODY}}%
         \savebox{\@dualtcbIBP@right@content@box}{\begin{collectedBODY}#4\\[-2.5em]\end{collectedBODY}}%
         \setlength{\@env@BODY@width}{\wd\@dualtcbIBP@left@content@box + \wd\@dualtcbIBP@right@content@box + 14mm}%
         \setlength{\@dualtcbIBP@text@leftcontent@width}{\wd\@dualtcbIBP@left@content@box}%
         \setlength{\@dualtcbIBP@text@rightcontent@width}{\wd\@dualtcbIBP@right@content@box}%
-        \setlength{\@macro@length@diff}{\wd\@dualtcbIBP@left@content@box - \wd\@dualtcbIBP@right@content@box}%        
+        \setlength{\@macro@length@diff}{\wd\@dualtcbIBP@left@content@box - \wd\@dualtcbIBP@right@content@box}%
         \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
         \@set@current@tcb@colors{tcbBlueScheme}%
-        %\IfBooleanTF{#1}%
-        %{\begin{tcbenvironment}*'tcbBlueScheme'[left=-4mm, left skip=\@macro@shift, width=\@env@BODY@width]}%
-        %{%\begin{tcbenvironment}*'tcbBlueScheme'[left=-4mm]}%
-                %\unskip\ignorespaces%
-                %\centering\usebox{\@dualtcbIBP@left@content@box\unskip\ignorespaces}%#1
-                %\tcblower%
-                %\unskip\ignorespaces%
-                %\centering\usebox{\@dualtcbIBP@right@content@box\unskip\ignorespaces}%#2
-        %\end{tcbenvironment}%
         \IfValueTF{#2}%
         {
-        	\gdef\@the@title{title}
-        	\tcbset{title={#2}}
+                \gdef\@the@title@included{title}
+                \toggletrue{tcbtitle@included}
+                \tcbset{title={#2}}
         }
         {
-                \gdef\@the@title{notitle}
-        	\tcbset{title={}}
+                \gdef\@the@title@included{notitle}
+                \togglefalse{tcbtitle@included}
+                \tcbset{title={}}
         }
         \IfBooleanTF{#1}%
         {%
-        	\tcbsidebyside%
-        	[
-        		%tcbenvironmentStyle,
-        		dualIBPtable, sidebyside align=bottom seam, left=1mm, lefttitle=2mm, segmentation empty, sidebyside gap=2mm,
-			width=\@env@BODY@width, sidebyside adapt=both, left skip=\@macro@shift
-		]%
-	}%
-	{\tcbsidebyside[%tcbenvironmentStyl, 
-dualIBPtable, sidebyside align=bottom seam, left=-1mm, lefttitle=2mm, segmentation empty, sidebyside gap=0mm]}%
-	{%
-		\unskip\ignorespaces%
-	               \centering\usebox{\@dualtcbIBP@left@content@box}
-	}%
-	{%
-		\unskip\ignorespaces%
-	    	\centering\usebox{\@dualtcbIBP@right@content@box}
-	}%                       
+                \tcbsidebyside%
+                [
+                        dualIBPtable, sidebyside align=bottom seam, left=1mm, lefttitle=2mm, segmentation empty,
+                        sidebyside gap=2mm, width=\@env@BODY@width, sidebyside adapt=both, left skip=\@macro@shift
+                ]%
+        }%
+        {%
+                \tcbsidebyside[dualIBPtable, sidebyside align=bottom seam, left=-1mm, lefttitle=2mm,
+                        segmentation empty, sidebyside gap=0mm]%
+        }%
+        {%
+                \unskip\ignorespaces%
+                       \centering\usebox{\@dualtcbIBP@left@content@box}
+        }%
+        {%
+                \unskip\ignorespaces%
+                \centering\usebox{\@dualtcbIBP@right@content@box}
+        }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 % From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
@@ -874,67 +867,165 @@ dualIBPtable, sidebyside align=bottom seam, left=-1mm, lefttitle=2mm, segmentati
         \routine \cr % do each digit in quotient
 }}}
 %------------------------------------------------------------------------------------------------------------------------------%
-%                                     1 2  3 4            5 6 7   8 9
-\DeclareDocumentCommand{\polyDivision}{s t` o D(){\rparen} m m d() o s}
-{
+\def\@tcb@pld@title@label#1%
+{%
+        \ifstrempty{#1}
+                {\cftPLDtable@hyperblend*'\Large\bfmseries\sffamily'{#1}}
+                {\cftPLDtable@hyperblend*'\Large\bfmseries\sffamily'{\@tcb@title@sep#1}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                      1 2  3   4            5 6 7   8 9
+\DeclareDocumentCommand{\polyDivision@parse@booleans}{s t! t- t+}
+{%
+        \newif\if@include@zero@coefficients@%
+        \newif\if@supress@title@%
+        \newif\if@ignore@math@content@%
+        \newif\if@include@conclusion@%
         \IfBooleanTF{#1}%
-                {\toggletrue{@pld@print@zero@coefficients}}%
-                {\togglefalse{@pld@print@zero@coefficients}}%
-        \let\@pld@open@delimiter=#4%
-        \addtocounter{@pld@instances}{1}
-        \IfValueTF{#7}{\polyset{#7}}{}%
-        \polylongdiv{#5}{#6}
-        \ifx\pld@remainder\@empty%
-                \setlength{\@pld@tcb@width}{\maxof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}\unskip\ignorespaces%
-                \addtolength{\@pld@tcb@width}{-0.5mm}%
-        \else%
-                \setlength{\@pld@tcb@width}{\maxof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}\unskip\ignorespaces%
-                \addtolength{\@pld@tcb@width}{13mm}%
-        \fi%
-        \renewcommand{\baselinestretch}{1.2}
+                {\@nameuse{@include@zero@coefficients@true}}%
+                {\@nameuse{@include@zero@coefficients@false}}%
         \IfBooleanTF{#2}%
-        {
-                \IfValueTF{#3}
-                        {\def\@pld@title{\@tcb@pld@title@label{$f(x)=\dfrac{#5}{#6}$}\\[0.2em]\flushleft\large\normalfont#3}}
-                        {\def\@pld@title{\@tcb@pld@title@label{$f(x)=\dfrac{#5}{#6}$}\\[0.2em]\flushleft\normalsize\normalfont}}
-        }
-        {\IfValueTF{#3}{\def\@pld@title{{#3}}}{\def\@pld@title{{}}}}%
-        \IfBooleanTF{#2}
-                {\tcbset{pldTitledStyle, title={\@pld@title}, toptitle = 1mm, width=\@pld@tcb@width}}
-                {
-                        \IfValueTF{#3}
-                                {\tcbset{pldTitledStyle, title={\@pld@title}, width=\@pld@tcb@width}}
-                                {\tcbset{pldStyle, width=\@pld@tcb@width, toptitle=1mm}}
-                }
-        %\tcbset{title={\@pld@title}}
-        \IfValueTF{#8}{\tcbset{#8}}{}%
-        \IfValueTF{#3}
-                {\phantomsection\addcontentsline{lot}{subsection}{\large Polynomial Division  \arabic{@pld@instances}: #3}}
-                {\phantomsection\addcontentsline{lot}{subsection}{\large Polynomial Division \arabic{@pld@instances}}}
-        \IfBooleanTF{#9}
-        {
-                \begin{tcolorbox}%--
-                        \usebox{\@pld@computation@box}%
-                        \ifx\pld@remainder\@empty%
-                        \else%
-                                \usebox{\@pld@remainder@box}%
-                        \fi%
-                        \\%
-                        \usebox{\@pld@conclusion@box}%%
-                \end{tcolorbox}
-        }
-        {
-                \begin{tcolorbox}%--
-                        \usebox{\@pld@computation@box}%
-                        \ifx\pld@remainder\@empty%
-                        \else%
-                                \usebox{\@pld@remainder@box}%
-                        \fi%
-                \end{tcolorbox}
-        }
-        \renewcommand{\baselinestretch}{1.2}
-        \@reset@ul@settings
-        \tcbset{reset}
+                {\@nameuse{@supress@title@true}}%
+                {\@nameuse{@supress@title@false}}%
+        \IfBooleanTF{#3}%
+                {\@nameuse{@ignore@math@content@true}}%
+                {\@nameuse{@ignore@math@content@false}}%
+        \IfBooleanTF{#4}%
+                {\@nameuse{@include@conclusion@true}}%
+                {\@nameuse{@include@conclusion@false}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                      1     2  3   4            5 6 7   8   9
+\DeclareDocumentCommand{\polyDivision}{D(){} t! O{} D''{\rparen} m m d() O{} s}
+{%
+        \linespread@settings[context=PLD]
+        \polyDivision@parse@booleans#1%
+        \if@include@zero@coefficients@%
+                \toggletrue{@pld@print@zero@coefficients}%
+        \else%
+                \togglefalse{@pld@print@zero@coefficients}%
+        \fi%
+        \let\@pld@open@delimiter=#4%
+        \@set@current@tcb@colors{pldColorset}%
+        %\def\@save@baselinestretch{\baselinestretch}%
+        %\linespread@settings[context=PLD]
+        \ULsettings[type=uline, depth={\@pld@ul@depth}, thickness={\@pld@ul@thickness}]
+        %\def\@save@arraystretch{\arraystretch}%
+        %\def\@save@arrayrulewidth{\arrayrulewidth}%
+        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
+        %\setlength{\arrayrulewidth}{\@PLD@arrayrulewidth}%
+        %\renewcommand{\baselinestretch}{3.0}%{\@PLD@baselinestretch}%
+%        \renewcommand{\arraystretch}{3.0}%{\@PLD@arraystretch}%
+%        \renewcommand\baselinestretch{\@PLD@baselinestretch}%
+%        \setlength\arrayrulewidth{\@PLD@arrayrulewidth}%
+        %\linespread@settings[context=PLD]
+        %\linespread@settings[PLD]
+        \refstepcounter{PLDtable}%
+        \refstepcounter{table}%
+        \gdef\@PLD@math@color{stdblue}
+        \IfValueTF{#7}{\polyset{#7}}{}%
+        \polylongdiv{#5}{#6}%
+        \ULsettings[type=uline, depth={2.0pt}, thickness={1.0pt}]%
+        \def\@math@title{\centering\protect\large\shadowmath*!{f(x)=\dfrac{#5}{#6}}}%
+        \def\@text@title{#3}%
+        \if@supress@title@%
+                \def\@pld@title{}%
+        \else%
+                \if@ignore@math@content@
+                        \def\@pld@title{\@tcb@pld@title@label{#3}}%
+                \else%
+                        \def\@pld@title{\@tcb@pld@title@label{#3}\\[0.6em]\centering{\centering\@math@title}}%
+                \fi
+        \fi%
+        \def\@maxof@savebox@widths{\maxof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}%
+        \def\@minof@savebox@widths{\minof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}%
+        \ifx\pld@remainder\@empty%
+                \setlength{\@pld@tcb@width}{\@maxof@savebox@widths}%
+                \setlength{\@pld@tcb@extrude@right}{2.5mm}%
+                \addtolength{\@pld@tcb@width}{6.5mm}%
+        \else%
+                \setlength{\@pld@tcb@width}{\@maxof@savebox@widths}%
+                \addtolength{\@pld@tcb@width}{13mm}%
+                \setlength{\@pld@tcb@extrude@right}{6.5mm}%
+        \fi%
+        \setlength{\@pld@tcb@leftrightskip}%
+                {(\@pld@tcb@width + \@pld@tcb@extrude@right - \@minof@savebox@widths) / 2}%
+        \ifstrempty{\@pld@title}%
+                {\togglefalse{tcbtitle@included}}%
+                {\toggletrue{tcbtitle@included}}%
+        \ifstrempty{#3}%
+                {\def\@title@sep{}}%
+                {\def\@title@sep{\@tcb@title@sep}}%
+        \if@supress@title@%
+                \togglefalse{tcbtitle@included}%
+                \cftPLDtable@contentsline{}%
+                \bookmarkX@hypertarget{PLDtable}%
+                \tocX@hypertarget{table}%
+                \tcbset{title={}}%
+        \else%
+                \toggletrue{tcbtitle@included}%
+                \tcbset%
+                {%
+                        title=%
+                        {%
+                                %\BMKcircle[shape=arrow,scale=0.5, outline=black]%
+                                \bookmarkX@hypertarget{PLDtable}%
+                                \tocX@hypertarget{table}%
+                                \cftPLDtable@contentsline{\@title@sep#3}%
+                                \cftX@uparrow@link(dart)<0.3>{PLDtable}
+                                %[\cft@hyperaddress{PLDtable}]%
+                                \@pld@title%
+                        }%
+                }%
+        \fi%
+        \cftPLDtable@bookmark!%
+        \if@include@conclusion@%
+                \begin{tcolorbox}%
+                [
+                        PLDStyle, width=\@pld@tcb@width + 2\@tcb@boxrule@linewidth,
+                        extrude left by=\@pld@tcb@leftrightskip,
+                        extrude right by=\@pld@tcb@leftrightskip,
+                        #8
+                ]%
+                        \begin{tcolorbox}[PLDcontentStyle, width=\@pld@tcb@width]%center,tcbox width=forced center,
+                                \usebox{\@pld@computation@box}%
+                                \ifx\pld@remainder\@empty%
+                                \else%
+                                        \usebox{\@pld@remainder@box}%
+                                \fi%
+                        \end{tcolorbox}%
+                        \tcblower%
+                        \begin{tcolorbox}%
+                        [
+                        	PLDcontentStyle, width=\@pld@tcb@width, 
+                        	title={\BreakableShadowText*!:\@tcb@title@font:{PLD Result}\@tcb@title@sep}
+                        ]%
+                                \usebox{\@pld@conclusion@box}%%
+                        \end{tcolorbox}%
+                \end{tcolorbox}%
+        \else%
+                \begin{tcolorbox}%
+                [
+                        PLDStyle,
+                        width=\@pld@tcb@width + 2\@tcb@boxrule@linewidth,
+                        extrude left by=\@pld@tcb@leftrightskip,
+                        extrude right by=\@pld@tcb@leftrightskip,
+                        #8
+                ]%
+                        \begin{tcolorbox}[PLDcontentStyle, width=\@pld@tcb@width]%, width=\@pld@tcb@width
+                                \usebox{\@pld@computation@box}%
+                                \ifx\pld@remainder\@empty%
+                                \else%
+                                        \usebox{\@pld@remainder@box}%
+                                \fi\\%
+                        \end{tcolorbox}%
+                \end{tcolorbox}%
+        \fi%
+        %\renewcommand{\baselinestretch}{\@doc@baselinestretch}
+        %\renewcommand{\baselinestretch}{\@save@baselinestretch}%
+        %\setlength{\arrayrulewidth}{\@save@arrayrulewidth}%
+        %\renewcommand{\arraystretch}{\@save@arraystretch}%
+        \ULsettings[reset=true]
 }
 %******************************************************************************************************************************%
 %*************************************************************** End of 'my-math.sty' package ***************************************************************%
