@@ -1,92 +1,96 @@
 %******************************************************************************************************************************%
-%******************************************************** `imakeidx-patched.sty' *********************************************************%
+%*************************************************** `imakeidx-patched.sty' ***************************************************%
 %******************************************************************************************************************************%
 % Provides an encapsulation of the code segment provided by Joseph Wright to patch the 'keycommand' package
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{imakeidx-patched}                      %
-\RequirePackage{imakeidx}                               %
+%\RequirePackage{imakeidx}     
+%\RequirePackage[makeindex]{imakeidx}                               %
+%\RequirePackage[nonewpage]{imakeidx}                               %
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
-%\DeclareOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx}}
-%\DeclareOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx}}
-%\DeclareOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx}}
-%\DeclareOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx}}
-%\DeclareOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx}}
-%\DeclareOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx}}
-%\DeclareOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx}}
-%\DeclareOption{original}{\PassOptionsToPackage{original}{imakeidx}}
-%\DeclareOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
+\DeclareOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx}}
+\DeclareOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx}}
+\DeclareOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx}}
+\DeclareOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx}}
+\DeclareOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx}}
+\DeclareOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx}}
+\DeclareOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx}}
+\DeclareOption{original}{\PassOptionsToPackage{original}{imakeidx}}
+\DeclareOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
+%------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareOption{makeindex}{\def\imki@progdefault{makeindex}}
+%\DeclareOption{nonewpage}{\imki@nonewpagetrue\imki@disableautomatictrue}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{imakeidx-patched}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
-%\ExecuteOptions{splitindex,nonewpage}
+%\ExecuteOptions{makeindex,nonewpage}
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\RequirePackage[]{imakeidx}                               %
+\RequirePackage{imakeidx}
+%\RequirePackage[nonewpage]{imakeidx}
+%\RequirePackage[makeindex]{imakeidx}
+%\def\@idx@nonewpage{\imki@nonewpagetrue}
+%\def\@idx@makeindex{\def\imki@progdefault{makeindex}}
+%\def\@idx@noautomatic{\imki@disableautomatictrue}
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
-%******************************************************************************************************************************%
-%\renewenvironment{theindex}
-%{%
-%    \vskip\@idx@top@skip
-%    \if@twocolumn
-%        \@restonecolfalse
-%    \else
-%        \@restonecoltrue
-%    \fi
-%    \twocolumn[\@makeschapterhead{\indexname}]%
-%    \@mkboth{\MakeUppercase\indexname}{\MakeUppercase\indexname}%
-%    \thispagestyle{fancy}\parindent\z@%
-%    \parskip\z@ \@plus .3\p@\relax%
-%    \columnseprule \z@%
-%    \columnsep 35\p@%
-%    \let\item\@idxitem
-%}{\if@restonecol\onecolumn\else\clearpage\fi}%
+%\ifdefined\@imakeidx@options
+%        \RequirePackage[makeindex]{imakeidx}                              %
+%\else
+%        \RequirePackage[makeindex]{imakeidx} \imki@nonewpagetrue\imki@disableautomatictrue                              %
+%\fi
 %------------------------------------------------------------------------------------------------------------------------------%
-\ifimki@original
-        \expandafter\def\expandafter\theindex\expandafter%
+\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%******************************************************************************************************************************%
+%******************************************************** Package Body ********************************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\imki@columns{2}\imki@originalfalse
+            \ifimki@original
+        \@xp@def\expandafter\theindex\expandafter%
                 {\expandafter\imki@maybeaddtotoc\theindex}
-\else
-    \global\let\imki@idxprologue\relax
-        \RequirePackage{multicol}
-        \renewenvironment{theindex}
+\else%
+    %\def\imki@columns{2}\imki@originalfalse
+            \global\let\imki@idxprologue\relax%
+        \RequirePackage{multicol}%
+        \renewenvironment{theindex}%
         {%
-            \setlength{\topskip}{0pt}
+            \setlength{\topskip}{0pt}%
             \vskip\@idx@top@skip%
-            %\def\imki@maybeaddtotoc{}%%
-                \def\indexname{}
-                %\imki@maybeaddtotoc%
-            \imki@indexlevel{\indexname}\imki@indexheaders
-            \thispagestyle{\imki@firstpagestyle}%
-            \ifnum\imki@columns>\@ne
-                \columnsep\imki@columnsep
-                \ifx\imki@idxprologue\relax
-                        \begin{multicols}{\imki@columns}
-                \else
-                        \begin{multicols}{\imki@columns}[\imki@idxprologue]
-                \fi
-            \else
-                    \imki@idxprologue
-            \fi
-            \global\let\imki@idxprologue\relax
             \parindent\z@
-            \parskip\z@ \@plus .3\p@\relax
-            \columnseprule\ifKV@imki@columnseprule.4\p@\else\z@\fi
-            \raggedright
-            \let\item\@idxitem
-            \imki@othercode
-        }{\ifnum\imki@columns>\@ne\end{multicols}\fi}
-\fi
+            %\def\imki@maybeaddtotoc{}%%
+                \def\indexname{}%
+                %\imki@maybeaddtotoc%
+            \imki@indexlevel{\indexname}\imki@indexheaders%
+            \unskipspacing\thispagestyle{\imki@firstpagestyle}%
+            %\let\imki@columns=\tw@
+            %\def\imki@columns{2}\imki@originalfalse
+            \unskipspacing\ifnum\imki@columns>\@ne%
+                \unskipspacing\columnsep\imki@columnsep\unskipspacing%
+                \ifx\imki@idxprologue\relax%
+                        \unskipspacing\begin{multicols}{\imki@columns}\unskipspacing%
+                \else%
+                        \unskipspacing\begin{multicols}{\imki@columns}[\imki@idxprologue]\unskipspacing%
+                \fi%
+            \else%
+                    \imki@idxprologue%
+            \fi%
+            \global\let\imki@idxprologue\relax%
+            \parindent\z@%
+            \parskip\z@ \@plus .3\p@\relax%
+            \columnseprule\ifKV@imki@columnseprule.4\p@\else\z@\fi%
+            \raggedright%
+            \let\item\@idxitem%
+            \imki@othercode%
+        }{\ifnum\imki@columns>\@ne\end{multicols}\fi}%
+\fi%
 %------------------------------------------------------------------------------------------------------------------------------%
 %\def\imki@putindexsplit#1{%
 %  \ifimki@nonewpage\else
@@ -116,8 +120,26 @@
 %  %\let\indexname\imki@indexname % restore \indexname
 %}
 %------------------------------------------------------------------------------------------------------------------------------%
+%\renewenvironment{theindex}
+%{%
+%    \vskip\@idx@top@skip
+%    \if@twocolumn
+%        \@restonecolfalse
+%    \else
+%        \@restonecoltrue
+%    \fi
+%    \twocolumn[\@makeschapterhead{\indexname}]%
+%    \@mkboth{\MakeUppercase\indexname}{\MakeUppercase\indexname}%
+%    \thispagestyle{fancy}\parindent\z@%
+%    \parskip\z@ \@plus .3\p@\relax%
+%    \columnseprule \z@%
+%    \columnsep 35\p@%
+%    \let\item\@idxitem
+%}{\if@restonecol\onecolumn\else\clearpage\fi}%
 %******************************************************************************************************************************%
-%************************************************* End of 'imakeidx-patched.sty' package *************************************************%
+%******************************************** End of 'imakeidx-patched.sty' package *******************************************%
 %******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
 %------------------------------------------------------------------------------------------------------------------------------%
 \endinput

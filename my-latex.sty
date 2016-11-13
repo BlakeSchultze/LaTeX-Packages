@@ -13,6 +13,9 @@
 \ProvidesPackage{my-latex}
 \RequirePackage{pkgopts}                         % Defines two new "for" loop commands: \foreach and \breakforeach
 %------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%------------------------------------------------------------------------------------------------------------------------------%
+\pkgload@font
 \RequirePackageList{\@pkgopts@packages}
 %\newtoggle{validated}
 %******************************************************************************************************************************%
@@ -31,40 +34,40 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareComplementaryOption{rotating}{isorot}
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareBoolOptionPair{crop}
-\DeclareBoolOptionPair{landscape}
+\DeclareBoolOptionPair[false]{crop}
+\DeclareBoolOptionPair[false]{landscape}
+\DeclareBoolOptionPair[false]{twocolumn}
 \DeclareBoolOptionPair[true]{standalone}
 \DeclareBoolOptionPair[true]{coverpage}
 \DeclareBoolOptionPair[true]{toc}
 \DeclareBoolOptionPair[true]{frontbackmatter}
 \DeclareBoolOptionPair[true]{automake}
-\DeclareBoolOptionPair{fbmdotfill}
+\DeclareBoolOptionPair[true]{FBM@dotfill}
+\DeclareBoolOptionPair[false]{FBM@clearpage}
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareVoidOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx}}
-\DeclareVoidOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx}}
-\DeclareVoidOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx}}
-\DeclareVoidOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx}}
-\DeclareVoidOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx}}
-\DeclareVoidOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx}}
-\DeclareVoidOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx}}
-\DeclareVoidOption{original}{\PassOptionsToPackage{original}{imakeidx}}
-\DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx}}
+\DeclareVoidOption{xindy}{\PassOptionsToPackage{xindy}{imakeidx-patched}}
+\DeclareVoidOption{texindy}{\PassOptionsToPackage{texindy}{imakeidx-patched}}
+\DeclareVoidOption{truexindy}{\PassOptionsToPackage{truexindy}{imakeidx-patched}}
+\DeclareVoidOption{makeindex}{\PassOptionsToPackage{makeindex}{imakeidx-patched}}
+\DeclareVoidOption{noautomatic}{\PassOptionsToPackage{noautomatic}{imakeidx-patched}}
+\DeclareVoidOption{nonewpage}{\PassOptionsToPackage{nonewpage}{imakeidx-patched}}
+\DeclareVoidOption{splitindex}{\PassOptionsToPackage{splitindex}{imakeidx-patched}}
+\DeclareVoidOption{original}{\PassOptionsToPackage{original}{imakeidx-patched}}
+\DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx-patched}}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareStringOption{documentclass}[report]
 \DeclareStringOption[(OT1,lmr,m,n,10)]{font}[(OT1,lmr,m,n,10)]
-%\DeclareStringOption[OT1]{fontencoding}[OT1]%\@known@font@encodings
-%\DeclareStringOption[]{fontfamily}[]
 \DeclareStringOption{fontfamily}[lmr]
-%\DeclareStringOption[lmr]{fontfamily}[lmr]
-%\DeclareStringOption[m]{fontseries}[m]
-%\DeclareStringOption[n]{fontshape}[n]
 \DeclareStringOption[10]{fontsize}[10]
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareChoiceOption{sizeXdoc}[10]{\@known@size@clo@defs}
 \DeclareChoiceOption{fontencoding}[OT1]{\@known@font@encodings}
 \DeclareChoiceOption{fontseries}[m]{\@known@font@series}
 \DeclareChoiceOption{fontshape}[n]{\@known@font@shapes}
+\DeclareChoiceOption{frontpagenumbering}[Roman]{\@supported@page@numbering}
+\DeclareChoiceOption{docpagenumbering}[arabic]{\@supported@page@numbering}
 \DeclareChoiceOption{backpagenumbering}[roman]{\@supported@page@numbering}
+\DeclareChoiceOption{footpagelabeling}[thepage]{\@supported@page@labeling}
 \DeclareChoiceOption{fncychap}[Lenny]{\@supported@chaphead@styles}
 \DeclareChoiceOption{choiceopttest}[choicetwo]{\choicetestoptions}
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -74,7 +77,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 \ExecuteOptions{splitindex,nonewpage}
 \ProcessPackageOptions
@@ -88,16 +91,23 @@
         \PassOptionsToClass{crop}{article}
         \PassOptionsToClass{crop}{report}
 \fi
-%%------------------------------------------------------------------------------------------------------------------------------%
-\SetDocFontSettings
-\SetDocumentClass
-%\SetDocFontSettings
+%------------------------------------------------------------------------------------------------------------------------------%
+\ifmylatex@twocolumn
+        \PassOptionsToClass{twocolumn}{article}
+        \PassOptionsToClass{twocolumn}{report}
+\fi
+%------------------------------------------------------------------------------------------------------------------------------%
+\ifmylatex@FBM@clearpage
+\else
+        \PassOptionsToPackage{nonewpage}{imakeidx-patched}
+\fi
 %------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@automake
         \PassOptionsToPackage{automake}{my-glossaries}
+        \PassOptionsToPackage{makeindex}{imakeidx-patched}
 \fi
 %------------------------------------------------------------------------------------------------------------------------------%
-\ifmylatex@fbmdotfill
+\ifmylatex@FBM@dotfill
         \newcommand*{\frontbackmatterhfill}{\fbm@dotfill}%
 \else
         \newcommand*{\frontbackmatterhfill}{\fbm@nofill}%
@@ -106,40 +116,50 @@
 %\ifdraft {draft case} {final case}
 %\ifoptiondraft {option draft is given} {option draft is not given}
 %\ifoptionfinal {option final is given} {option final is not given}
+%------------------------------------------------------------------------------------------------------------------------------%
+\SetDocFontSettings
+\SetDocumentClass
+%\SetDocFontSettings
+%\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont
 %******************************************************************************************************************************%
-%************************************************************** Package Body *************************************************************%
+%********************************************************* Package Body *******************************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackage{imakeidx-patched}               % options: xindy
 \RequirePackage{my-packages}                    % Custom set of packages used in my-latex.sty development
-\RequirePackage{my-patches}                     % Contains package patches modifying/adding register variables and macros/commands/environments
+\RequirePackage{my-patches}                     % Modifies/adds reg variables + control sequences/environments to existing packages
 \RequirePackage{my-colorsets}                   % Custom colorset definitions loaded
 \RequirePackage{my-colors}                      % Custom color definitions and mixed color variables
-\RequirePackage{my-color-schemes}               % Color set definitions (\colorlet}{<scheme name>Scheme-<property>) for tcb/tikz/etc. properties
+\RequirePackage{my-color-schemes}               % Color set defs (\colorlet{<scheme name>Scheme-<property>}) for pgf/tcb/tikz/etc.
 \RequirePackage{my-definitions}                 % Custom set of packages used in my-latex.sty development
 \RequirePackage{my-regvars}                     % Custom set of packages used in my-latex.sty development
-%\RequirePackage{polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
 \RequirePackage{my-fonts}                       % Custom assignment of fonts and math alphabets to established and new font names
+\RequirePackage{tocloft-patch}                  % Patch of `cool` package, applying '\scriptscriptstyle' to exponents to reduce font
+\RequirePackage{arrowsnew}                      % Custom color definition/naming and visual settings
 \RequirePackage{my-styles}                      % Custom color definition/naming and visual settings
-\RequirePackage[acronym,toc,symbols]            % Adapatation of 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
-        {my-glossaries}                         % Options: automake, xindy/makeindex, section=chapter/(sub)section, nopostdot/main/nonumberlist
+\RequirePackage[acronym,toc,symbols]            % Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
+        {my-glossaries}                         % Options: automake, xindy/makeindex, section=, nopostdot/main/nonumberlist
 \RequirePackage[intoc]{my-nomencl}              % Nomenclature/abbreviations list similar to acronms/glossary
-\RequirePackage{mainmatter}                %
-\RequirePackage{frontbackmatter}                % Table of Contents, List of Tables/Figures/Acronyms/Symbols/Abbreviations, Index, Glossary etc.
-\RequirePackage{my-math}                        % Custom math characters/symbols, delimiters, operators, (e/x/g)defs, commands, and environments
-\RequirePackage{my-polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
-%\RequirePackage{polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, add/multiply/divide etc.
-\RequirePackage{my-lstautogobble}               % Adapted 'lstautogobble' package, automatically set 'listings' package's 'gobble=#' value
-\RequirePackage{my-listings}                    % Adapted 'listings' package for configuring code listing languages/settings/appearance
-%\RequirePackage{my-minted}                     % Adapted 'minted' package for configuring code listing languages/settings/appearance
-\RequirePackage{my-macros}                      % Higher-level composite command/environment definitions combining lower-level components
-\RequirePackage{my-graphics}                      % Higher-level composite command/environment definitions combining lower-level components
+\RequirePackage{mainmatter}                     %
+\RequirePackage{frontbackmatter}                % ToC: List of Tables/Figures/Acronyms/Symbols/Abbreviations, Glossary,Index,etc.
+\RequirePackage{my-math}                        % Custom math chars/syms, delimiters, operators, control sequences, and environments
+\RequirePackage{my-polynom}                     % Adapted 'polynom' package: polynomial long div, factoring, +,-,*,/ etc.
+\RequirePackage{my-lstautogobble}               % Adapted 'lstautogobble' package, auto sets 'listings' package's 'gobble=#' value
+\RequirePackage{my-listings}                    % Adapted 'listings' package configuring code listing languages/settings/appearance
+%\RequirePackage{my-minted}                     % Adapted 'minted' package configuring code listing languages/settings/appearance
+\RequirePackage{my-macros}                      % Higher-level composite commands/environments combining lower-level components
+\RequirePackage{my-keyvals}                     % Custom key/value commands/environments
+\RequirePackage{my-graphics}                    % Custom Tikz/PGF/etc. graphics commands/environments
+\RequirePackage{my-latex-development}           % Test/development content maintained separately
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%******************************************** End of 'my-latex.sty' top level parent package *********************************************%
+%*************************************** End of 'my-latex.sty' top level parent package ***************************************%
 %******************************************************************************************************************************%
-\catcode`!=\active
-\catcode`\!=\active
+%\catcode`!=\active
+%\catcode`\!=\active
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
+%------------------------------------------------------------------------------------------------------------------------------%
 \endinput 

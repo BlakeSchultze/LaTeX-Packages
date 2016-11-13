@@ -1,32 +1,30 @@
 %******************************************************************************************************************************%
-%************************************************************ `my-math.sty' **************************************************************%
+%******************************************************* `my-math.sty' ********************************************************%
 %******************************************************************************************************************************%
 % Defines additional math symbols, (paired) delimiters, and operators and provides macros/commands/environments for typesetting of math expressions and other math related content.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-math}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-math}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\:=\active
-\makeatletter                                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Define Math Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define Math Operators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\thisstyle#1%
 {%
@@ -45,7 +43,7 @@
 \def\@delimiter@surrounding#1{\kern1pt#1\kern1pt}
 \def\@numset@surrounding#1{\kern-1.0pt#1\kern-1.0pt}
 \def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
-\def\d#1{\kern1pt d#1}
+%\def\d#1{\kern1pt d#1}
 %\def\myastb{\myast}
 %\def\mymath#1§{$\boldsymbol{#1}$}
 \catcode`|=\active
@@ -85,7 +83,7 @@
 \newtoggle{@add@sub@TF}
 \let\@ss@style=\scriptscriptstyle
 %******************************************************************************************************************************%
-%*************************************************************** Declare/Define Math Operators ***************************************************************%
+%*************************************************** Declare/Define Math Operators ********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 % Define math symbols
@@ -202,7 +200,7 @@
 \DeclareMathOperator{\tiDFourier}{\tDFourier^{-1}}                                                                      % Text Symbol for Inverse Discrete Fourier transform
 \DeclareMathOperator{\tiDTFourier}{\tDTFourier^{-1}}                                                                    % Text Symbol for Inverse Discrete Time Fourier transform
 %******************************************************************************************************************************%
-%***************************************************************** Define Delimeter Commands *****************************************************************%
+%**************************************************** Define Delimeter Commands ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}                    % Enclose argument in parentheses
@@ -245,7 +243,7 @@
 {\kern-1.2pt\@place@norm@verts}
 {#1}
 %******************************************************************************************************************************%
-%***************************************** Definition of various set/symbol, operator, vector/matrix, etc. commands ******************************************%
+%************************ Definition of various set/symbol, operator, vector/matrix, etc. commands ****************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}                               % Raises argument #2 by distance #1 with appropriate style (#2)
@@ -260,7 +258,17 @@
 \newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}                         % Defines set { #1 | #2 }
 \newcommand\inline@dfrac[2]{\frac{\displaystyle#1}{\displaystyle#2}}
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand\@derivative@operator{s m}%
+\DeclareDocumentCommand\@differential@op{s G{x} O{1}}%
+{%
+        \ifnumcomp{#3}{=}{1}%
+                {\def\@diff@suffix{}}%
+                {\def\@diff@suffix{\raisebox{4pt}{$\scriptscriptstyle#3$}}}%
+        \IfBooleanTF{#1}%
+                {\kern1pt\mathord{\delta#2\@diff@suffix}}%
+                {\kern1pt\mathord{d#2\@diff@suffix}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@derivative@op{s m}%
 {%
         \IfBooleanTF{#1}
         {\mathord{\partial\raisebox{4pt}{$\scriptscriptstyle#2$}}}%
@@ -275,13 +283,13 @@
         \IfBooleanTF{#1}%
         {%
                 \@current@fraction@operator%
-                {\@derivative@operator*{#3}{#4}}%
-                {\@derivative@operator*{#3}{#5}}%
+                {\@derivative@op*{#3}{#4}}%
+                {\@derivative@op*{#3}{#5}}%
         }%
         {%
                 \@current@fraction@operator%
-                {\@derivative@operator{#3}{#4}}%
-                {\@derivative@operator{#3}{#5}}%
+                {\@derivative@op{#3}{#4}}%
+                {\@derivative@op{#3}{#5}}%
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -313,7 +321,7 @@
 \DeclareDocumentCommand{\axis}{s}{\IfBooleanTF{#1}{\bfmseries\ensuremath{\boldsymbol{xy-}}\text{axis}}{\ensuremath{xy-}\text{axis}}\unskip}
 \DeclareDocumentCommand{\plane}{s}{\IfBooleanTF{#1}{\bfmseries\ensuremath{\boldsymbol{xy-}}\text{plane}}{\ensuremath{xy-}\text{plane}}\unskip}
 %******************************************************************************************************************************%
-%***************************************************** Set/symbol/measure operators ******************************************************%
+%************************************************ Set/symbol/measure operators ************************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareRobustCommand\checkmark{\ensuremath{\checkmarkmath}}
@@ -406,7 +414,7 @@
         {\matx{#1}^{\@math@super@script{\dagger}}}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%******************************************************************** Function operators *********************************************************************%
+%******************************************************** Function operators **************************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\mathOp}{m m m}
@@ -448,7 +456,7 @@
                 {\hstretch{2.0}{\stretchto{\rparen}{\@tot@ht pt}}}
 }
 %******************************************************************************************************************************%
-%************************************************** Text operator w/ paired delimiter options definitions ****************************************************%
+%************************************ Text operator w/ paired delimiter options definitions ***********************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\textOp}{m m m t'}
@@ -536,7 +544,7 @@
 \DeclareDocumentCommand{\log}{s O{\parenthesized} m}
         {\textOp{log}{#2}{#3}}
 %******************************************************************************************************************************%
-%************************************************************** Transform Operator Definitions ***************************************************************%
+%*************************************************** Transform Operator Definitions *******************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\txformOp}{s m m O{} m m}
@@ -620,7 +628,7 @@
                 {\txformOp{mathcalst}{R}[^{\inverseSym}\kern-1.5pt]{#2}{#3}}
 }
 %******************************************************************************************************************************%
-%********************************************* Configuration/setup/component helper commands *********************************************%
+%**************************************** Configuration/setup/component helper commands ***************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@inprod@comma@pos}{m m m}
@@ -690,7 +698,7 @@
     \end{tikzpicture}
 }
 %******************************************************************************************************************************%
-%*************************************************** New/Modified Cases Environments *****************************************************%
+%********************************************** New/Modified Cases Environments ***********************************************%
 %******************************************************************************************************************************%
 % Add spacing after left brace in dcases environment
 \newcases{sdcases}{\quad}{%
@@ -702,7 +710,7 @@
 \renewcases{dcases*}{\quad}{%
   $\m@th\displaystyle{\;##}$\hfil}{{##}\hfil}{\lbrace}{.}
 %******************************************************************************************************************************%
-%***************************************** New math environments and environment-like commands *******************************************%
+%************************************ New math environments and environment-like commands *************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 % Equivalent to align/align* environment but with math content automatically made bold
@@ -720,34 +728,28 @@
         {\boldmath\IfBooleanTF{#1}{\csname alignat*\endcsname{2}}{\alignat{2}}}
         {\IfBooleanTF{#1}{\csname endalignat*\endcsname}{\endalignat}}
 %------------------------------------------------------------------------------------------------------------------------------%
-%% Generates table for the 'tabular method' of 'integration by parts' (IBP), saving the position of each table entry as a tikz node using tikz's
-%% 'remember picture' capability, then connecting the nodes with the appropriate IBP arrows.  The resulting IBP table is then given a color
-%% background and enclosing it in a color frame box.
+\def\@default@differential@var{x}
+\def\@differential@var{\@default@differential@var}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\SetMathVar}{G{\@default@differential@var}}{\gdef\@differential@var{\@default@differential@var}}
+%------------------------------------------------------------------------------------------------------------------------------%
+%% Generates table for the 'tabular method' of 'integration by parts' (IBP), arrows are added on 2nd pass
 %                                   1 2  3   4 5 6 7
-\DeclareDocumentEnvironment{tcbIBP}{s t! d() o m m m}
+\DeclareDocumentEnvironment{tcbIBP}{s t! d() o m m g}
 {%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
         \setlength\doublerulesep{0pt}%
         \setlength{\arrayrulewidth}{0.75pt}%
         %\linespread@settings[context=IBP]
         %\setcounter{@IBP@rows@counter}{0}%
         \resetcounter{@IBP@rows@counter}%
-        \refstepcounter{IBPtable}%
+        \stepcounter{IBPtable}%
+        %\stepcounter{table}%
         \@set@current@tcb@colors{IBPColorset}%
         \def\@save@baselinestretch{\baselinestretch}%
         \def\@save@arraystretch{\arraystretch}%
-        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
-        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
-        %\renewcommand{\arraystretch}{\@tcb@arraystretch}%
-        %\setlength{\arrayrulewidth}{\@IBP@arrayrulewidth}%
-        %\renewcommand{\baselinestretch}{\@IBP@baselinestretch}%
-        %\renewcommand{\arraystretch}{\@IBP@arraystretch}%
-        %\setlength{\arrayrulewidth}{\@IBP@arrayrulewidth}%
-        %\renewcommand{\baselinestretch}{3.0}%
-        %\renewcommand{\arraystretch}{3.0}%
-        %\linespread@settings[context=IBP]
-        %\linespread@settingsB[IBP]
         \arrayrulecolor{IBPColorset-coldraw}%
         \def\IBP@text@content{}%
+        \IfValueTF{#7}{\def\@differential@var{#7}}{}%
         \IfBooleanTF{#2}{\def\IBP@math@content{}}%
         {%
                 \IfValueTF{#3}%
@@ -758,23 +760,23 @@
                 {
                         \IfValueTF{#4}%
                                 {\def\IBP@math@content{\protect\shadowmath*!{#4}}}%
-                                {\def\IBP@math@content{\protect\shadowmath*!{\int #5#6#7}}}%
+                                {\def\IBP@math@content{\protect\shadowmath*!{\int #5#6\@differential@op{\@differential@var}}}}%
                 }%
                 \IfBooleanTF{#1}%
                         {\preto{\IBP@math@content}{\\[0.3em]}}{}%
         }%
         \savebox{\@IBP@math@content@box}{\IBP@math@content}%
         \savebox{\@IBP@text@content@box}{\IBP@text@content}%
-        \setlength{\@tcbIBP@math@content@width}{\wd\@IBP@math@content@box}%
-        \setlength{\@tcbIBP@text@content@width}{\wd\@IBP@text@content@box}%
+        \setlength{\@tcb@IBP@math@content@width}{\wd\@IBP@math@content@box}%
+        \setlength{\@tcb@IBP@text@content@width}{\wd\@IBP@text@content@box}%
         \centering%
         %\tocX@hypertarget[65pt]{table}[IBPtable]
-        \IBPtable{>{$}c<{$} c @{\hspace{\@tcbIBP@column@separation}} c  >{$}c<{$}}{\IBP@math@content}[\IBP@text@content]%
+        \IBPtable{>{$}c<{$} c @{\hspace{\@tcb@IBP@column@separation}} c  >{$}c<{$}}{\IBP@math@content}[\IBP@text@content]%
                 \centering%\linespread@settings[context=IBP]%
-                \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcbIBP@before@hrule@skip]%
+                \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcb@IBP@before@hrule@skip]%
                 \arrayrulecolor{IBPColorset-coldraw}\hline\arrayrulecolor{IBPColorset-rulecolor}%
                 \hline\arrayrulecolor{IBPColorset-coldraw}%
-                \hline\\[\@tcbIBP@after@hrule@skip]%
+                \hline\\[\@tcb@IBP@after@hrule@skip]%
                 \addIBProw{#5}{#6}\\%
 }{%
         \endIBPtable%
@@ -783,16 +785,16 @@
         %\renewcommand{\arraystretch}{\@save@arraystretch}%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\NewEnviron{collectedBODY}{\unskip\ignorespaces\BODY}
+\NewEnviron{collectedBODY}{\unskipspacing\BODY}
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\dualtcbIBP}{s o m m}
 {%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
-        \savebox{\@dualtcbIBP@left@content@box}{\begin{collectedBODY}#3\\[-2.5em]\end{collectedBODY}}%
-        \savebox{\@dualtcbIBP@right@content@box}{\begin{collectedBODY}#4\\[-2.5em]\end{collectedBODY}}%
-        \setlength{\@env@BODY@width}{\wd\@dualtcbIBP@left@content@box + \wd\@dualtcbIBP@right@content@box + 14mm}%
-        \setlength{\@dualtcbIBP@text@leftcontent@width}{\wd\@dualtcbIBP@left@content@box}%
-        \setlength{\@dualtcbIBP@text@rightcontent@width}{\wd\@dualtcbIBP@right@content@box}%
-        \setlength{\@macro@length@diff}{\wd\@dualtcbIBP@left@content@box - \wd\@dualtcbIBP@right@content@box}%
+        \savebox{\@tcb@dualIBP@left@content@box}{\begin{collectedBODY}#3\\[-2.5em]\end{collectedBODY}}%
+        \savebox{\@tcb@dualIBP@right@content@box}{\begin{collectedBODY}#4\\[-2.5em]\end{collectedBODY}}%
+        \setlength{\@env@BODY@width}{\wd\@tcb@dualIBP@left@content@box + \wd\@tcb@dualIBP@right@content@box + 14mm}%
+        \setlength{\@tcb@dualIBP@text@leftcontent@width}{\wd\@tcb@dualIBP@left@content@box}%
+        \setlength{\@tcb@dualIBP@text@rightcontent@width}{\wd\@tcb@dualIBP@right@content@box}%
+        \setlength{\@macro@length@diff}{\wd\@tcb@dualIBP@left@content@box - \wd\@tcb@dualIBP@right@content@box}%
         \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
         \@set@current@tcb@colors{tcbBlueScheme}%
         \IfValueTF{#2}%
@@ -819,12 +821,12 @@
                         segmentation empty, sidebyside gap=0mm]%
         }%
         {%
-                \unskip\ignorespaces%
-                       \centering\usebox{\@dualtcbIBP@left@content@box}
+                \unskipspacing%
+                       \centering\usebox{\@tcb@dualIBP@left@content@box}
         }%
         {%
-                \unskip\ignorespaces%
-                \centering\usebox{\@dualtcbIBP@right@content@box}
+                \unskipspacing%
+                \centering\usebox{\@tcb@dualIBP@right@content@box}
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -898,7 +900,8 @@
 %                                      1     2  3   4            5 6 7   8   9
 \DeclareDocumentCommand{\polyDivision}{D(){} t! O{} D''{\rparen} m m d() O{} s}
 {%
-        \linespread@settings[context=PLD]
+        %\linespread@settings[context=PLD]
+        \setlinespread{PLD}%
         \polyDivision@parse@booleans#1%
         \if@include@zero@coefficients@%
                 \toggletrue{@pld@print@zero@coefficients}%
@@ -907,21 +910,9 @@
         \fi%
         \let\@pld@open@delimiter=#4%
         \@set@current@tcb@colors{pldColorset}%
-        %\def\@save@baselinestretch{\baselinestretch}%
-        %\linespread@settings[context=PLD]
         \ULsettings[type=uline, depth={\@pld@ul@depth}, thickness={\@pld@ul@thickness}]
-        %\def\@save@arraystretch{\arraystretch}%
-        %\def\@save@arrayrulewidth{\arrayrulewidth}%
-        %\renewcommand{\baselinestretch}{\@tcb@baselinestretch}%
-        %\setlength{\arrayrulewidth}{\@PLD@arrayrulewidth}%
-        %\renewcommand{\baselinestretch}{3.0}%{\@PLD@baselinestretch}%
-%        \renewcommand{\arraystretch}{3.0}%{\@PLD@arraystretch}%
-%        \renewcommand\baselinestretch{\@PLD@baselinestretch}%
-%        \setlength\arrayrulewidth{\@PLD@arrayrulewidth}%
-        %\linespread@settings[context=PLD]
-        %\linespread@settings[PLD]
-        \refstepcounter{PLDtable}%
-        \refstepcounter{table}%
+        \stepcounter{PLDtable}%
+        \stepcounter{table}%
         \gdef\@PLD@math@color{stdblue}
         \IfValueTF{#7}{\polyset{#7}}{}%
         \polylongdiv{#5}{#6}%
@@ -968,12 +959,10 @@
                 {%
                         title=%
                         {%
-                                %\BMKcircle[shape=arrow,scale=0.5, outline=black]%
                                 \bookmarkX@hypertarget{PLDtable}%
-                                \tocX@hypertarget{table}%
+                                %\tocX@hypertarget{PLDtable}%
                                 \cftPLDtable@contentsline{\@title@sep#3}%
                                 \cftX@uparrow@link(dart)<0.3>{PLDtable}
-                                %[\cft@hyperaddress{PLDtable}]%
                                 \@pld@title%
                         }%
                 }%
@@ -997,8 +986,8 @@
                         \tcblower%
                         \begin{tcolorbox}%
                         [
-                        	PLDcontentStyle, width=\@pld@tcb@width, 
-                        	title={\BreakableShadowText*!:\@tcb@title@font:{PLD Result}\@tcb@title@sep}
+                                PLDcontentStyle, width=\@pld@tcb@width,
+                                title={\BreakableShadowText*!:\@tcb@title@font:{PLD Result}\@tcb@title@sep}
                         ]%
                                 \usebox{\@pld@conclusion@box}%%
                         \end{tcolorbox}%
@@ -1021,16 +1010,46 @@
                         \end{tcolorbox}%
                 \end{tcolorbox}%
         \fi%
-        %\renewcommand{\baselinestretch}{\@doc@baselinestretch}
-        %\renewcommand{\baselinestretch}{\@save@baselinestretch}%
-        %\setlength{\arrayrulewidth}{\@save@arrayrulewidth}%
-        %\renewcommand{\arraystretch}{\@save@arraystretch}%
         \ULsettings[reset=true]
 }
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\toint}{m o}
+{%
+        \tikzmath%
+        {
+                integer \x;
+                \x = #1;
+        }%
+        \IfValueTF{#2}{\let#2\pgfmathresult}{}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\stripunits}{m o}
+{%
+        \pgfmathsetmacro\@unitless{#1}%
+        \let\pgfmathresult\@unitless%
+        \IfValueTF{#2}{\let#2\@unitless}{}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\iflength}{m m m m m}
+{%
+        \pgfmathparse{ifthenelse(#1 #2 #3, 1, 0)}
+        \if\pgfmathresult 1\relax
+                #4%
+        \else
+                #5%
+        \fi
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\moduloint#1#2%
+{%
+        \pgfmathparse{int(Mod(#2,#1))}%\pgfmathresult%
+}
+
 %******************************************************************************************************************************%
-%*************************************************************** End of 'my-math.sty' package ***************************************************************%
+%************************************************** End of 'my-math.sty' package **********************************************%
 %******************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
-%\catcode`\:=12
 \endinput

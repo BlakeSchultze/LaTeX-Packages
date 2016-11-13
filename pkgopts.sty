@@ -1,56 +1,128 @@
 %******************************************************************************************************************************%
-%*********************************************************** `pkgopts.sty' ***************************************************************%
+%****************************************************** `pkgopts.sty' *********************************************************%
 %******************************************************************************************************************************%
 % Expands upon the 'kvoptions' package to add another '\DeclareXOption' package option key type and associated definition/management commands corresponding to a 'X=Choice' type key, analagous to a key defined using the 'define@choicekey' command of the 'keyval' package, thereby providing key/value package option equivalents to each of the primary key types defined by the 'keyval' package.  This package also
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{pkgopts}                       %
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{pkgopts}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 %\newtoggle{validated}
 \newif\ifvalidated\validatedfalse
 \newif\if@choicevals@validated\@choicevals@validatedfalse
+%******************************************************************************************************************************%
+%************************************************ Plain TeX macro definitions *************************************************%
+%******************************************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal/helper macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\fullyexpand#1{\romannumeral - `0#1}
 \def\shown#1{\expandafter\show\csname\string#1\endcsname}
 \def\showthen#1{\expandafter\showthe\csname\string#1\endcsname}
 \def\don#1{\csname\string#1\endcsname}
 \def\defn#1{\expandafter\def\csname\string#1\endcsname}
-\def\@nil{}
-\def\@nilbrackets[#1]{}
-\def\@identity#1{#1}
-\long\def\firstofone#1{#1}
-\long\def\firstoftwo#1#2{#1}
-\long\def\secondoftwo#1#2{#2}
-\long\def\firstofthree#1#2#3{#1}
-\long\def\secondofthree#1#2#3{#2}
-\long\def\thirdofthree#1#2#3{#3}
-\long\def\firsttwoofthree#1#2#3{#1#2}
-\long\def\secondtwoofthree#1#2#3{#2#3}
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\xp@def#1#2{\expandafter\def\csname#1\endcsname{#2}}
-\def\xp@edef#1#2{\expandafter\edef\csname#1\endcsname{#2}}
-\def\xp@gdef#1#2{\expandafter\gdef\csname#1\endcsname{#2}}
-\def\xp@xdef#1#2{\expandafter\xdef\csname#1\endcsname{#2}}
+\def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
+\def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
+\xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
+\def\minispace{\space\!}
+\def\tinyspace{\space\!\!}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@add@to@deflist#1#2%
+{
+        \ifx#2\@empty\undef#2\fi
+        \ifundef{#2}%
+                {\xdef#2{#1}}%
+                {\xdef#2{#2,#1}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@add@to@argslist#1#2%
+{
+        %\ifx#2\@empty\undef#2\fi
+        \ifundef{#2}%
+                {\gdef#2{{#1}}}%
+                {\gdef#2{#2 {#1}}}%
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macros for defining macros requiring expansion first ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%@@xpdef base
+%xpdef none
+%xp@@def both
+%@xpdef 1st
+%xp@def 2nd
+\def\xp{\expandafter}
+\def\@xp@def{\expandafter\def}
+\def\@xp@edef{\expandafter\edef}
+\def\@xp@gdef{\expandafter\gdef}
+\def\@xp@xdef{\expandafter\xdef}
+\def\@xp@numdef{\expandafter\numdef}
+\def\@xp@dimdef{\expandafter\dimdef}
+\def\@xp@newcommand{\expandafter\newcommand}
+\def\@xp@renewcommand{\expandafter\renewcommand}
+\def\@xp@setlength{\expandafter\setlength}
+\def\@xp@set#1{\expandafter\csname set#1\endcsname}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\xp@def#1#2{\@xp@def\csname#1\endcsname{#2}}
+\def\xp@edef#1#2{\@xp@edef\csname#1\endcsname{#2}}
+\def\xp@gdef#1#2{\@xp@gdef\csname#1\endcsname{#2}}
+\def\xp@xdef#1#2{\@xp@xdef\csname#1\endcsname{#2}}
+\def\xp@numdef#1#2{\@xp@numdef\csname#1\endcsname{#2}}
+\def\xp@dimdef#1#2{\@xp@dimdef\csname#1\endcsname{#2}}
+\def\xp@newcommand#1#2{\@xp@newcommand\csname#1\endcsname{#2}}
+\def\xp@renewcommand#1#2{\@xp@renewcommand\csname#1\endcsname{#2}}
+\def\xp@setlength#1#2{\@xp@setlength\csname#1\endcsname{#2}}%{\@nameuse{cft\@connect@to\Z}}}
+\def\xp@set#1#2#3{\@xp@set{#1}\csname#2\endcsname{#3}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\xp@def@#1#2{\xp@def{#1}{\csname#2\endcsname}}
+\def\xp@edef@#1#2{\xp@edef{#1}{\csname#2\endcsname}}
+\def\xp@gdef@#1#2{\xp@gdef{#1}{\csname#2\endcsname}}
+\def\xp@xdef@#1#2{\xp@xdef{#1}{\csname#2\endcsname}}
+\def\xp@numdef@#1#2{\xp@numdef{#1}{\csname#2\endcsname}}
+\def\xp@dimdef@#1#2{\xp@dimdef{#1}{\csname#2\endcsname}}
+\def\xp@newcommand@#1#2{\xp@newcommand{#1}{\csname#2\endcsname}}
+\def\xp@renewcommand@#1#2{\xp@renewcommand{#1}{\csname#2\endcsname}}
+\def\xp@setlength@#1#2{\xp@setlength{#1}{\csname#2\endcsname}}%}
+\def\xp@set@#1#2#3{\xp@set{#1}{#2}{#3}}
+%  \xp@set@{length}{@macro@length}{5pt}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\xp@@def#1#2{\@xp@def\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@edef#1#2{\@xp@edef\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@gdef#1#2{\@xp@gdef\\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@xdef#1#2{\@xp@xdef\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@newcommand#1#2{\@xp@newcommand\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@renewcommand#1#2{\@xp@renewcommand\expandafter#1\expandafter{\csname#2\endcsname}}
+\def\xp@@setlength#1#2{\@xp@setlength#1{\csname#2\endcsname}}
+\def\xp@@set#1#2#3{\@xp@set{#1}#2{\csname#3\endcsname}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\xpdef#1#2{\@xp@def\expandafter#1\expandafter{#2}}
+\def\xpedef#1#2{\@xp@edef\expandafter#1\expandafter{#2}}
+\def\xpgdef#1#2{\@xp@gdef\\expandafter#1\expandafter{#2}}
+\def\xpxdef#1#2{\@xp@xdef\expandafter#1\expandafter{#2}}
+\def\xpnewcommand#1#2{\@xp@newcommand\expandafter#1\expandafter{#2}}
+\def\xprenewcommand#1#2{\@xp@renewcommand\expandafter#1\expandafter{#2}}
+\def\xpsetlength#1#2{\@xp@setlength#1{#2}}
+\def\xpset#1#2#3{\@xp@set{#1}#2{#3}}
+%------------------------------------------------------------------------------------------------------------------------------%
 \def\xp@cmd#1#2{\expandafter#1\expandafter#2}
 \def\xp@newif#1{\expandafter\newif\csname#1\endcsname}
+\def\xp@ifnum#1{\expandafter\ifnum\csname#1\endcsname}
 \def\xp@ifx#1#2{\expandafter\ifx\expandafter#1\expandafter\csname#2\endcsname}
 \def\xp@ifdefempty#1#2#3%
 {%
@@ -65,116 +137,197 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\@csname#1{\csname #1\endcsname}
 \def\thecsname#1{\expandafter\secondoftwo\string#1}
-  \def\x{\endgroup
-    \expandafter\edef\csname etexcmds@AtEnd\endcsname{%
-      \endlinechar=\the\endlinechar\relax
-      \catcode13=\the\catcode13\relax
-      \catcode32=\the\catcode32\relax
-      \catcode35=\the\catcode35\relax
-      \catcode61=\the\catcode61\relax
-      \catcode64=\the\catcode64\relax
-      \catcode123=\the\catcode123\relax
-      \catcode125=\the\catcode125\relax
-    }%
-  }%
+\def\detok@csname#1{\expandafter\secondoftwo\detokenize{#1}}
+\def\scopedef#1#2%
+{%
+	\begingroup#1%
+     	\edef\x{\endgroup\noexpand#2}\x%
+}
+%\def\x%
+%{%
+%	\endgroup
+%    	\expandafter\edef\csname etexcmds@AtEnd\endcsname%
+%    	{%
+%      		\endlinechar=\the\endlinechar\relax
+%      		\catcode13=\the\catcode13\relax
+%      		\catcode32=\the\catcode32\relax
+%      		\catcode35=\the\catcode35\relax
+%      		\catcode61=\the\catcode61\relax
+%      		\catcode64=\the\catcode64\relax
+%      		\catcode123=\the\catcode123\relax
+%      		\catcode125=\the\catcode125\relax
+%    	}%
+%}%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro argument parsing/storage commands  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@edef@argone@argtwo<#1,#2>%
-{%
-        \edef\@arg@one{#1}%
-        \edef\@arg@two{#2}%
-}
+\def\fullyexpand#1{\romannumeral - `0#1}
+\def\@nil{}
+\def\@nilbrackets[#1]{}
+\def\@identity#1{#1}
+\long\def\@gobblethree#1#2#3{}
+\long\def\firstofone#1{#1}
+\long\def\firstoftwo#1#2{#1}
+\long\def\secondoftwo#1#2{#2}
+\long\def\firstofthree#1#2#3{#1}
+\long\def\secondofthree#1#2#3{#2}
+\long\def\thirdofthree#1#2#3{#3}
+\long\def\firsttwoofthree#1#2#3{#1#2}
+\long\def\secondtwoofthree#1#2#3{#2#3}
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@edef@argthree@argfour<#1,#2>%
-{%
-        \edef\@arg@three{#1}%
-        \edef\@arg@four{#2}%
-}
+\def\rarg#1{\csname arg\romannumeral#1\endcsname}
+\def\largdef#1{\@namedef{arg\romannumeral\numexpr\narg+1\relax}{#1}}
+\def\larg{\csname arg\romannumeral\numexpr\narg+1\relax\endcsname}
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@edef@arg@one@to@four<#1,#2,#3,#4>%
+\newcommand\getcsvargs[2][\roman]%
 {%
-        \edef\@arg@one{#1}%
-        \edef\@arg@two{#2}%
-        \edef\@arg@three{#3}%
-        \edef\@arg@four{#4}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@set@csv@length<#1,#2>%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \setlength{#1}{\@arg@two}%
-}
-\def\@set@keyval@length<#1=#2>%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \setlength{#1}{\@arg@two}%
-}
-\def\@let@csv@macro@pair<#1,#2>%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \expandafter\let\csname#1\endcsname=\@arg@two%
-}
-\def\@let@keyval@macro@pair<#1=#2>%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \expandafter\let\csname#1\endcsname=\@arg@two%
-}
-\def\@def@csv@pair#1,#2%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \@namedef{#1}{\@arg@two}%
-}
-\def\@def@keyval@lpair#1=#2%
-{%
-        \@edef@argone@argtwo<#1,#2>%
-        \@namedef{#1}{\@arg@two}%
+        \def\@csvargs@numformat{#1}%
+        \if T\converttilde\def~{ }\else\catcode`~=12\fi
+        \protected@edef\the@string{#2}%
+        \setcounter{arg@index}{0}%
+        \lowercase{\expandafter\parse@csvBlock\the@string},\string@end
+        \let~\SaveHardspace%
+        \catcode`~=13
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@set@length@pair<#1,#2>=<#3,#4>%
+%\def\getvargs#1%
+\newcommand\getvargs[2][\roman]%
 {%
-        %\@edef@arg@one@to@four<#1,#2,#3,#4>%
-        %\@set@csv@length<\@arg@one,\@arg@three>%
-        %\@set@csv@length<\@arg@two,\@arg@four>%
-        %\@set@csv@length<#1,#3>%
-        %\@set@csv@length<#2,#4>%
-        \setlength{#1}{#3}%
-        \setlength{#2}{#4}%
+        \def\@vargs@numformat{#1}%
+        \if T\converttilde\def~{ }\else\catcode`~=12\fi
+        \protected@edef\the@string{#2}%
+        \setcounter{arg@index}{0}%
+        \lowercase{\expandafter\parse@vBlock\the@string}\string@end
+        \let~\SaveHardspace%
+        \catcode`~=13
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@let@macro@pair<#1,#2>=<#3,#4>%
+\def\parse@csvBlock#1,%
 {%
-        \@edef@arg@one@to@four<#1,#2,#3,#4>%
-        \expandafter\let\csname\@arg@one\endcsname=\@arg@three%
-        \expandafter\let\csname\@arg@two\endcsname=\@arg@four%
+        \stepcounter{arg@index}%
+        \@namedef{arg\@csvargs@numformat{arg@index}}{#1}%
+        \futurelet\tmp\parse@csvBlock@%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@def@macro@pair<#1,#2>=<#3,#4>%
+\def\parse@csvBlock@%
 {%
-       \@edef@arg@one@to@four<#1,#2,#3,#4>%
-       \expandafter\@namedef\expandafter{\@arg@one}{\@arg@three}%
-       \expandafter\@namedef\expandafter{\@arg@two}{\@arg@four}%
-       %\@namedef{#1}{#3}%
-       %\@namedef{#2}{#4}%
+        \ifx\tmp\string@end\edef\narg{\thearg@index}\expandafter\@gobble
+        \else\expandafter\parse@csvBlock\fi%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
-\def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
-\xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
-\def\minispace{\space\!}
+\def\parse@vBlock#1%
+{%
+        \stepcounter{arg@index}%
+        \@namedef{arg\@vargs@numformat{arg@index}}{#1}%
+        \futurelet\tmp\parse@vBlock@%
+}
 %------------------------------------------------------------------------------------------------------------------------------%
-\def\@add@to@deflist#1#2%
+\def\parse@vBlock@%
+{%
+        \ifx\tmp\string@end\edef\narg{\thearg@index}\expandafter\@gobble
+        \else\expandafter\parse@vBlock\fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\listprintsep#1#2#3#4%
+{%
+        \ifnumcomp{#1}{<}{#2}{#3}{#4}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\printargsC#1%
+{%
+        \getargsC{#1}%
+        \setcounter{argindex}{0}%
+        \whiledo{\theargindex < \narg}%
+        {%
+                \stepcounter{argindex}%
+                \csname arg\romannumeral\theargindex\endcsname%
+                \listprintsep{\theargindex}{\narg}{,\space}{}%
+        }\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\printvargs#1%
+{%
+        \getvargs{#1}%
+        \setcounter{argindex}{0}%
+        \whiledo{\theargindex < \narg}%
+        {%
+                \stepcounter{argindex}%
+                \csname arg\romannumeral\theargindex\endcsname%
+                \listprintsep{\theargindex}{\narg}{,\space}{}%
+        }\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\printcsvargs#1%
+{%
+        \getcsvargs{#1}%
+        \setcounter{argindex}{0}%
+        \whiledo{\theargindex < \narg}%
+        {%
+                \stepcounter{argindex}%
+                \csname arg\romannumeral\theargindex\endcsname%
+                \listprintsep{\theargindex}{\narg}{,\space}{}%
+        }\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@create@tokenlist#1#2%
+{%
+        \@tfor\next:=#1\do%
+        {%
+                \expandafter\@add@to@deflist%
+                \expandafter{\expandafter\string\next}%
+                {#2}
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@print@deflist#1%
 {
-        \ifundef{#2}%
-                {\edef#2{#1}}%
-                {\edef#2{#2,#1}}%
-
+        \edef\@current@list{#1}
+        \@for\next:=\@current@list%
+                \do{\next,}%
 }
+\def\isinlist#1#2#3%
+{%
+        \def\tmp##1#2##2\end%
+        {%
+                \def\tmp{##2}%
+                \ifx\tmp\empty \csname iffalse\expandafter\endcsname \else
+                  \csname iftrue\expandafter\endcsname \fi%
+        }% end of \def\tmp
+        \expandafter\tmp#1\endlistsep#2\end
+}
+\def\convertto#1#2{\strip@pt\dimexpr 1#1*65536/\number\dimexpr 1#2}     % Convert value of #1 to units of #2
+\long\def\addto#1#2{\expandafter\def\expandafter#1\expandafter{#1#2}}
+\def\addtolist#1#2{\lst@lAddTo#1{#2}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\RA#1|#2|#3|#4;%
+{%
+        \addtolist{\alist}{#1#2,}%
+        \expandafter\gdef\csname#1#2\endcsname{\textit{#1}&#2&#3&#4\cr\relax}
+        \lst@BubbleSort{\alist}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\RB#1|#2|#3|#4;%
+{%
+        \addtolist{\alist}{#2#1,}%
+        \expandafter\gdef\csname#2#1\endcsname{\textit{#1}&#2&#3&#4\cr\relax}
+        \lst@BubbleSort{\alist}
+}
+\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}     %Print code executed after environment #1 closes
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \def\pkgname{my-latex}%
+\def\pkgload@font{\fontfamily{cmr}\selectfont}%
 \newcommand\@pkgopts@packages{etoolbox,kvoptions,pgffor}
 \gdef\choicetestoptions{choiceone,choicetwo,choicethree}
-\gdef\@supported@page@numbering{arabic,roman,Roman,alph,Alph}
+\gdef\@supported@page@numbering{arabic,roman,Roman,alph,Alph,fnsymbol}
+\gdef\@supported@page@labeling{thepage,oftotal,ofsector,rawpage}
 \gdef\@supported@chaphead@styles{Sonny,Lenny,Glenn,Conny,Rejne,Bjarne,Bjornstrup,PetersLenny}
 \gdef\@known@documentclasses{report,article,journal,proceedings}
+%\gdef\@imakeidx@options{}
 %------------------------------------------------------------------------------------------------------------------------------%
 \gdef\@known@fontname@fontcode@pairs%
 {
@@ -209,12 +362,12 @@
         {Latin Modern Roman}/lmr,
         {Latin Modern Sans Serif}/lmss,
         {Latin Modern Sans Typewriter}/lmtt,
-	{LM Dunhill}/lmdh,
+        {LM Dunhill}/lmdh,
         {LM Roman}/lmr,
         {LM Sans Serif}/lmss,
         {LM Sans Typewriter}/lmtt,
         {New Century Schoolbook}/pnc,
-	{Palatino}/ppl,
+        {Palatino}/ppl,
         {TEX Gyre Termes}/qtm,
         {TEX Gyre Pagella}/qpl,
         {TEX Gyre Bonum}/qbk,
@@ -258,7 +411,7 @@
 \gdef\@known@size@clo@defs{10,11,12}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePackageOnce[1]
@@ -272,7 +425,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePackageList[1]{\@for\next:=#1\do{\expandafter\RequirePackageOnce\expandafter{\next}}}
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 \newcommand\DeclareChoiceOptionMessage[2][\KVO@prefix]%
 {%\DeclareChoiceOptionMessage[<prefix>]{<key>}
@@ -353,9 +506,9 @@
                 {}{\@nameuse{#1#2true}}%
         \@nameuse{if\@nameuse{@\next @prefix}\next}%
                 \ValidateChoiceCS%
-	                {\csuse{#1#2}}%
-	                {@#1valid@#2@choice@options}%
-	                {}{\DeclareChoiceOptionError[#1]{#2}}%
+                        {\csuse{#1#2}}%
+                        {@#1valid@#2@choice@options}%
+                        {}{\DeclareChoiceOptionError[#1]{#2}}%
         \fi%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -373,13 +526,13 @@
                 {\def\@current@prefix{\KVO@prefix}}%
                 {\def\@current@prefix{#1}}%
         \ifstrempty{#3}
-        	{\DeclareStringOption{#2}}%
-        	{\DeclareStringOption[#3]{#2}[#3]}%
+                {\DeclareStringOption{#2}}%
+                {\DeclareStringOption[#3]{#2}[#3]}%
         \ValidateChoicePair{1}{#3}{#4}%
-	{%
-		\xp@xdef{\@current@prefix#2@default@val}{\@validated@index@value}%
-		\xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}%
-	}{}%
+        {%
+                \xp@xdef{\@current@prefix#2@default@val}{\@validated@index@value}%
+                \xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}%
+        }{}%
         \@add@to@deflist{#2}{\@defined@ChoiceVal@Options}
         \xp@newif{if\@current@prefix#2}%->\if<prefix><key>
         \xp@xdef{@#2@prefix}{\@current@prefix}%
@@ -393,14 +546,14 @@
         \@nameuse{if\@nameuse{@\next @prefix}\next}%
                 \xdef\@valid@choiceval@options{\@nameuse{#1valid@#2@choiceval@options}}%
                 \xdef\@current@choiceval@option{\csname mylatex@#2\endcsname}
-        	\ValidateChoicePair{1}{\@current@choiceval@option}{\@valid@choiceval@options}%
-	        	{\xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}}%
-			{\DeclareChoiceValOptionError[#1]{#2}}%
-	\fi%
+                \ValidateChoicePair{1}{\@current@choiceval@option}{\@valid@choiceval@options}%
+                        {\xp@xdef{\@current@prefix#2@choiceval@value}{\@validated@index@value}}%
+                        {\DeclareChoiceValOptionError[#1]{#2}}%
+        \fi%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessChoiceValOptions%
-	{\@for\next:=\@defined@ChoiceVal@Options\do{\ProcessChoiceValOption[\csname @\next @prefix\endcsname]{\next}}}
+        {\@for\next:=\@defined@ChoiceVal@Options\do{\ProcessChoiceValOption[\csname @\next @prefix\endcsname]{\next}}}
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ProcessPackageOptions[1][]%
 {%\ProcessPackageOptions[family]
@@ -471,7 +624,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintPackageList{\noindent \underline{Loaded Packages} : \@loaded@packages}
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 \newcommand\SetDocumentClass[1][\pkgopts@prefix]%
 {%\SetDocumentClass[<prefix>]
@@ -494,19 +647,19 @@
 }
 \newcommand{\ValidateChoiceCS}[4]%
 {%
-	\validatedfalse%
-	\xdef\@valid@choices{\csuse{#2}}%
-	\xdef\@test@choice{#1}%
+        \validatedfalse%
+        \xdef\@valid@choices{\csuse{#2}}%
+        \xdef\@test@choice{#1}%
         \foreach \@current@choice [count=\@count] in \@valid@choices%
-	{%
-		%\ifcsstrequal{\@current@choice}{#1}%
+        {%
+                %\ifcsstrequal{\@current@choice}{#1}%
                 \ifdefequal{\@current@choice}{\@test@choice}%
                 {%
-			\global\validatedtrue\breakforeach%
+                        \global\validatedtrue\breakforeach%
                         \xp@xdef{@validated@index}{\@count}%
-		}{}%
-	}%
-	\ifvalidated#3\else#4\fi%
+                }{}%
+        }%
+        \ifvalidated#3\else#4\fi%
         %\ifvalidated Validated\else Not Validated\fi\\%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -534,7 +687,7 @@
         \foreach \@current@choice/\@current@choice@val [count=\@count] in #3%
         {%
                 \ifnumcomp{#1}{=}{1}%
-	        {%	   
+                {%
                         \ifdefequal{\@current@choice}{\@test@cs}%
                         {%
                                 \global\validatedtrue\breakforeach%
@@ -542,8 +695,8 @@
                                 \xp@xdef{@validated@index@choice}{\@current@choice}%
                                 \xp@xdef{@validated@index@value}{\@current@choice@val}%
                         }{}%
-		}{}%
-		\ifnumcomp{#1}{=}{2}%
+                }{}%
+                \ifnumcomp{#1}{=}{2}%
                 {%
                         \ifdefequal{\@current@choice@val}{\@test@cs}%
                         {%
@@ -559,49 +712,45 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\SetDefaultFont%
 {%
-	%\xdef\@fts{lmr\@doc@fontsize}
-	\def\@doc@default@font
-	{%
-		\fontencoding{\@doc@fontencoding}%
-		\fontfamily{\@doc@fontfamily}%
-		\fontseries{\@doc@fontseries}%
-		\fontshape{\@doc@fontshape}%
-		\fontsize{\@doc@fontsize}{\baselineskip}%
-		\selectfont%
+        \stripunits{\@doc@fontsize}[\@doc@fontsize@unitless]%\pgfmathresult\\
+        \toint{\@doc@fontsize@unitless}[\@doc@fontsize@unitless@int]%\pgfmathresult\pgfmathresult\\
+        \def\@doc@default@font
+        {%
+                \fontencoding{\@doc@fontencoding}%
+                \fontfamily{\@doc@fontfamily}%
+                \fontseries{\@doc@fontseries}%
+                \fontshape{\@doc@fontshape}%
+                \fontsize{\@doc@fontsize}{\baselineskip}%
+                \selectfont%
                 \renewcommand{\familydefault}{\@doc@fontfamily}
-	}
-	\fontcolor{current-coltext}%
+        }
+        \fontcolor{current-coltext}%
         \renewcommand{\rm}{\@doc@default@font}%
+        \gdef\f@halfsize{\pgfmathparse{0.5\@doc@fontsize}}
+        %\setlength\f@halfheight{\f@halfsize pt}
         %\@doc@default@font%
 }
 \newcommand\SetDocFontSettings[1][\pkgopts@prefix]%
 {%
-	\xdef\@doc@fontencoding{\mylatex@fontencoding}
+        \xdef\@doc@fontencoding{\mylatex@fontencoding}
         \xdef\@doc@fontname{\mylatex@fontname}
         \ifdefempty{\mylatex@fontfamily}
-		{\xdef\@doc@fontfamily{\mylatex@fontname@choiceval@value}}
-		{\xdef\@doc@fontfamily{\mylatex@fontfamily}}
+                {\xdef\@doc@fontfamily{\mylatex@fontname@choiceval@value}}
+                {\xdef\@doc@fontfamily{\mylatex@fontfamily}}
         \xdef\@doc@fontseries{\mylatex@fontseries}
         \xdef\@doc@fontshape{\mylatex@fontshape}
         %\xdef\@doc@fontsize{\mylatex@fontsize}
-        \xdef\@doc@sizeX{\mylatex@sizeXdoc}      
-	\xdef\@fts{cmr\@doc@sizeX}%{qx-anttr}%{cmu10}
-	\xdef\the@doc@sizeX{\@doc@sizeX pt}
+        \xdef\@doc@sizeX{\mylatex@sizeXdoc}
+        \xdef\@fts{cmr\@doc@sizeX}%{qx-anttr}%{cmu10}
+        \xdef\the@doc@sizeX{\@doc@sizeX pt}
         \ifmylatex@sizeXdoc
-        	\xdef\@doc@fontsize{\@doc@sizeX pt}
+                \xdef\@doc@fontsize{\@doc@sizeX pt}
+                %\xdef\f@halfsize{\pgfmathparse{0.5*\@doc@sizeX}}
         \else
-        	\xdef\@doc@fontsize{\mylatex@fontsize}
-	\fi
-        %\DeclareSymbolFontAlphabet{\mathrm}    {operators}
-	%\DeclareSymbolFontAlphabet{\mathnormal}{letters}
-	%\DeclareSymbolFontAlphabet{\mathcal}   {symbols}
-	%\DeclareMathAlphabet      {\mathbf}{OT1}{cmr}{bx}{n}
-	%\DeclareMathAlphabet      {\mathsf}{OT1}{cmss}{m}{n}
-	%\DeclareMathAlphabet      {\mathit}{OT1}{cmr}{m}{it}
-	%\DeclareMathAlphabet      {\mathtt}{OT1}{cmtt}{m}{n}
-	%\DeclareSymbolFont{operators}   {OT1}{cmr} {m}{n}
-	%\DeclareSymbolFont{letters}     {OML}{cmm} {m}{it}
-	%\DeclareSymbolFont{symbols}     {OMS}{cmsy}{m}{n}
+                \xdef\@doc@fontsize{\mylatex@fontsize}
+                %\xdef\f@halfsize{\pgfmathparse{0.5*\@doc@sizeX}}
+        \fi
+        \def\doctextsize{\dimexpr\f@size pt\relax}
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%

@@ -1,26 +1,25 @@
 %******************************************************************************************************************************%
-%***************************************************** `my-glossary-hypernav.sty' ********************************************************%
+%************************************************ `my-glossary-hypernav.sty' **************************************************%
 %******************************************************************************************************************************%
 % This is an adaptation of the 'glossaries' package's 'glossary-hypernav.sty' subpackage providing the macros/commands required by the various <...>hypergroup glossary styles (e.g. 'indexhypergroup', 'treehypergroup', etc.) such that the list of page #s associated with each glossary entry, indicating the location of each instance of the corresponding glossary entry, are converted into hyperlinks to these locations in the document.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-glossary-hypernav}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-glossary-hypernav}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 \ProcessOptions\relax
-%\catcode`\!=12
-%\catcode`|=12
-%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 \newcommand*{\glsgroupskip}{\par\vspace{10pt plus 10pt minus 0pt}}
 \newcommand*{\glsgroupheading}[1]{}
@@ -63,9 +62,11 @@
 {%
         \thispagestyle{fancy}%
         \ifthenelse{\equal{#1}{\glsdefaulttype}}%\acronymtype
-                {\fancyhead[L]{\@lhead@font\@glossary@lhead@title}}%
                 {%
-                        \ifthenelse{\equal{#1}{\acronymtype}}
+                	\fancyhead[L]{\@lhead@font\@glossary@lhead@title}
+                }%
+                {%
+                        \ifthenelse{\equal{#1}{\acronymtype}}%
                         {\fancyhead[L]{\@lhead@font\@listof@acronyms@lhead@title}}
                         {\fancyhead[L]{\@lhead@font\@listof@symbols@lhead@title}}
                 }%
@@ -80,15 +81,15 @@
            \expandafter\let\expandafter\@gls@list
               \csname @gls@hypergrouplist@\@glo@type\endcsname
         }%
-        \@for\@gls@tmp:=\@gls@list\do{%
-                \@gls@add@header{\@glo@type}%*****************************************
+        \@gls@add@header{\@glo@type}%*****************************************
+                \@for\@gls@tmp:=\@gls@list\do{%
                 \@gls@between
            \@gls@getgrouptitle{\@gls@tmp}{\@gls@grptitle}%
            \@gls@navhyperlink@font\glsnavhyperlink{\@gls@tmp}{\@gls@grptitle}%*****************************************
            \let\@gls@between\glshypernavsep%
         }%
 }
-\newcommand*{\glshypernavsep}{\space\fontsize{13}{\baselinestretch}\textbar\space}
+\newcommand*{\glshypernavsep}{\@FBM@hypernav@sep\space\textbar\space}
 \newcommand*{\glssymbolnav}{%
         \glsnavhyperlink{glssymbols}{\glsgetgrouptitle{glssymbols}}%
         \glshypernavsep
@@ -97,7 +98,7 @@
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%************************************************* End of 'my-glossary-hypernav.sty' Package *********************************************%
+%******************************************** End of 'my-glossary-hypernav.sty' Package ***************************************%
 %******************************************************************************************************************************%
 \endinput
 %% End of file `my-glossary-hypernav.sty'.

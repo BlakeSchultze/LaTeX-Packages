@@ -1,14 +1,14 @@
 %******************************************************************************************************************************%
-%*********************************************************** `my-nomencl.sty' ************************************************************%
+%****************************************************** `my-nomencl.sty' ******************************************************%
 %******************************************************************************************************************************%
 % This is an adaptation of the 'nomencl' package, used to generate a "List of Abbreviations" and add it to a document's back matter in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-nomencl}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \newif\if@printeqref
@@ -77,16 +77,15 @@
          \ \cyrp\cyro\cyrz\cyrn\cyra\cyrch\cyre\cyrn\cyrsftsn}}
 \DeclareOption*{\PackageWarning{my-nomencl}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 \ExecuteOptions{noncompatible,notintoc,norefeq,norefpage,prefix,cfg,english}
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\catcode`|=12
-%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition %------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 \newdimen\nomlabelwidth
 \nomlabelwidth1cm\relax
@@ -174,45 +173,57 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\abbreviation}{o m m m}
-{
-        %\leavevmode
-        \unskip\ignorespaces\ifcsdef{page#2}
+\DeclareExpandableDocumentCommand{\abbreviationtarget}{s m}
+{%
+        \IfBooleanTF{#1}%
         {%
-                \addtocounter{@num@this@acronym@#2}{1}%
-                \edef\thispagenum{\the\value{@num@this@acronym@#2}}%
-                \newcounter{@num@this@acronym@#2#4}%
-                \setcounter{@num@this@acronym@#2#4}{\thepage}%
-                \hyperlink{page#2}{#2}%
-                \csappto{page#2}{, \hyperlink{#2totext#4}{\the\value{@num@this@acronym@#2#4}}}%
-                \raisebox{\textsize}{\hypertarget{#2totext#4}{\unskip}}%
+	        \newcounter{\@abbreviations@address@prefix#2}%
+	        \setcounter{\@abbreviations@address@prefix#2}{1}%%
+	        \csxdef{#2pages}{\thepage/\arabic{\@abbreviations@address@prefix#2}}%
         }%
         {%
-                \newcounter{@num@this@acronym@#2}%
-                \setcounter{@num@this@acronym@#2}{1}%%
-                \edef\thispagenum{\the\value{@num@this@acronym@#2}}%
-                \newcounter{@num@this@acronym@#2#4}%
-                \setcounter{@num@this@acronym@#2#4}{\thepage}%
-                \csdef{page#2}{\hyperlink{#2totext}{\the\value{@num@this@acronym@#2#4}}}%
-                \raisebox{\textsize}{\hypertarget{#2totext}{\unskip}}%
-                \hyperlink{page#2}{#2}%
+	        \refstepcounter{\@abbreviations@address@prefix#2}%
+	        \csxappto{#2pages}{,\thepage/\arabic{\@abbreviations@address@prefix#2}}%
+        }%
+        \hyperlink{page#2}{#2}%
+        \raisebox{\doctextsize}{\hypertarget{\abbreviation@hyperaddress{#2}}{}}%
+        \csgdef{page#2}%
+        {%
+	        \xdef\listname{\csuse{#2pages}}%
+	        \@csvlist@length{\listname}%
+	        \foreach \@the@page / \@the@count [count=\@count] in \listname%
+	        {%
+		        \ifnumcomp{\listname@length}{=}{\@count}%
+			        {\hyperlink{#2totext\@the@count}{\@the@page}}%
+			        {\hyperlink{#2totext\@the@count}{\@the@page},\space}%
+	        }%
+        }%
+}
+\DeclareDocumentCommand{\abbreviation}{o m m}
+{%
+        %\leavevmode
+        \ifcsdef{page#2}%
+        {\abbreviationtarget{#2}}%
+        {%
+                \abbreviationtarget*{#2}%
                 \IfValueTF{#1}%
                 {%
                         \nomenclature%
-                        [#1]{\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+                        [#1]{\raisebox{\doctextsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
                         {\expandafter\protect\expandafter#3\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
                 }%
                 {%
                         \nomenclature%
-                        {\raisebox{\textsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
+                        {\raisebox{\doctextsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
                         {\expandafter\protect\expandafter#3\,\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
                 }%
         }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%*************************************************** End of 'my-nomencl.sty' package *****************************************************%
+%********************************************** End of 'my-nomencl.sty' package ***********************************************%
 %******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
 \endinput
 %% End of file `my-nomencl.sty'.

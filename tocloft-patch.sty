@@ -1,0 +1,662 @@
+%******************************************************************************************************************************%
+%**************************************************** `tocloft-patch.sty' *****************************************************%
+%******************************************************************************************************************************%
+% Provides an extensive expansion of the 'tocloft' package which provides support for creating/printing/hyperlinking tasks in connection with the Table of Contents, the various "List of <Z>" back matter lists (e.g. Z= Symbols, Acronyms, Abbreviations, Glossary, Index, etc.), and the various LaTeX kernel document sectioning commands (e.g. part, chapter, section, subsection, etc.).  A set of additional register variables and control sequences have been added and a set of new interfacing commands provide the mechanism to create and set/define these upon creation of a new list/entry such that the register variables and control sequences associated with each new list/entry includes those created by default by 'tocloft' and those added by this patch.
+
+% The purpose of this patch is primarily to standardize the behavior/appearance of list/entry content through a set of default settings/configurations, providing the means to impose consistency among the various lists and list entries and automatically propagate modifications to the relevant lists/entries by changing a single global register variable or control sequence.  Such global settings/configurations need not apply to every list/entry, one can in effect form list/entry groups via list/entry association and/or linking such that the behavior/appearance of each group can be controlled individually through a separate set of global settings.
+
+%% The list/entry cssssssinterfacing commands
+%by default added by this patch each new list/entry have also been created such that the creation of a new list/entry automatically creates/sets/defines these
+%
+%to the existing set provided by 'tocloft'
+%
+%for controlling list/entry behavior and/or appearance and a set of higher level control sequences have been added as an interace such that these are created and set/defined automatically upon creation of a new list/entry.  by which these as an interface to create and set/define have been added Wrapper commands \cftX@newlistof and \cftX@newlistentry for the list and list entry creation commands \newlistof and \newlistentry, respectively, have been created which The commands \newlistof and \newlistentry for creating lists and list entries, respectively, have been superseded by the \cftX@newlistof and \cftX@newlistentry wrapper commands and provide access  creation  can now  New wrapper commands \cftX@newlistof and \cftX@newlistentry have been created This patch includes high level wrapper commands which combine the \newlistof and \newlistentry commands (used to define new ToC lists and associated list entries, respectively) with a set of helper/configuration commands which (1) automatically set/configure the various register variables and control sequences allocated/defined upon creation of the new lists/entries and (2) allocate+set/define
+%******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
+%******************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{tocloft-patch}                 % This is a patch to the `cool` package, renewing/redefining some macros
+%\RequirePackage{cool}                           % COntent Oriented LaTeX (LATEX2î) : standardized mathematical macros/operators/symbols/etc.
+%******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{tocloft-patch}{Unknown \CurrentOption}}
+%******************************************************************************************************************************%
+%************************************************ Processing of package options ***********************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%******************************************************************************************************************************%
+%******************************************************** Package Body ********************************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cftX Font Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\newcommand\cftX@page@fontfamily{\normalfont}
+\newcommand\cftX@page@fontstyle{\bfmseries}
+\newcommand\cftX@page@fontsize{\normalsize*}
+\newcommand\cftX@page@fontdef{\cftX@page@fontsize\cftX@page@fontfamily\cftX@page@fontsize}
+\newcommand\cftX@toctitle@fontfamily{\normalfont}
+\newcommand\cftX@toctitle@fontstyle{\bfmseries}
+\newcommand\cftX@toctitle@fontsize{\normalsize*}
+\newcommand\cftX@toctitle@fontdef{\cftX@toctitle@fontsize\cftX@toctitle@fontfamily\cftX@toctitle@fontstyle}
+\newcommand\cftX@tcbtitle@fontfamily{\sffamily}
+\newcommand\cftX@tcbtitle@fontstyle{\bfmseries}
+\newcommand\cftX@tcbtitle@fontsize{\large*}
+\newcommand\cftX@tcbtitle@fontdef{\cftX@tcbtitle@fontsize\cftX@tcbtitle@fontfamily}
+\newcommand\tcbX@title@fontfamily{\anttmcap16pt}
+\newcommand\tcbX@title@fontstyle{\bfmseries}
+\newcommand\tcbX@title@fontsize{\Large*}
+\newcommand\tcbX@title@fontdef{\tcbX@title@fontstyle\tcbX@title@fontfamily}
+\newcommand\cftX@fontfamily{\bfmseries}
+\newcommand\cftX@fontstyle{\normalfont}
+\newcommand\cftX@fontsize{\normalsize*}
+\newcommand\cftX@fontdef{\cftX@fontsize\cftX@fontstyle\cftX@fontfamily}
+\newcommand\tcbX@fontfamily{\bfmseries}
+\newcommand\tcbX@fontstyle{\normalfont}
+\newcommand\tcbX@fontsize{\normalsize*}
+\newcommand\tcbX@fontdef{\tcbX@fontsize\tcbX@fontfamily\tcbX@fontstyle}
+\newcommand\cftafterZtitle{}
+\newcommand\cftZtitlefont{\cftmedfont}
+\newcommand\cftbeforeZtitleskip{5.0mm}
+\newcommand\cftafterZtitleskip{2.5mm}
+\newcommand\cftXfont{\normalsize*\bfseries}
+\newcommand\cftXmidfont{\default@fsize*\bfseries}
+\newcommand\cftbeforeXskip{2.5mm}
+\newcommand\cftbeforeXsmallskip{0.5mm}
+%------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ cftX Font Settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%\newcommand\@expand@cft@nickname[1]%
+\DeclareDocumentCommand{\@expand@cft@nickname}{s m}%
+{%
+        \IfStrEqCase{#2}%
+        {%
+                {chapter}{\gdef\@cft@nickname{chap}}%
+                {section}{\gdef\@cft@nickname{secn}}%
+                {subsection}{\gdef\@cft@nickname{subsec}}%
+                {subsubsection}{\gdef\@cft@nickname{subsubsec}}%
+                {paragraph}{\gdef\@cft@nickname{para}}%
+                {subparagraph}{\gdef\@cft@nickname{subpara}}%
+                {figure}{\gdef\@cft@nickname{fig}}%
+                {subfigure}{\gdef\@cft@nickname{subfig}}%
+                {table}{\gdef\@cft@nickname{tab}}%
+                {subtable}{\gdef\@cft@nickname{subtab}}%
+        }%
+        [\gdef\@cft@nickname{#2}]%
+        \IfBooleanTF{#1}{\@cft@nickname}{}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\@expand@cft@nickname[1]%
+\DeclareDocumentCommand{\@contract@cft@nickname}{s m o}%
+{%
+        \IfStrEqCase{#2}%
+        {%
+                {part}{\gdef\@cft@nickname{part}}%
+                {chap}{\gdef\@cft@nickname{chapter}}%
+                {sec}{\gdef\@cft@nickname{section}}%
+                {subsec}{\gdef\@cft@nickname{subsection}}%
+                {subsubsec}{\gdef\@cft@nickname{subsubsection}}%
+                {para}{\gdef\@cft@nickname{paragraph}}%
+                {subpara}{\gdef\@cft@nickname{subparagraph}}%
+                {fig}{\gdef\@cft@nickname{figure}}%
+                {subfig}{\gdef\@cft@nickname{subfigure}}%
+                {tab}{\gdef\@cft@nickname{table}}%
+                {subtab}{\gdef\@cft@nickname{subtable}}%
+        }%
+        [\gdef\@cft@nickname{#2}]%
+        \IfBooleanTF{#1}{\@cft@nickname}{}%
+        \IfValueTF{#3}{\edef#3{\@cft@nickname}}{}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@equiv@sectioning@commands}{s m}%
+{%
+        \IfStrEqCase{#2}%
+        {%
+                {chapter}{\gdef\@equiv@sectioning@command{Chapter}}%
+                {Chapter}{\gdef\@equiv@sectioning@command{chapter}}%
+                {section}{\gdef\@equiv@sectioning@command{Section}}%
+                {Section}{\gdef\@equiv@sectioning@command{section}}%
+                {subsection}{\gdef\@equiv@sectioning@command{Subsection}}%
+                {Subsection}{\gdef\@equiv@sectioning@command{subsection}}%
+                {part}{\gdef\@equiv@sectioning@command{Part}}%
+                {Part}{\gdef\@equiv@sectioning@command{part}}%
+        }%
+        [\gdef\@equiv@sectioning@command{none}]%
+        \IfBooleanTF{#1}{\@equiv@sectioning@command}{}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ High Level cft Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@tcbtitle@font}{s m o}%
+{%\cftX@tcbtitle@font*<coltitle base shadow text>{title text}[currently unused]
+        \IfBooleanTF{#1}%
+                {\BreakableShadowText:\cftX@tcbtitle@fontfamily:<0.55pt,0.2pt>[current-coltitle](current-coltextshadow){#2}}%
+                {\BreakableShadowText:\cftX@tcbtitle@fontfamily:<0.55pt,0.2pt>[current-coltext](current-coltextshadow){#2}}%
+}
+\DeclareDocumentCommand{\tcbX@title@font}{s m o}%
+{%\tcbX@title@font*<coltitle base shadow text>{title text}[currently unused]
+        \ifstrempty{#2}{\relax}%
+        {%
+                \IfBooleanTF{#1}%
+                        {\BreakableShadowText:\@tcb@title@font:<0.55pt,0.2pt>[current-coltitle](current-coltextshadow){#2}}%
+                        {\BreakableShadowText:\@tcb@title@font:<0.55pt,0.2pt>[current-coltext](current-coltextshadow){#2}}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2 3
+\DeclareDocumentCommand{\cftX@names}{m m o}%
+{%\cftX@names{list entry}{name}[explicit long name]
+        \@namedef{cft#1@name}{#2}%
+        \IfValueTF{#3}% If alternative "long" name is provided for appropriate contexts (like ToC), otherwise base "name" is always used
+                {\@namedef{cft#1@longname}{#3}}%
+                {\@namedef{cft#1@longname}{#2}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@toctitle}{s m o}%
+{%\cftX@toctitle{list entry}[alternative counter]
+        \@namedef{cft#2@toctitle}%
+        {%
+                \@nameuse{cft#2@longname}\space%
+                \IfValueTF{#3}%
+                        {\@nameuse{the#3}}%
+                        {\@nameuse{the#2}}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@tcbtitle}{s m o}%
+{%\cftX@tcbtitle{list entry}[alternative counter]
+        \@namedef{cft#2@tcbtitle}%
+        {%
+                \@nameuse{cft#2@name}\space%
+                \IfValueTF{#3}%
+                        {\@nameuse{the#3}}%
+                        {\@nameuse{the#2}}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@bookmark@title}{s m o}%
+{%\cftX@tcbtitle{list entry}[alternative counter]
+        \@namedef{cft#2@bookmark@title}##1%
+        %\expandafter\DeclareDocumentCommand\expandafter{\csname cft#2@bookmark@title\endcsname}{s m}%
+        {%
+                \IfBooleanTF{#1}
+                {\@nameuse{cft#2@toctitle}}
+                {
+                        \@nameuse{cft#2@numberline@prefix}%
+                        \IfValueTF{#3}%
+                                {\@nameuse{the#3}}%
+                                {\@nameuse{the#2}}%%
+                        \@nameuse{cft#2@numberline@suffix}\space%
+                }
+                ##1%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@bookmark}{s m O{}}%
+{%\cftX@tcbtitle{list entry}[alternative counter]
+        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#2@bookmark\endcsname}{s t!}%
+        {%
+                \IfBooleanTF{##2}%
+                        {\def\@rellevel{\@nameuse{cft#2@rellevel}-1}}%
+                        {\def\@rellevel{\@nameuse{cft#2@rellevel}}}%
+                \IfBooleanTF{##1}
+                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@bookmark@title}{#3}}}
+                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@tcbtitle}}}
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@numberline@prefix}{m O{}}%
+{%\cftX@numberline{list entry}[optional prefix]
+        \@namedef{cft#1@numberline@prefix}{#2}
+        \expandafter\newif\csname if@cft#1@numberline@prefix@\endcsname%
+        \ifstrempty{#2}
+                {\@nameuse{@cft#1@numberline@prefix@false}}
+                {\@nameuse{@cft#1@numberline@prefix@true}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@numberline@suffix}{m O{}}%
+{%\cftX@numberline{list entry}[optional prefix]
+        \@namedef{cft#1@numberline@suffix}{#2}
+        \expandafter\newif\csname if@cft#1@numberline@suffix@\endcsname%
+        \ifstrempty{#2}
+                {\@nameuse{@cft#1@numberline@suffix@false}}
+                {\@nameuse{@cft#1@numberline@suffix@true}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@numberline}{s m o}%
+{%\cftX@numberline{list entry}[alternative numberline counter]
+        \@namedef{cft#2@numberline}%
+        {%
+                \IfBooleanTF{#1}{}%
+                {%
+                        \protect\numberline%
+                        {%
+                                \raisebox{10pt}{\protect\hypertarget{\@nameuse{cft#2@toc@hyperaddress}}{}}%
+                                \@nameuse{cft#2@numberline@prefix}%
+                                \IfValueTF{#3}%
+                                        {\@nameuse{the#3}}%
+                                        {\@nameuse{the#2}}%%
+                                \@nameuse{cft#2@numberline@suffix}%
+                        }%
+                }%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2 3
+\DeclareDocumentCommand{\cftX@contentsline}{s m m}%
+{%\cftX@contentsline<*>{file extension}{list entry}
+        \@namedef{cft#3@contentsline@title}%
+        {%
+                \@nameuse{cft#3@numberline}%
+                \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
+        }%
+        \@namedef{cft#3@contentsline}##1%
+        {%
+                \expandafter\raisebox{10pt}{\phantomsection}%
+                \expandafter\addcontentsline{#2}{#3}{\@nameuse{cft#3@contentsline@title}##1}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                        1 2 3
+\DeclareDocumentCommand{\cftX@listentry}{s m g}%
+{%\cftX@listentry<*>{list entry}
+        \@namedef{cft#2@listentry}##1%
+        {%
+                \@nameuse{cft#2@toctitle@font}
+                \@nameuse{cft#2@numberline}%
+                \IfBooleanTF{#1}{\space}{}%
+                \@nameuse{cft#2@toctitle}
+                ##1%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                         1 2
+\newcommand{\cftX@titleblend}[1]
+{%\cftX@titleblend<*>{list entry}
+        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@titleblend\endcsname}{s m}%
+        {%
+                \IfBooleanTF{##1}%
+                        {\csname cft#1@tcbtitle@font\endcsname*{\csname cft#1@tcbtitle\endcsname##2}}%
+                        {\csname cft#1@tcbtitle@font\endcsname{\csname cft#1@tcbtitle\endcsname##2}}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftX@hypertitle}[1]
+{%\cftX@hypertitle{list entry}
+        %                                                         1 2  3                     4        5          6 7
+        \expandafter%
+        \DeclareDocumentCommand\csname cft#1@hypertitle\endcsname{s t! D''{\@tcb@title@font} O{white} D(){black} m m}%
+        {%\cft#1hypertitle|title font|[text color](text shadow color){title/description separator}{title description}
+                \expandafter\hyperlink\expandafter%
+                        {\cft@hyperaddress{#1}}%
+                        {%
+                                \IfBooleanTF{##2}%
+                                        {\def\@title@prefix{}}%
+                                        {%
+                                                \def\@title@prefix%
+                                                {%
+                                                        \csname cft#1@tcbtitle@font\endcsname%
+                                                                {\csname cft#1@tcbtitle\endcsname}%
+                                                }%
+                                        }%
+                                        ##3{\@title@prefix##6##7}
+                        }%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftX@hyperblend}[1]
+{%\cftX@hypertitle{list entry}
+        %                                                                                   1 2                     3        4          5
+        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@hyperblend\endcsname}{s D''{\@tcb@title@font} O{white} D(){black} m}%
+        {%
+            \expandafter\hyperlink\expandafter%
+                {\cft@hyperaddress{#1}}%
+                {%
+                        ##2\IfBooleanTF{##1}%
+                                {\csname cft#1@tcbtitle@font\endcsname*{\csname cft#1@tcbtitle\endcsname##5}}%
+                                {\csname cft#1@tcbtitle@font\endcsname{\csname cft#1@tcbtitle\endcsname##5}}%
+                        \unskipspacing%
+                }%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\cftX@hyperblend@title}[1]
+{%
+        \expandafter\DeclareDocumentCommand\expandafter{\csname cft#1@hyperblend@title\endcsname}{s m m}%
+        {%
+                \expandafter\hyperlink\expandafter%
+                {\cft@hyperaddress{#1}}%
+                {%
+                        \IfBooleanTF{##1}%
+                                {\csname cft#1@tcbtitle@font\endcsname*{##2##3}}%
+                                {\csname cft#1@tcbtitle@font\endcsname{##2##3}}%
+                }%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@listsettings}{s m m}
+{%
+        \ifundef\@nameuse{toclevel@#2}
+                {\@namedef{toclevel@#2}{#3}}{}
+        \@namedef{cft#2@rellevel}{\numexpr#3 + 1\relax}
+        \IfBooleanTF{#1}%
+                {\pgfmathsetlengthmacro\cftX@indent{(\@nameuse{toclevel@#2} + 1) * \cft@indent@unit@em}}%
+                {\pgfmathsetlengthmacro\cftX@indent{\@nameuse{toclevel@#2} * \cft@indent@unit@em}}%
+        \setlength{\@nameuse{cft#2indent}}{\cftX@indent}%
+        \@init@length{cft#2@raisebox}[10pt]
+        \@namedef{cft#2pagefont}{\cftX@page@fontdef}
+        \@namedef{cft#2@fontfamily}{\cftX@fontfamily}
+        \@namedef{cft#2@fontsize}{\cftX@fontsize}
+        \@namedef{cft#2font}{\cftX@toctitle@fontdef}
+        \@namedef{cft#2@toctitle@font}{\cftX@toctitle@fontdef}
+        \@namedef{cft#2@tcbtitle@font}{\cftX@tcbtitle@font}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@cftX@parse@bool@args}{s t_ t~ t! t- m}
+{%
+        \expandafter\newif\csname if@cft#6@increment@toclevel@\endcsname%
+        \expandafter\newif\csname if@cft#6@no@toctitle@\endcsname%
+        \expandafter\newif\csname if@cft#6@shift@listentry@\endcsname%
+        \expandafter\newif\csname if@cft#6@counter@without@\endcsname%
+        \expandafter\newif\csname if@cft#6@no@numberline@\endcsname%
+        \IfBooleanTF{#1}
+                {\@nameuse{@cft#6@increment@toclevel@true}}
+                {\@nameuse{@cft#6@increment@toclevel@false}}
+        \IfBooleanTF{#2}
+                {\@nameuse{@cft#6@no@toctitle@true}}
+                {\@nameuse{@cft#6@no@toctitle@false}}
+        \IfBooleanTF{#3}
+                {\@nameuse{@cft#6@shift@listentry@true}}
+                {\@nameuse{@cft#6@shift@listentry@false}}
+        \IfBooleanTF{#4}
+                {\@nameuse{@cft#6@counter@without@true}}
+                {\@nameuse{@cft#6@counter@without@false}}
+        \IfBooleanTF{#5}
+                {\@nameuse{@cft#6@no@numberline@true}}
+                {\@nameuse{@cft#6@no@numberline@false}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                                  1 2 3 4 5 6
+\DeclareDocumentCommand{\@cftX@init@newlist@entry}{m o m m m m}
+{%\@cftX@init@newlist@entry{Boolean arg list}[list within]{list name}{list file extension}{toc level}{name/counter arg list}
+        \IfValueTF{#2}
+        {%
+                \newlistentry[#2]{#3}{#4}{#5}%
+                \@nameuse{if@cft#2@theX@overwritten@}%
+                        \addtolength{\@nameuse{cft#3numwidth}}{\widthof{\@nameuse{the#2}}}%
+                \fi%
+        }%% If list entry should be numbered within another list entry
+        {\newlistentry{#3}{#4}{#5}}% If list entry should not be numbered within any other list
+        \@cftX@parse@bool@args#1{#3}%
+        \@cftX@namenums@parser{#3}#6
+        \@nameuse{if@cft#3@counter@without@}\@add@to@deflist{#3}{\@cftX@counterwithout@list}\fi%
+        \@nameuse{if@cft#3@no@toctitle@}%
+                \addtolength{\@nameuse{cft#3numwidth}}{-2mm}%
+                \cftX@contentsline*{#4}{#3}%
+        \else%
+                \cftX@contentsline{#4}{#3}%
+        \fi%
+        \@nameuse{if@cft#3@increment@toclevel@}%
+                \cftX@listsettings*{#3}{#5}%
+        \else%
+                \cftX@listsettings{#3}{#5}%
+        \fi%
+        \@nameuse{if@cft#3@shift@listentry@}%
+                \cftX@listentry*{#3}%
+        \else%
+                \cftX@listentry{#3}%
+        \fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                               1  2 3 4   5     6   7  8   9
+\DeclareDocumentCommand{\@cftX@namenums@parser}{m  m o G{} D--{} d() t! d// t!}%
+{%\@cftX@namenums@parser{list entry}{name}[long name]{numberline prefix}-numberline suffix-(alt. numberline counter)/alt. title counter/
+        \IfValueTF{#3}%
+                {\cftX@names{#1}{#2}[#3]}%
+                {\cftX@names{#1}{#2}}%
+        \IfValueTF{#8}%
+        {%
+                \IfBooleanTF{#9}{\@add@to@deflist{#8}{\@cftX@counterwithout@list}}{}
+                \cftX@toctitle{#1}[#8]%
+                \cftX@tcbtitle{#1}[#8]%
+        }
+        {%
+                \cftX@toctitle{#1}%
+                \cftX@tcbtitle{#1}%
+        }
+        \@namedef{cft#1@toc@hyperaddress}{#1\csname the#1\endcsname}
+        \IfValueTF{#4}%
+                {\cftX@numberline@prefix{#1}[#4]}%
+                {\cftX@numberline@prefix{#1}}%
+        \IfValueTF{#5}%
+                {\cftX@numberline@suffix{#1}[#5]}%
+                {\cftX@numberline@suffix{#1}}%
+        \addtolength{\@nameuse{cft#1numwidth}}{\widthof{#4} + \widthof{#5}}%
+        \IfValueTF{#6}%
+        {%
+                \IfBooleanTF{#7}{\@add@to@deflist{#6}{\@cftX@counterwithout@list}}{}
+                \@nameuse{if@cft#1@no@numberline@}%
+                        \cftX@numberline*{#1}[#6]%
+                        \cftX@bookmark@title*{#1}%
+                \else%
+                        \cftX@numberline{#1}[#6]%
+                        \cftX@bookmark@title{#1}%
+                \fi%
+        }%
+        {%
+                \@nameuse{if@cft#1@no@numberline@}%
+                        \cftX@numberline*{#1}%
+                        \cftX@bookmark@title*{#1}%
+                \else%
+                        \cftX@numberline{#1}%
+                        \cftX@bookmark@title{#1}%
+                \fi%
+        }%
+        \cftX@bookmark{#1}%
+        \cftX@titleblend{#1}%
+        \cftX@hyperblend{#1}%
+        \cftX@hyperblend@title{#1}%
+        \cftX@hypertitle{#1}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                              1 2 3 4 5
+\DeclareDocumentCommand{\@cftX@overwrite@theX}{o m m m o}
+{%\@cftX@overwrite@theX[list within]{list name(X)}{list file extension}{toc level}{name/counter arg list}[explicit theX]
+        \expandafter\newif\csname if@cft#2@theX@overwritten@\endcsname%
+        \IfValueTF{#5}%
+        {%
+                \@nameuse{@cft#2@theX@overwritten@true}%
+                \expandafter\renewcommand\csname the#2\endcsname{#5}%
+                \@nameuse{if@cft#2@no@numberline@}
+                \else%
+                        \addtolength{\@nameuse{cft#2numwidth}}{\widthof{\@nameuse{the#2}}}%
+                \fi%
+                \@namedef{cft#2@toc@hyperaddress}{#2#5}
+        }{\@nameuse{@cft#2@theX@overwritten@false}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                            1     2 3 4
+\DeclareDocumentCommand{\cftX@newlistentry}{D(){} m m o}%
+{%\cftX@create(Boolean arg list){initialization arg list}{name/counter arg list}[empty arg]
+        \@cftX@init@newlist@entry{#1}#2{#3}
+        \IfValueTF{#4}{\@cftX@overwrite@theX#2[#4]}{\@cftX@overwrite@theX#2[#4]}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                                   1 2|3 4 5
+\DeclareDocumentCommand{\cftX@newlistof@arg@parser}{m m m m m }%
+{%\cftX@create(Boolean arg list){initialization arg list}{name/counter arg list}[empty arg]
+        \@namedef{cft#1@target@name}{#3}%
+        \@namedef{cft#1@totalcount@cmd}{\@nameuse{iftotal#4s}}%
+        \@namedef{cft#1@prev@totalcount@cmd}{\@nameuse{iftotal#2s}}%
+        \@namedef{cft#1@name@cmd}{\@nameuse{#3Name}}%
+        \@namedef{cft#1@listof@counter}{#4}%
+        \@namedef{cft#1@listof@cmd}{#5}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                        1 2 3 4 5|6
+\DeclareDocumentCommand{\cftX@newlistof}{s m m m m m}%
+{%\cftX@create(Boolean arg list){initialization arg list}{name/counter arg list}[empty arg]
+        \@add@to@deflist{#3}{\cftZ@listof@members}
+        \@add@to@deflist{#3/#4}{\@listof@list}
+        \IfBooleanTF{#1}{}{\newlistof{#2}{#3}{#5}}
+        \cftX@newlistof@arg@parser{#3}{#4}#6
+        \@namedef{cft#3@listof@name}{#2}
+        \@namedef{cft#3@listof@file}{#3}
+        \@namedef{cft#3@listof@title}{#5}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\cftX@newlistof*{figures}{lof}{@count@problem}{\listfigurename}{{LOF}{figure}{\listoffigures}}
+\cftX@newlistof*{tables}{lot}{figure}{\listtablename}{{LOT}{table}{\listoftables}}
+\cftX@newlistof{listings}{lol}{table}{\lstlistlistingname}{{LOL}{lstlisting}{\lstlistoflistings}}
+\cftX@newlistof{functions}{funcs}{lstlisting}{\listfunctionsname}{{LOFUNCS}{@count@function}{\listoffunctions}}
+\cftX@newlistof{problems}{probs}{@count@function}{\listproblemsname}{{LOPROBS}{@count@problem}{\listofproblems}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\cftX@newlistentry(*_){{Chapter}{toc}{1}}{{\ChapterName}}
+\cftX@newlistentry(*_){[Chapter]{Section}{toc}{2}}{{\SectionName}}
+\cftX@newlistentry(*_){[Section]{Subsection}{toc}{3}}{{\SubsectionName}}
+\cftX@newlistentry(_){{Part}{toc}{0}}{{\PartName}{\PartName\space}-\space:\space-}[\Roman{Part}]
+\cftX@newlistentry(_){[Part]{Topic}{toc}{1}}{{\TopicName}{\TopicName\space}-\space:\space-}
+\cftX@newlistentry(-){{backmatter}{toc}{0}}{{backmatter}}
+\cftX@newlistentry(*){{figbox}{lof}{0}}{{\FigboxName}}%[\roman{Chapter}]
+\cftX@newlistentry(~){[figbox]{figboxfigure}{lof}{1}}{{\FigboxFigureName}/figure/!}%/figure/
+\cftX@newlistentry{{boxedtable}{lot}{1}}{{\tablename}}
+\cftX@newlistentry(*~!){{IBPtable}{lot}{1}}{{\IBPtableName}[\IBPtableLongName]{\space\hspace{2.5pt}}-\space\hspace{2pt}-(table)!}%-\space\hspace{0pt}-
+\cftX@newlistentry(!){{PLDtable}{lot}{1}}{{\PLDtableName}[\PLDtableLongName]{\hspace{0.5pt}}(table)!}%-\hspace{0.75em}-{\hspace{0pt}}-\hspace{0pt}-
+\cftX@newlistentry(*~!){{Matlab}{lol}{1}}{{\MatlabListingName}{\space\space\hspace{2.5pt}}(lstlisting)!}
+\cftX@newlistentry(*~!){{Terminal}{lol}{1}}{{\TerminalListingName}{\space\space\hspace{2.5pt}}(lstlisting)!}
+\cftX@newlistentry(~-){{problem}{probs}{0}}{{\ProblemName}{\space\hspace{3pt}}}[\the@prob@counter]%
+\cftX@newlistentry(~-){{subproblem}{probs}{1}}{{\ignorespaces}{\hspace{4pt}}}[\alph{@subproblem@counter}]
+\cftX@newlistentry(~-){{problempart}{probs}{1}}{{\ignorespaces}{\hspace{4pt}}}[\roman{@prob@part@counter}]
+\cftX@newlistentry(~-){{problempartsubproblem}{probs}{2}}{{\ignorespaces}{\hspace{4pt}}}[\alph{@subproblem@counter}]
+\cftX@newlistentry(~-){{subproblempart}{probs}{2}}{{\ignorespaces}{\hspace{4pt}}}[\roman{@prob@part@counter}]
+\cftX@newlistentry(~){{functiondef}{funcs}{1}}{{\FunctionDefName}{\hspace{0pt}}-\hspace{-2pt}-(@count@function)!}%[\arabic{@count@function}](~)
+\cftX@newlistentry(~){{scriptdef}{funcs}{1}}{{\ScriptDefName}{\hspace{0pt}}-\hspace{-2pt}-(@count@function)!}
+\cftX@newlistentry(~){{functionboxdef}{funcs}{2}}{{\FunctionDefName}{\hspace{0pt}}-\hspace{-2pt}-(@count@function)!}%[\arabic{@count@function}](~)
+\cftX@newlistentry(~){{scriptboxdef}{funcs}{2}}{{\ScriptDefName}{\hspace{0pt}}-\hspace{-2pt}-(@count@function)!}
+\cftX@newlistentry(~){{functiondefdetail}{funcs}{1}}{{\FunctionDetailName}{\hspace{0pt}}-\hspace{-2pt}-(@count@function)!}%[\arabic{@count@function}]
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftZ@listof@settings}{o}%
+{%
+        \@for\Z:=\cftZ@listof@members\do%
+        {
+                \expandafter\renewcommand\csname cftafter\Z title\endcsname{\cftafterZtitle}
+                \expandafter\renewcommand\csname cft\Z titlefont\endcsname{\cftZtitlefont}
+                \expandafter\setlength\csname cftbefore\Z titleskip\endcsname{\cftbeforeZtitleskip}
+                \expandafter\setlength\csname cftafter\Z titleskip\endcsname{\cftafterZtitleskip}
+                \@namedef{cft\Z nameshift}{0.0mm}
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cftX@sectioning@settings}{s t! t> t+ m o}%\cftbeforeXskip
+{%\cftX@sectioning@listentries \@cftX@counterwithout@list
+        \IfBooleanTF{#1}
+                {\expandafter\renewcommand\csname cft#5font\endcsname{\cftXmidfont}}
+                {\expandafter\renewcommand\csname cft#5font\endcsname{\cftXfont}}
+        \IfBooleanTF{#2}
+                {\expandafter\renewcommand\csname cft#5dotsep\endcsname{\cftnodots}}
+                {\expandafter\renewcommand\csname cft#5dotsep\endcsname{\cftdotsep}}
+        \IfBooleanTF{#3}
+                {\expandafter\setlength\csname cftbefore#5skip\endcsname{\cftbeforeXskip}}
+                {\expandafter\setlength\csname cftbefore#5skip\endcsname{\cftbeforeXsmallskip}}
+        \expandafter\renewcommand\csname cft#5leader\endcsname{\nobreak\cftdotfill{\@nameuse{cft#5dotsep}}\space}
+        \IfValueTF{#6}
+                {\expandafter\setlength\csname cft#5indent\endcsname{#6}}{}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                      1     2 3 4
+\DeclareDocumentCommand{\@config@cftX@counterwithout@list}{s}%
+{%
+        \@counterwithinout@counter@list*{\@cftX@counterwithout@list}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@connect@cft@lists}{s m m}%
+{%
+        \IfBooleanTF{#1}
+        {
+                \@contract@cft@nickname{#2}%[\@connect@to@long]%
+                \edef\@connect@to@long{\@cft@nickname}
+                \@contract@cft@nickname{#3}%[\@cft@nickname@long]%
+                \edef\@cft@nickname@long{\@cft@nickname}
+                \expandafter\renewcommand\csname the\@cft@nickname@long\endcsname{\@nameuse{the\@connect@to@long}}
+        }{}
+        \@expand@cft@nickname{#3}
+        \edef\@connect@to{\@cft@nickname}
+        \@expand@cft@nickname{#2}% \xp@setlength@
+        \foreach \Z in {indent,numwidth}{\xp@setlength@{cft\@cft@nickname\Z}{cft\@connect@to\Z}}%
+        %\foreach \Z in {indent,numwidth}{\xp@setlength{cft\@cft@nickname\Z}{\csname cft\@connect@to\Z\endcsname}}%{cft\@connect@to\Z}}%
+        %{\@nameuse{cft\@connect@to\Z}}}
+        \foreach \Z in \@connect@cft@lists@vars{\xp@renewcommand{cft\@cft@nickname\Z}{\@nameuse{cft\@connect@to\Z}}}
+%       \expandafter\setlength\csname cftbefore\@cft@nickname skip\endcsname{\@nameuse{cftbefore\@connect@to skip}}
+%        \expandafter\setlength\csname cft\@cft@nickname indent\endcsname{\@nameuse{cft\@connect@to indent}}
+%        \expandafter\setlength\csname cft\@cft@nickname numwidth\endcsname{\@nameuse{cft\@connect@to numwidth}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname font\endcsname{\@nameuse{cft\@connect@to font}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname presnum\endcsname{\@nameuse{cft\@connect@to presnum}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname aftersnum\endcsname{\@nameuse{cft\@connect@to aftersnum}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname aftersnumb\endcsname{\@nameuse{cft\@connect@to aftersnumb}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname dotsep\endcsname{\@nameuse{cft\@connect@to dotsep}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname leader\endcsname{\@nameuse{cft\@connect@to leader}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname pagefont\endcsname{\@nameuse{cft\@connect@to pagefont}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname afterpnum\endcsname{\@nameuse{cft\@connect@to afterpnum}}
+%        \expandafter\renewcommand\csname cft\@cft@nickname fillnum\endcsname{\@nameuse{cft\@connect@to fillnum}}
+%       {font,presnum,aftersnum,aftersnumb,dotsep,leader,pagefont,afterpnum,fillnum}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\@add@listof@list[1]
+{%
+        \@nameuse{cft#1@prev@totalcount@cmd}\else\expandafter\addtolength\csname cftbefore#1titleskip\endcsname{-10\p@}\fi%
+        \@nameuse{cft#1@totalcount@cmd}%
+                \@nameuse{cft#1@listof@cmd}%
+                \bookmark[dest=\bookmark@hyperaddress{\@nameuse{cft#1@target@name}}, level=1]{\@nameuse{cft#1@name@cmd}}%
+        \fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd\@add@listof@lists{\foreach \listname in \cftZ@listof@members{\@add@listof@list{\listname}}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@config@cft@content}{s}%
+{%
+        \cftX@sectioning@settings*!>{Part}
+        \cftX@sectioning@settings*!>{part}
+        \cftX@sectioning@settings*!>{Topic}
+        \cftX@sectioning@settings>{Chapter}%
+        \cftX@sectioning@settings>{chap}
+        \cftX@sectioning@settings{Section}%
+        \cftX@sectioning@settings{Subsection}%
+        \cftX@sectioning@settings*!>{backmatter}
+        \@connect@cft@lists{chap}{Chapter}
+        \@connect@cft@lists{sec}{Section}
+        \@connect@cft@lists{subsec}{Subsection}
+        \renewcommand{\cftpartpagefont}{\cftPartpagefont}
+        \@config@countinchap@counters%
+        \@config@cftX@counterwithout@list
+        \cftZ@listof@settings
+        %\preto{\part}{\bookmarksetupnext{level=0}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\tablename}{\IBPtableName}                        % Table toc title
+\renewcommand{\figurename}{\FigureName}                         % Figure toc title
+\renewcommand\partname{\PartName}                               % Part toc title
+\renewcommand\chaptername{\ChapterName}                         % Chapter toc title
+\renewcommand{\lstlistingname}{\CodeListingName}                % The caption label for listings.
+\newcommand{\problemsname}{\ProblemName}                        % The caption label for listings.
+\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
+\newcommand{\funcdetailssname}{\FunctionDetailName}             % The caption label for listings.
+\newcommand{\scriptdefsname}{\ScriptDefName}                    % The caption label for listings.
+%******************************************************************************************************************************%
+%********************************************** End of 'tocloft-patch.sty' package ********************************************%
+%******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
+%------------------------------------------------------------------------------------------------------------------------------%
+\endinput 

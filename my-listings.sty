@@ -1,28 +1,27 @@
 %******************************************************************************************************************************%
-%********************************************************* `my-listings.sty' *************************************************************%
+%**************************************************** `my-listings.sty' *******************************************************%
 %******************************************************************************************************************************%
 % This is an adaptation of the 'listings' package for incorporation into the 'my-latex' package which provides definitions of additional programming languages and their keywords, listing styles defining the settings and appearance of code listings, code listing captions and macros/commands/environments, and other code listing settings/configurations.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-listings}
 %\usepackage[procnames]{listingsutf8}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-listings}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
 \def\@tcblistings@boxsep{3.0pt}
 \def\@tcblistings@boxrule{2.0pt}
@@ -139,8 +138,8 @@
         %\begin{tcolorbox}[tcblistingCaptionStyle={\@tcblistings@captionwidth}{\@tcblistings@captionleftskip}]%
         \begin{tcolorbox}[reset, tcblistingCaptionStyle={\@tcblistings@captionwidth}]%
         %\begin{tcolorbox}[tcblistingCaptionStyle]%
-                %\unskip\ignorespaces\parbox{\textwidth}{\bfmseries#1#2#3}%
-                \unskip\ignorespaces\par\bfmseries#1#2#3
+                %\unskipspacing\parbox{\textwidth}{\bfmseries#1#2#3}%
+                \unskipspacing\par\bfmseries#1#2#3
         \end{tcolorbox}\par%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
@@ -174,7 +173,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcbinlinebashbox}{s t! v}{tcbinlinebashboxStyle}
 {%
-        \IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\textsize\relax}{\rule{0pt}{\textsize}}\textcolor{green}{ > }}{}%
+        \IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\doctextsize\relax}{\rule{0pt}{\doctextsize}}\textcolor{green}{ > }}{}%
         \IfBooleanTF{#2}
         {
                 \lstinline
@@ -198,11 +197,12 @@
         {
                 %\bookmarksetupnext{keeplevel}%level=\BKM@currentlevel}
                 %\bookmarkX@hypertarget{Terminal}%
-                \begingroup\linespread@settings[context=Terminal]\endgroup%
-        	\@set@current@tcb@colors{tcbbashboxColorset}%
+                %\begingroup\linespread@settings[context=Terminal]\endgroup%
+        	\setlinespread{Terminal}%
+                \@set@current@tcb@colors{tcbbashboxColorset}%
                 \renewcommand{\lstlistingname}{\@tcblisting@terminal@caption@title}%
                 %\bookmark[keeplevel, dest=\bookmark@hyperaddress{Terminal}, rellevel=1]{\cftTerminal@toctitle}%
-                \refstepcounter{Terminal}
+                \stepcounter{Terminal}
                 \ifstrempty{#4}%
                         {\def\@title@sep{}}%
                         {\def\@title@sep{\@tcb@title@sep}}%
@@ -240,7 +240,7 @@
         IfValueTF={#4}
                 {list entry={\cftTerminal@listentry{\@title@sep#4}}}
                 {list entry={\cftTerminal@listentry{\@title@sep}}},
-        %after={\unskip\ignorespaces},
+        %after={\unskipspacing},
         after=
         {%
                 %\par\medskip\smallskip%
@@ -259,8 +259,9 @@
                 \let\@tcblistings@captionwidth=\@Matlab@style@captionwidth
                 \renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
                 %\bookmark[keeplevel, dest=\bookmark@hyperaddress{Matlab}, rellevel=1]{\cftMatlab@toctitle}%
-                \refstepcounter{Matlab}
-                \begingroup\linespread@settings[context=Matlab]\endgroup%
+                \stepcounter{Matlab}
+                %\begingroup\linespread@settings[context=Matlab]\endgroup%
+                \setlinespread{Matlab}%
                 \listingcaptions
                 [
                         format={tcblisting}, labelformat={Matlab}, width={\@Matlab@style@captionwidth},
@@ -277,7 +278,7 @@
                 label={#6}, firstnumber={#2}, firstline={#3}, lastline={#4},
         },
         listing file={#7}, listing engine=listings, listing only, listing remove caption=false,
-        %blend before title code={\cftfigboxfigure@hyperblend*'\@tcb@subtitle@font'{\@title@sep}\unskip\ignorespaces},
+        %blend before title code={\cftfigboxfigure@hyperblend*'\@tcb@subtitle@font'{\@title@sep}\unskipspacing},
         %title={\cftfigboxfigure@hyperblend@title*{}{#2}},
         blend before title code={\bookmarkX@hypertarget{Matlab}\cftMatlab@hyperblend*{\@title@sep}},
         title={\cftMatlab@hyperblend@title*{}{#1}},
@@ -649,7 +650,7 @@
         showtabs=true,                                                  % show tabs within strings adding particular underscores
         stepnumber=1,                                                   % the step between two line-numbers. If it's 1, each line will be numbered
         stringstyle=\upshape\fontcolor{lstemptyColorset-stringcolor},               % string literal style
-        tab=\unskip\ignorespaces,                                       %
+        tab=\unskipspacing,                                       %
         tabsize=1,                                                      % sets default tabsize to 2 spaces
         %texcl=false,                                                   % Activate/deactivate TeX comment lines inside code after escapeinside activated
         %title=\lstname,                                                % show the filename of files included with \lstinputlisting; also try caption instead of title
@@ -913,7 +914,7 @@
         showtabs=true,                                                          % show tabs within strings adding particular underscores
         stepnumber=1,                                                                   % the step between two line-numbers. If it's 1, each line will be numbered
         stringstyle=\upshape\fontcolor{lstterminalColorset-stringcolor},                    % string literal style
-        tab=\unskip\ignorespaces,                                                       %
+        tab=\unskipspacing,                                                       %
         tabsize=1,                                                              % sets default tabsize to 2 spaces
         %texcl=false,                                                                   % Activate/deactivate TeX comment lines inside code after escapeinside activated
         %title=\lstname,                                                                % show the filename of files included with \lstinputlisting; also try caption instead of title
@@ -941,5 +942,7 @@
 %******************************************************************************************************************************%
 %*************************************************** End of 'my-listings.sty' package ****************************************************%
 %******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
 %------------------------------------------------------------------------------------------------------------------------------%
 \endinput

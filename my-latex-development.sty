@@ -1,0 +1,524 @@
+%******************************************************************************************************************************%
+%********************************************** `my-latex-development.sty' ****************************************************%
+%******************************************************************************************************************************%
+% Macro/command/environment/procedures/settings development performed here to separate this from the package components that have already been tested and incorporated into the package.  With the volume of content now in the package, test and development content can easily get lost in the package particularly when attention is pulled away to something else, often times leaving unfinished work buried throughout the package and going unnoticed and unfinished until it is found again.  Having this type of content separate makes it easier to keep track of content currently in development and also simplifies the debugging process by making is possible to restore the package to its unaltered state by simply excluding this content, thereby preventing issues encountered with additions/modifications from interfering with validated package content.
+%******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
+%******************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{my-latex-development}
+%******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{my-latex-development}{Unknown \CurrentOption}}
+%******************************************************************************************************************************%
+%************************************************ Processing of package options ***********************************************%
+%******************************************************************************************************************************%
+\ProcessOptions\relax
+%------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%\ExplSyntaxOn
+%******************************************************************************************************************************%
+%******************************************************** Package Body ********************************************************%
+%******************************************************************************************************************************%
+\newif\ifmacrotest\macrotestfalse
+\newif\ifmisctest\misctestfalse
+\newif\ifglstest\glstestfalse
+\newif\ifidxtest\idxtestfalse
+\newif\ifabbrevtest\abbrevtestfalse
+\newif\ifpgnumtest\pgnumtestfalse
+\newif\ifFBMtest\FBMtestfalse
+\newif\ifpkgtest\pkgtestfalse
+\newif\ifdocsectiontest\docsectiontestfalse
+\newif\iffloattest\floattestfalse
+\newif\ifprobtest\probtestfalse
+\newif\ifdefboxtest\defboxtestfalse
+\newif\ifcodetest\codetestfalse
+\newif\iffancychaptest\fancychaptestfalse
+\newif\ifpkgusagetest\pkgusagetestfalse
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@docsection@test@content%
+{%
+        \ifdocsectiontest%
+                \part{Document Section Examples}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/docsection-examples.tex}
+        \fi%
+}
+\let\docsectionTestContent\@docsection@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@macro@test@content%
+{%
+        \ifmacrotest%
+                \part{General/Universal Content}
+                \Topic{Package Level Content}
+                \Chapter*{Package Development}
+                \Section{Package Comments}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/package-testing.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/package-details.tex}
+        \fi%
+}
+\let\macroTestContent\@macro@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@misc@test@content%
+{%
+        \ifmisctest%
+                \Chapter{Package Usage}
+                \Section{Misc. Examples}
+                First line section content
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/misc-examples.tex}
+        \fi%
+}
+\let\miscTestContent\@misc@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@float@test@content%
+{%
+        \iffloattest%
+                \Part{Custom Package Environments}
+                \Topic{Float Environments}
+                \Chapter*{Float/Graphics Examples}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/figures-examples.tex}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/table-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/graphics-examples.tex}
+        \fi%
+}
+\let\floatTestContent\@float@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@prob@test@content%
+{%
+        \ifprobtest%
+                \Chapter{Problem Examples}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/problem-examples.tex}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/listbox-examples.tex}
+        \fi%
+}
+\let\probTestContent\@prob@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@defbox@test@content%
+{%
+        \ifdefboxtest%
+                \Chapter{Definition/Statement Box Examples}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/defbox-examples.tex}
+        \fi%
+}
+\let\defboxTestContent\@defbox@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@code@test@content%
+{%
+        \ifcodetest%
+                \Topic{Documenting Code/Programming}
+                \Chapter*{Code Listing and Function/Script Definition Examples}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/listings-examples.tex}
+                \input{C:/Users/Blake/Documents/LaTeX/Documentation/functiondef-examples.tex}
+        \fi%
+}
+\let\codeTestContent\@code@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@fancychap@test@content%
+{%
+        \iffancychaptest%
+                \part{LaTeX Kernel Effects and Package Integration}
+                \Topic{LaTeX Kernel Sectioning Command Usage}
+                \chapter{fncychap test}
+                \chapter*{fncychap test}
+                \Chapter{File }
+                \section{fncysec test}
+%                \section*{fncysec test}
+        \fi%
+}
+\let\fancychapTestContent\@fancychap@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@idx@test@content%
+{%
+        \ifidxtest%
+                \index{frelativity} and then \index{elativity} and then \index{eflativity} and then \index{rfeflativity} and then \index{relafftivity} and then \index{ffrelativity} and then \index{relativity} and then \index{srelativity} and then \index{sbrelativity} and then \index{relativity}\\
+        \fi%
+}
+\let\idxTestContent\@idx@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@gls@test@content%
+{%
+        \ifglstest%
+                glsdual*-\glsdual*{OWD}-\\
+                glsdual*-\glsdual*[hyper=false]{OWD}-\\
+                glsdual*-\glsdual*{OWD}['s]-\\
+                %glsdual OWD \glsdual{OWD}\\
+                %gls gls-OWD\gls{gls-OWD}\\
+                \glssymbol{sym:m}\\
+                \glssymbol{sym:m2}\\
+                \glssymbol{sym:f}\\
+                \glssymbol{sym:ohm}\\
+                \gls{real number}\\
+                \gls{pi}\\
+                \gls{Linux}\\
+                \gls{lvm}\\
+                \gls{fpsLabels}\\
+                \gls{fpsLabel}\\
+        \fi%
+}
+\let\glsTestContent\@gls@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@abbrev@test@content%
+{%
+        \ifabbrevtest%
+                \abbreviation{MFA}{My fancy abbreviation}
+                \abbreviation{etc}{Et cetera}
+        \fi%
+}
+\let\abbrevTestContent\@abbrev@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@FBM@test@content%
+{%
+        \ifFBMtest%
+                \Section{Front/back Matter Examples}
+                \@idx@test@content%
+	        \@gls@test@content%
+		\@abbrev@test@content%
+        	\par\bigskip
+        \fi%
+}
+\let\FBMTestContent\@FBM@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@pgnum@test@content%
+{%
+        \ifpgnumtest%
+                \thepage\\
+	        \theCurrentPage\space of\space\lastpageref{LastPages}\\%\lastpageref{VeryLastPage}\\
+	        \theCurrentPage\\
+	        \theCurrentPageLocal\\\\\lastpageref{LastPage}\\
+	        \thepage\space of\space\lastpageref{pagesLTS.\pagesLTS@pnc}\\
+	        \lastpageref{pagesLTS.Roman}\\
+	        \lastpageref{pagesLTS.arabic}\\
+	        \lastpageref{pagesLTS.roman}\\\\
+	        \lastpageref{pagesLTS.Roman.1}\\
+	        \lastpageref{pagesLTS.arabic.1}\\
+	        \lastpageref{pagesLTS.roman.1}\\\\
+	        \lastpageref{pagesLTS.Roman.local}\\
+	        \lastpageref{pagesLTS.arabic.local}\\
+	        \lastpageref{pagesLTS.roman.local}\\
+	        %\roman{pagesLTS.current.local.roman},\\
+        \fi%
+}
+\let\pgnumTestContent\@pgnum@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@pkg@test@content%
+{%
+        \ifpkgtest%
+                %\docsectiontestfalse
+                \floattestfalse
+                \probtestfalse
+                \defboxtestfalse
+                \codetestfalse
+                \fancychaptestfalse
+                \pkgusagetestfalse
+        \fi%
+}
+\let\pkgTestContent\@pkg@test@content
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\MyLatexDevelopmentContent%
+{
+        \@FBM@test@content
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\pkgtestSetContent
+[
+        bool docsectiontest=false,
+        bool macrotest=false,
+        bool misctest=false,
+        bool pkgtest=false,
+        bool idxtest=false,
+        bool glstest=false,
+        bool abbrevtest=false,
+        bool pgnumtest=false,
+        bool FBMtest=false,
+        bool floattest=false,
+        bool probtest=false,
+        bool defboxtest=false,
+        bool codetest=false,
+        bool fancychaptest=false,
+        bool pkgusagetest=false,
+        bool playcontent
+]
+{%
+        %\makeatletter
+        \ifnumcomp{\commandkey{macrotest}}{=}{1}
+                {\macrotesttrue}
+                {\macrotestfalse}%
+        \ifnumcomp{\commandkey{misctest}}{=}{1}
+                {\misctesttrue}
+                {\misctestfalse}%
+        \ifnumcomp{\commandkey{docsectiontest}}{=}{1}
+                {\docsectiontesttrue}
+                {\docsectiontestfalse}%
+        \ifnumcomp{\commandkey{idxtest}}{=}{1}
+                {\idxtesttrue}
+                {\idxtestfalse}%
+        \ifnumcomp{\commandkey{glstest}}{=}{1}
+                {\glstesttrue}
+                {\glstestfalse}
+        \ifnumcomp{\commandkey{abbrevtest}}{=}{1}
+                {\abbrevtesttrue}
+                {\abbrevtestfalse}
+        \ifnumcomp{\commandkey{pgnumtest}}{=}{1}
+                {\pgnumtesttrue}
+                {\pgnumtestfalse}
+        \ifnumcomp{\commandkey{FBMtest}}{=}{1}
+                {\FBMtesttrue}
+                {\FBMtestfalse}
+        \ifnumcomp{\commandkey{floattest}}{=}{1}%
+                {\floattesttrue}
+                {\floattestfalse}%
+        \ifnumcomp{\commandkey{probtest}}{=}{1}%
+                {\probtesttrue}
+                {\probtestfalse}%
+        \ifnumcomp{\commandkey{defboxtest}}{=}{1}%
+                {\defboxtesttrue}
+                {\defboxtestfalse}%
+        \ifnumcomp{\commandkey{codetest}}{=}{1}%
+                {\codetesttrue}
+                {\codetestfalse}%
+        \ifnumcomp{\commandkey{fancychaptest}}{=}{1}
+                {\fancychaptesttrue}
+                {\fancychaptestfalse}%
+        \ifnumcomp{\commandkey{pkgusagetest}}{=}{1}
+                {\pkgusagetesttrue}
+                {\pkgusagetestfalse}%
+        \ifnumcomp{\commandkey{pkgtest}}{=}{1}%
+                {\pkgtesttrue\@pkg@test@content}
+                {\pkgtestfalse}%
+        \ifnumcomp{\commandkey{playcontent}}{=}{1}
+                {}
+                {}%
+        %\makeatother
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+\ExplSyntaxOn
+%------------------------------------------------------------------------------------------------------------------------------%
+\clist_new:N \l@myvararg@parameters@clist
+\tl_new:N    \l@myvararg_current@item@tl
+\NewDocumentCommand{\makecsv}{ m }%
+{%
+        \clist_set:Nn \l@myvararg@parameters@clist { #1 }%
+        \int_while_do:nNnn { \clist_count:N \l@myvararg@parameters@clist } > { 1 }
+        {%
+                \clist_pop:NN \l@myvararg@parameters@clist \l@myvararg_current@item@tl%
+                \tl_use:N \l@myvararg_current@item@tl,%
+        }%
+        \clist_pop:NN \l@myvararg@parameters@clist\l@myvararg_current@item@tl
+        {} ~ and ~ \tl_use:N \l@myvararg_current@item@tl\\%
+}
+\NewDocumentCommand{\useExplcmd}{m}%
+{%
+        \ExplSyntaxOn
+                #1
+        \ExplSyntaxOff
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\ExplSyntaxOff
+%******************************************************************************************************************************%
+%******************************************************************************************************************************%
+%******************************************************************************************************************************%
+\DeclareDocumentCommand{\@double@hline}{O{current} O{current-coldraw} O{current-rulecolor}}%
+{%
+        \arrayrulecolor{#1-coldraw}\hline%
+        \arrayrulecolor{#1-rulecolor}\hline%
+        \arrayrulecolor{#1-coldraw}\hline%
+}
+\def\testing#1#2{1=#1\\2=#2\\}
+%%------------------------------------------------------------------------------------------------------------------------------%
+%\newkeycommand\@@FBM@define@separator
+%[bool ][1]
+%%{%
+%        \gdef\FBM@separator{}%
+%        \IfBooleanTF{#1}%*
+%                {\gdef\@clearpage@option{\cleardoublepage}}%
+%                {\gdef\@clearpage@option{\clearpage}}%
+%        \ifmylatex@FBM@clearpage\gdef\FBM@separator{\@clearpage@option}\fi%
+%        \IfBooleanTF{#2}%
+%        {%
+%                \IfBooleanTF{#3}%
+%                        {\gdef\FBM@separator{\@clearpage@option}}{}%
+%                \@override@idx@clearpage{\FBM@separator}%
+%        }{}%
+%        \@override@idx@clearpage{\FBM@separator}%
+%        \IfValueTF{#4}{#4}{}%
+%%}
+%\pgfmathmod{x}{y}\foreach \x in {1,...,6} {\x, }\\
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@mod@list@loop}{m m g}
+{%
+		\@csvlist@length[@mod@list]{#2}%
+                \pgfmathparse{int(Mod(#1,\@csv@elements))}%
+                \setcounter{@macro@counter}{\pgfmathresult}%
+                \foreach \x [count=\@list@index] in #2%
+                {%
+                	\ifnumcomp{\@list@index}{=}{\value{@macro@counter}}%
+                		{\breakforeach\xdef\@mod@list@element{\x}}{}%
+                }%
+                $\big\lbrace\text{#2}\big\rbrace_{\scriptstyle\text{#1 Mod(\@csv@elements)}}$ %
+                = $\big\lbrace\text{#2}\big\rbrace_\pgfmathresult$ = \@mod@list@element\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\formattheequation}{s m o}
+{%\formattheequation{<LHS>}{<RHS>}[</tcb/.style>]
+        %\renewcommand{\theequation}{\Roman{Part} \arabic{Chapter}.\arabic{Section}.\arabic{equation}}
+        %\renewcommand{\theequation}{\Roman{Topic} \arabic{Chapter}.\arabic{Section}.\arabic{equation}}
+        \IfStrEqCase{#2}%
+        {%
+                {equation}{\renewcommand{\theequation}{\arabic{equation}}}%
+                {problems}%
+                {%
+                        %\ifnumcomp{\commandkey{underlined}}{=}{1}%
+                        %        {\def\@the@styled@title{\underline{\@the@title}}}%
+                        %        {\def\@the@styled@title{\@the@title}}%
+                        %\renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}%
+                        \renewcommand{\theequation}{\the@prob@counter-\arabic{equation}}%
+                        %\counterwithin{@prob@counter}{@chap@counter}
+                        %\renewcommand{\thesection}{%
+%                                \ifnum\c@@chap@counter<1 \@arabic\c@section
+%                                \else \thechapter.\@arabic\c@section
+%                                \fi
+%                        }
+                        %\preto{\theequation}{\the@prob@counter.}
+                }%
+                {sections}%
+                {%
+                        \renewcommand{\theequation}{\thesection.\arabic{equation}}%
+                }%
+        }%
+        []%
+        \IfValueTF{#3}{\renewcommand{\theequation}{#3}}{}
+        %\counterwithout{equation}{chapter}
+        %\renewcommand{\theequation}{\arabic{Chapter}.\arabic{Section}.\arabic{equation}}
+        %\renewcommand{\theequation}{\arabic{@chap@counter}.\arabic{@prob@counter}.\arabic{equation}}
+        %\renewcommand{\theequation}{\arabic{equation}}
+}%\preto{\IBP@math@content}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\@define@tcbStyle@colorset
+[enum type={Chapter,Section,Subsection}, textcolor=hyperlinkcolor, label=][1]
+{%
+        \edef\@type@name{#1}
+        \ifcommandkey{label}
+                {\def\hyperlabel{\commandkey{label}}}
+                {\def\hyperlabel{#1}}%
+        \ifcommandkey{textcolor}
+        {%
+                \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
+        }
+        {%
+                \hypersetup
+                {
+                        linkcolor=hyperlinkcolor,
+                        linkbordercolor=hyperlinkcolor
+                }%
+                \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\uargtest#1#2#3%
+{%
+        \def\@print@arg@by@num@one{#1}%
+        \def\@print@arg@by@num@two{#2}%
+        \def\@print@arg@by@num@three{#3}%
+        1=\@print@arg@by@num@one\\%
+        2=\@print@arg@by@num@two\\%
+        3=\@print@arg@by@num@three\\%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\ifkeyconflict(#1=#2)(#3=#4)%
+{%
+        \ifboolkeyset{#1}{#2}%
+        \ifboolkeyset{#3}{#4}%
+        \ifAnd*%
+        {%
+                \ifnumcomp{\@nameuse{@boolkey@#1@set}}{=}{\@nameuse{@boolkey@#3@set}}/TF,%         T
+                \ifnumcomp{\commandkey{#1}}{=}{\commandkey{#3}}/TF%
+        }%
+        \printresult*
+        \ifnumcomp{\result}{=}{\binaryT}%
+        {combo=T\\}{combo=F\\}
+%       ifboolkeyset:\ifboolkeyset{lowercase}{\binaryT}%
+%       ifboolkeyset:\ifboolkeyset{uppercase}{\binaryF}%
+%       \ifkeyconflict(lowercase=\binaryT)(uppercase=\binaryF)%
+%       ifkeybool{lowercase}:\ifkeybool{lowercase}{\def\@measuring@this@prefix{@lcase}}{\def\@measuring@this@prefix{@ucase}}%
+%       ifkeybool{uppercase}:\ifkeybool{uppercase}{\def\@measuring@this@prefix{@ucase}}{\def\@measuring@this@prefix{@lcase}}%
+        %\cprint{result=\result\\}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\@equality@status@response[enum type={TF,TrueFalse,if,toggle,binary,counter,xparse},csname=,TFvalue=]%
+{%
+        \xdef\@equality@type{\commandkey{type}}%
+        \xdef\@equality@csname{\commandkey{csname}}%
+        \xdef\@equality@TFvalue{\commandkey{TFvalue}}%
+        \@TF@indicator@type@to@index{\@equality@type}%
+        \setTFindicator{\@equality@TFvalue}{\@indicator@index}{\@equality@csname}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@TF@indicator@op@types}{o m m}%
+{%
+        \def\@TF@indicator@types{TF,TrueFalse,if,toggle,binary,counter,xparse}
+        \def\@TF@indicators{T,F}
+        \def\@TrueFalse@indicators{True,False,true,false}
+        \def\@binary@indicators{0,1}
+        \def\@boolean@indicators{\value{@boolean@true@counter},\value{@boolean@false@counter}}
+        \def\@counter@indicators{\value{@boolean@true@counter},\value{@boolean@false@counter}}
+        \def\@toggle@indicators{\@boolean@true@toggle,\@boolean@false@toggle}
+        \def\@xparse@indicators{\BooleanTrue,\BooleanFalse}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\drawxaxis}{G{5cm} G{8} G{0.25} O{\small}}
+{%
+	%\setlength{\unitlength}{4mm}%
+	%\setlength{\@temp@length}{4mm}%
+	\dimdef\@xaxis@length{#1}%
+	\numdef\@num@ticks{#2}%
+        \numdef\@tick@increment{#3}%
+        \def\@xaxis@font@cmds{#4}%
+        %\stripunits\@xaxis@length[\@xaxis@length@numpts]%
+        \pgfmathsetmacro\@xaxis@length@numpts{\@xaxis@length}%
+	\pgfmathsetmacro\@tick@start@pos@numpts{\@tick@start@pos}%
+	\pgfmathsetmacro\@tick@length@numpts{\@tick@length}%
+	\pgfmathsetmacro\@xaxis@incremen@numpts{\@xaxis@length@numpts / \@num@ticks}%
+	\@xaxis@font@cmds%
+	\begin{picture}(\@num@ticks,1)(0,-.5)%
+	        \put(0,0){\vector(1,0){\@xaxis@length@numpts}}%
+	        \multido{\nD=0+\@xaxis@incremen@numpts,\nX=0+\@tick@increment}{\@num@ticks}{%
+	        \put(\nD,-\@tick@start@pos@numpts){\line(0,1){\@tick@length@numpts}}%
+	        \put(\nD,-\@tick@length@numpts){\makebox(0,0)[t]{\nX}}}%
+	\end{picture}\\\\
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\do@once}{m m}%
+{%
+	\if@measure@cfootpos%
+                \zsavepos{cfootpos}%
+                \@measure@cfootposfalse%
+	\fi%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%********************************************* End of 'my-latex-development.sty' **********************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%\@backslashchar\unexpanded\expandonce\@firstoftwo\@secondoftwo
+%\ifcsname#1\endcsname
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%********************************************* End of 'my-latex-development.sty' **********************************************%
+%******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
+%\ExplSyntaxOff
+\endinput 

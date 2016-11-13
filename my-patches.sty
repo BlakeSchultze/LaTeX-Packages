@@ -5,28 +5,29 @@
 %
 % Note that this package does not include patches that must be applied immediately after loading the underlying base package.  In such cases the loading of the base package 'X' and immediate application of the patch (either by inserting the corresponding code explicitly or loading the subpackage 'my-X-patch' containing it) are encapsulated in a new package 'X-patched', thereby guaranteeing these 2 steps occur sequentially by loading 'X-patched' in place of the base package.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-patches}                    % Provides patches w/ modified/additional register variables/macros/commands/environments
 \RequirePackage{my-shadowtext-patch}            % Patch of `shadowtext` package, removing spaces preceding shadowed text
 \RequirePackage{my-cool-patch}                  % Patch of `cool` package, applying '\scriptscriptstyle' to exponents to reduce font size
-%******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%\RequirePackage{tocloft-patch}                  % Patch of `cool` package, applying '\scriptscriptstyle' to exponents to reduce font %******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-patches}{Unknown \CurrentOption}}
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\makeatletter                                                  % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%**************************************************** End of 'my-patches.sty' package ****************************************************%
+%*********************************************** End of 'my-patches.sty' package **********************************************%
 %******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
 %------------------------------------------------------------------------------------------------------------------------------%
 \endinput 

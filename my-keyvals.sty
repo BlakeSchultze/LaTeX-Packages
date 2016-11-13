@@ -1,0 +1,573 @@
+%******************************************************************************************************************************%
+%****************************************************** `my-keyvals.sty' ******************************************************%
+%******************************************************************************************************************************%
+% Contains implementations of the various key/value commands and environments and a set of separately defined keys used to extend the capabilities of standard LaTeX macros, making it easier to find/modify/debug their corresponding implementations.  Most routines are composed of a combination of standardized subroutines and a set of application specific subroutines, producing consistent behavior and appearance from the standardized subroutines and automatically propagating changes of the underlying subroutines to each of the routines that they appear in.  In cases where multiple commands/environments have largely identical implementations and/or applications, a key/value implementation makes it possible to combine these into a single routine with the corresponding key/value pairs used to select and control the application specific aspects of the routine through a simplified argument interface.
+%******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
+%******************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{my-keyvals}
+%******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{my-keyvals}{Unknown \CurrentOption}}
+%******************************************************************************************************************************%
+%************************************************ Processing of package options ***********************************************%
+%******************************************************************************************************************************%
+\ProcessOptions\relax
+%------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+%******************************************************************************************************************************%
+%******************************************************** Package Body ********************************************************%
+%******************************************************************************************************************************%
+%******************************************************************************************************************************%
+%******************************************* \newkeycommand/\newkeyenvironment commands ***************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\num@to@text@seps
+[bool sepitems=false, bool sepgroups=false, bool sepunits=false, itemsep={\space} ,unitsep={--}, groupsep={,\space}][0]%
+{%
+        \ifkeybool{sepunits}%
+                {\edef\numname@unit@sep{\commandkey{unitsep}}}%
+                {\edef\numname@unit@sep{}}%
+        \ifkeybool{sepitems}%
+                {\edef\numname@sep{\commandkey{itemsep}}}%
+                {\edef\numname@sep{}}%
+        \ifkeybool{sepgroups}%
+                {\edef\numname@group@sep{\commandkey{groupsep}}}%
+                {\edef\numname@group@sep{}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\@@measure@text
+[choice* measure={letters,numbers}, choice* textcase={lower,upper}, bool maxheight=false, format=,arg=, saveas=][0]%
+{%
+        \ifkeybool{maxheight}%
+                {\def\@measuring@this@suffix{@alphabet}}%
+                {\def\@measuring@this@suffix{@measure@char}}%
+        \ifcase\commandkey{measure}\relax
+                        \def\@measuring@this@prefix{@lcase}%
+                \ifcase\commandkey{textcase}\relax
+                        \def\@measuring@this@prefix{@lcase}%
+                \or
+                        \def\@measuring@this@prefix{@ucase}%
+                \fi
+        \or
+                \def\@measuring@this@prefix{@digit}%
+        \fi
+        \xdef\@measuring@this{\csname\@measuring@this@prefix\@measuring@this@suffix\endcsname}%
+        \ifcommandkey{arg}{\def\@measuring@this{\commandkey{arg}}}{}%
+        \ifcommandkey{format}{\preto{\@measuring@this}{\commandkey{format}}}{}%
+        \ifcommandkey{saveas}%
+                {\@premeasure@savebox*{\@measuring@this}[\commandkey{saveas}]}%
+	        {\@premeasure@savebox*{\@measuring@this}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\linespread@settings
+[enum context={doc,coverpage,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM}, bool restore=false, arrayrulewidth=,baselinestretch=,arraystretch=]%
+{%
+        %\begingroup
+        \xdef\@context@name{\commandkey{context}}
+        \xdef\@current@context@name{\commandkey{context}}
+        \global\setlength\arrayrulewidth{\csuse{@\@context@name @arrayrulewidth}}%
+        \renewcommand\baselinestretch{\csuse{@\@context@name @baselinestretch}}%
+        \renewcommand\arraystretch{\csuse{@\@context@name @arraystretch}}%
+        \ifnumcomp{\commandkey{restore}}{=}{1}
+        {
+                \setlength\arrayrulewidth{\@doc@arrayrulewidth}%
+                \renewcommand\baselinestretch{\@doc@baselinestretch}%
+                \renewcommand\arraystretch{\@doc@arraystretch}%
+        }{}%
+        \ifcommandkey{arrayrulewidth}{\expandafter\setlength\arrayrulewidth{\commandkey{arrayrulewidth}}}{}%
+        \ifcommandkey{baselinestretch}{\expandafter\renewcommand\expandafter\baselinestretch\expandafter{\commandkey{baselinestretch}}}{}%
+        \ifcommandkey{arraystretch}{\renewcommand\arraystretch{\commandkey{arraystretch}}}{}%
+        %\endgroup
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\ULsettings%
+[enum type={all,uline,ul,underline}, bool init=false, bool reset=false, depth=, thickness=, color=]%
+{%
+        %\begingroup
+        \xdef\@type@name{\commandkey{type}}
+        \ifnumcomp{\commandkey{init}}{=}{1}
+        {%
+                \setlength{\@ul@thickness}{\@ul@default@thickness}%
+                \setlength{\@ul@sep}{\@ul@default@sep}%
+                \setlength{\@ul@depth}{\@ul@default@depth}%
+                \renewcommand{\ULdepth}{\@ul@depth}%
+                \renewcommand{\ULthickness}{\@ul@thickness}%
+                \setul{\@ul@sep}{\@ul@thickness}%
+                \setulcolor{\@ul@default@color}%
+        }%{}%
+        {
+                \ifnumcomp{\commandkey{reset}}{=}{1}
+                {%
+                        \setlength{\@ul@thickness}{\@ul@default@thickness}%
+                        \setlength{\@ul@sep}{\@ul@default@sep}%
+                        \setlength{\@ul@depth}{\@ul@default@depth}%
+                        \renewcommand{\ULdepth}{\@ul@depth}%
+                        \renewcommand{\ULthickness}{\@ul@thickness}%
+                        \setul{\@ul@sep}{\@ul@thickness}%
+                        \setulcolor{\@ul@default@color}%
+                }%{}%
+                {
+                        \IfStrEqCase{\@type@name}%
+                        {%
+                                {all}%
+                                {%
+                                        \ifcommandkey{thickness}{\renewcommand{\ULthickness}{\commandkey{thickness}}}{}%
+                                        \ifcommandkey{thickness}{\setlength{\@ul@thickness}{\commandkey{thickness}}}{}%
+                                        \ifcommandkey{depth}{\setlength{\@ul@sep}{\commandkey{depth}}}{}%
+                                        \ifcommandkey{depth}{\setlength{\@ul@depth}{\commandkey{depth}}}{}%
+                                        \ifcommandkey{color}{\setulcolor{\commandkey{color}}}{}%
+                                        \setul{\@ul@sep}{\@ul@thickness}%
+                                        \renewcommand{\ULdepth}{\@ul@depth}
+                                }%
+                                {uline}%
+                                {%
+                                        \ifcommandkey{thickness}{\renewcommand{\ULthickness}{\commandkey{thickness}}}{}%
+                                        \ifcommandkey{depth}{\setlength{\@ul@depth}{\commandkey{depth}}}{}%
+                                        \renewcommand{\ULdepth}{\@ul@depth}
+                                }%
+                                {ul}%
+                                {%
+                                        \ifcommandkey{thickness}{\setlength{\@ul@thickness}{\commandkey{thickness}}}{}%
+                                        \ifcommandkey{depth}{\setlength{\@ul@sep}{\commandkey{depth}}}{}%
+                                        \ifcommandkey{color}{\setulcolor{\commandkey{color}}}{}%
+                                        \setul{\@ul@sep}{\@ul@thickness}%
+                                }%
+                                {underline}{}%
+                        }%
+                }%
+        }%
+        %\endgroup
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\autohyperlink
+[enum type={Chapter,Section,Subsection}, textcolor=hyperlinkcolor, label=][1]
+{%
+        \xdef\@type@name{#1}
+        \ifcommandkey{label}
+                {\xdef\hyperlabel{\commandkey{label}}}
+                {\xdef\hyperlabel{#1}}%
+        \ifcommandkey{textcolor}
+        {\@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}}
+        {%
+                \hypersetup
+                {
+                        linkcolor=hyperlinkcolor,
+                        linkbordercolor=hyperlinkcolor
+                }%
+                \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
+        }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{thedocument}
+[enum type={documentation, homework, default}, author={Blake Edward Schultze}, title=, subtitle=, course number=, course title=, instructor=, assignment=, semester=][0]
+{
+        \xdef\thedoctype{\commandkey{type}}%
+        \xdef\theauthor{\commandkey{author}}%
+        \begingroup\ULsettings[reset=true]\endgroup%
+        %\ULsettings[reset=true]%
+        %\global\newcommand{\@print@title}{\protect\commandkey{title}}
+        \IfStrEq{\thedoctype}{documentation}%
+        {%
+                \ifcommandkey{title}{}{\PackageError{\pkgname}{missing 'title' key}{Provide 'title' and recompile}}%
+                \ifcommandkey{subtitle}{}{\PackageError{\pkgname}{missing 'subtitle' key}{Provide 'subtitle' and recompile}}%
+                \xdef\thetitle{\commandkey{title}}
+                \xdef\thesubtitle{\commandkey{subtitle}}
+                \hypersetup
+                {
+                        pdftitle        ={\thetitle},
+                        pdfauthor       ={\theauthor},
+                        pdfsubject      ={\thesubtitle},
+                        pdfcreator      ={\theauthor},
+                        pdfproducer     ={\theauthor}
+                }
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{documentation}{\theauthor}{\thetitle}{\thesubtitle}\end{coverpage}
+        }{}
+        \IfStrEq{\thedoctype}{homework}
+        {%
+                \ifcommandkey{course number}{}{\PackageError{\pkgname}{missing 'course number' key}{Provide 'course number' and recompile}}%
+                \ifcommandkey{course title}{}{\PackageError{\pkgname}{missing 'course title' key}{Provide 'course title' and recompile}}%
+                \ifcommandkey{instructor}{}{\PackageError{\pkgname}{missing 'instructor' key}{Provide 'instructor' and recompile}}%
+                \ifcommandkey{assignment}{}{\PackageError{\pkgname}{missing 'assignment' key}{Provide 'assignment' and recompile}}%
+                \ifcommandkey{semester}{}{\PackageError{\pkgname}{missing 'semester' key}{Provide 'semester' and recompile}}%
+                \xdef\coursenumber{\commandkey{course number}}%
+                \xdef\coursetitle{\commandkey{course title}}%
+                \xdef\instructor{\commandkey{instructor}}%
+                \xdef\assignment{\commandkey{assignment}}%
+                \xdef\semester{\commandkey{semester}}%
+                \ifcommandkey{title}{\xdef\thetitle{\commandkey{title}}}{\xdef\thetitle{\commandkey{course title}}}%
+                \ifcommandkey{subtitle}{\xdef\thesubtitle{\commandkey{subtitle}}}{\xdef\thesubtitle{\commandkey{assignment}}}%
+                \hypersetup
+                {
+                        pdftitle        ={\thetitle},
+                        pdfauthor       ={\theauthor},
+                        pdfsubject      ={\thesubtitle},
+                        pdfcreator      ={\theauthor},
+                        pdfproducer     ={\theauthor}
+                }
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{assignment}{\coursenumber}{\coursetitle}{\semester}{\instructor}{\assignment}{\theauthor}\end{coverpage}
+        }{}
+        \IfStrEq{\thedoctype}{default}
+        {%
+                \ifcommandkey{title}{\xdef\thetitle{}}{\xdef\thetitle{\commandkey{title}}}%
+                \ifcommandkey{subtitle}{\xdef\thesubtitle{}}{\xdef\thesubtitle{\commandkey{subtitle}}}%
+                \document\pagestyle{fancy}%
+                \begin{coverpage}{default}{\coursenumber}{\coursetitle}{\semester}{\instructor}{\assignment}{\theauthor}\end{coverpage}
+        }{}
+        %%\@set@document@dimensions%
+%        \renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
+%        \fancyhead[L]{\rightmark}%
+%        \fancyhead[R]{\parbox[c]{\@header@image@width}{\@header@image}\vskip-8pt}%
+%        %\cfoot[\thepage]{\thepage}%
+%        \ifnumcomp{\value{page}}{=}{1}%
+%               {\cfoot{\zsavepos{cfootpos}\thepage}}%
+%               {\cfoot{\thepage}}%
+}{\enddocument}%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{tcbenclosure}
+[enum type={default, listbox, eqnlistbox, bashscripts, bashfunctions, problems, solutions}, sidebyside, width=\textwidth, gradient=, colorscheme=, colfill=,title=][0]%[1]%
+{
+        \xdef\@the@envtype{\commandkey{type}}%
+        \ifcommandkey{title}
+                {\def\@the@title{\commandkey{title}}}%
+                {\def\@the@title{}}%
+        \xdef\@the@width{\commandkey{width}}%
+        \begingroup\ULsettings[reset=true]\endgroup%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\edef\@the@gradient{\BBBgradientbackground}}%
+                {listbox}{\edef\@the@gradient{\YYYgradientbackground}}%
+                {eqnlistbox}{\edef\@the@gradient{\GGYgradientbackground}}%
+                {bashscripts}{\edef\@the@gradient{\GYYgradientbackground}}%
+                {bashfunctions}{\edef\@the@gradient{\BYYgradientbackground}}%
+                {problems}{\edef\@the@gradient{\YYYgradientbackground}}%
+                {solutions}{\edef\@the@gradient{\GYYgradientbackground}}%
+        }[\edef\@the@gradient{\BBBgradientbackground}]%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\def\@the@color@scheme{tcbBlueScheme}}%
+                {listbox}{\def\@the@color@scheme{tcblistboxColorset}}%
+                {eqnlistbox}{\def\@the@color@scheme{tcbeqnlistboxColorset}}%
+                {bashscripts}{\def\@the@color@scheme{tcbDarkGreenScheme}}%
+                {bashfunctions}{\def\@the@color@scheme{tcbBlueScheme}}%
+                {problems}{\def\@the@color@scheme{problemColorset}}%
+                {solutions}{\def\@the@color@scheme{solutionColorset}}%
+        }[\def\@the@color@scheme{tcbBlueScheme}]%
+        \ifcommandkey{colorscheme}{\def\@the@color@scheme{\commandkey{colorscheme}}}{}
+        \ifcommandkey{gradient}{\constructgradient{@the@gradient}{\commandkey{gradient}}}{}
+        \ifcommandkey{sidebyside}
+        {
+                \ifdefempty{\@the@title}
+                        {\begin{tcbenvironment}*<\@the@width>'\@the@color@scheme'"\@the@gradient"}
+                        {\begin{tcbenvironment}*<\@the@width>'\@the@color@scheme'"\@the@gradient"|\@the@title|}
+        }
+        {
+                \ifdefempty{\@the@title}
+                        {\begin{tcbenvironment}<\@the@width>'\@the@color@scheme'"\@the@gradient"}
+                        {\begin{tcbenvironment}<\@the@width>'\@the@color@scheme'"\@the@gradient"|\@the@title|}
+        }
+        %|bash functions|
+}{\end{tcbenvironment}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{tcbsection}
+[enum type={section,legend,solution, proof}, colorscheme=, tcbset=, tcbsetforeverylayer=, bool underlined=true, bottom=, title=, contentsline=][0]%[1]%
+{%
+        \@macro@length=\parindent
+        \setlength{\parindent}{0em}
+        \xdef\@the@envtype{\commandkey{type}}%
+        \begingroup\ULsettings[reset=true]\endgroup%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {section}{\def\@the@title{Section \theSection}}%
+                {legend}{\def\@the@title{Key:}}%
+                {solution}{\def\@the@title{Solution:}}%
+                {proof}{\def\@the@title{Proof:}}%
+        }[\def\@the@title{}]%
+        \ifcommandkey{title}{\def\@the@title{\commandkey{title}}}{}
+        \ifnumcomp{\commandkey{underlined}}{=}{1}%
+                {\def\@the@styled@title{\underline{\@the@title}}}%
+                {\def\@the@styled@title{\@the@title}}%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {section}%
+                {%
+                        \def\@the@formatted@title%
+                        {%
+                                \tcbhyperlink[stddkblue]{\cft@hyperaddress{Section}}%
+                                        {\shadowcolor{black}\shadowtext{\@the@title}}%
+                        }%
+                }%
+                {legend}{\def\@the@formatted@title{\@the@styled@title}}%
+                {solution}{\def\@the@formatted@title{\@the@styled@title}}%
+                {proof}{\def\@the@formatted@title{\@the@styled@title}}%
+        }%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {section}{\def\@the@color@scheme{tcbBlueScheme}}%
+                {legend}{\def\@the@color@scheme{tcbBlueScheme}}%
+                {solution}{\def\@the@color@scheme{solutionColorset}}%
+                {proof}{\def\@the@color@scheme{solutionColorset}}%
+        }[\def\@the@color@scheme{tcbBlueScheme}]%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {section}%
+                {%
+                        \def\@tcolorbox@beginning{\tcbsectiontextfont}%
+                        \def\@tcolorbox@ending{}%
+                }%
+                {legend}%
+                {%
+                        \def\@tcolorbox@beginning{\begin{legendList}}%
+                        \def\@tcolorbox@ending{\end{legendList}}%
+                }%
+                {solution}%
+                {%
+                        \setcounter{@save@theequation}{\value{equation}}%
+                        \setcounter{equation}{0}%
+                        \def\@tcolorbox@beginning{}%
+                        \def\@tcolorbox@ending{}%
+                }%
+                {proof}%
+                {%
+                        \setcounter{@save@theequation}{\value{equation}}%
+                        \setcounter{equation}{0}%
+                        \def\@tcolorbox@beginning{\proof[\unskip\nopunct]}%
+                        \def\@tcolorbox@ending{\endproof}%
+                }%
+        }[\def\@tcolorbox@beginning{\tcbsectiontextfont}\def\@tcolorbox@ending{}]%
+        \ifcommandkey{colorscheme}{\def\@the@color@scheme{\commandkey{colorscheme}}}{}%
+        \@set@current@tcb@colors{\@the@color@scheme}%
+        \ifcommandkey{contentsline}%
+        {\tcbset{reset, tcbSectionStyle, title={\parbox{\linewidth}{\commandkey{contentsline}\shadowText:\tcbsectiontitlefont:'\@the@color@scheme'{\@the@formatted@title}}}}}%
+        {\tcbset{reset, tcbSectionStyle, title={\parbox{\linewidth}{\shadowText:\tcbsectiontitlefont:'\@the@color@scheme'{\@the@formatted@title}}}}}%
+        \ifcommandkey{bottom}{\tcbset{bottom=\commandkey{bottom}}}{}%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {section}{\tcbset{before=\@Section@before@skip, after=\@Section@after@skip}}%
+                {legend}{\tcbset{after skip=\@tcb@Legend@after@skip}}%
+                {solution}{\tcbset{before=\par\smallskip, after=\par\smallskip}}%
+                {proof}{\tcbset{before=\par\smallskip, after=\par\smallskip}}%
+        }%
+        \ifcommandkey{tcbset}{\tcbset{\commandkey{tcbset}}}{}%
+        \ifcommandkey{tcbsetforeverylayer}{\tcbsetforeverylayer{\commandkey{tcbsetforeverylayer}}}{}%
+        \begin{tcolorbox}\@tcolorbox@beginning%
+}%
+{%
+        \@tcolorbox@ending\end{tcolorbox}%
+        \setlength{\parindent}{\@macro@length}%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {solution}{\setcounter{equation}{\value{@save@theequation}}}%
+                {proof}{\setcounter{equation}{\value{@save@theequation}}}%
+        }%
+        \setcounter{equation}{\value{@save@theequation}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{tcbeqnlist}
+[enum type={default, solution, blue, darkblue}, bool beforeskip=false, bool numbers=false, bool goldtrim=true, colorscheme=, colfill=, title=][0]%[1]%
+{
+        \renewcommand{\baselinestretch}{\@doc@baselinestretch}
+        \xdef\@the@envtype{\commandkey{type}}%
+        \ifcommandkey{title}
+                {\def\@the@title{\commandkey{title}}}%
+                {\def\@the@title{}}%
+        \begingroup\ULsettings[reset=true]\endgroup%%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\edef\@the@colfill{current-colfill}}%
+                {solution}{\edef\@the@colfill{tcbsolutionColorset-colframe}}%
+                {blue}{\edef\@the@colfill{current-colfill}}%
+                {darkblue}{\edef\@the@colfill{current-colfill}}%
+        }[\edef\@the@colfill{current-colfill}]%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\def\@the@color@scheme{tcbeqnlistboxColorset}}%
+                {solution}{\def\@the@color@scheme{tcbsolutionColorset}}%
+                {blue}{\def\@the@color@scheme{definitionColorset}}%
+                {darkblue}{\def\@the@color@scheme{tcbDarkBlueScheme}}%
+        }[\def\@the@color@scheme{tcbeqnlistboxColorset}]%
+        \ifcommandkey{colorscheme}%
+        {%
+                \edef\@the@color@scheme{\commandkey{colorscheme}}%
+                \edef\@the@colfill{current-colfill}%
+        }{}
+        \ifcommandkey{colfill}{\edef\@the@colfill{\commandkey{colfill}}}{}
+        \ifnumcomp{\commandkey{beforeskip}}{=}{1}{\par\medskip}{}%
+        \ifnumcomp{\commandkey{numbers}}{=}{1}%
+        {
+                \ifnumcomp{\commandkey{goldtrim}}{=}{1}%
+                {
+                        \ifdefempty{\@the@title}
+                                {\tcbeqnlistbox'\@the@color@scheme'"\@the@colfill"}
+                                {\tcbeqnlistbox'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+                }
+                {
+                        \ifdefempty{\@the@title}
+                                {\tcbeqnlistbox-'\@the@color@scheme'"\@the@colfill"}
+                                {\tcbeqnlistbox-'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+                }
+        }
+        {
+                \ifnumcomp{\commandkey{goldtrim}}{=}{1}%
+                {
+                        \ifdefempty{\@the@title}
+                                {\tcbeqnlistbox*'\@the@color@scheme'"\@the@colfill"}
+                                {\tcbeqnlistbox*'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+                }
+                {
+                        \ifdefempty{\@the@title}
+                                {\tcbeqnlistbox*-'\@the@color@scheme'"\@the@colfill"}
+                                {\tcbeqnlistbox*-'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+                }
+        }%
+        %\normalsize*%
+}{\endtcbeqnlistbox}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{tcblist}
+[enum type={default, maroon, darkred, blue, darkblue, darkgreen}, bool beforeskip=false, bool numbers=false, bool goldtrim=false, width=\linewidth, colorscheme=, colfill=, title=][0]%[1]%
+{
+        \renewcommand{\baselinestretch}{\@doc@baselinestretch}
+        \xdef\@the@envtype{\commandkey{type}}%
+        \ifcommandkey{title}
+                {\def\@the@title{\commandkey{title}}}%
+                {\def\@the@title{}}%
+        \xdef\@the@width{\commandkey{width}}%
+        \begingroup\ULsettings[reset=true]\endgroup%%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\edef\@the@colfill{current-colfill}}%
+                {darkred}{\edef\@the@colfill{stddkred}}%
+                {maroon}{\edef\@the@colfill{stdmaroon}}%
+                {blue}{\edef\@the@colfill{stdblue}}%
+                {darkblue}{\edef\@the@colfill{stddkblue}}%
+                {darkgreen}{\edef\@the@colfill{stddkgreen}}%
+        }[\edef\@the@colfill{current-colfill}]%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {default}{\def\@the@color@scheme{tcblistboxColorset}}%
+                {darkred}{\def\@the@color@scheme{tcbRedScheme}}%
+                {blue}{\def\@the@color@scheme{tcbBlueScheme}}%
+                {darkblue}{\def\@the@color@scheme{tcbDarkBlueScheme}}%
+                {darkgreen}{\def\@the@color@scheme{tcbDarkGreenScheme}}%
+        }[\def\@the@color@scheme{tcblistboxColorset}]%
+        \ifcommandkey{colorscheme}%
+        {%
+                \edef\@the@color@scheme{\commandkey{colorscheme}}%
+                \edef\@the@colfill{current-colfill}%
+        }{}
+        \ifcommandkey{colfill}{\edef\@the@colfill{\commandkey{colfill}}}{}
+        \ifnumcomp{\commandkey{beforeskip}}{=}{1}{\par\medskip}{}%
+        \ifnumcomp{\commandkey{goldtrim}}{=}{1}%
+        {
+                \ifdefempty{\@the@title}
+                        {\tcblistbox*<\@the@width>'\@the@color@scheme'"\@the@colfill"}
+                        {\tcblistbox*<\@the@width>'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+        }
+        {
+                \ifdefempty{\@the@title}
+                        {\tcblistbox<\@the@width>'\@the@color@scheme'"\@the@colfill"}
+                        {\tcblistbox<\@the@width>'\@the@color@scheme'"\@the@colfill"|\@the@title|}
+        }
+}{\endtcblistbox}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newkeyenvironment{tcbcode}
+[enum type={script,function,details}, usage=, firstcol=, secondcol=, bool usagenewline=true, colorscheme=, title=][0]%[1]%
+{%
+        %\begingroup\linespread@settings[context=code]\endgroup%
+        \bookmarksetupnext{keeplevel}%
+        \stepcounter{@count@function}
+        \xdef\@the@envtype{\commandkey{type}}%
+        \ifcommandkey{title}
+                {\def\@the@title{\commandkey{title}}}%
+                {\def\@the@title{}}%
+        \ifcommandkey{colorscheme}%
+        {\def\@the@color@scheme{\commandkey{colorscheme}}}%
+        {%
+                \IfStrEqCase{\@the@envtype}%
+                {%
+                        {script}{\def\@the@color@scheme{tcbDarkGreenScheme}}
+                        {function}{\def\@the@color@scheme{tcbBlueScheme}}
+                        {details}{\def\@the@color@scheme{tcbBlueScheme}}
+                }%
+        }%
+        \ifnumcomp{\commandkey{usagenewline}}{=}{1}%
+                {\def\@tcb@funcdefbox@Title@command{\tcbfuncdefboxTitle*}}%
+                {\def\@tcb@funcdefbox@Title@command{\tcbfuncdefboxTitle}}%
+        \ifcommandkey{usage}
+                {\def\@the@title@line{\@the@contentsline\@tcb@funcdefbox@Title@command{\@the@title}[\commandkey{usage}]}}%
+                {\def\@the@title@line{\@the@contentsline\@tcb@funcdefbox@Title@command{\@the@title}}}%
+        \IfStrEqCase{\@the@envtype}%
+        {%
+                {script}%
+                {%
+                        \stepcounter{scriptdef}%
+                        \def\@first@column@width{\@tcb@func@defbox@first@column}
+                        \def\@second@column@width{\@tcb@func@defbox@second@column}
+                        \def\@the@style{tcbfuncdefboxStyle}
+                        \def\@the@contentsline{\bookmarkX@hypertarget{\@counter@name}\cftscriptdef@contentsline{: \texttt{\@the@title}}}%
+                        \def\@the@hypertitle{\cftscriptdef@hypertitle*!'%
+                                {\shadowText*:\Large:'\@the@color@scheme'[black]}'{\@the@title}{}}%
+                        \let\@current@listbox@column@sep=\@tcb@func@defbox@column@sep%
+                        \def\@counter@name{scriptdef}%
+                        \def\@bookmark@title{\csname cft\@counter@name @toctitle\endcsname\space:\space\@the@title}
+                        \cftscriptdef@bookmark%
+                }
+                {function}%
+                {%
+                        \stepcounter{functiondef}%
+                        \def\@first@column@width{\@tcb@func@defbox@first@column}
+                        \def\@second@column@width{\@tcb@func@defbox@second@column}
+                        \def\@the@style{tcbfuncdefboxStyle}
+                        \def\@the@contentsline{\bookmarkX@hypertarget{\@counter@name}\cftfunctiondef@contentsline{: \texttt{\@the@title}}}%
+                        \def\@the@hypertitle{\cftfunctiondef@hypertitle*!'%
+                                {\shadowText*:\Large:'\@the@color@scheme'[black]}'{\@the@title}{}}%
+                        \let\@current@listbox@column@sep=\@tcb@func@defbox@column@sep%
+                        \def\@counter@name{functiondef}%
+                        \def\@bookmark@title{\csname cft\@counter@name @toctitle\endcsname\space:\space\@the@title}
+                        \cftfunctiondef@bookmark%
+                }
+                {details}%
+                {%
+                        \stepcounter{functiondefdetail}%
+                        \def\@first@column@width{\@tcb@func@detailbox@first@column}
+                        \def\@second@column@width{\@tcb@func@detailbox@second@column}
+                        \def\@the@style{tcbfuncdetailboxStyle}
+                        \def\@the@contentsline{\bookmarkX@hypertarget{\@counter@name}\cftfunctiondefdetail@contentsline{: \texttt{\@the@title}}}
+                        \def\@the@hypertitle{\cftfunctiondefdetail@hypertitle!'%
+                                {\shadowText'\@the@color@scheme'}'{\texttt{\@the@title} details:}{}}%
+                        \def\@the@title@line{\@the@contentsline\@the@hypertitle}%
+                        \let\@current@listbox@column@sep=\@tcb@func@detailbox@column@sep%
+                        \def\@counter@name{functiondefdetail}%
+                        \def\@bookmark@title{\csname cft\@counter@name @toctitle\endcsname\space:\space\@the@title}
+                        \cftfunctiondefdetail@bookmark%
+                }
+        }%
+        \ifcommandkey{firstcol}{\def\@tcb@code@first@column{\commandkey{firstcol}}}%
+        \ifcommandkey{secondcol}{\def\@tcb@code@second@column{\commandkey{secondcol}}}%
+        %\@process@multiarg@list{\@let@keyval@macro@pair}%
+%        {
+%                <@current@listbox@first@column=\@first@column@width>;
+%                <@current@listbox@second@column=\@second@column@width>
+%        }%
+        \@parse@split@csv@args{let}%
+                <@current@listbox@first@column,@current@listbox@second@column>%
+                =<@first@column@width,@second@column@width>%
+        \@set@current@tcb@colors{\@the@color@scheme}%
+        \decrementcounter{table}%
+        %\refstepcounter{table}%
+        \begin{tcolorbox}[\@the@style, title={\@the@title@line}]%
+                \hspace{0pt}%
+                \begin{longtable}{H{\@current@listbox@first@column} H{\@current@listbox@second@column}}
+}{\end{longtable}\end{tcolorbox}}%
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%************************************************** End of 'my-keyvals.sty' package *******************************************%
+%******************************************************************************************************************************%
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
+\endinput 

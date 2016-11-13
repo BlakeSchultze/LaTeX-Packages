@@ -1,9 +1,9 @@
 %******************************************************************************************************************************%
-%********************************************************** `my-glossaries.sty' **********************************************************%
+%***************************************************** `my-glossaries.sty' ****************************************************%
 %******************************************************************************************************************************%
 % This is an adaptation of the 'glossaries' package, used to generate (1) a glossary of terms and (2) a glossary of acronyms and add these to a document's back matter (in addition to the 'index', 'list of abbreviations', 'appendix', 'bibliography', 'references', etc.
 %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesPackage{my-glossaries}
@@ -16,108 +16,50 @@
 \RequirePackage{datatool-base}
 \RequirePackage{amsgen}
 \RequirePackage{etoolbox}
-\RequirePackage{my-glossary-hypernav}
-\DeclareOption*{\PackageWarning{my-glossaries}{Unknown \CurrentOption}}
-%\ProcessOptions\relax
-%******************************************************************************************************************************%
-\newcommand*{\@gls@loadmcols}{\RequirePackage{glossary-mcols}}
-\newcommand*{\@gls@loadlong}{\RequirePackage{glossary-long}}
-\IfFileExists{supertabular.sty}
-        {\newcommand*{\@gls@loadsuper}{\RequirePackage{glossary-super}}}
-        {\newcommand*{\@gls@loadsuper}{}}
-\newcommand*{\@gls@loadlist}{\RequirePackage{glossary-list}}
-%\newcommand*{\@gls@loadtree}{\RequirePackage{glossary-tree}}
-\newcommand*{\@gls@loadtree}{\RequirePackage{my-glossary-tree}}
+
+\newcommand*{\glsentrynumberlist}[1]{%
+  \glsdoifexists{#1}%
+  {%
+    \@gls@entry@field{#1}{numberlist}%
+  }%
+}
 %------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`\!=12
-%\catcode`|=12
-\makeatletter                                                   % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%\AtBeginDocument{\input{glsentries.def}}                                                       % Import the master list of glossary terms and acronyms defined previously
+\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
+
+
+
+
 \newif\if@gls@docloaded
-\newif\ifglstranslate
-\newif\if@glsisacronymlist
-\newif\ifglsxindy\glsxindyfalse
-\newcommand*{\@gls@declareoption}[2]{%
-  \DeclareOptionX{#1}{#2}%
-  \DeclareOption{#1}{#2}%
-}
-\@gls@declareoption{nonumberlist}{%
-  \renewcommand*{\glossaryentrynumbers}[1]{\gls@save@numberlist{#1}}%
-}
-\@gls@declareoption{seeautonumberlist}{%
-   \renewcommand*{\@glo@seeautonumberlist}{%
-      \def\@glo@prefix{\glsnextpages}%
-   }%
-}
-\@gls@declareoption{nolong}{\renewcommand*{\@gls@loadlong}{}}
-\@gls@declareoption{nosuper}{\renewcommand*{\@gls@loadsuper}{}}
-\@gls@declareoption{nolist}{\renewcommand*{\@gls@loadlist}{}}
-\@gls@declareoption{notree}{\renewcommand*{\@gls@loadtree}{}}
-\@gls@declareoption{nostyles}{%
-  \renewcommand*{\@gls@loadlong}{}%
-  \renewcommand*{\@gls@loadsuper}{}%
-  \renewcommand*{\@gls@loadlist}{}%
-  \renewcommand*{\@gls@loadtree}{}%
-  \let\@glossary@default@style\relax
-}
-\@gls@declareoption{nomain}{%
-   \let\glsdefaulttype\relax
-   \renewcommand*{\glsdefmain}{}%
-}
-\@gls@declareoption{acronyms}{%
-  \glsacronymtrue
-  \renewcommand{\@gls@do@acronymsdef}{%
-     \DeclareAcronymList{acronym}%
-     \newglossary[alg]{acronym}{acr}{acn}{\acronymname}%
-     \renewcommand*{\acronymtype}{acronym}%
-      \newcommand*{\gls@tr@set@acronym@toctitle}{%
-        \translatelet{\glossarytoctitle}{Acronyms}%
-      }%
-   }%
-}
-\@gls@declareoption{nowarn}{%
-  \renewcommand*{\GlossariesWarning}[1]{}%
-  \renewcommand*{\GlossariesWarningNoLine}[1]{}%
-}
-\@gls@declareoption{noredefwarn}{%
-  \renewcommand*{\@gls@warnonglossdefined}{}%
-  \renewcommand*{\@gls@warnontheglossdefined}{}%
-}
-\@gls@declareoption{notranslate}{%
-  \glstranslatefalse
-  \let\@gls@usetranslator\relax
-  \let\glsifusetranslator\@secondoftwo
-}
-\@gls@declareoption{makeindex}{\glsxindyfalse}
-\@gls@declareoption{xindygloss}{%
-  \glsxindytrue
-}
-\@gls@declareoption{xindynoglsnumbers}{%
-  \glsxindytrue
-  \gls@xindy@glsnumbersfalse
-}
-\@gls@declareoption{symbols}{%
-  \let\@gls@do@symbolsdef\@gls@symbolsdef
-}
-\@gls@declareoption{numbers}{%
-  \let\@gls@do@numbersdef\@gls@numbersdef
-}
-\@gls@declareoption{index}{%
-  \let\@gls@do@indexdef\@gls@indexdef
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
-%******************************************************************************************************************************%
+\@ifpackageloaded{doc}%
+        {\@gls@docloadedtrue}%
+        {\@ifclassloaded{nlctdoc}{\@gls@docloadedtrue}{\@gls@docloadedfalse}}%
+\if@gls@docloaded
+        \let\glsorg@theglossary\theglossary
+        \let\glsorg@endtheglossary\endtheglossary
+        \let\glsorg@PrintChanges\PrintChanges
+        \renewcommand{\PrintChanges}
+        {%
+                \begingroup
+        \let\theglossary\glsorg@theglossary
+        \let\endtheglossary\glsorg@endtheglossary
+        \glsorg@PrintChanges
+                \endgroup
+        }
+\fi
 \define@boolkey{my-glossaries.sty}[gls]{toc}[true]{}
 \define@boolkey{my-glossaries.sty}[gls]{numberline}[true]{}
+\ifcsundef{chapter}%
+  {\newcommand*{\@@glossarysec}{section}}%
+  {\newcommand*{\@@glossarysec}{chapter}}
 \define@choicekey{my-glossaries.sty}{section}{part,chapter,section,%
 subsection,subsubsection,paragraph,subparagraph}[section]{%
   \renewcommand*{\@@glossarysec}{#1}}
+\newcommand*{\@@glossarysecstar}{*}
+\newcommand*{\@@glossaryseclabel}{}
+\newcommand*{\glsautoprefix}{}
 \define@choicekey{my-glossaries.sty}{numberedsection}[\val\nr]{%
 false,nolabel,autolabel,nameref}[nolabel]{%
   \ifcase\nr\relax
@@ -137,554 +79,68 @@ false,nolabel,autolabel,nameref}[nolabel]{%
       \label{\glsautoprefix\@glo@type}}%
   \fi
 }
+\newcommand*{\@glossary@default@style}{indexhypergroup}
 \define@key{my-glossaries.sty}{style}{%
   \renewcommand*{\@glossary@default@style}{#1}%
 }
+\newcommand*{\@gls@declareoption}[2]{%
+  \DeclareOptionX{#1}{#2}%
+  \DeclareOption{#1}{#2}%
+}
+\newcommand*{\glossaryentrynumbers}[1]{#1\gls@save@numberlist{#1}}
+\@gls@declareoption{nonumberlist}{%
+  \renewcommand*{\glossaryentrynumbers}[1]{\gls@save@numberlist{#1}}%
+}
 \define@boolkey{my-glossaries.sty}[gls]{savenumberlist}[true]{}
+\glssavenumberlistfalse
+\newcommand*\@glo@seeautonumberlist{}
+\@gls@declareoption{seeautonumberlist}{%
+   \renewcommand*{\@glo@seeautonumberlist}{%
+      \def\@glo@prefix{\glsnextpages}%
+   }%
+}
+%******************************************************************************************************************************%
+\newcommand*{\@gls@loadmcols}{\RequirePackage{glossary-mcols}}
+\newcommand*{\@gls@loadlong}{\RequirePackage{glossary-long}}
+\@gls@declareoption{nolong}{\renewcommand*{\@gls@loadlong}{}}
+\IfFileExists{supertabular.sty}
+        {\newcommand*{\@gls@loadsuper}{\RequirePackage{glossary-super}}}
+        {\newcommand*{\@gls@loadsuper}{}}
+\@gls@declareoption{nosuper}{\renewcommand*{\@gls@loadsuper}{}}
+\newcommand*{\@gls@loadlist}{\RequirePackage{glossary-list}}
+\@gls@declareoption{nolist}{\renewcommand*{\@gls@loadlist}{}}
+%\newcommand*{\@gls@loadtree}{\RequirePackage{glossary-tree}}
+\newcommand*{\@gls@loadtree}{\RequirePackage{my-glossary-tree}}
+\@gls@declareoption{notree}{\renewcommand*{\@gls@loadtree}{}}
+\@gls@declareoption{nostyles}{%
+  \renewcommand*{\@gls@loadlong}{}%
+  \renewcommand*{\@gls@loadsuper}{}%
+  \renewcommand*{\@gls@loadlist}{}%
+  \renewcommand*{\@gls@loadtree}{}%
+  \let\@glossary@default@style\relax
+}
+\newcommand*{\glspostdescription}{%
+  \ifglsnopostdot\else\spacefactor\sfcode`\. \fi
+}
 \define@boolkey{my-glossaries.sty}[gls]{nopostdot}[true]{}
+\glsnopostdotfalse
 \define@boolkey{my-glossaries.sty}[gls]{nogroupskip}[true]{}
+\glsnogroupskipfalse
 \define@boolkey{my-glossaries.sty}[gls]{ucmark}[true]{}
 \define@boolkey{my-glossaries.sty}[gls]{entrycounter}[true]{}
+\glsentrycounterfalse
 \define@key{my-glossaries.sty}{counterwithin}{%
   \renewcommand*{\@gls@counterwithin}{#1}%
   \glsentrycountertrue
 }
+\newcommand*{\@gls@counterwithin}{}
 \define@boolkey{my-glossaries.sty}[gls]{subentrycounter}[true]{}
+\glssubentrycounterfalse
+\newcommand*{\@glo@default@sorttype}{standard}
 \define@choicekey{my-glossaries.sty}{sort}{standard,def,use}{%
   \renewcommand*{\@glo@default@sorttype}{#1}%
   \csname @gls@setupsort@#1\endcsname
 }
-\define@boolkey{my-glossaries.sty}[gls]{acronym}[true]{%
-  \ifglsacronym
-    \renewcommand{\@gls@do@acronymsdef}{%
-      \DeclareAcronymList{acronym}%
-      \newglossary[alg]{acronym}{acr}{acn}{\acronymname}%
-      \renewcommand*{\acronymtype}{acronym}%
-      \newcommand*{\gls@tr@set@acronym@toctitle}{%
-        \translatelet{\glossarytoctitle}{Acronyms}%
-      }%
-    }%
-  \else
-    \let\@gls@do@acronymsdef\relax
-  \fi
-}
-\define@key{my-glossaries.sty}{acronymlists}{%
-  \DeclareAcronymList{#1}%
-}
-\define@key{my-glossaries.sty}{counter}{%
-  \renewcommand*{\glscounter}{#1}%
-}
-\define@key{my-glossaries.sty}{nohypertypes}{%
-  \GlsDeclareNoHyperList{#1}%
-}
-\define@boolkey{my-glossaries.sty}[gls]{sanitizesort}[true]{%
-  \ifglssanitizesort
-    \glssetnoexpandfield{sortvalue}%
-    \renewcommand*{\@gls@noidx@setsanitizesort}{%
-      \glssanitizesorttrue
-      \glssetnoexpandfield{sortvalue}%
-    }%
-  \else
-    \glssetexpandfield{sortvalue}%
-    \renewcommand*{\@gls@noidx@setsanitizesort}{%
-      \glssanitizesortfalse
-      \glssetexpandfield{sortvalue}%
-    }%
-  \fi
-}
-\define@key{my-glossaries.sty}{sanitize}[description=true,symbol=true,name=true]{%
-  \ifthenelse{\equal{#1}{none}}%
-  {%
-    \GlossariesWarning{sanitize package option deprecated}%
-    \glssetexpandfield{name}%
-    \glssetexpandfield{symbol}%
-    \glssetexpandfield{symbolplural}%
-    \glssetexpandfield{desc}%
-    \glssetexpandfield{descplural}%
-  }%
-  {%
-    \setkeys[gls]{sanitize}{#1}%
-  }%
-}
-%******************************************************************************************************************************%
-%************************************************************ Processing of package options/keys *************************************************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
-\@ifpackageloaded{doc}%
-        {\@gls@docloadedtrue}%
-        {\@ifclassloaded{nlctdoc}{\@gls@docloadedtrue}{\@gls@docloadedfalse}}%
-\if@gls@docloaded
-        \let\glsorg@theglossary\theglossary
-        \let\glsorg@endtheglossary\endtheglossary
-        \let\glsorg@PrintChanges\PrintChanges
-        \renewcommand{\PrintChanges}
-        {%
-                \begingroup
-        \let\theglossary\glsorg@theglossary
-        \let\endtheglossary\glsorg@endtheglossary
-        \glsorg@PrintChanges
-                \endgroup
-        }
-\fi
-%------------------------------------------------------------------------------------------------------------------------------%
-\@ifclassloaded{memoir}
-        {\glsucmarktrue}
-        {\glsucmarkfalse}
-%------------------------------------------------------------------------------------------------------------------------------%
-\@ifpackageloaded{hyperref} {%
-  \newcommand*{\glsdisplaynumberlist}[1]{%
-    \GlossariesWarning
-    {%
-      \string\glsdisplaynumberlist\space
-      doesn't work with hyperref.^^JUsing
-      \string\glsentrynumberlist\space instead%
-    }%
-    \glsentrynumberlist{#1}%
-  }%
-}%
-{%
-  \newcommand*{\glsdisplaynumberlist}[1]{%
-    \glsdoifexists{#1}%
-    {%
-      \bgroup
-         \edef\@glo@label{\glsdetoklabel{#1}}%
-         \let\@org@glsnumberformat\glsnumberformat
-         \def\glsnumberformat##1{##1}%
-         \protected@edef\the@numberlist{%
-           \csname glo@\@glo@label @numberlist\endcsname}%
-         \def\@gls@numlist@sep{}%
-         \def\@gls@numlist@nextsep{}%
-         \def\@gls@numlist@lastsep{}%
-         \def\@gls@thislist{}%
-         \def\@gls@donext@def{}%
-         \renewcommand\do[1]{%
-           \protected@edef\@gls@thislist{%
-             \@gls@thislist
-             \noexpand\@gls@numlist@sep
-             ##1%
-           }%
-           \let\@gls@numlist@sep\@gls@numlist@nextsep
-           \def\@gls@numlist@nextsep{\glsnumlistsep}%
-           \@gls@donext@def
-           \def\@gls@donext@def{%
-             \def\@gls@numlist@lastsep{\glsnumlistlastsep}%
-           }%
-         }%
-         \expandafter \glsnumlistparser \expandafter{\the@numberlist}%
-         \let\@gls@numlist@sep\@gls@numlist@lastsep
-         \@gls@thislist
-      \egroup
-    }%
-  }
-}
-%******************************************************************************************************************************%
-%**************************************************************** Definition of command keys *****************************************************************%
-%******************************************************************************************************************************%
-\define@boolkey[gls]{sanitize}{description}[true]{%
-  \GlossariesWarning{sanitize={description} package option deprecated}%
-  \ifgls@sanitize@description
-    \glssetnoexpandfield{desc}%
-    \glssetnoexpandfield{descplural}%
-  \else
-    \glssetexpandfield{desc}%
-    \glssetexpandfield{descplural}%
-  \fi
-}
-\define@boolkey[gls]{sanitize}{name}[true]{%
-  \GlossariesWarning{sanitize={name} package option deprecated}%
-  \ifgls@sanitize@name
-    \glssetnoexpandfield{name}%
-  \else
-    \glssetexpandfield{name}%
-  \fi
-}
-\define@boolkey[gls]{sanitize}{symbol}[true]{%
-  \GlossariesWarning{sanitize={symbol} package option deprecated}%
-  \ifgls@sanitize@symbol
-    \glssetnoexpandfield{symbol}%
-    \glssetnoexpandfield{symbolplural}%
-  \else
-    \glssetexpandfield{symbol}%
-    \glssetexpandfield{symbolplural}%
-  \fi
-}
-\define@choicekey[gls]{sanitize}{sort}{true,false}[true]{%
-  \setbool{glssanitizesort}{#1}%
-  \ifglssanitizesort
-    \glssetnoexpandfield{sortvalue}%
-  \else
-    \glssetexpandfield{sortvalue}%
-  \fi
-  \GlossariesWarning{sanitize={sort} package option
-    deprecated. Use sanitizesort instead}%
-}
-\define@key{glossadd}{counter}{\def\@gls@counter{#1}}
-\define@key{glossadd}{format}{\def\@glsnumberformat{#1}}
-\define@key{glossadd}{types}{\def\@glo@type{#1}}
-\glssavenumberlistfalse
-\glsnopostdotfalse
-\glsnogroupskipfalse
-\glsentrycounterfalse
-\glssubentrycounterfalse
-\glssanitizesorttrue
-\define@key{printgloss}{type}{\def\@glo@type{#1}}
-%******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
-%******************************************************************************************************************************%
-\newtoks\glskeylisttok
-\newtoks\glslabeltok
-\newtoks\glsshorttok
-\newtoks\glslongtok
-%\providecommand*{\glsgroupskip}{}
-\providecommand*{\glsgroupskip}{\par\vspace{20pt plus 10pt minus 0pt}}
-\providecommand*{\glsgroupheading}[1]{}
-\newcommand{\acronymfont}[1]{\@acronym@font{#1}}
-%\renewcommand*{\acronymfont}[1]{\Huge\textsc{#1}}
-\newcommand{\firstacronymfont}[1]{\acronymfont{#1}}
-%\renewcommand*{\firstacronymfont}[1]{\Huge\textsc{\emph{#1}}}
-\newcommand*{\acrnameformat}[2]{\acronymfont{#1}}
-\newcommand*{\newacronymhook}{}
-\newcommand{\glscounter}{page}
-\newcommand*{\@gls@toc}[2]{%
-  \ifglstoc
-    \ifglsnumberline
-      %\phantomsection\addcontentsline{toc}{#2}{\protect\numberline{}#1}%
-    \else
-      %\phantomsection\addcontentsline{toc}{#2}{#1}%
-    \fi
-  \fi
-}
-\newcommand*{\glsentrynumberlist}[1]{%
-  \glsdoifexists{#1}%
-  {%
-    \@gls@entry@field{#1}{numberlist}%
-  }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand*{\glsnumlistsep}{, }
-\newcommand*{\glsnumlistlastsep}{ \& }
-\newcommand*{\glshyperlink}[2][\glsentrytext{\@glo@label}]{%
- \def\@glo@label{#2}%
- \@glslink{\glolinkprefix\glsdetoklabel{#2}}{#1}}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newrobustcmd*{\glsadd}[2][]{%
-  \@gls@adjustmode
-  \glsdoifexists{#2}%
-  {%
-    \def\@glsnumberformat{glsnumberformat}%
-    \edef\@gls@counter{\csname glo@\glsdetoklabel{#2}@counter\endcsname}%
-    \show\csname glo@\glsdetoklabel{#2}@counter\endcsname
-    \setkeys{glossadd}{#1}%
-    \@gls@saveentrycounter
-    \@do@wrglossary{#2}%
-  }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%                                       1   2   3 4 5 6
-\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m }
-{% [][options]{label}{abbreviation}{long form}{description}
-        \newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
-        \newacronym{#3}{#4}{#5}%
-        \glsseedual{#3}{gls-#3}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\glsdual}{s O{} m O{}}
-{% [][options]{label}{abbreviation}{long form}{description}
-        \IfBooleanTF{#1}
-                {\gls[#2]{#3}[#4]\glslink{gls-#3}{}}
-                {\gls[#2]{gls-#3}[#4]\glslink{#3}{}}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\Glsdual}{s m}
-{% [][options]{label}{abbreviation}{long form}{description}
-        \IfBooleanTF{#1}
-                {\Gls{#2}}
-                {\Gls{gls-#2}}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\GLSdual}{s m}
-{% [][options]{label}{abbreviation}{long form}{description}
-        \IfBooleanTF{#1}
-                {\GLS{#2}}
-                {\GLS{gls-#2}}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\newrobustcmd*{\glsadddual}[2][]{%
-  \@gls@adjustmode
-  \glsdoifexists{#2}%
-  {%
-    \setkeys{glossadd}{#1}%
-    \def\@glsnumberformat{glsgobblenumber}%
-    \edef\@gls@counter{\csname glo@\glsdetoklabel{#2}@counter\endcsname}%
-    \@gls@saveentrycounter
-    \@do@wrglossary{#2}%
-  }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@gls@fixbraces#1#2#3\@nil{%
-  \ifx#2[\relax
-   \@@gls@fixbraces#1#2#3\@end@fixbraces
-  \else
-    \def#1{{#2#3}}%
-  \fi
-}
-\def\@@gls@fixbraces#1[#2]#3\@end@fixbraces{%
-  \def#1{[#2]{#3}}%
-}
-\newcommand*{\glsseelastsep}{\space\andname\space}
-\newcommand*{\glsseesep}{, }
-\newcommand*{\glsseeitemformat}[1]{\glsentrytext{#1}}
-\DeclareRobustCommand*{\glsseeitem}[1]{\glshyperlink[\glsseeitemformat{#1}]{#1}}
-\DeclareRobustCommand*{\glssee}[3][\seename]{%
-  \@do@seeglossary{#2}{[#1]{#3}}}
-\newcommand*{\@glssee}[3][\seename]{%
-  \glssee[#1]{#3}{#2}}
-\DeclareRobustCommand*{\glsseeformat}[3][\seename]{%
-  \emph{#1} \glsseelist{#2}}
-\DeclareRobustCommand*{\glsseelist}[1]{%
-  \let\@gls@dolast\relax
-  \let\@gls@donext\relax
-  \@for\@gls@thislabel:=#1\do{%
-    \ifx\@xfor@nextelement\@nnil
-      \@gls@dolast
-    \else
-      \@gls@donext
-    \fi
-    \expandafter\glsseeitem\expandafter{\@gls@thislabel}%
-    \let\@gls@dolast\glsseelastsep
-    \let\@gls@donext\glsseesep
-  }%
-}
-\newcommand{\@do@seeglossary}[2]{%
-\def\@gls@xref{#2}%
-\@onelevel@sanitize\@gls@xref
-\@gls@checkmkidxchars\@gls@xref
-\ifglsxindy
-  \gls@glossary{\csname glo@#1@type\endcsname}{%
-    (indexentry
-      :tkey (\csname glo@#1@index\endcsname)
-      :xref (\string"\@gls@xref\string")
-      :attr \string"see\string"
-    )
-  }%
-\else
-  \gls@glossary{\csname glo@#1@type\endcsname}{%
-  \string\glossaryentry{\csname glo@#1@index\endcsname
-  \@gls@encapchar glsseeformat\@gls@xref}{Z}}%
-\fi
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\@do@seedualglossary}[2]{%
-\def\@gls@xref{#2}%
-\@onelevel@sanitize\@gls@xref
-\@gls@checkmkidxchars\@gls@xref
-\ifglsxindy
-  \gls@glossary{\csname glo@#1@type\endcsname}{%
-    (indexentry
-      :tkey (\csname glo@#1@index\endcsname)
-      :xref (\string"\@gls@xref\string")
-      :attr \string"see\string"
-    )
-  }%
-\else
-  \gls@glossary{\csname glo@#1@type\endcsname}{%
-  \string\glossaryentry{\csname glo@#1@index\endcsname
-  \@gls@encapchar glsseedualformat\@gls@xref}{Z}}%
-\fi
-}
-\DeclareRobustCommand*{\glsseedual}[3][\seename]{%
-  \@do@seedualglossary{#2}{[#1]{#3}}}
-\newcommand*{\@glsseedual}[3][\seename]{%
-  \glsseedual[#1]{#3}{#2}}
-\DeclareRobustCommand*{\glsseedualformat}[3][\seename]{%
-  \emph{#1} \glsseeduallist{#2}}
-\DeclareRobustCommand*{\glsseeduallist}[1]{%
-  \let\@gls@dolast\relax
-  \let\@gls@donext\relax
-  \@for\@gls@thislabel:=#1\do{%
-    \ifx\@xfor@nextelement\@nnil
-      \@gls@dolast
-    \else
-      \@gls@donext
-    \fi
-    \expandafter\glsseedualitem\expandafter{\@gls@thislabel}%
-    \let\@gls@dolast\glsseelastsep
-    \let\@gls@donext\glsseesep
-  }%
-}
-\DeclareRobustCommand*{\glsseedualitem}[1]{\glshyperlink[\glsseedualitemformat{#1}]{#1}}
-\newcommand*{\glsseedualitemformat}[1]{\glsentryname{#1}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Index/Glossary/Acronyms/Nomenclature style file generation %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand*{\gls@save@numberlist}[1]{%
-  \ifglssavenumberlist
-    \toks@{#1}%
-    \edef\@do@writeaux@info{%
-        \noexpand\csgdef{glo@\glscurrententrylabel @numberlist}{\the\toks@}%
-    }%
-    \@onelevel@sanitize\@do@writeaux@info
-    \protected@write\@auxout{}{\@do@writeaux@info}%
-  \fi
-}
-\newcommand*{\warn@noprintglossary}{}%
-\ifcsundef{printglossary}{}%
-{%
-  \@gls@warnonglossdefined
-  \undef\printglossary
-}
-\newcommand*{\printglossary}[1][type=\glsdefaulttype]{%
-  \@printglossary{#1}{\@print@glossary}%
-}
-\newcommand*{\printglossaries}{%
-  \forallglossaries{\@@glo@type}{\printglossary[type=\@@glo@type]}%
-}
-\newcommand*{\printnoidxglossary}[1][type=\glsdefaulttype]{%
-  \@printglossary{#1}{\@print@noidx@glossary}%
-}
-\newcommand*{\printnoidxglossaries}{%
-  \forallglossaries{\@@glo@type}{\printnoidxglossary[type=\@@glo@type]}%
-}
-\newcommand*{\@printgloss@setsort}{}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\@printglossary}[2]{%
-        \def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
-        \ifglstoc
-                \ifglsnumberline
-                        \def\linkedglossarytitle{\toctitletarget{\@glo@type}{\glossarytitle}}%************************%
-                \else
-                        \def\linkedglossarytitle{\toctitletarget{\@glo@type}{\glossarytitle}}%************************%
-                \fi
-        \else
-                \def\linkedglossarytitle{\glossarytitle}%
-        \fi
-        \doublespacing%
-        \def\glossarytoctitle{\glossarytitle}%
-        \let\org@glossarytitle\glossarytitle
-        \def\@glossarystyle{}%
-        \def\gls@dotoctitle{\glssettoctitle{\@glo@type}}%
-        \let\@org@glossaryentrynumbers\glossaryentrynumbers
-        \bgroup
-        \setkeys{printgloss}{#1}%
-        \@printgloss@setsort
-        \ifx\glossarytitle\org@glossarytitle
-        \else
-        \expandafter\let\csname @glotype@\@glo@type @title\endcsname
-                    \glossarytitle
-        \fi
-        \let\currentglossary\@glo@type
-        \let\org@glossaryentrynumbers\glossaryentrynumbers
-        \let\glsnonextpages\@glsnonextpages
-        \let\glsnextpages\@glsnextpages
-        \let\nopostdesc\@nopostdesc
-        \gls@dotoctitle
-        \@glossarystyle
-        \let\gls@org@glossaryentryfield\glossentry
-        \let\gls@org@glossarysubentryfield\subglossentry
-        \renewcommand{\glossentry}[1]{%
-  \xdef\glscurrententrylabel{\glsdetoklabel{##1}}%
-        \gls@org@glossaryentryfield{##1}%
-        }%
-        \renewcommand{\subglossentry}[2]{%
-        \xdef\glscurrententrylabel{\glsdetoklabel{##2}}%
-        \gls@org@glossarysubentryfield{##1}{##2}%
-        }%
-        #2%
-        %\edef\glsheadername{\glossarytitle}
-        \egroup
-        \edef\glsheadername{\glossarytitle}\global\let\glossaryentrynumbers\@org@glossaryentrynumbers
-        \global\let\warn@noprintglossary\relax
-}
-\newcommand*{\glsdefaulttype}{main}
-\newcommand*{\acronymtype}{\glsdefaulttype}
-\AtBeginDocument{%
-  \ifglsacronym
-    \ifbool{glscompatible-3.07}%
-    {}%
-    {%
-      \providecommand*{\printacronyms}[1][]{%
-        \edef\glsheadername{\@listof@acronyms@toctitle}
-        \printglossary[type=\acronymtype,#1]}%
-    }%
-  \fi
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\@print@glossary}{%
-  \makeatletter
-  \@input@{\jobname.\csname @glotype@\@glo@type @in\endcsname}%
-  \IfFileExists{\jobname.\csname @glotype@\@glo@type @in\endcsname}%
-  {}%
-  {\null}%
-  \ifglsxindy
-    \ifcsundef{@xdy@\@glo@type @language}%
-    {%
-      \edef\@do@auxoutstuff{%
-        \noexpand\AtEndDocument{%
-          \noexpand\immediate\noexpand\write\@auxout{%
-            \string\providecommand\string\@xdylanguage[2]{}}%
-          \noexpand\immediate\noexpand\write\@auxout{%
-            \string\@xdylanguage{\@glo@type}{\@xdy@main@language}}%
-        }%
-      }%
-    }%
-    {%
-      \edef\@do@auxoutstuff{%
-        \noexpand\AtEndDocument{%
-          \noexpand\immediate\noexpand\write\@auxout{%
-            \string\providecommand\string\@xdylanguage[2]{}}%
-          \noexpand\immediate\noexpand\write\@auxout{%
-            \string\@xdylanguage{\@glo@type}{\csname @xdy@\@glo@type
-              @language\endcsname}}%
-        }%
-      }%
-    }%
-    \@do@auxoutstuff
-    \edef\@do@auxoutstuff{%
-      \noexpand\AtEndDocument{%
-         \noexpand\immediate\noexpand\write\@auxout{%
-          \string\providecommand\string\@gls@codepage[2]{}}%
-         \noexpand\immediate\noexpand\write\@auxout{%
-          \string\@gls@codepage{\@glo@type}{\gls@codepage}}%
-      }%
-    }%
-    \@do@auxoutstuff
-  \fi
-  \renewcommand*{\@warn@nomakeglossaries}{%
-    \GlossariesWarningNoLine{\string\makeglossaries\space
-    hasn't been used,^^Jthe glossaries will not be updated}%
-  }%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\ifcsundef{chapter}%
-  {\newcommand*{\@@glossarysec}{section}}%
-  {\newcommand*{\@@glossarysec}{chapter}}
-\newcommand*{\@@glossarysecstar}{*}
-\newcommand*{\@@glossaryseclabel}{}
-\newcommand*{\glsautoprefix}{}
-\newcommand*{\@glossary@default@style}{indexhypergroup}
-\newcommand*{\glossaryentrynumbers}[1]{#1\gls@save@numberlist{#1}}
-\newcommand*\@glo@seeautonumberlist{}
-\newcommand*{\glspostdescription}{%
-  \ifglsnopostdot\else\spacefactor\sfcode`\. \fi
-}
-\newcommand*{\@gls@counterwithin}{}
-\newcommand*{\@glo@default@sorttype}{standard}
 \newcommand*{\glsprestandardsort}[3]{%
   \glsdosanitizesort
 }
@@ -762,7 +218,49 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \translatelet{\glossarytoctitle}{Glossary}%
   }%
 }
+\newcommand*{\glsdefaulttype}{main}
+\newcommand*{\acronymtype}{\glsdefaulttype}
+\@gls@declareoption{nomain}{%
+   \let\glsdefaulttype\relax
+   \renewcommand*{\glsdefmain}{}%
+}
+\define@boolkey{my-glossaries.sty}[gls]{acronym}[true]{%
+  \ifglsacronym
+    \renewcommand{\@gls@do@acronymsdef}{%
+      \DeclareAcronymList{acronym}%
+      \newglossary[alg]{acronym}{acr}{acn}{\acronymname}%
+      \renewcommand*{\acronymtype}{acronym}%
+      \newcommand*{\gls@tr@set@acronym@toctitle}{%
+        \translatelet{\glossarytoctitle}{Acronyms}%
+      }%
+    }%
+  \else
+    \let\@gls@do@acronymsdef\relax
+  \fi
+}
+\AtBeginDocument{%
+  \ifglsacronym
+    \ifbool{glscompatible-3.07}%
+    {}%
+    {%
+      \providecommand*{\printacronyms}[1][]{%
+        \edef\glsheadername{\@listof@acronyms@toctitle}
+        \printglossary[type=\acronymtype,#1]}%
+    }%
+  \fi
+}
 \newcommand*{\@gls@do@acronymsdef}{}
+\@gls@declareoption{acronyms}{%
+  \glsacronymtrue
+  \renewcommand{\@gls@do@acronymsdef}{%
+     \DeclareAcronymList{acronym}%
+     \newglossary[alg]{acronym}{acr}{acn}{\acronymname}%
+     \renewcommand*{\acronymtype}{acronym}%
+      \newcommand*{\gls@tr@set@acronym@toctitle}{%
+        \translatelet{\glossarytoctitle}{Acronyms}%
+      }%
+   }%
+}
 \newcommand*{\@glsacronymlists}{}
 \newcommand*{\@addtoacronymlists}[1]{%
   \ifx\@glsacronymlists\@empty
@@ -789,12 +287,20 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     #3%
   \fi
 }
+\newif\if@glsisacronymlist
 \newcommand*{\gls@checkisacronymlist}[1]{%
    \glsIfListOfAcronyms{#1}%
      {\@glsisacronymlisttrue}{\@glsisacronymlistfalse}%
 }
 \newcommand*{\SetAcronymLists}[1]{%
   \renewcommand*{\@glsacronymlists}{#1}%
+}
+\define@key{my-glossaries.sty}{acronymlists}{%
+  \DeclareAcronymList{#1}%
+}
+\newcommand{\glscounter}{page}
+\define@key{my-glossaries.sty}{counter}{%
+  \renewcommand*{\glscounter}{#1}%
 }
 \newcommand*{\@gls@nohyperlist}{}
 \newcommand*{\GlsDeclareNoHyperList}[1]{%
@@ -805,6 +311,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   {%
      \appto\@gls@nohyperlist{,#1}%
   }%
+}
+\define@key{my-glossaries.sty}{nohypertypes}{%
+  \GlsDeclareNoHyperList{#1}%
 }
 \newcommand*{\GlossariesWarning}[1]{%
   \PackageWarning{glossaries}{#1}%
@@ -874,7 +383,199 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \egroup
   \let\@glo@sort\@@glo@sort
 }
-\newcommand*\glsnoidxstripaccents{%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newif\ifglsxindy\glsxindyfalse
+\@gls@declareoption{nowarn}{%
+  \renewcommand*{\GlossariesWarning}[1]{}%
+  \renewcommand*{\GlossariesWarningNoLine}[1]{}%
+}
+\@gls@declareoption{noredefwarn}{%
+  \renewcommand*{\@gls@warnonglossdefined}{}%
+  \renewcommand*{\@gls@warnontheglossdefined}{}%
+}
+\@gls@declareoption{notranslate}{%
+  \glstranslatefalse
+  \let\@gls@usetranslator\relax
+  \let\glsifusetranslator\@secondoftwo
+}
+\@gls@declareoption{makeindex}{\glsxindyfalse}
+\@gls@declareoption{xindygloss}{%
+  \glsxindytrue
+}
+\@gls@declareoption{xindynoglsnumbers}{%
+  \glsxindytrue
+  \gls@xindy@glsnumbersfalse
+}
+\@gls@declareoption{symbols}{%
+  \let\@gls@do@symbolsdef\@gls@symbolsdef
+}
+\@gls@declareoption{numbers}{%
+  \let\@gls@do@numbersdef\@gls@numbersdef
+}
+\@gls@declareoption{index}{%
+  \let\@gls@do@indexdef\@gls@indexdef
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%************************************************ Processing of package options ***********************************************%
+%******************************************************************************************************************************%
+\define@boolkey{my-glossaries.sty}[gls]{sanitizesort}[true]{%
+  \ifglssanitizesort
+    \glssetnoexpandfield{sortvalue}%
+    \renewcommand*{\@gls@noidx@setsanitizesort}{%
+      \glssanitizesorttrue
+      \glssetnoexpandfield{sortvalue}%
+    }%
+  \else
+    \glssetexpandfield{sortvalue}%
+    \renewcommand*{\@gls@noidx@setsanitizesort}{%
+      \glssanitizesortfalse
+      \glssetexpandfield{sortvalue}%
+    }%
+  \fi
+}
+\define@key{my-glossaries.sty}{sanitize}[description=true,symbol=true,name=true]{%
+  \ifthenelse{\equal{#1}{none}}%
+  {%
+    \GlossariesWarning{sanitize package option deprecated}%
+    \glssetexpandfield{name}%
+    \glssetexpandfield{symbol}%
+    \glssetexpandfield{symbolplural}%
+    \glssetexpandfield{desc}%
+    \glssetexpandfield{descplural}%
+  }%
+  {%
+    \setkeys[gls]{sanitize}{#1}%
+  }%
+}
+%******************************************************************************************************************************%
+%************************************************* Processing of package options/keys *****************************************%
+%******************************************************************************************************************************%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\@ifclassloaded{memoir}
+        {\glsucmarktrue}
+        {\glsucmarkfalse}
+%------------------------------------------------------------------------------------------------------------------------------%
+\@ifpackageloaded{hyperref} {%
+  \newcommand*{\glsdisplaynumberlist}[1]{%
+    \GlossariesWarning
+    {%
+      \string\glsdisplaynumberlist\space
+      doesn't work with hyperref.^^JUsing
+      \string\glsentrynumberlist\space instead%
+    }%
+    \glsentrynumberlist{#1}%
+  }%
+}%
+{%
+  \newcommand*{\glsdisplaynumberlist}[1]{%
+    \glsdoifexists{#1}%
+    {%
+      \bgroup
+         \edef\@glo@label{\glsdetoklabel{#1}}%
+         \let\@org@glsnumberformat\glsnumberformat
+         \def\glsnumberformat##1{##1}%
+         \protected@edef\the@numberlist{%
+           \csname glo@\@glo@label @numberlist\endcsname}%
+         \def\@gls@numlist@sep{}%
+         \def\@gls@numlist@nextsep{}%
+         \def\@gls@numlist@lastsep{}%
+         \def\@gls@thislist{}%
+         \def\@gls@donext@def{}%
+         \renewcommand\do[1]{%
+           \protected@edef\@gls@thislist{%
+             \@gls@thislist
+             \noexpand\@gls@numlist@sep
+             ##1%
+           }%
+           \let\@gls@numlist@sep\@gls@numlist@nextsep
+           \def\@gls@numlist@nextsep{\glsnumlistsep}%
+           \@gls@donext@def
+           \def\@gls@donext@def{%
+             \def\@gls@numlist@lastsep{\glsnumlistlastsep}%
+           }%
+         }%
+         \expandafter \glsnumlistparser \expandafter{\the@numberlist}%
+         \let\@gls@numlist@sep\@gls@numlist@lastsep
+         \@gls@thislist
+      \egroup
+    }%
+  }
+}
+%******************************************************************************************************************************%
+%*************************************************** Definition of command keys ***********************************************%
+%******************************************************************************************************************************%
+\define@boolkey[gls]{sanitize}{description}[true]{%
+  \GlossariesWarning{sanitize={description} package option deprecated}%
+  \ifgls@sanitize@description
+    \glssetnoexpandfield{desc}%
+    \glssetnoexpandfield{descplural}%
+  \else
+    \glssetexpandfield{desc}%
+    \glssetexpandfield{descplural}%
+  \fi
+}
+\define@boolkey[gls]{sanitize}{name}[true]{%
+  \GlossariesWarning{sanitize={name} package option deprecated}%
+  \ifgls@sanitize@name
+    \glssetnoexpandfield{name}%
+  \else
+    \glssetexpandfield{name}%
+  \fi
+}
+\define@boolkey[gls]{sanitize}{symbol}[true]{%
+  \GlossariesWarning{sanitize={symbol} package option deprecated}%
+  \ifgls@sanitize@symbol
+    \glssetnoexpandfield{symbol}%
+    \glssetnoexpandfield{symbolplural}%
+  \else
+    \glssetexpandfield{symbol}%
+    \glssetexpandfield{symbolplural}%
+  \fi
+}
+\define@choicekey[gls]{sanitize}{sort}{true,false}[true]{%
+  \setbool{glssanitizesort}{#1}%
+  \ifglssanitizesort
+    \glssetnoexpandfield{sortvalue}%
+  \else
+    \glssetexpandfield{sortvalue}%
+  \fi
+  \GlossariesWarning{sanitize={sort} package option
+    deprecated. Use sanitizesort instead}%
+}
+\define@key{glossadd}{counter}{\def\@gls@counter{#1}}
+\define@key{glossadd}{format}{\def\@glsnumberformat{#1}}
+\define@key{glossadd}{types}{\def\@glo@type{#1}}
+\glssanitizesorttrue
+\define@key{printgloss}{type}{\def\@glo@type{#1}}
+%******************************************************************************************************************************%
+%******************************************************** Package Body ********************************************************%
+%******************************************************************************************************************************%
+\newtoks\glskeylisttok
+\newtoks\glslabeltok
+\newtoks\glsshorttok
+\newtoks\glslongtok
+%\providecommand*{\glsgroupskip}{}
+%\providecommand*{\glsgroupskip}{\par\vspace{20pt plus 10pt minus 0pt}}
+%\providecommand*{\glsgroupheading}[1]{}
+\newcommand{\acronymfont}[1]{\@acronym@font{#1}}
+%\renewcommand*{\acronymfont}[1]{\Huge\textsc{#1}}
+\newcommand{\firstacronymfont}[1]{\acronymfont{#1}}
+%\renewcommand*{\firstacronymfont}[1]{\Huge\textsc{\emph{#1}}}
+\newcommand*{\acrnameformat}[2]{\acronymfont{#1}}
+\newcommand*{\newacronymhook}{}
+\newcommand*{\@gls@toc}[2]{%
+  \ifglstoc
+    \ifglsnumberline
+      %\phantomsection\addcontentsline{toc}{#2}{\protect\numberline{}#1}%
+    \else
+      %\phantomsection\addcontentsline{toc}{#2}{#1}%
+    \fi
+  \fi
+}\newcommand*\glsnoidxstripaccents{%
   \let\IeC\@firstofone
   \let\'\@firstofone
   \let\`\@firstofone
@@ -910,6 +611,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \glssanitizesortfalse
   \glssetexpandfield{sortvalue}%
 }
+\newif\ifglstranslate
 \newcommand*\@gls@usetranslator{%
   \@ifpackageloaded{polyglossia}%
   {%
@@ -3713,7 +3415,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newlength\gls@tmplen
 \newcommand*{\glsdohypertarget}[2]{%
   \settototalheight{\gls@tmplen}{#2}%
-  \setlength\@macro@length{\maxof{\gls@tmplen}{\textsize}}
+  \setlength\@macro@length{\maxof{\gls@tmplen}{\doctextsize}}
   \raisebox{\@macro@length}{\hypertarget{#1}{}}#2%
 }
 \newcommand*{\glsdohyperlink}[2]{\hyperlink{#1}{#2}}
@@ -7326,6 +7028,10 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \SetCustomDisplayStyle{\@gls@type}%
   }%
 }
+%******************************************************************************************************************************%
+\RequirePackage{my-glossary-hypernav}
+%\DeclareOption*{\PackageWarning{my-glossaries}{Unknown \CurrentOption}}
+%\ProcessOptions\relax
 \@gls@loadlist
 \@gls@loadlong
 \@gls@loadsuper
@@ -7435,8 +7141,309 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \RequirePackage{glossaries-compatible-207}
 \fi
 %------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*{\glsnumlistsep}{, }
+\newcommand*{\glsnumlistlastsep}{ \& }
+\newcommand*{\glshyperlink}[2][\glsentrytext{\@glo@label}]{%
+ \def\@glo@label{#2}%
+ \@glslink{\glolinkprefix\glsdetoklabel{#2}}{#1}}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd*{\glsadd}[2][]{%
+  \@gls@adjustmode
+  \glsdoifexists{#2}%
+  {%
+    \def\@glsnumberformat{glsnumberformat}%
+    \edef\@gls@counter{\csname glo@\glsdetoklabel{#2}@counter\endcsname}%
+    \show\csname glo@\glsdetoklabel{#2}@counter\endcsname
+    \setkeys{glossadd}{#1}%
+    \@gls@saveentrycounter
+    \@do@wrglossary{#2}%
+  }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%                                       1   2   3 4 5 6
+\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m }
+{% [][options]{label}{abbreviation}{long form}{description}
+        \newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
+        \newacronym{#3}{#4}{#5}%
+        \newtoggle{gls-#3}\togglefalse{gls-#3}
+        \glsseedual{#3}{gls-#3}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\glsdual}{s O{} m O{}}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \toggletrue{gls-#3}
+        \IfBooleanTF{#1}
+                {\gls[#2]{#3}[#4]\glslink{gls-#3}{}}
+                {\gls[#2]{gls-#3}[#4]\glslink{#3}{}}%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\Glsdual}{s m}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \IfBooleanTF{#1}
+                {\Gls{#2}}
+                {\Gls{gls-#2}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\GLSdual}{s m}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \IfBooleanTF{#1}
+                {\GLS{#2}}
+                {\GLS{gls-#2}}
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd*{\glsadddual}[2][]{%
+  \@gls@adjustmode
+  \glsdoifexists{#2}%
+  {%
+    \setkeys{glossadd}{#1}%
+    \def\@glsnumberformat{glsgobblenumber}%
+    \edef\@gls@counter{\csname glo@\glsdetoklabel{#2}@counter\endcsname}%
+    \@gls@saveentrycounter
+    \@do@wrglossary{#2}%
+  }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\def\@gls@fixbraces#1#2#3\@nil{%
+  \ifx#2[\relax
+   \@@gls@fixbraces#1#2#3\@end@fixbraces
+  \else
+    \def#1{{#2#3}}%
+  \fi
+}
+\def\@@gls@fixbraces#1[#2]#3\@end@fixbraces{%
+  \def#1{[#2]{#3}}%
+}
+\newcommand*{\glsseelastsep}{\space\andname\space}
+\newcommand*{\glsseesep}{, }
+\newcommand*{\glsseeitemformat}[1]{\glsentrytext{#1}}
+\DeclareRobustCommand*{\glsseeitem}[1]{\glshyperlink[\glsseeitemformat{#1}]{#1}}
+\DeclareRobustCommand*{\glssee}[3][\seename]{%
+  \@do@seeglossary{#2}{[#1]{#3}}}
+\newcommand*{\@glssee}[3][\seename]{%
+  \glssee[#1]{#3}{#2}}
+\DeclareRobustCommand*{\glsseeformat}[3][\seename]{%
+  \emph{#1} \glsseelist{#2}}
+\DeclareRobustCommand*{\glsseelist}[1]{%
+  \let\@gls@dolast\relax
+  \let\@gls@donext\relax
+  \@for\@gls@thislabel:=#1\do{%
+    \ifx\@xfor@nextelement\@nnil
+      \@gls@dolast
+    \else
+      \@gls@donext
+    \fi
+    \expandafter\glsseeitem\expandafter{\@gls@thislabel}%
+    \let\@gls@dolast\glsseelastsep
+    \let\@gls@donext\glsseesep
+  }%
+}
+\newcommand{\@do@seeglossary}[2]{%
+\def\@gls@xref{#2}%
+\@onelevel@sanitize\@gls@xref
+\@gls@checkmkidxchars\@gls@xref
+\ifglsxindy
+  \gls@glossary{\csname glo@#1@type\endcsname}{%
+    (indexentry
+      :tkey (\csname glo@#1@index\endcsname)
+      :xref (\string"\@gls@xref\string")
+      :attr \string"see\string"
+    )
+  }%
+\else
+  \gls@glossary{\csname glo@#1@type\endcsname}{%
+  \string\glossaryentry{\csname glo@#1@index\endcsname
+  \@gls@encapchar glsseeformat\@gls@xref}{Z}}%
+\fi
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@do@seedualglossary}[2]{%
+\def\@gls@xref{#2}%
+\@onelevel@sanitize\@gls@xref
+\@gls@checkmkidxchars\@gls@xref
+\ifglsxindy
+  \gls@glossary{\csname glo@#1@type\endcsname}{%
+    (indexentry
+      :tkey (\csname glo@#1@index\endcsname)
+      :xref (\string"\@gls@xref\string")
+      :attr \string"see\string"
+    )
+  }%
+\else
+  \gls@glossary{\csname glo@#1@type\endcsname}{%
+  \string\glossaryentry{\csname glo@#1@index\endcsname
+  \@gls@encapchar glsseedualformat\@gls@xref}{Z}}%
+\fi
+}
+\DeclareRobustCommand*{\glsseedual}[3][\seename]{%
+  \@do@seedualglossary{#2}{[#1]{#3}}%
+  }
+\newcommand*{\@glsseedual}[3][\seename]{%
+  \glsseedual[#1]{#3}{#2}}
+\DeclareRobustCommand*{\glsseedualformat}[3][\seename]{%
+  \iftoggle{#2}{\emph{#1} \glsseeduallist{#2}}{}}
+\DeclareRobustCommand*{\glsseeduallist}[1]{%
+  \let\@gls@dolast\relax
+  \let\@gls@donext\relax
+  \@for\@gls@thislabel:=#1\do{%
+    \ifx\@xfor@nextelement\@nnil
+      \@gls@dolast
+    \else
+      \@gls@donext
+    \fi
+    \expandafter\glsseedualitem\expandafter{\@gls@thislabel}%
+    \let\@gls@dolast\glsseelastsep
+    \let\@gls@donext\glsseesep
+  }%
+}
+\DeclareRobustCommand*{\glsseedualitem}[1]{\glshyperlink[\glsseedualitemformat{#1}]{#1}}
+\newcommand*{\glsseedualitemformat}[1]{\glsentryname{#1}}
 %******************************************************************************************************************************%
-%*************************************************** End of 'my-glossaries.sty' Package **************************************************%
+%********************************** Index/Glossary/Acronyms/Nomenclature style file generation ********************************%
+%******************************************************************************************************************************%
+\newcommand*{\gls@save@numberlist}[1]{%
+  \ifglssavenumberlist
+    \toks@{#1}%
+    \edef\@do@writeaux@info{%
+        \noexpand\csgdef{glo@\glscurrententrylabel @numberlist}{\the\toks@}%
+    }%
+    \@onelevel@sanitize\@do@writeaux@info
+    \protected@write\@auxout{}{\@do@writeaux@info}%
+  \fi
+}
+\newcommand*{\warn@noprintglossary}{}%
+\ifcsundef{printglossary}{}%
+{%
+  \@gls@warnonglossdefined
+  \undef\printglossary
+}
+\newcommand*{\printglossary}[1][type=\glsdefaulttype]{%
+  \@printglossary{#1}{\@print@glossary}%
+}
+\newcommand*{\printglossaries}{%
+  \forallglossaries{\@@glo@type}{\printglossary[type=\@@glo@type]}%
+}
+\newcommand*{\printnoidxglossary}[1][type=\glsdefaulttype]{%
+  \@printglossary{#1}{\@print@noidx@glossary}%
+}
+\newcommand*{\printnoidxglossaries}{%
+  \forallglossaries{\@@glo@type}{\printnoidxglossary[type=\@@glo@type]}%
+}
+\newcommand*{\@printgloss@setsort}{}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@printglossary}[2]{%
+        \def\glossarytitle{\csname @glotype@\@glo@type @title\endcsname}%
+        \ifglstoc
+                \ifglsnumberline
+                        \def\linkedglossarytitle{\toctitletarget{\@glo@type}{\glossarytitle}}%************************%
+                \else
+                        \def\linkedglossarytitle{\toctitletarget{\@glo@type}{\glossarytitle}}%************************%
+                \fi
+        \else
+                \def\linkedglossarytitle{\glossarytitle}%
+        \fi
+        \doublespacing%
+        \def\glossarytoctitle{\glossarytitle}%
+        \let\org@glossarytitle\glossarytitle
+        \def\@glossarystyle{}%
+        \def\gls@dotoctitle{\glssettoctitle{\@glo@type}}%
+        \let\@org@glossaryentrynumbers\glossaryentrynumbers
+        \bgroup
+        \setkeys{printgloss}{#1}%
+        \@printgloss@setsort
+        \ifx\glossarytitle\org@glossarytitle
+        \else
+        \expandafter\let\csname @glotype@\@glo@type @title\endcsname
+                    \glossarytitle
+        \fi
+        \let\currentglossary\@glo@type
+        \let\org@glossaryentrynumbers\glossaryentrynumbers
+        \let\glsnonextpages\@glsnonextpages
+        \let\glsnextpages\@glsnextpages
+        \let\nopostdesc\@nopostdesc
+        \gls@dotoctitle
+        \@glossarystyle
+        \let\gls@org@glossaryentryfield\glossentry
+        \let\gls@org@glossarysubentryfield\subglossentry
+        \renewcommand{\glossentry}[1]{%
+  \xdef\glscurrententrylabel{\glsdetoklabel{##1}}%
+        \gls@org@glossaryentryfield{##1}%
+        }%
+        \renewcommand{\subglossentry}[2]{%
+        \xdef\glscurrententrylabel{\glsdetoklabel{##2}}%
+        \gls@org@glossarysubentryfield{##1}{##2}%
+        }%
+        #2%
+        %\edef\glsheadername{\glossarytitle}
+        \egroup
+        \edef\glsheadername{\glossarytitle}\global\let\glossaryentrynumbers\@org@glossaryentrynumbers
+        \global\let\warn@noprintglossary\relax
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@print@glossary}{%
+  \makeatletter
+  \@input@{\jobname.\csname @glotype@\@glo@type @in\endcsname}%
+  \IfFileExists{\jobname.\csname @glotype@\@glo@type @in\endcsname}%
+  {}%
+  {\null}%
+  \ifglsxindy
+    \ifcsundef{@xdy@\@glo@type @language}%
+    {%
+      \edef\@do@auxoutstuff{%
+        \noexpand\AtEndDocument{%
+          \noexpand\immediate\noexpand\write\@auxout{%
+            \string\providecommand\string\@xdylanguage[2]{}}%
+          \noexpand\immediate\noexpand\write\@auxout{%
+            \string\@xdylanguage{\@glo@type}{\@xdy@main@language}}%
+        }%
+      }%
+    }%
+    {%
+      \edef\@do@auxoutstuff{%
+        \noexpand\AtEndDocument{%
+          \noexpand\immediate\noexpand\write\@auxout{%
+            \string\providecommand\string\@xdylanguage[2]{}}%
+          \noexpand\immediate\noexpand\write\@auxout{%
+            \string\@xdylanguage{\@glo@type}{\csname @xdy@\@glo@type
+              @language\endcsname}}%
+        }%
+      }%
+    }%
+    \@do@auxoutstuff
+    \edef\@do@auxoutstuff{%
+      \noexpand\AtEndDocument{%
+         \noexpand\immediate\noexpand\write\@auxout{%
+          \string\providecommand\string\@gls@codepage[2]{}}%
+         \noexpand\immediate\noexpand\write\@auxout{%
+          \string\@gls@codepage{\@glo@type}{\gls@codepage}}%
+      }%
+    }%
+    \@do@auxoutstuff
+  \fi
+  \renewcommand*{\@warn@nomakeglossaries}{%
+    \GlossariesWarningNoLine{\string\makeglossaries\space
+    hasn't been used,^^Jthe glossaries will not be updated}%
+  }%
+}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%******************************************************************************************************************************%
+%********************************************** End of 'my-glossaries.sty' Package ********************************************%
 %******************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother

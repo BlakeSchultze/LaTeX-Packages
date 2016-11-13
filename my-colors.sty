@@ -1,56 +1,33 @@
 %******************************************************************************************************************************%
-%*********************************************************** `my-colors.sty' *************************************************************%
+%****************************************************** `my-colors.sty' *******************************************************%
 %******************************************************************************************************************************%
 % Definition of custom colors, predefined color mixes, and use of these to define sets of colors which collectively define color schemes primarily for 'tcolorbox' styles and 'listings' package code syntax/highlighting/envinroment coloring, but there are some additional color schemes for other applications/contexts. Color schemes are composed of individual color definitions named 'X-Z' according to the color scheme name 'X' and the various color properties 'Z', with nearly every color scheme containing definitions for the same set of color properties 'Z' except for some color schemes with a reduced/expanded set of color properties or a set of color properties for a special application/context. %******************************************************************************************************************************%
-%*************************************** Define provided package name and LaTeX/package dependencies *************************************%
+%********************************** Define provided package name and LaTeX/package dependencies *******************************%
 %******************************************************************************************************************************%
 \ProvidesPackage{my-colors}
 %******************************************************************************************************************************%
-%****************************************** Package options and corresponding Boolean variables ******************************************%
+%************************************* Package options and corresponding Boolean variables ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-colors}{Unknown \CurrentOption}}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%***************************************************** Processing of package options *****************************************************%
+%************************************************ Processing of package options ***********************************************%
 %******************************************************************************************************************************%
 \ProcessOptions\relax
 %------------------------------------------------------------------------------------------------------------------------------%
-%\makeatletter                                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%\catcode`\!=12
-%\catcode`|=12
+\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
 %******************************************************************************************************************************%
-%************************************************************* Package Body **************************************************************%
+%******************************************************** Package Body ********************************************************%
 %******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
-\newkeycommand\@define@tcbStyle@colorset
-[enum type={Chapter,Section,Subsection}, textcolor=hyperlinkcolor, label=][1]
-{%
-        \edef\@type@name{#1}
-        \ifcommandkey{label}
-                {\def\hyperlabel{\commandkey{label}}}
-                {\def\hyperlabel{#1}}%
-        \ifcommandkey{textcolor}
-        {%
-                \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
-        }
-        {%
-                \hypersetup
-                {
-                        linkcolor=hyperlinkcolor,
-                        linkbordercolor=hyperlinkcolor
-                }%
-                \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
-        }%
-}
 %******************************************************************************************************************************%
-%********************************************** User defined colors, color mixes, and color schemes **************************************%
+%***************************************** User defined colors, color mixes, and color schemes ********************************%
 %******************************************************************************************************************************%
 %\RequirePackage{my-color-schemes}
 %\usepackage{colorDefs}
 %\usepackage{my-colorsets}
 %******************************************************************************************************************************%
-%****************************************************** User defined named colors ********************************************************%
+%************************************************* User defined named colors **************************************************%
 %******************************************************************************************************************************%
 % Code/listings/figure colors
 \definecolor{dkgreen}{rgb}{0.0, 0.6, 0.0}                                       % Code comment color
@@ -81,10 +58,10 @@
 \definecolor{Matlab-warningscolor}{RGB}{255,148,0}                      % warnings
 \definecolor{Matlab-warningtextcolor}{RGB}{255, 100, 0}         % warning text
 %******************************************************************************************************************************%
-%***************************************************** Named color mix definitions *******************************************************%
+%************************************************ Named color mix definitions *************************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------------- Standardized Color Mix Definitions ------------------------------------------------------%
+%---------------------------------------------- Standardized Color Mix Definitions --------------------------------------------%
 %------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{stdgray}{black!50!white}
 \colorlet{stddkgray}{black!75!white}
@@ -145,7 +122,7 @@
 \colorlet{hyperlinkcolor}{blue!33!green}
 \colorlet{Matlab-autohighlight-shade}{Matlab-autohighlight!75!black}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/Universal Color Property Value Containers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/Universal Color Property Value Containers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \colorlet{default-colback}{stdbackground}
 \colorlet{default-colbackupper}{stdbackground}
@@ -197,7 +174,7 @@
 \colorlet{fillednumshape-colfilltext}{current-colfilltext}
 \colorlet{fillednumshape-colfillborder}{current-colfillborder}
 %******************************************************************************************************************************%
-%***************************************** Application Specific Color Property Value Containers ******************************************%
+%************************************ Application Specific Color Property Value Containers ************************************%
 %******************************************************************************************************************************%
 %------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{definitionColorset-colback}{stdbackground}
@@ -686,11 +663,24 @@
 \colorlet{tcbsolutionColorset-rulecolor}{stddkgreen}
 \colorlet{tcbsolutionColorset-coldoubleline}{green}
 %******************************************************************************************************************************%
-%************************************************* Front/back matter color definitions ***************************************************%
+%******************************************** Front/back matter color definitions *********************************************%
 %******************************************************************************************************************************%
+\colorlet{tcbFrontbackMatterColorset-colback}{stdbackground}
+\colorlet{tcbFrontbackMatterColorset-colbacklower}{stdbackground}
+\colorlet{tcbFrontbackMatterColorset-colbacktitle}{SlateForestGreen}
+\colorlet{tcbFrontbackMatterColorset-colframe}{SlateForestGreen}
+\colorlet{tcbFrontbackMatterColorset-coltitle}{white}
+\colorlet{tcbFrontbackMatterColorset-coltext}{black}
+\colorlet{tcbFrontbackMatterColorset-colupper}{black}
+\colorlet{tcbFrontbackMatterColorset-collower}{black}
+\colorlet{tcbFrontbackMatterColorset-colboxshadow}{stdgray}
+\colorlet{tcbFrontbackMatterColorset-coldraw}{SlateForestGreen}
+\colorlet{tcbFrontbackMatterColorset-colfill}{TintedSlateGray}
+\colorlet{tcbFrontbackMatterColorset-coldoubleline}{Cyan}
+%------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{tcbGlossaryColorset-colback}{stdbackground}
 \colorlet{tcbGlossaryColorset-colbacklower}{stdbackground}
-\colorlet{tcbGlossaryColorset-colbacktitle}{stdgray}
+\colorlet{tcbGlossaryColorset-colbacktitle}{SlateForestGreen}
 \colorlet{tcbGlossaryColorset-colframe}{SlateForestGreen}
 \colorlet{tcbGlossaryColorset-coltitle}{white}
 \colorlet{tcbGlossaryColorset-coltext}{black}
@@ -703,7 +693,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{tcbIndexColorset-colback}{stdbackground}
 \colorlet{tcbIndexColorset-colbacklower}{stdbackground}
-\colorlet{tcbIndexColorset-colbacktitle}{stdgray}
+\colorlet{tcbIndexColorset-colbacktitle}{SlateForestGreen}
 \colorlet{tcbIndexColorset-colframe}{SlateForestGreen}
 \colorlet{tcbIndexColorset-coltitle}{white}
 \colorlet{tcbIndexColorset-coltext}{black}
@@ -716,7 +706,7 @@
 %------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{tcbNomenclatureColorset-colback}{stdbackground}
 \colorlet{tcbNomenclatureColorset-colbacklower}{stdbackground}
-\colorlet{tcbNomenclatureColorset-colbacktitle}{stdgray}
+\colorlet{tcbNomenclatureColorset-colbacktitle}{SlateForestGreen}
 \colorlet{tcbNomenclatureColorset-colframe}{SlateForestGreen}
 \colorlet{tcbNomenclatureColorset-coltitle}{white}
 \colorlet{tcbNomenclatureColorset-coltext}{black}
@@ -730,10 +720,10 @@
 %spotcolor.sty
 \def\colornameprefix {XC@}
 %******************************************************************************************************************************%
-%************************* Code listing language syntax highlighting and code segment/entry appearance coloring **************************%
+%******************** Code listing language syntax highlighting and code segment/entry appearance coloring ********************%
 %******************************************************************************************************************************%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Language Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Language Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \colorlet{bash-extended-backgroundcolor}{stdbackground}                         % was Matlab-colback
 \colorlet{bash-extended-colframecaption}{default-coltext}                       % was Matlab-colback
@@ -804,7 +794,7 @@
 \colorlet{matlab-extended-keywordcolor10}{javapurple}                           % function options stdltforestgreen
 %------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Colorset Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Colorset Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \colorlet{lstcodingColorset-backgroundcolor}{stdbackground}                                % was Matlab-colback pink
 \colorlet{lstcodingColorset-commentcolor}{dkgreen}
@@ -898,65 +888,36 @@
 \colorlet{lstterminalColorset-rulesepcolor}{black}                                      %
 \colorlet{lstterminalColorset-stringcolor}{blue}                                        %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Environment Color Schemes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Environment Color Schemes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%{DeepSkyBlue}
-%{LightSkyBlue}
-%{Turquoise}
-%{Cyan}
-%{cyan}
-%{DeepSkyBlue1}
+%------------------------------------------------------------------------------------------------------------------------------%
 \colorlet{majorSectionHeading-colback}{MidnightBlue}%{MidnightBlue}%{DeepSkyBlue}%{LightSkyBlue}%{Turquoise}%{Turquoise}%{Turquoise}%Cyan
 \colorlet{majorSectionHeading-coltitle}{white}
 \colorlet{majorSectionHeading-colbacktitle}{skyblue}
-%{lightskyblue}
-%SkyBlue1 o
-%SteelBlue1 o
-%Turquoise2 o
-%CornflowerBlue 
-%DarkTurquoise x
-%DazzlingBlue x
-%AirBlue 
-%deepskyblue1 o
-%
-%{MidnightBlue}
-%{Matlab-figcolback}
-%{LightSkyBlue}
-%{CadetBlue2}
 \colorlet{majorSectionHeading-coldraw}{black}
-%Part: MidnightBlue, CornflowerBlue/Cerulean
-%Topic: LightSkyBlue, MidnightBlue
-%Chapter: Turquoise, MidnightBlue
-% DeepSkyBlue1
 %------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@major@section@header@colors}{m}
 {%
-	%\def\@major@section@color@prefix{#1}
         \IfStrEqCase{#1}%
         {%
                 {Part}%
                 {%
                         \colorlet{majorSectionHeading-colback}{LightSkyBlue}%
                         \colorlet{majorSectionHeading-colbacktitle}{MidnightBlue}%
-                        %\colorlet{majorSectionHeading-colback}{MidnightBlue}%
-			%\colorlet{majorSectionHeading-colbacktitle}{CornflowerBlue}%
-        	}
+                }%
                 {Topic}%
                 {%
                         \colorlet{majorSectionHeading-colback}{MidnightBlue}%
                         \colorlet{majorSectionHeading-colbacktitle}{Cerulean}%
-                        %\colorlet{majorSectionHeading-colback}{Turquoise}%
-                        %\colorlet{majorSectionHeading-colbacktitle}{MidnightBlue}%
-                }
+                }%
                 {Chapter}%
                 {%
                         \colorlet{majorSectionHeading-colback}{LightSkyBlue}%
                         \colorlet{majorSectionHeading-colbacktitle}{MidnightBlue}%
-                }
-        }
+                }%
+        }%
 }
 %------------------------------------------------------------------------------------------------------------------------------%
-%top color=stdblue!2!white, middle color=stdblue!6!white, bottom color=stdblue!13!white}]
 \colorlet{diagram-colback}{stdbackground!50!white}
 \colorlet{diagram-colbackupper}{stdbackground!50!white}%{stdblue!1!white}
 \colorlet{diagram-colbacklower}{stdbackground!50!white}%{stdblue!5!white}
@@ -991,7 +952,9 @@
 \colorlet{documentation-script}{stddeepskyblue}
 %------------------------------------------------------------------------------------------------------------------------------%
 %******************************************************************************************************************************%
-%**************************************************** End of 'my-colors.sty' package *****************************************************%
+%*********************************************** End of 'my-colors.sty' package ***********************************************%
 %******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------% %\catcode`\!=\active
+% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+\makeatother
+%------------------------------------------------------------------------------------------------------------------------------%
 \endinput
