@@ -1,30 +1,30 @@
-%******************************************************************************************************************************%
-%****************************************************** `my-keyvals.sty' ******************************************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%****************************************************** `my-keyvals.sty' *******************************************************%
+%*******************************************************************************************************************************%
 % Contains implementations of the various key/value commands and environments and a set of separately defined keys used to extend the capabilities of standard LaTeX macros, making it easier to find/modify/debug their corresponding implementations.  Most routines are composed of a combination of standardized subroutines and a set of application specific subroutines, producing consistent behavior and appearance from the standardized subroutines and automatically propagating changes of the underlying subroutines to each of the routines that they appear in.  In cases where multiple commands/environments have largely identical implementations and/or applications, a key/value implementation makes it possible to combine these into a single routine with the corresponding key/value pairs used to select and control the application specific aspects of the routine through a simplified argument interface.
-%******************************************************************************************************************************%
-%********************************** Define provided package name and LaTeX/package dependencies *******************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{my-keyvals}
-%******************************************************************************************************************************%
-%************************************* Package options and corresponding Boolean variables ************************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{my-keyvals}{Unknown \CurrentOption}}
-%******************************************************************************************************************************%
-%************************************************ Processing of package options ***********************************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%************************************************ Processing of package options ************************************************%
+%*******************************************************************************************************************************%
 \ProcessOptions\relax
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%******************************************************************************************************************************%
-%******************************************************** Package Body ********************************************************%
-%******************************************************************************************************************************%
-%******************************************************************************************************************************%
-%******************************************* \newkeycommand/\newkeyenvironment commands ***************************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%******************************************* \newkeycommand/\newkeyenvironment commands ****************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\num@to@text@seps
 [bool sepitems=false, bool sepgroups=false, bool sepunits=false, itemsep={\space} ,unitsep={--}, groupsep={,\space}][0]%
 {%
@@ -38,7 +38,7 @@
                 {\edef\numname@group@sep{\commandkey{groupsep}}}%
                 {\edef\numname@group@sep{}}%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\@@measure@text
 [choice* measure={letters,numbers}, choice* textcase={lower,upper}, bool maxheight=false, format=,arg=, saveas=][0]%
 {%
@@ -60,11 +60,11 @@
         \ifcommandkey{format}{\preto{\@measuring@this}{\commandkey{format}}}{}%
         \ifcommandkey{saveas}%
                 {\@premeasure@savebox*{\@measuring@this}[\commandkey{saveas}]}%
-	        {\@premeasure@savebox*{\@measuring@this}}%
+                {\@premeasure@savebox*{\@measuring@this}}%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\linespread@settings
-[enum context={doc,coverpage,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM}, bool restore=false, arrayrulewidth=,baselinestretch=,arraystretch=]%
+[enum context={doc,coverpage,toc,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM}, bool restore=false, arrayrulewidth=,baselinestretch=,arraystretch=]%
 {%
         %\begingroup
         \xdef\@context@name{\commandkey{context}}
@@ -83,7 +83,7 @@
         \ifcommandkey{arraystretch}{\renewcommand\arraystretch{\commandkey{arraystretch}}}{}%
         %\endgroup
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\ULsettings%
 [enum type={all,uline,ul,underline}, bool init=false, bool reset=false, depth=, thickness=, color=]%
 {%
@@ -142,7 +142,7 @@
         }%
         %\endgroup
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\autohyperlink
 [enum type={Chapter,Section,Subsection}, textcolor=hyperlinkcolor, label=][1]
 {%
@@ -161,15 +161,13 @@
                 \@autohyperlink{\commandkey{type}}{\@type@name}{\hyperlabel}%
         }%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{thedocument}
 [enum type={documentation, homework, default}, author={Blake Edward Schultze}, title=, subtitle=, course number=, course title=, instructor=, assignment=, semester=][0]
 {
         \xdef\thedoctype{\commandkey{type}}%
         \xdef\theauthor{\commandkey{author}}%
-        \begingroup\ULsettings[reset=true]\endgroup%
-        %\ULsettings[reset=true]%
-        %\global\newcommand{\@print@title}{\protect\commandkey{title}}
+        \begingroup\setulsettings[reset=true]\endgroup%
         \IfStrEq{\thedoctype}{documentation}%
         {%
                 \ifcommandkey{title}{}{\PackageError{\pkgname}{missing 'title' key}{Provide 'title' and recompile}}%
@@ -219,16 +217,10 @@
                 \document\pagestyle{fancy}%
                 \begin{coverpage}{default}{\coursenumber}{\coursetitle}{\semester}{\instructor}{\assignment}{\theauthor}\end{coverpage}
         }{}
-        %%\@set@document@dimensions%
-%        \renewcommand*{\sectionmark}[1]{ \markright{Section \thesection :\ ##1} }%
-%        \fancyhead[L]{\rightmark}%
-%        \fancyhead[R]{\parbox[c]{\@header@image@width}{\@header@image}\vskip-8pt}%
-%        %\cfoot[\thepage]{\thepage}%
-%        \ifnumcomp{\value{page}}{=}{1}%
-%               {\cfoot{\zsavepos{cfootpos}\thepage}}%
-%               {\cfoot{\thepage}}%
+        \frontmatter%
+        \mainmatter%
 }{\enddocument}%
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbenclosure}
 [enum type={default, listbox, eqnlistbox, bashscripts, bashfunctions, problems, solutions}, sidebyside, width=\textwidth, gradient=, colorscheme=, colfill=,title=][0]%[1]%
 {
@@ -237,7 +229,7 @@
                 {\def\@the@title{\commandkey{title}}}%
                 {\def\@the@title{}}%
         \xdef\@the@width{\commandkey{width}}%
-        \begingroup\ULsettings[reset=true]\endgroup%
+        \setulsettings[reset=true]%
         \IfStrEqCase{\@the@envtype}%
         {%
                 {default}{\edef\@the@gradient{\BBBgradientbackground}}%
@@ -273,14 +265,14 @@
         }
         %|bash functions|
 }{\end{tcbenvironment}}
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbsection}
 [enum type={section,legend,solution, proof}, colorscheme=, tcbset=, tcbsetforeverylayer=, bool underlined=true, bottom=, title=, contentsline=][0]%[1]%
 {%
         \@macro@length=\parindent
         \setlength{\parindent}{0em}
         \xdef\@the@envtype{\commandkey{type}}%
-        \begingroup\ULsettings[reset=true]\endgroup%
+        \begingroup\setulsettings[reset=true]\endgroup%
         \IfStrEqCase{\@the@envtype}%
         {%
                 {section}{\def\@the@title{Section \theSection}}%
@@ -367,7 +359,7 @@
         }%
         \setcounter{equation}{\value{@save@theequation}}%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbeqnlist}
 [enum type={default, solution, blue, darkblue}, bool beforeskip=false, bool numbers=false, bool goldtrim=true, colorscheme=, colfill=, title=][0]%[1]%
 {
@@ -376,7 +368,7 @@
         \ifcommandkey{title}
                 {\def\@the@title{\commandkey{title}}}%
                 {\def\@the@title{}}%
-        \begingroup\ULsettings[reset=true]\endgroup%%
+        \setulsettings[reset=true]%
         \IfStrEqCase{\@the@envtype}%
         {%
                 {default}{\edef\@the@colfill{current-colfill}}%
@@ -427,7 +419,7 @@
         }%
         %\normalsize*%
 }{\endtcbeqnlistbox}
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcblist}
 [enum type={default, maroon, darkred, blue, darkblue, darkgreen}, bool beforeskip=false, bool numbers=false, bool goldtrim=false, width=\linewidth, colorscheme=, colfill=, title=][0]%[1]%
 {
@@ -437,7 +429,7 @@
                 {\def\@the@title{\commandkey{title}}}%
                 {\def\@the@title{}}%
         \xdef\@the@width{\commandkey{width}}%
-        \begingroup\ULsettings[reset=true]\endgroup%%
+        \setulsettings[reset=true]%
         \IfStrEqCase{\@the@envtype}%
         {%
                 {default}{\edef\@the@colfill{current-colfill}}%
@@ -474,11 +466,11 @@
                         {\tcblistbox<\@the@width>'\@the@color@scheme'"\@the@colfill"|\@the@title|}
         }
 }{\endtcblistbox}
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbcode}
 [enum type={script,function,details}, usage=, firstcol=, secondcol=, bool usagenewline=true, colorscheme=, title=][0]%[1]%
 {%
-        %\begingroup\linespread@settings[context=code]\endgroup%
+        \setlinespread{code}%
         \bookmarksetupnext{keeplevel}%
         \stepcounter{@count@function}
         \xdef\@the@envtype{\commandkey{type}}%
@@ -549,25 +541,19 @@
         }%
         \ifcommandkey{firstcol}{\def\@tcb@code@first@column{\commandkey{firstcol}}}%
         \ifcommandkey{secondcol}{\def\@tcb@code@second@column{\commandkey{secondcol}}}%
-        %\@process@multiarg@list{\@let@keyval@macro@pair}%
-%        {
-%                <@current@listbox@first@column=\@first@column@width>;
-%                <@current@listbox@second@column=\@second@column@width>
-%        }%
         \@parse@split@csv@args{let}%
                 <@current@listbox@first@column,@current@listbox@second@column>%
                 =<@first@column@width,@second@column@width>%
         \@set@current@tcb@colors{\@the@color@scheme}%
         \decrementcounter{table}%
-        %\refstepcounter{table}%
         \begin{tcolorbox}[\@the@style, title={\@the@title@line}]%
                 \hspace{0pt}%
                 \begin{longtable}{H{\@current@listbox@first@column} H{\@current@listbox@second@column}}
 }{\end{longtable}\end{tcolorbox}}%
-%------------------------------------------------------------------------------------------------------------------------------%
-%******************************************************************************************************************************%
-%************************************************** End of 'my-keyvals.sty' package *******************************************%
-%******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************************** End of 'my-keyvals.sty' package ********************************************%
+%*******************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \makeatother
 \endinput 

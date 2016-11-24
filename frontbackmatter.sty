@@ -1,34 +1,133 @@
-%******************************************************************************************************************************%
-%***************************************************** `frontbackmatter.sty' **************************************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%***************************************************** `frontbackmatter.sty' ***************************************************%
+%*******************************************************************************************************************************%
 % Provides macros/commands for adding, configuring, and printing the Table of Contents and back matter material (e.g. index, glossary, acronym/symbol/abbreviation lists, etc.).  The entries added to the Table of Contents and its settings/appearance are configured using the 'tocloft' package and additional supplemental macros/commands designed to interact/interface with the package.  The back matter material is added, configured, and printed using the 'my-glossaries', 'my-imakeidx', and 'my-nomencl' packages (where each 'my-X' package is an adaptation of the 'X' package) as well as the definitions/macros/commands which these packages depend/rely on.
-%******************************************************************************************************************************%
-%********************************** Define provided package name and LaTeX/package dependencies *******************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{frontbackmatter}
-%******************************************************************************************************************************%
-%************************************* Package options and corresponding Boolean variables ************************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{frontbackmatter}{Unknown `\CurrentOption'}}
-%******************************************************************************************************************************%
-%************************************************ Processing of package options ***********************************************%
-%******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%************************************************ Processing of package options ************************************************%
+%*******************************************************************************************************************************%
 \ProcessOptions\relax
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
-%******************************************************************************************************************************%
-%******************************************************** Package Body ********************************************************%
-%******************************************************************************************************************************%
-\tocloftpagestyle{empty}
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\setcounter{tocdepth}{4}
+\setcounter{lofdepth}{4}
+\setcounter{loldepth}{4}
+\setcounter{lotdepth}{4}
+\setcounter{probsdepth}{4}
+\setcounter{funcsdepth}{4}
+%\setcounter{secnumdepth}{0}
+%\tocnumbersoff{section}
 \setglossarystyle{\@gls@glossary@style}
-%\appto{\@cfttocfinish}{\setcounter{page}{0}}
-%\contentsuse{name}{ext}
-%\setStyleFile{my-glossaries}
-%\def\istfilename{my-glossaries.ist}    %------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
+\cftZ@listof@settings
+%-------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\contentsname}{\TOCName\unskip}
+\renewcommand{\listtablename}{\@doc@hypertargets{LOT}\LOTName}
+\renewcommand{\listfigurename}{\@doc@hypertargets{LOF}\LOFName}
+\renewcommand{\lstlistoflistings}{\listoflistings}                                      % Alias for \listoflistings (minted)
+\renewcommand{\lstlistlistingname}{\@doc@hypertargets{LOL}\LOLName}                     % The header name for the list of listings.
+\newcommand{\listproblemsname}{\@doc@hypertargets{LOPROBS}\LOPROBSName}                 % List of homework problems/solutions
+\newcommand{\listfunctionsname}{\@doc@hypertargets{LOFUNCS}\LOFUNCSName}                % List of homework problems/solutions
+\@re@newcommand{listoflistingscaption}{\LOLName}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand\partname{\PartName}                               % Part toc title
+\renewcommand\chaptername{\ChapterName}                         % Chapter toc title
+\renewcommand{\lstlistingname}{\CodeListingName}                % The caption label for listings.
+\renewcommand{\figurename}{\FigureName}                         % Figure toc title
+\renewcommand{\tablename}{\TableName}                        	% Table toc title
+\newcommand{\ibptablename}{\IBPtableName}                       % Table toc title
+\newcommand{\pldtablename}{\PLDtableName}                       % Table toc title
+\newcommand{\figboxname}{\FigboxName}                        	% Table toc title
+\newcommand{\figboxfigname}{\FigboxFigureName}                  % Table toc title
+\newcommand{\lstcodename}{\CodeListingName}                     % Table toc title
+\newcommand{\lstterminalname}{\TerminalListingName}             % Table toc title
+\newcommand{\lstmatlabname}{\MatlabListingName}                 % Table toc title
+\newcommand{\problemsname}{\ProblemName}                        % The caption label for listings.
+\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
+\newcommand{\funcdetailssname}{\FunctionDetailName}             % The caption label for listings.
+\newcommand{\scriptdefsname}{\ScriptDefName}                    % The caption label for listings.
+\@re@newcommand{listingscaption}{\CodeListingName}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\indexname}{\IndexName}
+\renewcommand{\nomname}{\AbbreviationsName}                     % was \large%\begingroup\ULsettings[init=true]\endgroup%
+\renewcommand\bibname{\BibName}                                 % Bibliography toc title
+\renewcommand\appendixname{\AppendixName}                       % Appendix toc title
+\renewcommand\abstractname{\AbstractName}                       % Abstract toc title
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand*{\fbm@dotfill}{\nobreak\,\dotfill\space\nobreak}%
+\newcommand*{\fbm@nofill}{,\space}%
+\newcommand \Dotfill {\leavevmode \cleaders \hb@xt@ .33em{\hss .\hss }\hfill \kern \z@}
+\newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
+\renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}        % \par\vspace{20pt plus 6pt minus 4pt}
+\newcommand*{\idxhypernavsep}{\@FBM@hypernav@sep}
+\newcommand*{\@gls@navhyperlink@font}{\navhyperlinkfont}
+\newcommand*{\@gls@grouptitle@font}{\@frontbackmatter@group@label@font}
+\renewcommand{\glsnamefont}[1]{\textbfmsf{#1}\normalfont}
+\renewcommand*{\glshypernavsep}{\@FBM@hypernav@sep}
+\renewcommand*{\glsgetgrouptitle}[1]%
+{%
+        \@gls@getgrouptitle{#1}{\@gls@grptitle}%
+        \@gls@grouptitle@font\@gls@grptitle
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Frontmatter content creation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand{\@cftmaketoctitle}%
+{%
+  	\addpenalty\@secpenalty
+  	\if@cfthaschapter
+    		\vspace*{\cftbeforetoctitleskip}%
+  	\else
+    		\vspace{\cftbeforetoctitleskip}%
+  	\fi
+  	\@cftpagestyle
+  	{%
+  		\interlinepenalty\@M
+  			{\cfttoctitlefont\bookmarkX@hypertarget{TOC}\contentsname}%
+  			{\cftaftertoctitle}%
+  		\cftmarktoc
+  		\par\nobreak
+  		\vskip \cftaftertoctitleskip
+  		\@afterheading%
+  	}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\renewcommand*\tableofcontents
+{%
+        \@enforce@onecolumn
+        \chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}%
+        \@starttoc{toc}%
+        \pagestyle{empty}%
+        \@cfttocstart
+        \@restore@twocolumn%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newrobustcmd{\toctitletarget}[2]%
+{%
+        \bookmarksetupnext{level=0}%
+        \phantomsection\addcontentsline{toc}{backmatter}%
+        {%
+                \hspace{-1.5em}%
+                \protect\numberline{\raisebox{10pt}{\protect\hypertarget{#1}{}}}%
+                #2%
+        }
+        \hyperlink{#1}{\shadowText:\cftbigfont:<-1.25pt><0.4pt>[black](white){#2}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\tocnumbersoff}[1]
 {
         \IfStrEqCase{#1}%
@@ -46,160 +145,11 @@
         }%
         [{\setcounter{#1numdepth}{0}}]%
 }
-\setcounter{tocdepth}{4}
-\setcounter{lofdepth}{4}
-\setcounter{loldepth}{4}
-\setcounter{lotdepth}{4}
-\setcounter{probsdepth}{4}
-\setcounter{funcsdepth}{4}
-%\tocnumbersoff{section}
-%\setcounter{secnumdepth}{0}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\cftaftertoctitle}{}
-\renewcommand{\cfttoctitlefont}{\cftbigfont}
-\setlength\cftbeforetoctitleskip{-1.5mm}                                    % Vertical skip before Table of Contents title
-\setlength\cftaftertoctitleskip{-7.0mm}                                      % Vertical skip before Table of Contents title
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand\cftparskip{1.5mm}                                                  % Vertical skip before Table of Contents title
-\renewcommand\cftparfillskip{1mm}                                              % Vertical skip before Table of Contents title
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@doc@hypertargets}{m}
-{%
-        %\edef\@doc@hypertargets@name{doc@hypertargets@#1}%
-        %\xp\ifdefined\xp\csname\@doc@hypertargets@name\endcsname%
-        %\else\@namedef{doc@hypertargets@#1}{true}\doc@hypertargets{#1}%
-        %\fi\@namedef{doc@hypertargets@#1}{true}%
-        \ifcsundef{doc@hypertargets@#1}%
-        {%
-                \csdef{doc@hypertargets@#1}{true}%
-                %\doc@hypertargets{#1}%
-                \cftX@hypertarget{#1}%
-                \bookmarkX@hypertarget{#1}%
-        }{}%
-}
-\renewcommand{\contentsname}{\TOCName\unskip}
-\renewcommand{\listtablename}{\@doc@hypertargets{LOT}\LOTName}
-\renewcommand{\listfigurename}{\@doc@hypertargets{LOF}\LOFName}
-\renewcommand{\lstlistoflistings}{\listoflistings}              % ? print list of listings, defined to be an alias for \listoflistings (minted)\protect\vspace{-3cm}
-\renewcommand{\lstlistlistingname}{\@doc@hypertargets{LOL}\LOLName}                    % The header name for the list of listings.
-\newcommand{\listproblemsname}{\@doc@hypertargets{LOPROBS}\LOPROBSName}                        % List of homework problems/solutions
-\newcommand{\listfunctionsname}{\@doc@hypertargets{LOFUNCS}\LOFUNCSName}                        % List of homework problems/solutions
-\renewcommand{\indexname}{\IndexName}
-\renewcommand{\nomname}{\AbbreviationsName}                     % was \large
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand\bibname{\BibName}                                 % Bibliography toc title
-\renewcommand\appendixname{\AppendixName}                       % Appendix toc title
-\renewcommand\abstractname{\AbstractName}                       % Abstract toc title
-%------------------------------------------------------------------------------------------------------------------------------%
-\ifcsdef{listoflistingscaption}                                 % Caption of listing float entry in ToC (minted)
-        {\renewcommand{\listoflistingscaption}{\LOLName}}       %
-        {\newcommand{\listoflistingscaption}{\LOLName}}         %
-\ifcsdef{listingscaption}                                       % Caption of listing float entry (minted)
-        {\renewcommand{\listingscaption}{\CodeListingName}}     %
-        {\newcommand{\listingscaption}{\CodeListingName}}       %
-%------------------------------------------------------------------------------------------------------------------------------%
-\cftZ@listof@settings
-%------------------------------------------------------------------------------------------------------------------------------%
-\newrobustcmd{\toctitletarget}[2]%[3][]%
-{%
-        \bookmarksetupnext{level=0}%
-        \phantomsection\addcontentsline{toc}{backmatter}%
-        {%
-                \hspace{-1.5em}%
-                \protect\numberline{\raisebox{10pt}{\protect\hypertarget{#1}{}}}%
-                %\cftX@toctitle@fontdef%
-                #2%
-        }
-        \hyperlink{#1}{\shadowText:\cftbigfont:<-1.25pt><0.4pt>[black](white){#2}}%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}        % \par\vspace{20pt plus 6pt minus 4pt}
-\newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
-\newcommand \Dotfill {\leavevmode \cleaders \hb@xt@ .33em{\hss .\hss }\hfill \kern \z@}
-\newcommand*{\idxhypernavsep}{\@FBM@hypernav@sep}
-\renewcommand{\glsnamefont}[1]{\textbfmsf{#1}\normalfont}
-\renewcommand*{\glshypernavsep}{\@FBM@hypernav@sep}
-\newcommand*{\@gls@navhyperlink@font}{\navhyperlinkfont}
-\newcommand*{\@gls@grouptitle@font}{\@frontbackmatter@group@label@font}
-\renewcommand*{\glsgetgrouptitle}[1]%
-{%
-        \@gls@getgrouptitle{#1}{\@gls@grptitle}%
-        \@gls@grouptitle@font\@gls@grptitle
-}
-\newcommand*{\fbm@dotfill}{\nobreak\,\dotfill\space\nobreak}%
-\newcommand*{\fbm@nofill}{,\space}%
-%------------------------------------------------------------------------------------------------------------------------------%
-\def\@starttoc#1{%
-        \begingroup
-        \makeatletter
-        %\begingroup\linespread@settings[context=coverpage]\endgroup%
-        \setlinespread{coverpage}%
-        \if@filesw
-                \expandafter\newwrite\csname tf@#1\endcsname
-                \immediate\openout \csname tf@#1\endcsname \jobname.#1\relax
-        \fi
-        \@input{\jobname.#1}%
-        \@nobreakfalse
-        \endgroup%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand{\@cftmaketoctitle}{%
-  \addpenalty\@secpenalty
-  \if@cfthaschapter
-    \vspace*{\cftbeforetoctitleskip}%
-  \else
-    \vspace{\cftbeforetoctitleskip}%
-  \fi
-  \@cftpagestyle
-  {\interlinepenalty\@M
-  {\cfttoctitlefont\bookmarkX@hypertarget{TOC}\contentsname}{\cftaftertoctitle}%
-  \cftmarktoc
-  \par\nobreak
-  \vskip \cftaftertoctitleskip
-  \@afterheading}}
-%------------------------------------------------------------------------------------------------------------------------------%
-\renewcommand*\tableofcontents
-{%
-        %\begingroup\linespread@settings[context=coverpage]\endgroup%
-        %\setlinespread{coverpage}%
-        %\setlinespread{doc}%
-        \pagestyle{empty}%
-        \@enforce@onecolumn
-        \chapter*{\contentsname\@mkboth{\contentsname}{\contentsname}}%
-        \@starttoc{toc}%
-        \pagestyle{empty}%
-        \@restore@twocolumn%
-%\cfoot{\zsavepos{cfootpos}\@footpage@label}      
-        %\cfoot{\@footpage@label}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\makeFrontbackMatter}{}
-{
-        \makenomenclature
-        \@automake@nomenclature
-        \makeglossaries\glsaddall
-        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s my-index.mst]
-        \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}%\bookmarkX@hypertarget{TOC}
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\addFrontbackMatter}{}
-{
-        \bookmark[startatroot, keeplevel, dest=\bookmark@hyperaddress{TOC}, rellevel=0]{\TOCName}
-        \@add@listof@lists%
-        \clearpage\hypertarget{\@page@one@target@name}{}%%
-}
-%------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document sectioning command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Backmatter content creation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@backmatter@group@label@node}{s m}
 {%
         \IfBooleanTF{#1}%
@@ -220,7 +170,7 @@
         ]%
         {\@node@label};%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\IndexHeading}{m}
 {%
         \@enforce@sizeX%
@@ -233,9 +183,9 @@
         \par\vskip\@idx@after@group@label@skip%
         \thispagestyle{fancy}\fancyhead[L]{\@lhead@font\@index@lhead@title}%
         \addtocounter{@idx@entry@counter}{1}%
-        \@add@to@deflist{#1}{\@idx@group@letters}%
+        \@add@to@csvlist{#1}{\@idx@group@letters}%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\idxhypernavpanel}{o}
 {%
         \ifdefined\@AUXOUT@idx@group@letters%
@@ -249,15 +199,15 @@
                                 {\idxhypernavsep}{}%
                         \stepcounter{@macro@counter}
                 }%
-                %\normalsize\normalfont%
                 \vskip\@idx@after@hypernav@skip%
                 \normalsize\normalfont%
         \fi%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ make/add/print back matter definitions/commands  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Backmatter configuration/helper commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareDocumentCommand{\@automake@index}{G{my-index.mst}}
 %{%makeindex -s my-nomencl.ist -t pCT_Data_Organization_Format.nlg  -o pCT_Data_Organization_Format.nls  pCT_Data_Organization_Format.nlo
 %        \edef\@gls@dothiswrite%
@@ -273,6 +223,7 @@
 %        }%
 %        \@gls@dothiswrite
 %}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %\def\@FBM@print@list{symbols,acronyms,nomenclature,glossary,index}
 %\def\@FBM@printcmd@list{\printsymbols,\printacronyms,\printnomenclature,\printglossary,\printindex}
 %\imki@exec{\imki@program\imki@options#1.idx}%
@@ -286,6 +237,7 @@
 %\def\@glossary@make@program{makeglossaries}
 %%\let\imki@options\space
 %%\def\imki@progdefault{makeindex}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@automake@nomenclature}{G{my-nomencl.ist}}
 {%makeindex -s style-file.ist -t doc-name.nlg  -o doc-name.nls  doc-name.nlo
         \edef\@gls@dothiswrite%
@@ -301,7 +253,24 @@
         }%
         \@gls@dothiswrite
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@configure@FBM@settings%
+{%
+        \ifmylatex@fncychap\remove@fncychap\fi%
+        \ifmylatex@twocolumn\cleardoublepage\else\clearpage\fi
+        \@enforce@onecolumn%
+        \@pgnum@test@content%
+        \togglefalse{@add@PAGE@targets}
+        \ifmylatex@backpagenumbering\pagenumbering{\mylatex@backpagenumbering}\fi%
+        \setlinespread{FBM}%
+        \FBM@define@separator!%
+        \@for\FBM@print@type:=\@FBM@print@list\do%
+        {%
+                \expandafter\preto%
+                \expandafter{\csname print\FBM@print@type\endcsname}{\FBM@separator}
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\FBM@define@separator}{s t! t+ o}
 {%
         \IfBooleanTF{#1}%*
@@ -321,25 +290,39 @@
         }{}%
         \IfValueTF{#4}{#4}{}%
 }
-\def\@configure@FBM@settings%
-{%
-        \ifmylatex@fncychap\remove@fncychap\fi%
-        \ifmylatex@twocolumn\cleardoublepage\else\clearpage\fi
-        \@enforce@onecolumn%
-        \@pgnum@test@content%
-        \togglefalse{@add@PAGE@targets}
-        \ifmylatex@backpagenumbering\pagenumbering{\mylatex@backpagenumbering}\fi%
-        %\cfoot{en\thepage}%\resetcounter*{page}%\cfoot{\thepage}
-        %\begingroup\linespread@settings[context=FBM]\endgroup%
-        \setlinespread{FBM}%
-        \FBM@define@separator!%
-        \@for\FBM@print@type:=\@FBM@print@list\do%
-        {%
-                \expandafter\preto%
-                \expandafter{\csname print\FBM@print@type\endcsname}{\FBM@separator}
-        }%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Configure/make/add/print front/backmatter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\frontmatter}{}
+{
+        \loadgeometry{toc@geometry}%
+        \pagestyle{empty}%
+        \pagenumbering{\mylatex@frontpagenumbering}%
+        \setlinespread{toc}%
+        %\ifmylatex@frontbackmatter\makeFrontbackMatter\fi%
+        \ifmylatex@toc\tableofcontents\fi%
+        \ifmylatex@frontbackmatter%
+                \addFrontbackMatter%
+        \fi%
 }
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\makeFrontbackMatter}{}
+{
+        \makenomenclature
+        \@automake@nomenclature
+        \makeglossaries\glsaddall
+        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s my-index.mst]
+        \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}%\bookmarkX@hypertarget{TOC}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\addFrontbackMatter}{}
+{
+        \bookmark[startatroot, keeplevel, dest=\bookmark@hyperaddress{TOC}, rellevel=0]{\TOCName}
+        \@add@listof@lists%
+        \clearpage\hypertarget{\@page@one@target@name}{}%%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\printFrontbackMatter}{}
 {%
         \@configure@FBM@settings%
@@ -349,19 +332,18 @@
         \@pgnum@test@content%
         \printglossary[type=\glsdefaulttype, title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]%
         \@pgnum@test@content%
-        %\@override@idx@clearpage{\@no@idx@clearpage}%
         \printindex%
         \conditional@auxwrite*{\ifdefined\@idx@group@letters}%
-       	{%
+        {%
                \auxwrite@macro{\@AUXOUT@idx@group@letters}{\@idx@group@letters}%
                \auxwrite@macro{\@AUXOUT@idx@group@letters@count}{\the\value{@idx@group@node@counter}}%
                \auxwrite@regset{@AUXOUT@idx@total@group@node@count}{\the\value{@idx@group@node@counter}}%
-       	}%
+        }%
 }
-%******************************************************************************************************************************%
-%********************************* Index/Glossary/Acronyms/Nomenclature style file generation *********************************%
-%******************************************************************************************************************************%
-%------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************* Index/Glossary/Acronyms/Nomenclature style file generation **********************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %\catcode`!=12
 %\catcode`\$=\active
 \catcode`|=12
@@ -371,7 +353,7 @@
         preamble "\\begin{tcolorbox}%
                 [
                         indexStyle,
-                        title={\\raggedright\\toctitletarget{\\IndexName}{\\IndexName}},
+                        title={\\raggedright\\toctitletarget{\\indexname}{\\indexname}},
                         %before=\\par\\smallskip,
                         after=\\par\\smallskip,
                         fonttitle=\\Large\\bfseries,
@@ -388,9 +370,9 @@
         heading_suffix "}\n"
 \end{filecontents*}
 %}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \begin{filecontents*}{my-glossaries.ist}
         actual '?'
         encap '|'
@@ -401,7 +383,7 @@
                 \\begin{tcolorbox}%
                 [%
                         glossariesStyle, before=\\par\\smallskip, after=\\par\\smallskip,
-                        fonttitle=\\Large\\bfseries, fontupper=\\normalsize\\normalfont,
+                        fonttitle=\\Large\\bfseries, fontupper=\\normalsize\\normalfont, %colframe=black,
                         title={\\phantomsection\\glossarysection[\\glossarytoctitle]{\\linkedglossarytitle}}%
                 ]
                 \\begin{theglossary}\\glossaryheader\n"
@@ -429,9 +411,9 @@
         suffix_2p ""
         suffix_3p ""
 \end{filecontents*}
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %\IfFileExists{my-nomencl.ist}{}
 %{%
 \begin{filecontents*}{my-nomencl.ist}
@@ -452,12 +434,12 @@
         headings_flag  1
 \end{filecontents*}
 %}
-%------------------------------------------------------------------------------------------------------------------------------%
-%******************************************************************************************************************************%
-%******************************************** End of 'frontbackmatter.sty' package ********************************************%
-%******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************** End of 'frontbackmatter.sty' package *********************************************%
+%*******************************************************************************************************************************%
 % Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
 \catcode`|=\active
 \makeatother
 \endinput
-%------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
