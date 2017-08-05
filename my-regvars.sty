@@ -1,7 +1,7 @@
 %*******************************************************************************************************************************%
 %****************************************************** `my-regvars.sty' *******************************************************%
 %*******************************************************************************************************************************%
-% Provides the (1) general/universal definitions, macros, & commands, (2) configures required package settings/options, (3) adds appropriate package, preamble, document, environment, and file hooks, (4) defines and configures new figure/table/list components, and (5) defines/instantiates register variables (counters, lengths/dimensions, tokens, etc.) which are then used in the design/development/implementation of the subpackage components of the 'my-latex' package and their constituent macros/commands/environments and settings/configurations.
+% Provides the (1) general/universal definitions, macros, & commands, (2) configures required package settings/options, (3) adds appropriate package, preamble, document, environment, and file hooks, (4) defines and configures new figure/table/list components, and (5) defines/instantiates register variables (counters, lengths/dimensions, tokens, etc.) which are then used in the design/development/implementation of the subpackage components of the 'R2Labs' package and their constituent macros/commands/environments and settings/configurations.
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
@@ -17,7 +17,7 @@
 %*******************************************************************************************************************************%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -28,17 +28,19 @@
         {%
                 \newif#1%
                 \xdef\@the@if@name{\theifname{#1}}%
-                \expandafter\csuse\expandafter{\theifname{#1}#2}%
+                \xp\csuse\xp{\theifname{#1}#2}%
                 \ifcsundef{the\@the@if@name}{\csgdef{the\@the@if@name}{\@print@if@value{\thecsname{#1}}}}{}%
         }%
         {%
-                \expandafter\newif\csname if#1\endcsname\csuse{#1#2}%
+                \xp\newif\csname if#1\endcsname\csuse{#1#2}%
                 \csuse{if#1#2}%
                 \ifcsundef{the#1}{\csgdef{the#1}{\@print@if@value{if#1}}}{}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@init@counter}{m O{0}}{\newcounter{#1}\setcounter{#1}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@count}{m O{0}}{\newcount#1\setcount{#1}{#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@init@toggle}{s m}%
 {%
@@ -47,7 +49,7 @@
         \ifcsundef{the#2}{\csgdef{the#2}{\@print@toggle@value{#2}}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@init@skip}{m m O{0pt} O{0pt}}
+\DeclareDocumentCommand{\@init@skip}{m G{0.0pt} O{0pt} O{0pt}}
 {%
         \ifismacro{#1}%
         {%
@@ -56,9 +58,9 @@
                 \ifcsundef{the\thecsname{#1}}{\csgdef{the\thecsname{#1}}{\the#1}}{}%
         }%
         {%
-                \expandafter\newskip\csname #1\endcsname%
+                \xp\newskip\csname #1\endcsname%
                 \csname#1\endcsname=#2 plus #3 minus #4%
-                \ifcsundef{the#1}{\csgdef{the#1}{\expandafter\the\csname#1\endcsname}}{}%
+                \ifcsundef{the#1}{\csgdef{the#1}{\xp\the\csname#1\endcsname}}{}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -71,9 +73,9 @@
                 \ifcsundef{the\thecsname{#1}}{\csgdef{the\thecsname{#1}}{\the#1}}{}%
         }%
         {%
-                \expandafter\newdimen\csname #1\endcsname\expandafter%
+                \xp\newdimen\csname #1\endcsname\xp%
                 \setlength\csname #1\endcsname{#2}%
-                \ifcsundef{the#1}{\csgdef{the#1}{\expandafter\the\csname#1\endcsname}}{}%
+                \ifcsundef{the#1}{\csgdef{the#1}{\xp\the\csname#1\endcsname}}{}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -86,9 +88,9 @@
                 \ifcsundef{the\thecsname{#1}}{\csgdef{the\thecsname{#1}}{\the#1}}{}%
         }%
         {%
-                \expandafter\newlength\csname #1\endcsname\expandafter%
+                \xp\newlength\csname #1\endcsname\xp%
                 \setlength\csname #1\endcsname{#2}%
-                \ifcsundef{the#1}{\csgdef{the#1}{\expandafter\the\csname#1\endcsname}}{}%
+                \ifcsundef{the#1}{\csgdef{the#1}{\xp\the\csname#1\endcsname}}{}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -102,8 +104,8 @@
                     {\def\@detaching@from{chapter}}%
         }%
         \IfBooleanTF{#2}%
-                {\AtBeginDocument{\expandafter\counterwithout\expandafter{#3}{\@detaching@from}}}%
-                {\AfterPreamble{\expandafter\counterwithout\expandafter{#3}{\@detaching@from}}}%%
+                {\AtBeginDocument{\xp\counterwithout\xp{#3}{\@detaching@from}}}%
+                {\AfterPreamble{\xp\counterwithout\xp{#3}{\@detaching@from}}}%%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@counterwithinout@counter@list}{s m}
@@ -111,10 +113,10 @@
         \IfBooleanTF{#1}
         {
                 \@for\@current@counter:=#2\do%
-                {\expandafter\ifdefined\csname\@current@counter\endcsname\expandafter\counterwithout\expandafter{\@current@counter}{chapter}\fi}
+                {\xp\ifdefined\csname\@current@counter\endcsname\xp\counterwithout\xp{\@current@counter}{chapter}\fi}
         }
         {       \@for\@current@counter:=#2\do%
-                {\expandafter\ifdefined\csname\@current@counter\endcsname\expandafter\counterwithin\expandafter{\@current@counter}{chapter}\fi}
+                {\xp\ifdefined\csname\@current@counter\endcsname\xp\counterwithin\xp{\@current@counter}{chapter}\fi}
         }
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -141,11 +143,11 @@
         }{}%
         \IfValueTF{#3}{\@init@length{@tcb@default@#2@linewidth}[#3]}{}%
         \IfValueTF{#4}%
-                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{#4}}%
-                {\ForEachX{,}{\@init@length{@tcb@\thislevelitem @#2@linewidth}}{\@setlength@operation@names}}%
-        \expandafter\newcommand\csname @tcb@set@#2@linewidths\endcsname[1]%
+                {\foreach \@proportion in {#4}{\@init@length{@tcb@\@proportion @#2@linewidth}}}
+                {\foreach \@proportion in \@setlength@operation@names{\@init@length{@tcb@\@proportion @#2@linewidth}}}
+        \xp\newcommand\csname @tcb@set@#2@linewidths\endcsname[1]%
         {%
-                \expandafter\setlength\csname @tcb@#2@linewidth\endcsname{##1}%
+                \xp\setlength\csname @tcb@#2@linewidth\endcsname{##1}%
                 \@ifundefined{@tcb@quarter@#2@linewidth}{}%
                         {\@setlength@operations@by@name{quarter}{@tcb@quarter@#2@linewidth}{##1}}%
                 \@ifundefined{@tcb@half@#2@linewidth}{}%
@@ -166,70 +168,140 @@
 %************************************** Define/initialize/set internal register variables **************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\@init@counter{argindex}
-\@init@counter{@saved@count}                                  % Generic counter register for temporarily storing a counter value
-\@init@dimen\sizeoffont
-\@init@dimen\rozmiar
-\@init@length\@macro@width                                       % Generic length register for temporarily storing width dimension
-\@init@length\@macro@height                                     % Generic length register for temporarily storing height dimension
-\@init@length\@macro@depth                                        % Generic length register for temporarily storing depth distance
-\@init@length\@macro@shift                                    % Generic length register for temporarily storing shift distance
-\@init@length\@macro@total@width                                % Generic length register for temporarily storing width dimension
-\@init@length\@macro@length@diff                                 % Generic length register for temporarily storing length dimension
-\@init@length\@env@BODY@width                                 % Generic length register for temporarily storing width dimension
-\@init@length\@saved@length                                 % Generic length register for temporarily storing width dimension
-\@init@length\@temp@length                                 % Generic length register for temporarily storing width dimension
-\@init@length\@text@measure@width                                 % Generic length register for temporarily storing width dimension
-\@init@length\@text@measure@height                                 % Generic length register for temporarily storing width dimension
-\@init@length\@text@measure@depth                                % Generic length register for temporarily storing width dimension
-\@init@if\if@auxwrite
-\@init@if\if@equality@status@
-\@init@toggle{@auxwrite@toggle}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Constant value register variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@counter{@boolean@true@counter}[1]                                        % determines if Part/Topic/Chapter used on same page
 \@init@counter{@boolean@false@counter}[0]                                       % determines if Part/Topic/Chapter used on same page
 \@init@if\ifBoolean
 \@init@if\ifTBoolean[true]%\TBooleantrue
 \@init@if\ifFBoolean
+\@init@toggle*{@boolean@true@toggle}%\toggletrue{@boolean@true@toggle}
+\@init@toggle{@boolean@false@toggle}%\togglefalse{@boolean@false@toggle}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\chardef\ZERO=0
+%\chardef\ONE=1
+%\chardef\TWO=2
+%\chardef\THREE=3
+%\chardef\FOUR=4
+%\@init@count\one[1]                                       % Constant count value 1
+\@init@count\ZERO[0]                                      % Constant count value 0
+\@init@count\ONE[1]                                      % Constant count value 1
+\@init@count\TWO[2]                                       % Constant count value 2
+\@init@count\THREE[3]                                     % Constant count value 3
+\@init@count\FOUR[4]                                     % Constant count value 3
+\@init@count\cntfive[5]                                     % Constant count value 3
+\@init@count\cntsix[6]                                     % Constant count value 3
+\@init@count\cntseven[7]                                     % Constant count value 3
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@init@counter{ZERO}[0]                                         % Constant counter value 0
+\@init@counter{ONE}[1]                                          % Constant counter value 1
+\@init@counter{TWO}[2]                                          % Constant counter value 2
+\@init@counter{THREE}[3]                                        % Constant counter value 3
+\@init@counter{FOUR}[4]                                     % Constant counter value 3
+\@init@counter{FIVE}[5]                                     % Constant counter value 3
+\@init@counter{SIX}[6]                                     % Constant counter value 3
+\@init@counter{SEVEN}[7]                                     % Constant counter value 3
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal register variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Generic temporary/default registers used for macro development
+\@init@if\if@macro@if
+\@init@toggle{@macro@toggle}%\togglefalse{@macro@toggle}
+\@init@count\@macro@count[0]                                  % Generic counter register for temporarily storing a counter value
+\@init@counter{@macro@counter}                                  % Generic counter register for temporarily storing a counter value
+\@init@counter{@saved@counter}                                    % Generic counter for temporarily storing a counter value
+\@init@skip\@macro@skip{0.0pt}                                  % Generic skip register for temporarily storing skip distance
+\@init@dimen\@macro@dimen                                       % Generic dimension register for temporarily storing dimension
+\@init@length{@macro@length}                                    % Generic length register for temporarily storing length dimension
+\@init@length\@macro@width                                      % Generic length register for temporarily storing width dimension
+\@init@length\@macro@height                                     % Generic length register for temporarily storing height dimension
+\@init@length\@macro@depth                                      % Generic length register for temporarily storing depth distance
+\@init@length\@macro@shift                                      % Generic length register for temporarily storing shift distance
+\@init@length\@macro@total@width                                % Generic length register for temporarily storing width dimension
+\@init@length\@macro@length@diff                                % Generic length register for temporarily storing length dimension
+\@init@length\@saved@length                                     % Generic length register for temporarily storing width dimension
+\@init@length\@temp@length                                      % Generic length register for temporarily storing width dimension
+\newsavebox\@macro@savebox
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Application specific register variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@init@if\if@auxwrite
+\@init@if\if@equality@status@
 \@init@if{\if@measure@pos}[true]
+%\@init@if\if@is@counter
+\@init@if{@is@counter@}[false]
+%\@init@if{\if@measure@cfootpos}[true]
+\@init@if{@conditional@status@}[false]
 \@init@if{@measure@cfootpos}[true]
 \@init@if{@print@on@}[false]
 \@init@if{@local@print@on@}[false]
-\@init@if{@@print@on}[false]
-\@init@if{@conditional@status@}[false]
-\@init@toggle*{@boolean@true@toggle}%\toggletrue{@boolean@true@toggle}
-\@init@toggle{@boolean@false@toggle}%\togglefalse{@boolean@false@toggle}
-\@init@toggle*{@zsavepos@cfootpos}
+\@init@if{@local@print@override@on@}[false]
+\@init@if{@include@PLD@zero@coefficients@}%
+\@init@if{@supress@PLD@title@}%
+\@init@if{@ignore@PLD@math@title@}%
+\@init@if{@include@PLD@conclusion@}%
+\@init@if{@PLD@sidebyside@}%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%--------------------------------------------------------- Counters -----------------------------------------------------------%
+%--------------------------------------------------------- Counters ------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\@init@counter{@save@theequation}                                       % Used to save/restore value of equation counter  
-\@init@counter{@sections@theequation}[1]                                % Setup to set \theequation inside doc sections
-\@init@counter{@problems@theequation}[1]                                % Setup to set \theequation inside problems
-\@init@counter{@bookmark@level@counter}[1]                              % Bookmark level = (chap>0) + (sec>0) = 0/1/2
-\@init@counter{@zsavepos@counter}[1]                           		% Count appended to zsavepos name to create unique names
-\@init@counter{@parbox@counter}[0]                                      % Maintains record of total # of parbox environments in doc
-\@init@counter{@num@tcbfigures}                                         % # of figs in current row of figbox, used to set fig widths
-\@init@counter{@node@auto@naming}[0]                           		% Count appended to node type name to create unique names
+\@init@count\@numname@count[0]                                		% Maintain count of boxed solution equations
+\@init@count\@numerator@count[0]                                	% Maintain count of boxed solution equations
+\@init@count\@denominator@count[0]                                	% Maintain count of boxed solution equations
+%\@init@count\@tcb@target@equationbox@count                        	% Maintain count of boxed solution equations
+%-------------------------------------------------------------------------------------------------------------------------------%
 \@init@counter{x}[0]                                                    % x-axis tick counter used in 3D graphics commands
 \@init@counter{y}[0]                                                    % y-axis tick counter used in 3D graphics commands
 \@init@counter{z}[0]                                                    % z-axis tick counter used in 3D graphics commands
-\@init@counter{@major@sections@this@page}                               % determines if Part/Topic/Chapter used on same page
+%\@init@counter{tcbmisc}						% 
+\@init@counter{argcounter}						% Maintain count while iterating through arg list
+%\@init@counter{csvindex}						% # of algorithms defined in document
+%\@init@counter{argindex}                                               % # of algorithms defined in document
+%\@init@counter{arg@index}
+\@init@counter{xbsm@mctr}						% Billions' tens digit # while converting digits to text
+\@init@counter{cbsm@mctr}						% Billions' hundreds digit # while converting digits to text
+\@init@counter{glsentry}                                                % Used to maintain # of current glossary entries
+\@init@counter{acrentry}                                                % Used to maintain # of current acronym list entries
+\@init@counter{array@row@count}                                         % Used to set array/table rows with "collectBODY"
+\@init@counter{array@column@count}                                      % Used to set array/table columns with "collectBODY" 
+\@init@counter{BMatrix}                                                 % Maintains record of # of "BMatrix" added
+\@init@counter{@save@theequation}                                       % Used to save/restore value of equation counter
+\@init@counter{@sections@theequation}[1]                                % Setup to set \theequation inside doc sections
+\@init@counter{@problems@theequation}[1]                                % Setup to set \theequation inside problems
+\@init@counter{@bookmark@level@counter}[1]                              % Bookmark level = (chap>0) + (sec>0) = 0/1/2
+\@init@counter{@zsavepos@counter}[1]                                    % Count appended to zsavepos name to create unique names
+\@init@counter{@parbox@counter}[1]                                      % Maintains record of total # of parbox environments in doc
+\@init@counter{@enumbox@counter}[1]                                     % Maintains record of total # of parbox environments in doc
+\@init@counter{@tcbenclosure@counter}[1]                                % Maintains record of total # of parbox environments in doc
+\@init@counter{@tcbtheorems@counter}                                    % Records Theorem/Corollary/Definition/Lemma tcb/title boxes
 \@init@counter{@tcb@eqn@list@counter}                                   % Fillednumshape label for eqnlistbox entries
 \@init@counter{@tcb@functions@counter}                                  % Fillednumshape label for function arg entries
+\@init@counter{@num@tcbfigures}                                         % # of figs in current row of figbox, used to set fig widths
+\@init@counter{@num@tcbalgorithms}                                      % # of algorithms defined in document
+\@init@counter{@node@auto@naming}[0]                                    % Count appended to node type name to create unique names
+\@init@counter{@major@sections@this@page}                               % determines if Part/Topic/Chapter used on same page
 \@init@counter{@idx@entry@counter}                                      % counter for 1st index entry shifting
-\@init@counter{@idx@group@node@counter}					% # of group nodes in index read from @AUXOUT<...> value
-\@init@counter{@AUXOUT@idx@total@group@node@count}			% Save # index group nodes between runs by writing to .aux 
-\@init@counter{@prob@bool@counter}                                   	% Store status of bool arguments Xn in binary sum of 2^n
+\@init@counter{@idx@group@node@counter}                                 % # of group nodes in index read from @AUXOUT<...> value
+\@init@counter{@AUXOUT@idx@total@group@node@count}                      % Save # index group nodes between runs by writing to .aux
+\@init@counter{@tcb@equationbox@counter}                                % Maintain count of boxed solution equations
+\@init@counter{@tcb@target@equationbox@counter}                         % Maintain count of boxed solution equations
+\@init@counter{@prob@bool@counter}                                      % Store status of bool arguments Xn in binary sum of 2^n
 \@init@counter{@chap@counter}                                           % Chapter that a problem comes from (optional, may omit)
 \@init@counter{@prob@counter}[1]                                        % Number of a problem
 \@init@counter{@prob@part@counter}[1]                                   % Problem part # counter (i.e., (i), (ii),...)
 \@init@counter{@subproblem@counter}[1]                                  % subproblemlem letter (i.e. (a), (b), (c), ...)
 \@init@counter{@count@problem}                                          % Maintain record of total # of problems in document
 \@init@counter{@count@function}                                         % Maintain record of total # of function defs in document
+\@init@counter{@count@tcbcode@boxes}                                    % Maintain record of total # of boxed tcbcode definitions
+\@init@counter{@tikzgrid@lines}                                         % Maintain record of total # of boxed tcbcode definitions
 \DeclareTotalCounter{@count@problem}                                    % Problem counter > 0 => include Problems in ToC
 \DeclareTotalCounter{@count@function}                                   % Function Def counter > 0 => include Functions in ToC
-\newaliascnt{sm@mctr}{ism@mctr}                           		% Stores value of # to be converted to name/ordinal
+\newaliascnt{sm@mctr}{ism@mctr}                                         % Stores value of # to be converted to name/ordinal
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Skips/Glues ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -242,7 +314,10 @@
 \@init@skip{@horiz@IBP@arrows@rightXShift}{0.1em}
 \@init@skip{@horiz@IBP@arrows@yShift}{0.65ex}
 \@init@skip{@tcb@IBP@before@hrule@skip}{-0.3em}
-\@init@skip{@tcb@IBP@after@hrule@skip}{-1.75em}
+\@init@skip{@tcb@IBP@after@hrule@skip}{-1.95em}
+\@init@skip{@tcb@funcdefbox@text@hskip}{0mm}
+\@init@skip{@tcb@funcdefdetail@text@hskip}{-1mm}
+\@init@skip{@tcbcode@text@hskip}{\the\@tcb@funcdefbox@text@hskip}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@skip{@docsection@lhead@baseskip}{14pt}
 \@init@skip{@docsection@lhead@basesep}{0pt}
@@ -272,11 +347,13 @@
         \@init@skip{@idx@top@skip}{-35mm}
         \@init@skip{@idx@after@hypernav@skip}{-13mm}
 \fi
-\ifnumcomp{\@doc@sizeX}{=}{11}{\addtolength\@idx@after@hypernav@skip{-3mm}}{}
-\ifnumcomp{\@doc@sizeX}{=}{12}{\addtolength\@idx@after@hypernav@skip{-6.5mm}}{}
+\ifnumequal{\@doc@sizeX}{11}{\addtolength\@idx@after@hypernav@skip{-3mm}}{}
+\ifnumequal{\@doc@sizeX}{12}{\addtolength\@idx@after@hypernav@skip{-6.5mm}}{}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Dimensions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\@init@dimen\sizeoffont
+\@init@dimen\rozmiar
 \@init@dimen{@filledenumshape@min@size}[5mm]
 \@init@dimen{@filledenumshape@inner@sep}[0.25pt]
 \@init@dimen{@function@desc@crskip}[-0.45em]
@@ -284,6 +361,11 @@
 \@init@dimen{@function@argdef@crskip}[-1.55em]
 \@init@dimen{@function@entry@label@hskip}
 \@init@dimen{@docsection@lhead@title@width}
+\@init@dimen{@docsection@pagenum@node@size}[9mm]
+\@init@dimen{@docsection@pagenum@node@radius}[\@docsection@pagenum@node@size / 2]
+\@init@dimen{@cfoot@yshift}[\paperheight - (1in + \voffset + \topmargin + \headheight + \headsep + \textheight) - \footskip]
+\@init@dimen{@tikz@rangle@shift@dist}[0.1pt]
+\@init@dimen{@tikz@rangle@shift@distB}[0.1pt]
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Lengths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -292,14 +374,15 @@
 %---------------------------------------------- Universal/Generic positions/dimensions ----------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\@init@length\bshift[.18pt]                             		% \fakebold Shift distance for "faking" a bold math font
-\@init@length{replength}[1.5pt]                         		%
-\@init@length{shadowsize}[4pt]                          		% Size of shadow in \@cshadowbox command
+\@init@length\bshift[.15pt]                                             % \fakebold Shift distance for "faking" a bold math font
+\@init@length{replength}[1.5pt]                                         %
+\@init@length{shadowsize}[4pt]                                          % Size of shadow in \@cshadowbox command
 \@init@length{f@halfheight}%[\pgfmathparse{0.5\@doc@sizeX}pt]           % \fakebold Shift distance for "faking" a bold math font
+\@init@length{@par@indent}[4ex]
 \@init@length{tcbparskip}[-0.33em]
 \@init@length{tcbparindent}[0.25in]
-\@init@length{@par@indent}[4ex]
 \@init@length{cft@indent@unit@em}[1.5em]
+\@init@length\@env@BODY@width                                 % Generic length register for temporarily storing width dimension
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@ul@thickness}[\@ul@default@thickness]
 \@init@length{@ul@sep}[\@ul@default@sep]
@@ -313,6 +396,9 @@
 \@init@length{@premeasured@savebox@height}[0.0pt]
 \@init@length{@premeasured@savebox@width}[0.0pt]
 \@init@length{@premeasured@savebox@depth}[0.0pt]
+\@init@length\@text@measure@width                                 % Generic length register for temporarily storing width dimension
+\@init@length\@text@measure@height                                 % Generic length register for temporarily storing width dimension
+\@init@length\@text@measure@depth                                % Generic length register for temporarily storing width dimension
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@doc@section@abs@endpos}                                                          %
 \@init@length{@doc@section@abs@startpos}                                                          %
@@ -320,7 +406,7 @@
 \@init@length{@zsavepos@remaining@page@height}                                                          %
 \@init@length{@zsavepos@used@page@height}                                                          %
 %-------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{labelboxwidth}[3.1cm]
+\@init@length{labelboxwidth}[3.0cm]
 \@init@length{colorboxwidth}[1.4cm]
 \@init@length{colorentrywidth}[\dimexpr\labelboxwidth + \colorboxwidth\relax]
 \@init@length{colorboxheight}[0.75cm]
@@ -348,7 +434,10 @@
 %--------------------------------------------- Tikz/PGF graphics/picture/node dimensions --------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@xaxis@origin@xhift}[0.785pt]                                        %
+\@init@length{@tick@thickness}[0.25pt]                                        %
 \@init@length{@tick@length}[2mm]                                        %
+\@init@length{@half@tick@length}[\@tick@length / 2]                                        %
 \@init@length{@tick@start@pos}[1mm]                                     %
 \@init@length{@cube@side@length}[0.5cm]
 \@init@length{@tikzheading@baseheight}[1.8cm]%2cm
@@ -379,7 +468,13 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@minor@section@headings@totalskip}%[0.55\doctextsize]
-\@init@length{@init@docsection@clearpage@threshold}[200pt]
+\@init@length{@init@docsection@clearpage@threshold}[150pt]
+\@init@length{@Part@num@width}[0.0pt]					% Width of \Part # in roman numerals text
+\@init@length{@Part@prev@num@width}[0.0pt]                              % Width of previous \Part # in roman numerals text
+\@init@length{@Part@toctitle@shift}[0.0pt]                             	% Distance to shift Part's toctitle for Part #
+\@init@length{@Topic@num@width}[0.0pt]                                  % Width of \Topic # in roman numerals text
+\@init@length{@Topic@prev@num@width}[0.0pt]                             % Width of previous \Topic # in roman numerals text
+\@init@length{@Topic@toctitle@shift}[0.0pt]				% Distance to shift Topic's toctitle for Part # 
 \@init@length{@Part@heading@yshift}[\@tikzheading@baseyshift]%
 \@init@length{@Topic@heading@yshift}[\@tikzheading@baseyshift]%
 \@init@length{@Chapter@heading@yshift}[\@tikzheading@baseyshift]%
@@ -391,35 +486,51 @@
 \@init@length{@tcb@Legend@after@skip}[5mm]
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------- 'tcolorbox' environment and content dimensions --------------------------------------%
+%----------------------------------------- 'tcolorbox' environment and content dimensions --------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\@init@length{@default@tcb@listbox@width}[14.5cm]
-\@init@length{@tcb@func@defbox@first@column}[3.0cm]
-\@init@length{@tcb@func@defbox@second@column}[15.0cm]%
-\@init@length{@tcb@func@defbox@column@sep}[0.25cm]
-\@init@length{@tcb@func@detailbox@first@column}[4.0cm]
-\@init@length{@tcb@func@detailbox@second@column}[15.5cm]%
-\@init@length{@tcb@func@detailbox@column@sep}[0.75cm]
+\@init@length{@default@tcb@listbox@width}[16.0cm]
+\@init@length{@tcb@scriptdef@first@column}[3.0cm]
+\@init@length{@tcb@scriptdef@second@column}[15.0cm]%
+\@init@length{@tcb@scriptdef@column@sep}[0.25cm]
+\@init@length{@tcb@functiondef@first@column}[3.0cm]
+\@init@length{@tcb@functiondef@second@column}[15.0cm]%
+\@init@length{@tcb@functiondef@column@sep}[0.25cm]
+\@init@length{@tcb@functiondefdetail@first@column}[4.0cm]
+\@init@length{@tcb@functiondefdetail@second@column}[15.5cm]%
+\@init@length{@tcb@functiondefdetail@column@sep}[0.75cm]
 \@init@length{@tcb@enum@label@indent}[-6.0pt]
 \@init@length{@tcb@enum@topsep}[2.0pt]
 \@init@length{@tcb@enum@leftmargin}[0.25in]
 \@init@length{@tcb@enum@itemsep}[1pt]
 \@init@length{@tcb@enum@parsep}[0pt]
 \@init@length{@tcb@enumbox@startpos}                                                          %
-\@init@length{@tcb@enumbox@remaining@page@height}                                                          %
-\@init@length{@tcb@enumbox@used@page@height}                                                          %
+\@init@length{@tcb@parbox@startpos}                                                          %
+\@init@length{@tcb@enclosure@startpos}                                                          %
+%\@init@length{@tcb@enumbox@remaining@page@height}                                                          %
+%\@init@length{@tcb@enumbox@used@page@height}                                                          %
+\@init@length{@tcb@code@newusageline@vkip}[0.5em]
 \@init@length{@tcb@code@first@column}[3.0cm]
 \@init@length{@tcb@code@second@column}[16.5cm]%
+\@init@length{@tcb@code@column@sep}[16.5cm]%
+\@init@length{@tcb@code@width}[\@tcb@code@first@column + \@tcb@code@second@column + \@tcb@code@column@sep]%
 \@init@length{@tcb@figbox@left@skip}[4mm+12pt]
 \@init@length{@tcb@figbox@figure@width}[4mm+12pt]
-\@init@length{@tcb@IBP@left@distance}
-\@init@length{@tcb@IBP@column@separation}[2.5cm]
-\@init@length{@tcb@IBP@leftright@skip}
-\@init@length{@tcb@IBP@text@content@width}
-\@init@length{@tcb@IBP@math@content@width}
-\@init@length{@tcb@dualIBP@text@leftcontent@width}
-\@init@length{@tcb@dualIBP@text@rightcontent@width}
+\@init@length{@tcb@mathbox@text@title@width}
+\@init@length{@tcb@mathbox@math@title@width}
+\@init@length{@tcb@mathbox@title@width}
+\@init@length{@tcb@mathbox@max@title@width}[5.0cm]
+\@init@length{@tcb@mathbox@leftcontent@width}
+\@init@length{@tcb@mathbox@rightcontent@width}
+\@init@length{@tcb@mathbox@content@width}
+\@init@length{@tcb@mathbox@min@setwidth}[8.0cm]
+\@init@length{@tcb@mathbox@setwidth}
+\@init@length{@tcb@mathbox@column@sep}[2.5cm]
+\@init@length{@tcb@mathbox@left@distance}
+\@init@length{@tcb@mathbox@leftright@skip}
+\@init@length{@tcb@mathbox@title@newline@skip}[0.9em]
+\@init@length{@tcb@IBPtable@title@newline@skip}[0.6em]
+\@init@length{@tcb@PLDtable@title@newline@skip}[0.9em]
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------- Universal/default Tikz/PGF style line/rule/separation/radius dimensions ---------------------------%
@@ -447,17 +558,42 @@
 \@init@length{@overlay@yshift}[-1pt]
 \@init@length{@overlay@linewidth}[1pt]
 \@init@length{@overlay@double@distance}[0.75pt]
-\@init@length{@tcb@frame@corner@radius}[6pt]
-\@init@length{@tcb@interior@corner@radius}[6pt]
-\@init@length{@tcb@title@corner@radius}[6pt]
-\@init@length{@tcb@corner@radius}[6pt]
+\@init@length{@tcb@frame@corner@radius}[4pt]
+\@init@length{@tcb@interior@corner@radius}[4pt]
+\@init@length{@tcb@title@corner@radius}[4pt]
+\@init@length{@tcb@corner@radius}[4pt]
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------- Context specific Tikz/PGF style line widths & double distances -------------------------------%
+%---------------------------- Lengths used to set default value of common tcb style length variables ---------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@tcb@default@width}[\linewidth]
+\@init@length{@tcb@default@boxsep}[1mm]
+\@init@length{@tcb@default@arc}[6pt]
+\@init@length{@tcb@default@TB}[2mm]
+\@init@length{@tcb@default@middle}[2mm]
+\@init@length{@tcb@default@LR}[4mm]
+\@init@length{@tcb@default@title@TB}[0mm]
+\@init@length{@tcb@default@title@LR}[4mm]
+\@init@length{@tcb@default@beforeafter@skip}[1mm]
+\@init@length{@tcb@default@TB@sepatbreak}[0mm]
+\@init@length{@tcb@default@pad@beforeafter@break}[3.5mm]
+\@init@length{@tcb@default@enlarge@TBLR}[0mm]
+\@init@length{@tcb@default@growto@LR}[0mm]
+\@init@length{@tcb@default@sidebyside@gap}[10mm]
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@tcb@default@borderline@linewidth}[2.0pt]
+\@init@length{@tcb@default@borderline@arc}[1.75pt]
+\@init@length{@tcb@default@borderline@boxrule}[0.0pt]
+\@init@length{@tcb@default@borderoutline@linewidth}[1.5pt]
 \@init@length{@tcb@default@double@distance}[1.0pt]
+\@init@length{@tcb@default@outline@linewidth}[1.0pt]
+\@init@length{@tcb@default@outline@sep}[0.0pt]
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------- Common length variables set/used by each tcb style -------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \@init@length{@tcb@double@distance}
 \@init@length{@tcb@borderline@linewidth}
 \@init@length{@tcb@borderline@xshift}
@@ -465,6 +601,10 @@
 \@init@length{@tcb@plain@interior@border@linewidth}[1.0pt]
 \@init@length{@tcb@plain@titlerule@linewidth}[1.0pt]
 \@init@length{@tcb@double@border@linewidth}[0.5pt]
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------- Context specific Tikz/PGF style line widths & double distances -------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@tcb@init@X@linewidths{boxrule}[5.0pt]
 \@tcb@init@X@linewidths{interior@border}[\@tcb@default@borderline@linewidth]
@@ -488,7 +628,8 @@
         \renewcommand{\baselinestretch}{\@doc@baselinestretch}%
         %\renewcommand{\arraystretch}{1.25}
         \setlength{\arrayrulewidth}{\@ul@thickness}
-        \setlength\doublerulesep{0pt}\setlength{\parskip}{3mm}
+        \setlength\doublerulesep{0pt}%
+        %\setlength{\parskip}{3mm}
         %\parskip\z@ \@plus .3\p@\relax%
         %\setlength{\headheight}{30pt}
         %\setlength{\parfillskip}{6em}
@@ -499,7 +640,7 @@
         \@init@length{@tikzheading@title@margin}[\dimexpr 0.1\paperwidth\relax]
         \@init@length{@tikzheading@east@title@xshift}[0.9\paperwidth]
         \@init@length{@tikzheading@west@title@xshift}[\dimexpr 0.1\paperwidth\relax]
-        %\@init@length{@tcb@func@defbox@second@column}[15.5cm]
+        %\@init@length{@tcb@functiondef@second@column}[15.5cm]
         %\setlength{\baselineskip}{1in}
         \renewcommand{\baselinestretch}{\@doc@baselinestretch}%
         %\renewcommand{\arraystretch}{1.25}
@@ -508,8 +649,14 @@
         %\renewcommand*{\hypcapspace}{\baselineskip}
         %\renewcommand\ellipsisgap{1.5\fontdimen3\font}
         \setlength{\parindent}{4mm}                                                      %\parindent=\z@
-        \setlength{\parskip}{3mm}                                                      %\parskip\z@ \@plus .3\p@\relax%
+        %\setlength{\parskip}{3mm}                                                      %\parskip\z@ \@plus .3\p@\relax%
 \fi
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Boxes/Saveboxes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\def\@doc@dimension@vars{paperwidth,paperheight,textwidth,textheight,linewidth,layouthoffset,hoffset,voffset,headheight,headsep,footskip,footsep,oddsidemargin,evensidemargin,topmargin,leftmargin,rightmargin,marginparsep,marginparwidth, marginpar,marginparpush,parskip,parfillskip,parsep,partopsep,parindent,baselineskip,arrayrulewidth,doublerulesep,columnsep,columnwidth,tabcolsep}
+\def\@doc@dimension@cmds{headrulewidth,footrulewidth,hypcapspace,ellipsisgap}
+\def\@doc@scalar@vars{baselinestretch,arraystretch}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Boxes/Saveboxes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -527,11 +674,11 @@
 \newsavebox\@frontbackmatter@savebox
 \newsavebox\@tikzheading@savebox
 \newsavebox\glossbox
-\newsavebox\@IBPtable@box
-\newsavebox\@IBP@text@content@box
-\newsavebox\@IBP@math@content@box
-\newsavebox\@tcb@dualIBP@left@content@box
-\newsavebox\@tcb@dualIBP@right@content@box
+\newsavebox\@tcb@mathbox@content@box
+\newsavebox\@tcb@mathbox@left@content@box
+\newsavebox\@tcb@mathbox@right@content@box
+\newsavebox\@tcb@mathbox@text@title@box
+\newsavebox\@tcb@mathbox@math@title@box
 \newsavebox{\@slant@savebox}
 \newsavebox\@premeasured@savebox
 \newsavebox\@titlenode@savebox
@@ -550,24 +697,20 @@
 \@init@toggle{bon}
 \@init@toggle{listof@shiftup}
 \@init@toggle{tcbtitle@included}
+\@init@toggle{@in@tcbenclosure}
+\@init@toggle{@hbox@capture@on}
 \@init@toggle{@init@docsection@clearpage}
 \@init@toggle{@saved@toggle}
 \@init@toggle{@add@PAGE@targets}
 \@init@toggle{@major@section@shift}
-%-------------------------------------------------------------------------------------------------------------------------------%
-% Generic temporary/default registers used for macro development
-\@init@counter{@macro@counter}                                  % Generic counter register for temporarily storing a counter value
-\@init@skip\@macro@skip{0.0pt}                                         % Generic skip register for temporarily storing skip distance
-\@init@dimen\@macro@dimen                                    % Generic dimension register for temporarily storing dimension
-\@init@length{@macro@length}                                      % Generic length register for temporarily storing length dimension
-\@init@if\if@macro@if
-\@init@toggle{@macro@toggle}%\togglefalse{@macro@toggle}
-\newsavebox\@macro@savebox
+\@init@toggle{@auxwrite@toggle}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Itemize/enumerate/custom list settings/configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \setlistdepth{12}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\setlist[itemize]{itemsep=0pt, topsep=4pt, parsep=4pt, partopsep=4pt}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \setlist[enumerate]{itemsep=1pt, topsep=4pt, parsep=5pt, partopsep=1pt}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -580,8 +723,8 @@
 \newlist{ThinEnum}{enumerate}{12}
 \setlist[ThinEnum]%
 {%
-	labelindent=\@tcb@enum@label@indent, itemsep=\@tcb@enum@itemsep, topsep=\@tcb@enum@topsep, 
-	parsep=\@tcb@enum@parsep, leftmargin=\@tcb@enum@leftmargin%
+        labelindent=\@tcb@enum@label@indent, itemsep=\@tcb@enum@itemsep, topsep=\@tcb@enum@topsep,
+        parsep=\@tcb@enum@parsep, leftmargin=\@tcb@enum@leftmargin%
 }
 \setlist[ThinEnum, 1]{label=\bfarabic@fmt(), labelindent=2pt, partopsep=6pt, topsep=6pt, parsep=4pt, leftmargin=*}
 \setlist[ThinEnum, 2]{label=\bfalph@fmt}
@@ -602,9 +745,10 @@
 %*******************************************************************************************************************************%
 %*********************************************** End of 'my-regvars.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
@@ -612,5 +756,5 @@
 \verbtocs{\@docsection@tcbset@skips}|before=\@Section@before@skip, after=\@Section@after@skip|
 \verbtocs{\mycs}|labelindent=-3pt, itemsep=\@tcb@enum@itemsep, topsep=\@tcb@enum@topsep, parsep=5pt, leftmargin=*|
 \setlength\marginparsep{11\p@}
-\setlength\marginparpush{5\p@} 
+\setlength\marginparpush{5\p@}
 \edef\meaningskip{\meaning\skip}

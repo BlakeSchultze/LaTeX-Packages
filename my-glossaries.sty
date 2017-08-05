@@ -24,7 +24,7 @@
   }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                          % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                           % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -3418,13 +3418,27 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \setlength\@macro@length{\maxof{\gls@tmplen}{\doctextsize}}
   \raisebox{\@macro@length}{\hypertarget{#1}{}}#2%
 }
+\newcommand*{\glsdonavhypertarget}[2]{%
+  \settototalheight{\gls@tmplen}{#2}%
+  \setlength\@macro@length{\maxof{\gls@tmplen}{\doctextsize}}
+  \raisebox{\@macro@length}{\hypertarget{#1}{}}#2%
+}
+\newcommand*{\glsdoseehypertarget}[2]{%
+  \settototalheight{\gls@tmplen}{#2}%
+  \setlength\@macro@length{\maxof{\gls@tmplen}{\doctextsize}}
+  \raisebox{\@macro@length}{\hypertarget{#1}{}}#2%
+}
 \newcommand*{\glsdohyperlink}[2]{\hyperlink{#1}{#2}}
+\newcommand*{\glsdonavhyperlink}[2]{\hyperlink{#1}{#2}}
+\newcommand*{\glsdoseehyperlink}[2]{\hyperlink{#1}{#2}}
 \ifcsundef{hyperlink}%
 {%
   \let\@glslink\@secondoftwo
 }%
 {%
   \let\@glslink\glsdohyperlink
+  \let\@glsnavlink\glsdonavhyperlink
+  \let\@glsseelink\glsdoseehyperlink
 }
 \ifcsundef{hypertarget}%
 {%
@@ -3432,19 +3446,30 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }%
 {%
   \let\@glstarget\glsdohypertarget
+  \let\@glsnavtarget\glsdonavhypertarget
+  \let\@glsseetarget\glsdoseehypertarget
 }
 \newcommand{\glsdisablehyper}{%
   \KV@glslink@hyperfalse
   \let\@glslink\@secondoftwo
   \let\@glstarget\@secondoftwo
+  \let\@glsnavlink\@secondoftwo
+  \let\@glsnavtarget\@secondoftwo
+  \let\@glsseelink\@secondoftwo
+  \let\@glsseetarget\@secondoftwo
 }
 \newcommand{\glsenablehyper}{%
  \KV@glslink@hypertrue
  \let\@glslink\glsdohyperlink
  \let\@glstarget\glsdohypertarget
+  \let\@glsnavlink\glsdonavhyperlink
+  \let\@glsnavtarget\glsdonavhypertarget
+  \let\@glsseelink\glsdoseehyperlink
+  \let\@glsseetarget\glsdoseehypertarget
 }
 \providecommand{\@firstofthree}[3]{#1}
 \providecommand{\@secondofthree}[3]{#2}
+%\gls[#2]{#3}[#4]
 \newrobustcmd*{\gls}{\@gls@hyp@opt\@gls}
 \newcommand*{\@gls}[2][]{%
   \new@ifnextchar[{\@gls@{#1}{#2}}{\@gls@{#1}{#2}[]}%
@@ -4561,40 +4586,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \ifdefstring{\glsorder}{letter}%
       {\def\@gls@order{-l }}%
       {\let\@gls@order\@empty}
-        \ifdefstrequal{#1}{\acronymtype}
-        {%
-                \edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
-                        -s my-glossaries.ist\space
-                -t \jobname.alg\space%\csuse{@glotype@#1@log}
-                -o \jobname.acr\space%\csuse{@glotype@#1@in}
-                \jobname.acn%\csuse{@glotype@#1@out}
-                        }%
-             }%
-             \@gls@dothiswrite
-        }%
-        {%
-                \ifdefstrequal{#1}{\glsdefaulttype}
-                {%
-                        \edef\@gls@dothiswrite{\noexpand\write18{makeglossaries \@gls@order
-                                -s my-glossaries.ist\space
-                        -t \jobname.glg\space%\csuse{@glotype@#1@log}
-                        -o \jobname.gls\space%\csuse{@glotype@#1@in}
-                        \jobname.glo %\csuse{@glotype@#1@out}
-                                }%
-                      }%
-                      \@gls@dothiswrite
-                }%
-                {%
-                        \edef\@gls@dothiswrite{\noexpand\write18{makeindex \@gls@order
-                                -s my-glossaries.ist\space
-                        -t \jobname.slg\space%\csuse{@glotype@#1@log}
-                        -o \jobname.sls\space%\csuse{@glotype@#1@in}
-                        \jobname.slo %\csuse{@glotype@#1@out}
-                                }%
-                      }%
-                      \@gls@dothiswrite
-                }%
-        }%
+        \FBMcontent@automake{#1}%
    }%
    {%
      \GlossariesWarning{Can't make glossary `#1', it doesn't exist}%
@@ -7149,6 +7141,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\glshyperlink}[2][\glsentrytext{\@glo@label}]{%
  \def\@glo@label{#2}%
  \@glslink{\glolinkprefix\glsdetoklabel{#2}}{#1}}
+\newcommand*{\glsseehyperlink}[2][\glsentrytext{\@glo@label}]{%
+ \def\@glo@label{#2}%
+ \@glsseelink{\glolinkprefix\glsdetoklabel{#2}}{#1}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newrobustcmd*{\glsadd}[2][]{%
   \@gls@adjustmode
@@ -7165,35 +7160,94 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                       1   2   3 4 5 6
-\DeclareDocumentCommand{\newdualentry}{ O{} O{} m m m m }
+%                                       1   2 3 4 5
+\DeclareDocumentCommand{\newdualentry}{ O{} D(){\glspluralsuffix} m m m m }
 {% [][options]{label}{abbreviation}{long form}{description}
-        \newglossaryentry{gls-#3}{see=#3,name={#5},text={#4}, first={#5}, description={#6},#1}%
-        \newacronym{#3}{#4}{#5}%
-        \newtoggle{gls-#3}\togglefalse{gls-#3}
-        \glsseedual{#3}{gls-#3}%
+        %\newacronym[#1]{acr-#2}{#3}{#4}%
+        %\newacronym[key-val list]{label}{abbrv}{long}
+        \newglossaryentry{acr-#3}{type=\acronymtype, name={#4}, text={#4}, description={#5}, first={#5 (#4)}, plural={#4#2}, firstplural={#5#2\space(#4#2)}, #1}%
+%        \newglossaryentry{#3}{type=\acronymtype,see={gls-#3},name={#5},text={#4}, first={#5}, description={#6},#1}%see={gls-#3},
+        \newglossaryentry{gls-#3}{name={#5}, text={#4}, first={#5 (#4)}, plural={#4#2}, firstplural={#5#2\space(#4#2)}, description={#6}, #1}%
+        %\glssee{acr-#2}{gls-#2}% Acronym -> GLossary
+        %\glssee{gls-#2}{acr-#2}% GLossary -> Acronym
+        \newtoggle{dual-#3}\toggletrue{dual-#3}%
+        %\toggletrue{gls-#2}%
+        %\togglefalse{gls-#2}%
+        %\glsseedual{acr-#2}{gls-#2}%
+        %\@gls@setcounter{acr-#2}[glsentry]
+        %\@gls@setcounter{gls-#2}[acrentry]
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\glsdual}{s O{} m O{}}
-{% [][options]{label}{abbreviation}{long form}{description}
-        \toggletrue{gls-#3}
+{% <*=link to acronyms/glossary>[options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
         \IfBooleanTF{#1}
-                {\gls[#2]{#3}[#4]\glslink{gls-#3}{}}
-                {\gls[#2]{gls-#3}[#4]\glslink{#3}{}}%
+                {\gls[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\gls[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\Glsdual}{s m}
+\DeclareDocumentCommand{\Glsdual}{s O{} m O{}}
 {% [][options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
         \IfBooleanTF{#1}
-                {\Gls{#2}}
-                {\Gls{gls-#2}}
+                {\Gls[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\Gls[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\GLSdual}{s m}
+\DeclareDocumentCommand{\GLSdual}{s O{} m O{}}
 {% [][options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
         \IfBooleanTF{#1}
-                {\GLS{#2}}
-                {\GLS{gls-#2}}
+                {\gls[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\gls[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\glspldual}{s O{} m O{}}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
+        \IfBooleanTF{#1}
+                {\glspl[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\glspl[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\Glspldual}{s O{} m O{}}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
+        \IfBooleanTF{#1}
+                {\Glspl[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\Glspl[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\GLSpldual}{s O{} m O{}}
+{% [][options]{label}{abbreviation}{long form}{description}
+        \glsseedual{#3}%
+        \IfBooleanTF{#1}
+                {\GLSpl[#2]{acr-#3}[#4]\glslink{gls-#3}{}}
+                {\GLSpl[#2]{gls-#3}[#4]\glslink{acr-#3}{}}%
+        \glsunset{acr-#3}%
+        \glsunset{gls-#3}%
+        %\glsreset{acr-#3}%
+        %\glsreset{gls-#3}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newrobustcmd*{\glsadddual}[2][]{%
@@ -7223,7 +7277,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\glsseelastsep}{\space\andname\space}
 \newcommand*{\glsseesep}{, }
 \newcommand*{\glsseeitemformat}[1]{\glsentrytext{#1}}
-\DeclareRobustCommand*{\glsseeitem}[1]{\glshyperlink[\glsseeitemformat{#1}]{#1}}
+\DeclareRobustCommand*{\glsseeitem}[1]{\glsseehyperlink[\glsseeitemformat{#1}]{#1}}
 \DeclareRobustCommand*{\glssee}[3][\seename]{%
   \@do@seeglossary{#2}{[#1]{#3}}}
 \newcommand*{\@glssee}[3][\seename]{%
@@ -7283,13 +7337,20 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \@gls@encapchar glsseedualformat\@gls@xref}{Z}}%
 \fi
 }
-\DeclareRobustCommand*{\glsseedual}[3][\seename]{%
-  \@do@seedualglossary{#2}{[#1]{#3}}%
-  }
+\DeclareRobustCommand*{\glsseedual}[2][\seename]%
+{%
+        \iftoggle{dual-#2}%
+        {%
+                \@do@seedualglossary{gls-#2}{[#1]{acr-#2}}%
+                \@do@seedualglossary{acr-#2}{[#1]{gls-#2}}%
+                \togglefalse{dual-#2}%
+        }{}%
+}
 \newcommand*{\@glsseedual}[3][\seename]{%
   \glsseedual[#1]{#3}{#2}}
 \DeclareRobustCommand*{\glsseedualformat}[3][\seename]{%
-  \iftoggle{#2}{\emph{#1} \glsseeduallist{#2}}{}}
+  \emph{#1} \glsseeduallist{#2}}
+%  \iftoggle{#2}{\emph{#1} \glsseeduallist{#2}}{}}
 \DeclareRobustCommand*{\glsseeduallist}[1]{%
   \let\@gls@dolast\relax
   \let\@gls@donext\relax
@@ -7304,7 +7365,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \let\@gls@donext\glsseesep
   }%
 }
-\DeclareRobustCommand*{\glsseedualitem}[1]{\glshyperlink[\glsseedualitemformat{#1}]{#1}}
+\DeclareRobustCommand*{\glsseedualitem}[1]{\glsseehyperlink[\glsseedualitemformat{#1}]{#1}}
 \newcommand*{\glsseedualitemformat}[1]{\glsentryname{#1}}
 %*******************************************************************************************************************************%
 %********************************** Index/Glossary/Acronyms/Nomenclature style file generation *********************************%
@@ -7445,7 +7506,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-glossaries.sty' Package *********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%

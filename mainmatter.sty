@@ -18,7 +18,7 @@
 %*******************************************************************************************************************************%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -95,12 +95,12 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\cftX@hyperlink}{O{10pt} m m}%
 {%\cftX@hyperlink[raisebox distance]{cft list entry name}{hyperlink text}
-        \raisebox{#1}{\hyperlink{\cft@hyperaddress{#2}}{#3}}
+        \raisebox{#1}{\hyperlink{\cft@hyperaddress{#2}}{#3}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tocX@hyperlink}{O{10pt} m m}%
 {%\tocX@hyperlink[raisebox distance]{cft list entry name}{hyperlink text}
-        \raisebox{#1}{\hyperlink{\toc@hyperaddress{#2}}{#3}}
+        \raisebox{#1}{\hyperlink{\toc@hyperaddress{#2}}{#3}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\bookmarkX@hyperlink}{O{10pt} m m}%
@@ -240,16 +240,22 @@
                 {Subsection}{\IfSubBooleanTF{#1}{\clearpage}{}}%
         }%%
         \csuse{@#2@before@skip}%
+        %\unskipspacing
         \gdef\@current@doc@section{#2}%
-        \gdef\@BKM@calling@cmd{#2}%
-        \expandafter\gdef\csname current#2name\endcsname{#5}%
+        \@set@BKM@context{#2}%
+        %\expandafter\gdef\csname current#2name\endcsname{#5}%
+        \csgdef{current#2name}{#5}%
         \@set@current@tcb@colors{#3}%
         \@doc@section@BKM@setupnext{#2}%
-        \linespread@settings[context=doc]%
-        \refstepsectioncounter{#2}
+        %\linespread@settings[context=doc]%
+        \doclinespacing%
+        \refstepsectioncounter{#2}%
+        \IfValueTF{#4}%
+                {\unskipspacing\docsectionX@hypertarget[0pt]{#2}{#4}}
+                {\unskipspacing\docsectionX@hypertarget[0pt]{#2}{#5}}
         \IfValueTF{#6}%
-                {\def\@contentsline{\@nameuse{cft#2@contentsline}{#6}}}
-                {\def\@contentsline{\@nameuse{cft#2@contentsline}{#5}}}
+                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#6}}}
+                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#5}}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@docsection@after@skip}{m}%
@@ -258,7 +264,7 @@
         {%
                 \ifnumcomp{\value{@major@sections@this@page}}{=}{2}%
                         {\vspace{\@tikzheading@total@height}}{}%
-                \vspace{\value{@major@sections@this@page}\@tikzheading@basesep}%
+                \vspace{\@scaled@length{\value{@major@sections@this@page}-1}\@tikzheading@basesep}%
         }{}%
         \csuse{@#1@after@skip}%
 }
@@ -288,13 +294,13 @@
 \DeclareDocumentCommand{\Section}{s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
         \@init@doc@section{#1}{Section}'#3'(#4){#5}{#6}[#7]%
-        \@zsavepos@unique{@Section@abs@startpos}{@zsavepos@counter}{\@init@docsection@clearpage@threshold}%{Subsection}%
+        \@zsavepos@unique{@Section@abs@startpos}{@zsavepos@counter}{\@init@docsection@clearpage@threshold}%
         \IfValueTF{#7}%
         {%
                 \begin{tcbsection}%
                 [
                         type=section, contentsline={\@contentsline},
-                        title={\theSection\space:\space#5}%\bookmarkX@hypertarget{Section}
+                        title={\theSection\space:\space#5}%
                 ]
                         #7
                 \end{tcbsection}
@@ -303,7 +309,7 @@
                 \begin{tcbsection}
                 [
                         type=section, contentsline={\@contentsline}, bottom=0mm,
-                        title={\theSection\space:\space#5}%\bookmarkX@hypertarget{Section}
+                        title={\theSection\space:\space#5}%
                 ]
                 \end{tcbsection}
         }%
@@ -349,6 +355,12 @@
 %                              1 2  3  4                  5   6 7
 \DeclareDocumentCommand{\Part}{s t! t+ D''{tcbBlueScheme} d() m o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
+        %\thePart
+        %\the\widthof{\thePart}%
+        %\setlength\@Part@num@width{\widthof{\thePart}}
+        %\setlength\@Part@prev@num@width{\widthof{\thePart}}     
+        %\setlength\@Part@prev@num@width{\widthof{\theTopic}}
+        %\the\@Part@prev@num@width%
         \IfBooleanTF{#3}%
         {%
                 \@init@doc@section{#1}{Part}'#3'(#4){#5}{#6}%
@@ -358,6 +370,17 @@
         {\part{#6}}%
         \toggletrue{@major@section@shift}
         \gdef\@prev@doc@section{Part}%
+%        %\thePart
+%        %\the\widthof{\thePart}%
+%        \setlength\@Part@num@width{\widthof{\thePart}}
+%        \setlength\@Topic@num@width{\widthof{\theTopic}}
+%        \setlength\@Part@toctitle@shift{\@Part@num@width - \@Part@prev@num@width}
+%        \setlength\@Topic@toctitle@shift{\@Topic@num@width - \@Topic@prev@num@width}
+%        \the\@Part@num@width%
+%        %\addtolength{\cftPartnumwidth}{\@Part@num@width - \@Part@prev@num@width}
+%        %\addtolength{\cftTopicnumwidth}{\@Topic@num@width - \@Topic@prev@num@width}%
+%%        \addtolength{\cftPartnumwidth}{\widthof{\thePart} - \@Part@prev@num@width}
+%%        \addtolength{\cftTopicnumwidth}{\widthof{\theTopic} - \@Part@prev@num@width}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@part[#1]#2%
@@ -382,38 +405,26 @@
         \@endpart%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@BKM@context}{s m}{\gdef\@BKM@context{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\part%
 {%
         \if@openright\cleardoublepage\else\clearpage\fi
         \if@twocolumn\onecolumn\@tempswatrue\else\@tempswafalse\fi
         \stepcounter{Part}%
-        \gdef\@BKM@calling@cmd{part}
+        \@set@BKM@context{part}%
         \def\@font@command{\shadowText:\@tikzheading@font:[black](white)}%
-        \def\@the@title%
-        {%
-                \@font@command%
-                {%
-                        \tcbhyperlink[white]%
-                                {\cftPart@toc@hyperaddress}%
-                                {\phantomsection\thePart}%
-                }%
-        }%
+        \def\@the@title{\@font@command{\tcbhyperlink[white]{\cftPart@toc@hyperaddress}{\phantomsection\thePart}}}%
         \@set@major@section@header@colors{Part}%
         \@tikzheading@positioning{Part}{\@tikzheading@baseheight}%
-        \setlength\@tikzheading@node@yshift%
-                {\dimexpr\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax}%
-        \@header@tikzpicture@nodewrap{\@the@title}%
-                <1.5\@tikzheading@baseheight>%
-        \setlength\@tikzheading@node@yshift%
-                {\dimexpr\@tikzheading@baseyshift + \@tikzheading@baseheight\relax}%
-        \@header@tikzpicture@nodewrap*%
-                [current page.south west]%
-                {\thepart}%
-                <1.5\@tikzheading@baseheight>%
-        \setlength\@tikzheading@node@yshift%
-                {\dimexpr\@tikzheading@baseyshift + \@tikzheading@baseheight - \@tikzheading@basesep\relax}%
-        \@header@tikzpicture@pagenum@node{}%
-        \addtocounter{Part}{-1}%
+        \setlength\@tikzheading@node@yshift{\dimexpr\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax}%
+        \@header@tikzpicture@nodewrap{\@the@title}<1.5\@tikzheading@baseheight>%
+        \setlength\@tikzheading@node@yshift{\dimexpr\@tikzheading@baseyshift + \@tikzheading@baseheight\relax}%
+        \@header@tikzpicture@nodewrap*[current page.south west]{\thepart}<1.5\@tikzheading@baseheight>%
+        \setlength\@tikzheading@node@yshift{0.0mm}%
+        \@header@tikzpicture@pagenum@node%
+        %\addtocounter{Part}{-1}%
+        \decrementcounter{Part}%
         \toggletrue{@major@section@shift}
         \secdef\@part\@spart
 }
@@ -424,10 +435,12 @@
 \DeclareDocumentCommand{\mainmatter}{}
 {
         \loadgeometry{doc@geometry}%
+        \zsavepos{top@docpage}%
+        \setlength\@cfoot@yshift{\paperheight - (1in + \voffset + \topmargin + \headheight + \headsep + \textheight) - \footskip}
         \pagestyle{fancy}%
         \pagenumbering{\mylatex@docpagenumbering}%
         \setcounter{page}{1}%
-        \setlinespread{doc}%
+        \doclinespacing%
         \toggletrue{@add@PAGE@targets}%
 }
 \DeclareDocumentCommand{\problem@type@command}{m}
@@ -475,12 +488,6 @@
                         \def\@rellevel{3}%
                 }%
         }%
-%        [%
-%                \def\problem@numbering{\arabic{@prob@counter}}%
-%                \def\problem@BKM@hyperadress{bookmark@\the@prob@counter}%
-%                \def\problem@toctitle{\problemsname\space\problem@numbering}%
-%                \def\@rellevel{1}%
-%        ]%
         \bookmark[dest={\problem@BKM@hyperadress}, rellevel=\@rellevel]{\problem@toctitle}%
         \raisebox{10pt}
         {%
@@ -532,7 +539,7 @@
                                 \let\partnumberline\@gobble
                                 \let\chapternumberline\@gobble
                         \fi
-                        \IfStrEqCase{\@BKM@calling@cmd}%
+                        \IfStrEqCase{\@BKM@context}%
                         {%
                                 {part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{#2}}}
                                 {Part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{#2}}}
@@ -542,7 +549,7 @@
                                 {Subsection}{\bookmark[level=#4,dest={#3}]{\cftSubsection@bookmark@title{#2}}}
                                 {default}{\bookmark[level=#4,dest={#3}]{#2}}
                         }%
-                        \gdef\@BKM@calling@cmd{default}
+                        \@set@BKM@context{default}
                         \endgroup
                 \fi
         \fi
@@ -591,7 +598,11 @@
 %*******************************************************************************************************************************%
 %************************************************ End of 'mainmatter.sty' package **********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%

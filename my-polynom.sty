@@ -112,6 +112,7 @@
 \def\@pld@divisor@kern{2pt}
 \def\@pld@after@rparen@kern{-3.55pt}
 \def\@pld@after@vert@kern{-1.95pt}
+%\gdef\@polysub@cline@skip{0pt}%
 \def\@the@remainder{\polyprint\pld@remainder}
 \def\@the@divisor{\polyprint\pld@divisor}
 \def\@the@polya{\polyprint\pld@polya}
@@ -130,8 +131,8 @@
                         {%
                                 \raisebox{-\@remainder@box@vskip}%
                                 {%
-                                        \fontcolor{\@PLD@math@color}%
-                                        \@PLD@math@font%
+                                        \fontcolor{\@tcbPLD@fontcolor}%
+                                        \@tcbPLD@math@font%
                                         \uline
                                         {%
                                                 \kern\@pld@remainder@kern%
@@ -156,8 +157,8 @@
                 \ifx\pld@remainder\@empty\relax%
                         \savebox{\@pld@conclusion@box}%
                         {%
-                                \fontcolor{\@PLD@math@color}%
-                                \@PLD@math@font%
+                                \fontcolor{\@tcbPLD@fontcolor}%
+                                \@tcbPLD@math@font%
                                 \ensuremath%
                                 {%
                                         \hence%
@@ -169,8 +170,8 @@
                 \else%
                         \savebox{\@pld@conclusion@box}%
                         {%
-                                \fontcolor{\@PLD@math@color}%
-                                \@PLD@math@font%
+                                \fontcolor{\@tcbPLD@fontcolor}%
+                                \@tcbPLD@math@font%
                                 \ensuremath%
                                 {%
                                         \hence%
@@ -189,8 +190,8 @@
 {%
         \savebox{\@pld@computation@box}%
         {%
-                \fontcolor{\@PLD@math@color}%
-                \@PLD@math@font%
+                \fontcolor{\@tcbPLD@fontcolor}%
+                \@tcbPLD@math@font%
                 \ensuremath
                 {%
                         \hbox
@@ -199,7 +200,7 @@
                                 {%
                                         \begingroup%
                                         \offinterlineskip \tabskip=\z@%
-                                                \edef\pld@fakeline{\expandafter\pld@ConvertFake\pld@fakeline&\relax&}%
+                                                \edef\pld@fakeline{\xp\pld@ConvertFake\pld@fakeline&\relax&}%
                                         \halign%
                                         {%
                                                 \strut\pld@firsttrue\hfil$##$%
@@ -532,9 +533,9 @@
                         \iftoggle{@pld@print@zero@coefficients}
                         {%
                         \pld@AccuIfOne{}{\pld@AccuGet\pld@temp\edef\pld@temp{\noexpand\pld@R\pld@temp}}%
-                                \pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi%
-                                \expandafter\pld@CF@loop@\pld@symbols\relax\@empty%
-                                \expandafter\pld@CF@loop@\pld@vars\relax\@empty%
+                                \pld@if \pld@Extend\pld@temp{\xp\pld@F\pld@frac}\fi%
+                                \xp\pld@CF@loop@\pld@symbols\relax\@empty%
+                                \xp\pld@CF@loop@\pld@vars\relax\@empty%
                                 \ifx\@empty\pld@temp%
                                 \def\pld@temp{\pld@R11}%
                                 \fi%
@@ -543,9 +544,9 @@
                                 \pld@AccuIfZero{}%
                                 {\pld@AccuIfOne{}{\pld@AccuGet\pld@temp%
                                             \edef\pld@temp{\noexpand\pld@R\pld@temp}}%
-                                \pld@if \pld@Extend\pld@temp{\expandafter\pld@F\pld@frac}\fi%
-                                \expandafter\pld@CF@loop@\pld@symbols\relax\@empty%
-                                \expandafter\pld@CF@loop@\pld@vars\relax\@empty%
+                                \pld@if \pld@Extend\pld@temp{\xp\pld@F\pld@frac}\fi%
+                                \xp\pld@CF@loop@\pld@symbols\relax\@empty%
+                                \xp\pld@CF@loop@\pld@vars\relax\@empty%
                                 \ifx\@empty\pld@temp%
                                         \def\pld@temp{\pld@R11}%
                                 \fi}%
@@ -556,7 +557,7 @@
                 \else
                         \pld@ExtendPoly\pld@tempoly\@gtempa
                 \fi
-                \expandafter\pld@CF@loop
+                \xp\pld@CF@loop
         \fi%
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -648,9 +649,9 @@
     \fi
     \ifx\pld@temp\@empty \else
         \pld@if
-            \expandafter\pld@IfSum\expandafter{\pld@temp}%
-                {\expandafter\def\expandafter\pld@temp\expandafter
-                    {\expandafter\pld@F\expandafter{\pld@temp}{}}}%
+            \xp\pld@IfSum\xp{\pld@temp}%
+                {\xp\def\xp\pld@temp\xp
+                    {\xp\pld@F\xp{\pld@temp}{}}}%
                 {}%
         \fi
         \pld@ExtendPoly\pld@tempoly\pld@temp
@@ -876,9 +877,9 @@
         {\pld@ExtendPoly\pld@quotient\pld@factor
          \pld@NMultiplyPoly\pld@sub\pld@divisor\pld@factor
          \pld@SubtractPoly\pld@remainder\pld@sub
-         \expandafter\pld@DivPoly@l}%
+         \xp\pld@DivPoly@l}%
         %{}%
-        {\expandafter\pld@insert@remainder                       % !!!
+        {\xp\pld@insert@remainder                       % !!!
          \pld@last@remainder+\relax\relax}                       % !!!
     \fi}
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
@@ -899,7 +900,7 @@
         \else \aftergroup\@secondoftwo \fi
     \endgroup}
 \def\pld@IfND@#1\pld@V#2#3{%
-    \ifx\relax#2\@empty \expandafter\@gobble
+    \ifx\relax#2\@empty \xp\@gobble
                   \else \ifnum#3<\z@ \pld@false \fi
     \fi \pld@IfND@}
 \def\pld@SubtractPoly#1#2{%
@@ -911,9 +912,44 @@
         \pld@ExpandTwo\pld@SubtractPoly@
                  {#1+\relax+\@empty}{#2+\relax+\@empty}%
         \let#1\pld@tempoly
+        \IfStrEqCase{\@tcbPLD@math@fontsize}%normal=4.35pt/5.036pt, large=5.46pt, Large=7.35pt, LARGE=8.98pt
+        {
+                {normalsize}%
+                {%
+                        %\gdef\@polysub@cline@skip{0pt}%
+                        \gdef\@polysub@before@cline@skip{4pt}%
+                        \gdef\@polysub@after@cline@skip{4pt}%
+                        \gdef\@polysub@after@dividend{2pt}%
+                        \gdef\@polysub@after@remainders{4pt}%
+                }%
+                {large}%
+                {%
+                        %\gdef\@polysub@cline@skip{2pt}%
+                        \gdef\@polysub@before@cline@skip{4pt}%
+                        \gdef\@polysub@after@cline@skip{2pt}%
+                        \gdef\@polysub@after@dividend{2pt}%
+                        \gdef\@polysub@after@remainders{4pt}%
+                }%
+                {Large}%
+                {%
+                        %\gdef\@polysub@cline@skip{4pt}%
+                        \gdef\@polysub@before@cline@skip{4pt}%
+                        \gdef\@polysub@after@cline@skip{4pt}%
+                        \gdef\@polysub@after@dividend{2pt}%
+                        \gdef\@polysub@after@remainders{4pt}%
+                }%
+                {LARGE}%
+                {%
+                        %\gdef\@polysub@cline@skip{4pt}%
+                        \gdef\@polysub@before@cline@skip{4pt}%
+                        \gdef\@polysub@after@cline@skip{4pt}%
+                        \gdef\@polysub@after@dividend{2pt}%
+                        \gdef\@polysub@after@remainders{4pt}%
+                }%
+        }%
         \pld@if
             \ifnum\pld@currstage>\z@
-                \pld@Extend\pld@allines{\pld@lastline\cr}%
+                \pld@Extend\pld@allines{\pld@lastline\\[\@polysub@after@remainders]\cr}%
             \else
                 \pld@InsertFake\pld@lastline
             \fi
@@ -921,11 +957,13 @@
             \ifnum\pld@currstage>\z@
                 \pld@Extend\pld@allines{\pld@subline\cr}%
                 \edef\pld@subline{%
+                    \noalign{\vskip\@polysub@before@cline@skip}%
                     \noexpand\cline{\pld@firstcol-\pld@lastcol}
+                    \noalign{\vskip\@polysub@after@cline@skip}%
                     \noalign{\vskip\jot}}%
                 \pld@Extend\pld@allines\pld@subline
             \else
-                \pld@InsertFake\pld@subline
+                \pld@InsertFake\pld@subline\\[\@polysub@after@dividend]
             \fi
             \advance\pld@currstage\m@ne
             \let\pld@lastline\pld@currentline
@@ -936,8 +974,8 @@
 \def\pld@SubtractPoly@#1+#2\@empty#3+{%
     \pld@if
         \pld@DefNegative\pld@monom{#1}%
-        \expandafter\pld@InsertItems\expandafter\@empty
-            \expandafter{\pld@monom}{#1}%
+        \xp\pld@InsertItems\xp\@empty
+            \xp{\pld@monom}{#1}%
     \fi
     \pld@SubtractPoly@l#2\@empty}
 \def\pld@SubtractPoly@l#1+#2\@empty#3+#4\@empty{%
@@ -1113,17 +1151,18 @@
         \def\@pld@remainder@kern{1.25mm}
         \def\@remainder@uline@base@sep{\@subline@base@sep}%
         \def\@pld@divisor@kern{2pt}
-        \IfStrEqCase{\@PLD@math@fontsize}%normal=4.35pt/5.036pt, large=5.46pt, Large=7.35pt, LARGE=8.98pt
+        \IfStrEqCase{\@tcbPLD@math@fontsize}%normal=4.35pt/5.036pt, large=5.46pt, Large=7.35pt, LARGE=8.98pt
         {
                 {normalsize}
                 {%
                         \def\@subline@base@sep{-2.25pt}
-                        \def\@remainder@terms@base@sep{5.545pt}
+                        \def\@remainder@terms@base@sep{6.045pt}%{5.545pt}
                         \def\@pld@open@delimiter@min@height{4.0mm}%
-                        \def\@remainder@uline@yshift{-0.505pt}%{5.042pt}%{7.34pt}%
-                        \def\@remainder@frac@yshift{2.0pt}%
+                        \def\@remainder@uline@yshift{-1.240pt}%{5.042pt}%{7.34pt}%
+                        \def\@remainder@frac@yshift{1.5pt}%
                         \def\@quotient@sep{3.0pt}%
                         \def\@subline@sep{2.5pt}%
+                        %\gdef\@polysub@cline@skip{0pt}%
                         \def\@pld@after@rparen@kern{-3.28pt}%
                         \def\@pld@after@vert@kern{-1.45pt}%
                 }
@@ -1136,6 +1175,7 @@
                         \def\@remainder@frac@yshift{2.5pt}%
                         \def\@quotient@sep{4.0pt}%
                         \def\@subline@sep{4.0pt}%
+                        %\gdef\@polysub@cline@skip{4pt}%
                         \def\@pld@after@rparen@kern{-4.2pt}%
                         \def\@pld@after@vert@kern{-1.85pt}%
                 }
@@ -1165,17 +1205,10 @@
                 }%
         }%
         \setlength{\@pld@open@delimiter@height}{\dimexpr \@pld@open@delimiter@min@height + \@quotient@sep\relax}%
-        %
         \def\@subline@vskip{\dimexpr\@subline@base@sep + \@subline@sep\relax}
         \def\@remainder@box@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@remainder@uline@yshift\relax}
         \def\@remainder@plussign@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@subline@base@sep\relax}
         \def\@remainder@frac@vskip{\dimexpr\@remainder@plussign@vskip + \@remainder@frac@yshift\relax}
-	%\setlength{\@pld@open@delimiter@height}{\dimexpr \@pld@open@delimiter@min@height + \@quotient@sep\relax}%
-%        %
-%        \def\@subline@vskip{\dimexpr\@subline@base@sep + \@subline@sep\relax}
-%        \def\@remainder@box@vskip{\dimexpr\@subline@vskip + \@remainder@uline@yshift\relax}
-%        \def\@remainder@plussign@vskip{\dimexpr\@subline@vskip + \@remainder@terms@base@sep + \@subline@base@sep\relax}
-%        \def\@remainder@frac@vskip{\dimexpr\@remainder@plussign@vskip + \@remainder@frac@yshift\relax}
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@ArrangeResult#1%
@@ -1191,75 +1224,7 @@
                 \pld@InsertFake\pld@lastline
         \fi
         \pld@ArrangeResult@dimensions%
-        %\edef\@pld@open@delimiter@string{\@pld@open@delimiter}
-        %\edef\@pld@open@delimiter@check{\rparen}
-        %hello$\@pld@open@delimiter@string$
-        %\thecsname{\rparen}
-        %$\expandafter\thecsname\expandafter{\expandafter\noexpand\expandafter\expandonce\expandafter{\@pld@open@delimiter}}$
-        %$\noexpand\expandonce{\@pld@open@delimiter}$
-        %\shown{@pld@open@delimiter}
-        %\thecsname{\expandonce{\@pld@open@delimiter}}
-        %\thecsname{\expandonce{\rparen}}
         \pld@iftopresult
-                %\ifstrequal{\@pld@open@delimiter}{\thecsname{\rparen}}
-                %\ifdefequal{\@pld@open@delimiter}{\rparen}
-%                \IfCSEqCase{@pld@open@delimiter}%
-%                {
-%                	{rparen}
-%                	{
-%                		\def\pld@lastline%
-%	                        {%
-%	                                \pld@PrintPoly\pld@divisor%
-%	                                \kern\@pld@divisor@kern%
-%	                                \boldsymbol%
-%	                                {%
-%	                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
-%	                                }%
-%	                                \kern\@pld@after@rparen@kern&%
-%	                        }%
-%                	};
-%                        {vert}
-%                        {
-%	                        \def\pld@lastline%
-%	                        {%
-%	                                \pld@PrintPoly\pld@divisor%
-%	                                \kern\@pld@divisor@kern%
-%	                                \boldsymbol%
-%	                                {%
-%	                                        \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
-%	                                }%
-%	                                \kern\@pld@after@vert@kern&%
-%	                        }%
-%                        };
-%                        {lvert}
-%                        {
-%                                \def\pld@lastline%
-%                                {%
-%                                        \pld@PrintPoly\pld@divisor%
-%                                        \kern\@pld@divisor@kern%
-%                                        \boldsymbol%
-%                                        {%
-%                                                \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
-%                                        }%
-%                                        \kern\@pld@after@vert@kern&%
-%                                }%
-%                        };
-%                        {rvert}
-%                        {
-%                                \def\pld@lastline%
-%                                {%
-%                                        \pld@PrintPoly\pld@divisor%
-%                                        \kern\@pld@divisor@kern%
-%                                        \boldsymbol%
-%                                        {%
-%                                                \stretchto{\@pld@open@delimiter}{\@pld@open@delimiter@height}%
-%                                        }%
-%                                        \kern\@pld@after@vert@kern&%
-%                                }%
-%                        }
-%                }
-                %
-                %\ifcsequal{@pld@open@delimiter}{rparen}
                 \ifdefequal{\@pld@open@delimiter}{\rparen}
                 {%
                         \def\pld@lastline%
@@ -1318,20 +1283,20 @@
                         \def\pld@lastline{\pld@leftdelim\strut\pld@rightxdelim&}%
                 \fi
         \fi
-        \expandafter\pld@AR@col\expandafter\pld@PLD
-        \expandafter\pld@lastline#1+\relax+%
+        \xp\pld@AR@col\xp\pld@PLD
+        \xp\pld@lastline#1+\relax+%
         \pld@SplitQuotient
         \pld@iftopresult
                 \let\pld@currentline\@empty
-                \expandafter\pld@AR@col\expandafter\pld@PLD
-                \expandafter\pld@currentline\pld@quotient+\relax+%
-                \expandafter\pld@AR@col\expandafter\pld@XPLD
-                \expandafter\pld@currentline\pld@shadow+\relax+%
+                \xp\pld@AR@col\xp\pld@PLD
+                \xp\pld@currentline\pld@quotient+\relax+%
+                \xp\pld@AR@col\xp\pld@XPLD
+                \xp\pld@currentline\pld@shadow+\relax+%
                 \edef\pld@subline{%
             \noalign{\vskip\@subline@vskip}%
             %\noalign{\vskip-6pt}%
             \noexpand\cline{\tw@-\pld@maxcol}}%
-                \pld@Extend\pld@currentline{\expandafter\cr\pld@subline}%\noalign{\vskip\@quotient@sep}
+                \pld@Extend\pld@currentline{\xp\cr\pld@subline}%\noalign{\vskip\@quotient@sep}
         \else
                 \@tempcnta-\@tempcnta
                 \advance\@tempcnta\pld@maxcol\relax \advance\@tempcnta\@ne
@@ -1340,8 +1305,8 @@
                         \pld@AddTo\pld@lastline{%
                 &\multispan\pld@span${}=%
                 \pld@PrintPolyWithDelims\pld@divisor
-                \expandafter\pld@IfSum\expandafter{\pld@divisor}{}{\cdot}%
-                \expandafter\pld@IfSum\expandafter{\pld@quotient}\pld@true
+                \xp\pld@IfSum\xp{\pld@divisor}{}{\cdot}%
+                \xp\pld@IfSum\xp{\pld@quotient}\pld@true
                                 \pld@false
                                 \pld@if \pld@leftdelim
                                 \pld@PrintPolyShadow
@@ -1350,7 +1315,7 @@
                 \pld@PrintPolyShadow
                 \fi
             \pld@firstfalse
-                \expandafter\pld@PrintRemain\expandafter{\pld@remainder}$}%
+                \xp\pld@PrintRemain\xp{\pld@remainder}$}%
                 \else
                         \pld@AddTo\pld@lastline
                         {%
@@ -1364,8 +1329,8 @@
                                         \setbox\z@=\hbox
                                         {%
                                                 $\displaystyle
-                                        \frac{\let\strut\@empty\pld@firsttrue \expandafter
-                                                \pld@PrintRemain\expandafter{\pld@remainder}}%
+                                        \frac{\let\strut\@empty\pld@firsttrue \xp
+                                                \pld@PrintRemain\xp{\pld@remainder}}%
                                                 {\let\strut\@empty\pld@PrintPoly\pld@divisor}$%
                                         }%
                                 \dp\z@=\z@\box\z@
@@ -1373,13 +1338,13 @@
                         $}%
                 \fi
         \fi
-        \expandafter\pld@AR@\pld@allines\relax
+        \xp\pld@AR@\pld@allines\relax
 }
 %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
 \def\pld@AR@#1\cr#2\relax{%
     \pld@iftopresult
         \let\pld@allines\pld@currentline
-        \pld@AddTo\pld@allines{\pld@lastline\cr #2}%
+        \pld@AddTo\pld@allines{\pld@lastline\\[\@polysub@after@dividend]\cr #2}%
     \else
         \let\pld@allines\pld@lastline
         \pld@AddTo\pld@allines{\cr #2}%
@@ -1594,7 +1559,7 @@
                         \pld@AccuMul{#2}{#1}%
                         \pld@AccuGet\pld@sub
                         \edef\pld@va{\noexpand\pld@R\pld@sub+}%
-                        \expandafter\pld@AccuMul\pld@sub}%
+                        \xp\pld@AccuMul\pld@sub}%
 %        \pld@AccuMul12%
 %                        \pld@AccuMul{#2}{#1}%
 %                        \pld@AccuGet\pld@sub
@@ -1604,19 +1569,19 @@
           \pld@AccuSetX{#3}{#4}%
           \pld@AccuMul{-#2}{#1}%
           \pld@AccuGet\pld@temp
-          \global\let\@gtempa\pld@temp
+          \glet\@gtempa\pld@temp
         \endgroup
-        \expandafter\pld@AccuAdd\@gtempa
+        \xp\pld@AccuAdd\@gtempa
         \pld@AccuIfNegative
         {\@multicnt\tw@}%
         {\pld@AccuGet\pld@temp
-         \expandafter\pld@FDefSqrt\pld@temp
+         \xp\pld@FDefSqrt\pld@temp
          \let\pld@vb\pld@va
          \pld@AddTo\pld@vb{\pld@R{-1}1}%
          \pld@Extend\pld@va{\pld@temp}%
          \pld@Extend\pld@vb{\pld@temp}%
-         \expandafter\pld@AddZero\expandafter{\pld@va}%
-         \expandafter\pld@AddZero\expandafter{\pld@vb}%
+         \xp\pld@AddZero\xp{\pld@va}%
+         \xp\pld@AddZero{\pld@vb}%
          \@multicnt\z@
         }%
     \fi
@@ -2046,5 +2011,8 @@
 %%
 %%
 \endinput
-%%
-%% End of file `polynom.sty'.
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

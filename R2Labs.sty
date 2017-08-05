@@ -10,30 +10,31 @@
 %******************************** Define provided package name and LaTeX/package dependencies **********************************%
 %*******************************************************************************************************************************%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-latex}
-\RequirePackage{pkgopts}                         % Defines two new "for" loop commands: \foreach and \breakforeach
+\ProvidesPackage{R2Labs}
+\RequirePackage{pkgbase}                                % Defines two new "for" loop commands: \foreach and \breakforeach
+\RequirePackage{pkgopts}                                % Defines two new "for" loop commands: \foreach and \breakforeach
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                           % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %-------------------------------------------------------------------------------------------------------------------------------%
-\pkgload@font
-\RequirePackageList{\@pkgopts@packages}
-%\newtoggle{validated}
+\pkgload@font                                           % Load default font: Computer Modern Roman (cmr)
+\RequirePackageList{\@pkgopts@packages}                 % Load min set of packages needed to define/process package user options
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
-%************************************* Package options and corresponding Boolean variables *************************************%
+%*********************** Package option definitions/initializations and corresponding Boolean variables ************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \SetupKeyvalOptions{family=mylatex, prefix=mylatex@}
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareBoolOption{report}
 \DeclareBoolOption{article}%
 \DeclareBoolOption{isorot}
 \DeclareBoolOption[false]{countinchaps}
+\DeclareBoolOption[false]{localpkg}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareComplementaryOption{rotating}{isorot}
+\DeclareComplementaryOption{libpkg}{localpkg}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareBoolOptionPair[false]{pkgtest}
 \DeclareBoolOptionPair[false]{crop}
 \DeclareBoolOptionPair[false]{landscape}
 \DeclareBoolOptionPair[false]{twocolumn}
@@ -55,13 +56,16 @@
 \DeclareVoidOption{original}{\PassOptionsToPackage{original}{imakeidx-patched}}
 \DeclareVoidOption{quiet}{\PassOptionsToPackage{quiet}{imakeidx-patched}}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareStringOption[glsentries]{glsdefsfile}[glsentries]
 \DeclareStringOption{documentclass}[report]
-\DeclareStringOption[(OT1,lmr,m,n,10)]{font}[(OT1,lmr,m,n,10)]
-\DeclareStringOption{fontfamily}[lmr]
+%\DeclareStringOption{fontfamily}[cmr]
 \DeclareStringOption[10]{fontsize}[10]
+\DeclareStringOption{font}
+%\DeclareStringOption[(OT1,cmr,m,n,10)]{font}[(OT1,cmr,m,n,10)]
+\DeclareStringOption[]{pkgdir}[.]
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareChoiceOption{sizeXdoc}[10]{\@known@size@clo@defs}
-\DeclareChoiceOption{fontencoding}[OT1]{\@known@font@encodings}
+\DeclareChoiceOption{sizeXclo}[10]{\@known@size@clo@defs}
+\DeclareChoiceOption{fontencoding}[OT1]{\@supported@font@encodings}
 \DeclareChoiceOption{fontseries}[m]{\@known@font@series}
 \DeclareChoiceOption{fontshape}[n]{\@known@font@shapes}
 \DeclareChoiceOption{frontpagenumbering}[Roman]{\@supported@page@numbering}
@@ -71,15 +75,18 @@
 \DeclareChoiceOption{fncychap}[Lenny]{\@supported@chaphead@styles}
 \DeclareChoiceOption{choiceopttest}[choicetwo]{\choicetestoptions}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareChoiceValOption{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
-%\DeclareChoiceValOption{fontname}[Latin Modern Roman]{\@known@fontname@fontcode@pairs}
-%\DeclareChoiceValOption[as]{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
+\DeclareChoiceArrayOption{1}{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}%Latin Modern Roman
+\DeclareChoiceArrayOption{2}{fontfamily}[cmr]{\@known@fontname@fontcode@pairs}
+%\DeclareChoiceArrayOption{mathfontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
+%\DeclareChoiceArrayOption{mathfontfamily}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDefaultOption{\PackageWarning{my-latex}{Unknown \CurrentOption}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
-%************************************************ Processing of package options ************************************************%
+%****************************************** Processing/forwarding of package options *******************************************%
 %*******************************************************************************************************************************%
-\ExecuteOptions{splitindex,nonewpage}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\ExecuteOptions{splitindex,nonewpage}
 \ProcessPackageOptions
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@landscape
@@ -107,60 +114,56 @@
         \PassOptionsToPackage{makeindex}{imakeidx-patched}
 \fi
 %-------------------------------------------------------------------------------------------------------------------------------%
-\ifmylatex@FBM@dotfill
-        \newcommand*{\frontbackmatterhfill}{\fbm@dotfill}%
-\else
-        \newcommand*{\frontbackmatterhfill}{\fbm@nofill}%
-\fi
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\ifdraft {draft case} {final case}
-%\ifoptiondraft {option draft is given} {option draft is not given}
-%\ifoptionfinal {option final is given} {option final is not given}
-%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%****************************************** Application of 'my-latex' package options ******************************************%
+%*******************************************************************************************************************************%
+\SetPkgSource
+\SetFBMsettings
 \SetDocFontSettings
 \SetDocumentClass
-%\SetDocFontSettings
-%\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont
-%*******************************************************************************************************************************%
-%********************************************************* Package Body ********************************************************%
-%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************** Loading 'my-latex' component packages/subpackages **************************************%
+%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackage{imakeidx-patched}               % options: xindy
-\RequirePackage{my-packages}                    % Custom set of packages used in my-latex.sty development
-\RequirePackage{my-colorsets}                   % Custom colorset definitions loaded
-\RequirePackage{my-colors}                      % Custom color definitions and mixed color variables
-\RequirePackage{my-color-schemes}               % Color set defs (\colorlet{<scheme name>Scheme-<property>}) for pgf/tcb/tikz/etc.
-\RequirePackage{my-definitions}                 % Low-level \def,\numdef,\dimdef,key definitions  
-\RequirePackage{my-regvars}                     % Register variable creation w/ initialization values typically from my-definitions 
-\RequirePackage{my-commands}          	       	% Lower-level tools/helper cmds used directly & in composite cm construction
-\RequirePackage{my-patches}                     % Modifies/adds reg variables + control sequences/environments to existing packages
-\RequirePackage{my-fonts}                       % Custom assignment of fonts and math alphabets to established and new font names
-\RequirePackage{arrowsnew}                      % Custom color definition/naming and visual settings
-\RequirePackage{my-styles}                      % Custom color definition/naming and visual settings
-\RequirePackage[acronym,toc,symbols]            % Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
+\RequirePkg{my-packages}%
+\RequirePkg{my-colorsets}                   % Custom colorset definitions loaded
+\RequirePkg{my-colors}                      % Custom color definitions and mixed color variables
+\RequirePkg{my-color-schemes}               % Color set defs (\colorlet{<scheme name>Scheme-<property>}) for pgf/tcb/tikz/etc.
+\RequirePkg{my-definitions}                 % Low-level \def,\numdef,\dimdef,key definitions
+\RequirePkg{my-regvars}                     % Register variable creation w/ initialization values typically from my-definitions
+\RequirePkg{my-commands}                    % Lower-level tools/helper cmds used directly & in composite cm construction
+\RequirePkg{my-patches}                   % Modifies/adds reg variables + control sequences/environments to existing packages
+\RequirePkg{my-fonts}                     % Custom assignment of fonts and math alphabets to established and new font names
+\RequirePkg{my-symbols}                   % Custom assignment of fonts and math alphabets to established and new font names
+\RequirePkg{arrowsnew}                      % Custom color definition/naming and visual settings
+\RequirePkg{my-styles}                      % Custom color definition/naming and visual settings
+\RequirePackage[acronyms,symbols,makeindex,automake,toc]% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
         {my-glossaries}                         % Options: automake, xindy/makeindex, section=, nopostdot/main/nonumberlist
-\RequirePackage[intoc]{my-nomencl}              % Nomenclature/abbreviations list similar to acronms/glossary
-\RequirePackage{mainmatter}                     %
-\RequirePackage{frontbackmatter}                % ToC: List of Tables/Figures/Acronyms/Symbols/Abbreviations, Glossary,Index,etc.
-\RequirePackage{my-math}                        % Custom math chars/syms, delimiters, operators, control sequences, and environments
-\RequirePackage{my-polynom}                     % Adapted 'polynom' package: polynomial long div, factoring, +,-,*,/ etc.
-\RequirePackage{my-lstautogobble}               % Adapted 'lstautogobble' package, auto sets 'listings' package's 'gobble=#' value
-\RequirePackage{my-listings}                    % Adapted 'listings' package configuring code listing languages/settings/appearance
-%\RequirePackage{my-minted}                     % Adapted 'minted' package configuring code listing languages/settings/appearance
-\RequirePackage{my-macros}                      % Higher-level composite commands/environments combining lower-level components
-\RequirePackage{my-keyvals}                     % Custom key/value commands/environments
-\RequirePackage{my-graphics}                    % Custom Tikz/PGF/etc. graphics commands/environments
-\RequirePackage{my-latex-development}           % Test/development content maintained separately
-\RequirePackage{my-config}                    	% Configure document/package settings & preamble/document/page/auxout hooks/patches
+\RequirePkg[intoc]{my-nomencl}              % Nomenclature/abbreviations list similar to acronms/glossary
+\RequirePkg{mainmatter}                     %
+\RequirePkg{frontbackmatter}                % ToC: List of Tables/Figures/Acronyms/Symbols/Abbreviations, Glossary,Index,etc.
+\RequirePkg{my-math}                        % Custom math chars/syms, delimiters, operators, control sequences, and environments
+\RequirePkg{my-polynom}                     % Adapted 'polynom' package: polynomial long div, factoring, +,-,*,/ etc.
+\RequirePkg{my-lstautogobble}               % Adapted 'lstautogobble' package, auto sets 'listings' package's 'gobble=#' value
+\RequirePkg{my-listings}                    % Adapted 'listings' package configuring code listing languages/settings/appearance
+%\RequirePkg{my-minted}                     % Adapted 'minted' package configuring code listing languages/settings/appearance
+\RequirePkg{my-macros}                      % Higher-level composite commands/environments combining lower-level components
+\RequirePkg{my-keyvals}                     % Custom key/value commands/environments
+\RequirePkg{my-graphics}                    % Custom Tikz/PGF/etc. graphics commands/environments
+\RequirePkg{my-latex-development}           % Test/development content maintained separately
+\RequirePkg{my-config}                      % Set doc & package options/settings & define preamble/doc/page/auxout hooks & patches
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*************************************** End of 'my-latex.sty' top level parent package ****************************************%
 %*******************************************************************************************************************************%
-%\catcode`!=\active
-%\catcode`\!=\active
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 %-------------------------------------------------------------------------------------------------------------------------------%
-\endinput 
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

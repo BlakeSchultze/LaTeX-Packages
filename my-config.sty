@@ -1,7 +1,7 @@
 %*******************************************************************************************************************************%
 %******************************************************* `my-config.sty' *******************************************************%
 %*******************************************************************************************************************************%
-% Configures external package settings/options 
+% Configures external package settings/options
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
@@ -17,7 +17,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
@@ -77,30 +77,54 @@
         urlcolor=cyan
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\bookmarksetup{}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mdfsetup{middlelinecolor=red, middlelinewidth=2pt, backgroundcolor=red!10, roundcorner=10pt} %-------------------------------------------------------------------------------------------------------------------------------%
 %\indexsetup{headers=dfgdfg\indexname, level=\section*, toclevel=section, noclearpage}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \sisetup{range-phrase=--,range-units=single,detect-all}
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\bookmarksetup{}
+\mathtoolsset{centercolon, mathic}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\pgfplotsset{width=7cm,compat=1.8}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mdfdefinestyle{mystyle}%                                      Define 'mdframed' style'; apply w/ style=<style name>' option
+%{%
+%       leftmargin=1cm,
+%       linecolor=blue
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mdfdefinestyle{mdfexample1}%
+%{%
+%       leftmargin=1cm,
+%       rightmargin=2cm,
+%       innerleftmargin=1cm,
+%       innerrightmargin=1cm,
+%       roundcorner=10pt
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mdfapptodefinestyle{example1}%                                        Append options to an existing  'mdframed' style optio
+%{%
+%       backgroundcolor=brown!20,
+%       linecolor=red!40!black,
+%       linewidth=4pt
+%}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\urlsytle{}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\newpsstyle{pagefill}{gradbegin=white, gradend=Gray, fillstyle=gradient, gradlines=10000, gradmidpoint=1}%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\mathtoolsset{centercolon, mathic}
-%-------------------------------------------------------------------------------------------------------------------------------%
 %\pdfpageattr{/Group <</S /Transparency /I true /CS /DeviceRGB>>}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\captionsetup[figure]{labelfont={bf,small,sc},textfont={it,small}}
+\captionsetup[subfloat]{labelfont={bf,small},textfont={it,small}}
+%\captiontitlefont{\small\itshape}
+%\captionnamefont{\small\bfseries}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create new styles/settings/configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newgeometry%
-{
-        paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
-        left=1.0in, right=1.0in, top=0.25in, bottom=0.25in
-}
-\savegeometry{coverpage@geometry}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newgeometry%
 {
@@ -109,17 +133,26 @@
         headheight=0.5in, headsep=2pt, footskip=.5cm,
 }
 \savegeometry{toc@geometry}
-%-------------------------------------------------------------------------------------------------------------------------------%
 \newgeometry%
 {
         paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
         top=0.6in, bottom=0.5in, left=1.0in, right=1.0in,
-        headheight=0.5in, headsep=2pt, footskip=.5cm,
+        headheight=0.5in, headsep=8pt, footskip=0.5cm,
 }
 \savegeometry{doc@geometry}
+\newgeometry%
+{
+        paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
+        left=1.0in, right=1.0in, top=0.25in, bottom=0.25in
+}
+\savegeometry{coverpage@geometry}
+\loadgeometry{doc@geometry}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newtheoremstyle{defi}{\topsep}{\topsep}{\normalfont}{}{\bfseries}{:}{.5em}{\thmname{#1}\thmnote{~(#3)}}%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\environbodyname\EnvBody
+\newcolumntype{"}{@{\hskip\tabcolsep\vrule width 1pt\hskip\tabcolsep}}
+\newcolumntype{?}{!{\vrule width 0.5pt}}
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -132,43 +165,199 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------ Preamble hooks/patches ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\AtEndPreamble
-{
-	\preto{\chapter}{\bookmarksetupnext{level=2}}%
-	\preto{\section}{\bookmarksetupnext{level=3}}%
-	\savebox{\@rhead@image@savebox}{\@header@image}%
-        \pagenumbering{\mylatex@docpagenumbering}%
-	\@footpage@labeling%
-	\fancyhead[R]{\parbox[c]{\@header@image@width}{\@header@image}\vskip-8pt}%
-	\cfoot%
-	{%
-	        \do@once{@zsavepos@cfootpos}{\zsavepos{cfootpos}}
-	        \@footpage@label%
-	}%
-	\@format@counters
-	\counterwithin@nonzero{@prob@counter}{@chap@counter}%
-	\counterwithin{equation}{@prob@counter}%
-	\theoremstyle{defi}%
-	\SetDefaultFont%
-	\SetMathVar%
-	\setulsettings[init=true]%
-        \@set@current@tcb@colors{default}%
-	\shadowoffset{0.5pt}
-	\shadowoffsetx{0.65pt}
-	\shadowoffsety{-0.2pt}
-	\shadowcolor{BaylorGoldCMYK}
-        \cftZ@listof@settings
-	\ifmylatex@frontbackmatter\makeFrontbackMatter\fi
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mylatex@fontfamily
+\define@key{mathfonts}{letters}[\mylatex@fontfamily]{\def\mathfonts@letters{#1}}
+\define@key{mathfonts}{operators}[\mylatex@fontfamily]{\def\mathfonts@operators{#1}}
+\define@key{mathfonts}{symbols}[cmsy]{\def\mathfonts@symbols{#1}}
+\define@key{mathfonts}{largesymbols}[cmex]{\def\mathfonts@largesymbols{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\macrosettings}{s m m m}
+{%*<NA>{colorset name}{linespread context}{ul settings type}
+        \savebox{\@rhead@image@savebox}{\@header@image}%
+        \@set@current@tcb@colors{#2Colorset}%
+        \setlinespread{#3}%
+        \setulsettings{uline}[depth={\csuse{@#4@ul@depth}}, thickness={\csuse{@#4@ul@thickness}}]%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\AfterPreamble{}
+\DeclareDocumentCommand{\formattheequation}{s m o}
+{%\formattheequation{<LHS>}{<RHS>}[</tcb/.style>]
+        \IfStrEqCase{#2}%
+        {%
+                {equation}{\renewcommand{\theequation}{\arabic{equation}}}%
+                {problems}{\renewcommand{\theequation}{\the@prob@counter-\arabic{equation}}}%
+                {sections}{\renewcommand{\theequation}{\thesection.\arabic{equation}}}%
+        }%
+        []%
+        \IfValueTF{#3}{\renewcommand{\theequation}{#3}}{}
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@math@settings}{s}%
+{%
+        %\setlength{\jot}{\@doc@fontsize}%
+        \formattheequation{problems}%
+        \counterwithin@nonzero{@prob@counter}{@chap@counter}%
+        \counterwithin{equation}{@prob@counter}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@font@settings}{s}%
+{%
+        \edef\cf@series{\f@series}
+        \def\primarycolor{white}
+        \def\secondarycolor{black}
+        \shadowoffset{0.5pt}%
+        \shadowoffsetx{0.65pt}%
+        \shadowoffsety{-0.2pt}%
+        \shadowbasecolor{white}%
+        \shadowcolor{black}%
+        %\shadowcolor{BaylorGoldCMYK}%
+        \doubleshadowoffset{0.5pt}%
+        \doubleshadowoffsetx{1.20pt}%
+        \doubleshadowoffsety{-0.0pt}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@doc@settings}{s}%
+{%
+        \blindrandomtrue%
+        \doclinespacing%
+        \setulsettings[init=true]%
+        \preto{\chapter}{\bookmarksetupnext{level=2}}%
+        \preto{\section}{\bookmarksetupnext{level=3}}%
+        %\@connect@cft@lists{chap}{Chapter}%
+        \pagenumbering{\mylatex@docpagenumbering}%
+        %\fancyheadfoot%
+        \@format@counters%
+        %\formattheequation{problems}%
+%        \counterwithin@nonzero{@prob@counter}{@chap@counter}%
+%        \counterwithin{equation}{@prob@counter}%
+        \@set@current@tcb@colors{default}%
+        \@init@font@settings%
+        \cftZ@listof@settings%
+        \setlength\cftchapindent{3em}%
+        \setlength\cftsecindent{4.5em}%
+        %\renewcommand{\chaptermark}[1]{ \markboth{#1}{} }
+        %\renewcommand{\sectionmark}[1]{ \markright{#1}{} }
+        \@init@math@settings%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@csdefs}{s}%
+{%
+        \@set@arrow@direction%
+        \theoremstyle{defi}%
+        \newtheorem{tcbnote}{NOTE}%
+        \SetDefaultFont%
+        \SetMathVar%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setmathfonts}{O{}}
+{%
+        %\setkeys{mymacro}{first={FIRST arg},second={SECOND arg},third={THIRD arg},last={LAST arg},#1}%
+        \setkeys{mathfonts}{#1}%
+        \SetSymbolFont{operators}{normal}{OT1}{\mathfonts@letters}{m}{n}
+        \SetSymbolFont{letters}{normal}{OML}{\mathfonts@operators}{m}{n}
+        \SetSymbolFont{symbols}{normal}{OMS}{\mathfonts@symbols}{m}{n}
+        \SetSymbolFont{largesymbols}{normal}{OMX}{\mathfonts@largesymbols}{m}{n}
+
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\AtEndPreamble
+{
+        \@define@linespace@commands%
+        \@init@doc@settings%
+        \@init@csdefs%
+        \ifmylatex@frontbackmatter\makeFrontbackMatter\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@math@OML@letter@fonts{cmr,lmr,pxr,txr,cmbr,,,,}
+\def\@math@OTone@letter@fonts{cmr,lmr,pxr,txr,cmbr,hlcm,hlce,hlcf,dayrom,futj}
+\def\@math@OML@symbols@fonts{hlcy,lmsy,pxsy,,}
+\def\@math@OML@operators@fonts{pzc,augie,..., lmex,pcr,phv,,,,}
+\AfterPreamble%
+{
+        %\renewcommand\encodingdefault{OT1}
+        %\renewcommand{\familydefault}{\sfdefault}
+        %\renewcommand{\sfdefault}{cmbr}
+        %\renewcommand{\ttdefault}{cmtl}
+        %\renewcommand\familydefault{qpl}
+        %\renewcommand{\rmdefault}{qpl}%         lmr
+        %\renewcommand{\sfdefault}{cmss}%        lmss
+        %\renewcommand{\ttdefault}{cmtt}%        lmtt
+%-------------------------------------------------------------------------------------------------------------------------------%
+        %\def\mathfonts@default@rm{txr}%cmpica
+%        \def\mathfonts@default@ss{pxss}%cmpica
+%        \def\mathfonts@default@tt{pxtt}%cmpica
+%        \def\mathfonts@default@operators{cmex}%cmpica
+%        \def\mathfonts@default@letters{pxr}%cmpica
+%        \def\mathfonts@default@symbols{cmex}%cmpica
+%        \SetSymbolFont{operators}{extended}{OT1}{\mathfonts@default@operators}{m}{n}
+%        \SetSymbolFont{letters}{extended}{OML}{\mathfonts@default@letters}{m}{n}
+%        \SetSymbolFont{symbols}{extended}{OMS}{\mathfonts@default@symbols}{m}{n}
+%        \SetSymbolFont{largesymbols}{extended}{OMX}{\mathfonts@default@symbols}{m}{n}
+%       \SetMathAlphabet{\mathnormal}{extended}{OT1}{\mathfonts@default@letters}{m}{n}
+%        \SetMathAlphabet{\mathrm}{extended}{OT1}{\mathfonts@default@rm}{m}{n}
+%        \SetMathAlphabet{\mathbf}{extended}{OT1}{\mathfonts@default@rm}{b}{n}
+%        \SetMathAlphabet{\mathsf}{extended}{OT1}{\mathfonts@default@ss}{m}{n}
+%        \SetMathAlphabet{\mathit}{extended}{OT1}{\mathfonts@default@rm}{m}{it}
+%        \SetMathAlphabet{\mathtt}{extended}{OT1}{\mathfonts@default@tt}{m}{n}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+        %\def\mathfonts@rm{cmr}%cmpica
+%        \def\mathfonts@ss{cmr}%cmpica
+%        \def\mathfonts@tt{cmr}%cmpica
+%        \def\mathfonts@operators{cmr}%cmpica
+%        \def\mathfonts@letters{cmr}%cmpica
+%        \def\mathfonts@symbols{cmr}%cmpica
+%        \SetSymbolFont{operators}{normal}{OT1}{\mathfonts@operators}{m}{n}
+%        \SetSymbolFont{letters}{normal}{OML}{\mathfonts@letters}{m}{n}
+%        \SetSymbolFont{symbols}{normal}{OMS}{\mathfonts@symbols}{m}{n}
+%        %\DeclareMathAlphabet{\mathnormal}{OT1}{\mathfonts@rm}{m}{n}
+%        %\SetMathAlphabet{\mathnormal}{normal}{OT1}{\mathfonts@rm}{m}{n}
+%        \SetMathAlphabet{\mathrm}{normal}{OT1}{\mathfonts@rm}{m}{n}
+%        \SetMathAlphabet{\mathbf}{normal}{OT1}{\mathfonts@rm}{b}{n}
+%        \SetMathAlphabet{\mathsf}{normal}{OT1}{\mathfonts@ss}{m}{n}
+%        \SetMathAlphabet{\mathit}{normal}{OT1}{\mathfonts@rm}{m}{it}
+%        \SetMathAlphabet{\mathtt}{normal}{OT1}{\mathfonts@tt}{m}{n}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%        \SetSymbolFont{operators}{bold}{OT1}{\mathfonts@operators}{b}{n}
+%        \SetSymbolFont{letters}{bold}{OML}{\mathfonts@letters}{b}{n}
+%        \SetSymbolFont{symbols}{bold}{OMS}{\mathfonts@symbols}{m}{n}
+%        \SetMathAlphabet{\mathnormal}{bold}{OT1}{\mathfonts@rm}{bx}{n}
+%        \SetMathAlphabet{\mathrm}{bold}{OT1}{\mathfonts@rm}{m}{n}
+%        \SetMathAlphabet{\mathbf}{bold}  {OT1}{\mathfonts@rm}{bx}{n}
+%        \SetMathAlphabet{\mathsf}{bold}  {OT1}{\mathfonts@ss}{bx}{n}
+%        \SetMathAlphabet{\mathit}{bold}  {OT1}{\mathfonts@rm}{bx}{it}
+%        \SetMathAlphabet{\mathtt}{bold}  {OT1}{\mathfonts@tt}{m}{n}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%%       \SetSymbolFont{symbols}{normal}{OMS}{cmsy}{m}{n}
+%%       \SetSymbolFont{largesymbols}{normal}{OMX}{cmex}{m}{n}
+%%       \SetSymbolFont{operators}   {normal}{OT1}{lmr} {m}{n}
+%%       \SetSymbolFont{letters}     {normal}{OML}{lmm} {m}{it}
+%%       \SetSymbolFont{symbols}     {normal}{OMS}{lmsy}{m}{n}
+%%       \SetSymbolFont{largesymbols}{normal}{OMX}{lmex}{m}{n}
+%        %\fontencoding{OT1}\fontfamily{cmr}\selectfont
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------ Document hooks/patches ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \AtBeginDocument
 {%
         \@config@cft@content%
-        \input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
+        \formattheequation{problems}%
+        %%-------------------------------------------------------------------------------------------------------------------------------%
+	\let\glsDefsFile\mylatex@glsdefsfile%
+        \xdef\theglsdefsfile{\mylatex@glsdefsfile.def}%
+        %\xdef\theglsdefsfile{./\mylatex@glsdefsfile.def}%
+        %\xp\input\xp{\theglsdefsfile}%                  % Import the master list of glossary/acronym/symbol terms
+        %\xp\input\xp{WalkerProject-Terms.def}%                  % Import the master list of glossary/acronym/symbol terms
+        %\input{C:/Users/Blake/Documents/Education/Research/ReminderWalker/WalkerProject-Terms.def}%
+        %\input{"C:/Users/Blake/Documents/Education/Research/Reminder Walker/WalkerProject-Terms.def"}%
+        %\input{./WalkerProject-Terms.def}%
+        \xp\input\xp{./\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
+        \ifmylatex@pkgtest
+        	%\xp\input\xp{\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
+                %\input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
+	\fi
 }                                                        %-------------------------------------------------------------------------------------------------------------------------------%
 \AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -184,6 +373,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \AddEverypageHook%
 {%
+        %\zsavepos{top@docpage}%
         \iftoggle{@add@PAGE@targets}
                 {\hypertarget{\@page@n@target@name\thepage}{}}{}%
         \resetcounter{@major@sections@this@page}%
@@ -195,9 +385,9 @@
 %*******************************************************************************************************************************%
 %************************************************ End of 'my-config.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
-\endinput 
+\endinput
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************************************************** NOTES *************************************************************%

@@ -82,7 +82,7 @@
 \ExecuteOptions{noncompatible,notintoc,norefeq,norefpage,prefix,cfg,english}
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
@@ -193,7 +193,7 @@
                 \@csvlist@length{\listname}%
                 \foreach \@the@page / \@the@count [count=\@count] in \listname%
                 {%
-                        \ifnumcomp{\listname@length}{=}{\@count}%
+                        \ifnumequal{\listname@length}{\@count}%
                                 {\hyperlink{#2totext\@the@count}{\@the@page}}%
                                 {\hyperlink{#2totext\@the@count}{\@the@page},\space}%
                 }%
@@ -210,12 +210,12 @@
                 {%
                         \nomenclature%
                         [#1]{\raisebox{\doctextsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-                        {\expandafter\protect\expandafter#3\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
+                        {\xp\protect\xp#3\xp\frontbackmatterhfill\csname page#2\endcsname}%
                 }%
                 {%
                         \nomenclature%
                         {\raisebox{\doctextsize}{\hypertarget{page#2}{}}\protect\sffamily\protect\bfseries{#2}}%
-                        {\expandafter\protect\expandafter#3\,\expandafter\frontbackmatterhfill\csname page#2\endcsname}%
+                        {\xp\protect\xp#3\,\xp\frontbackmatterhfill\csname page#2\endcsname}%
                 }%
         }%
 }
@@ -223,7 +223,11 @@
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-nomencl.sty' package ************************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
-%% End of file `my-nomencl.sty'.
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

@@ -1,7 +1,7 @@
 %*******************************************************************************************************************************%
 %**************************************************** `my-listings.sty' ********************************************************%
 %*******************************************************************************************************************************%
-% This is an adaptation of the 'listings' package for incorporation into the 'my-latex' package which provides definitions of additional programming languages and their keywords, listing styles defining the settings and appearance of code listings, code listing captions and macros/commands/environments, and other code listing settings/configurations.
+% This is an adaptation of the 'listings' package for incorporation into the 'R2Labs' package which provides definitions of additional programming languages and their keywords, listing styles defining the settings and appearance of code listings, code listing captions and macros/commands/environments, and other code listing settings/configurations.
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
@@ -19,7 +19,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -69,7 +69,7 @@
 \def\@terminal@style@framexbottommargin{0mm}
 \def\@terminal@style@xleftmargin{2.25pt}
 \def\@terminal@style@xrightmargin@sep{-5pt}
-\def\@terminal@style@aboveskip{1.25pt}
+\def\@terminal@style@aboveskip{4.25pt}
 \def\@terminal@style@belowskip{-5.75mm}
 \def\@terminal@style@abovecaptionskip{-0.0pt}
 \def\@terminal@style@belowcaptionskip{2.5pt}
@@ -115,7 +115,7 @@
 \def\@Matlab@style@captionleftskip%
         {-\dimexpr\@Matlab@style@numbersep + \@Matlab@style@boxrule - \@Matlab@style@framerule - \@Matlab@style@framesep}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Caption Setup/Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Caption Setup/Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %\DeclareCaptionType{code}[Code Listing][List of Code Listings]
 %\DeclareCaptionTextFormat
@@ -128,26 +128,22 @@
 \DeclareCaptionLabelFormat{stdlisting}{\bothIfFirst{#1}{ }#2}
 \DeclareCaptionLabelFormat{Matlab}{\cftMatlab@toctitle}
 \DeclareCaptionLabelFormat{Terminal}{\cftTerminal@toctitle}
-%\DeclareCaptionLabelFormat{emptylabel}{\bothIfFirst{#1}{}#2}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareCaptionFormat{stdlisting}{#1#2#3\par}
-%\DeclareCaptionFormat{empty}{ }
 \DeclareCaptionFormat{llap}{\llap{#1#2}#3\par}
 \DeclareCaptionFormat{tcblisting}
 {%
-        %\begin{tcolorbox}[tcblistingCaptionStyle={\@tcblistings@captionwidth}{\@tcblistings@captionleftskip}]%
         \begin{tcolorbox}[reset, tcblistingCaptionStyle={\@tcblistings@captionwidth}]%
-        %\begin{tcolorbox}[tcblistingCaptionStyle]%
-                %\unskipspacing\parbox{\textwidth}{\bfmseries#1#2#3}%
                 \unskipspacing\par\bfmseries#1#2#3
-        \end{tcolorbox}\par%
+        \end{tcolorbox}%
+        %\par%\smallskip
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \captionsetup[lstlisting]
 {%
-        format=tcblisting, labelformat=\@lstlisting@caption@labelformat, labelfont={sf,white}, textfont={white,sf}, singlelinecheck=false,
-        width=\@Matlab@style@width, margin=\@Matlab@style@captionleftskip, %margin=\@tcblistings@captionleftskip, %margin={1.0cm,0.0cm},
-        hangindent=0cm, indention=0cm, justification=justified%, margin={1.0cm,0.0cm}, aboveskip=-2.5mm, belowskip=0.5mm
+        format=tcblisting, labelformat=\@lstlisting@caption@labelformat, labelfont={sf,bf,white}, textfont={white,sf},
+        singlelinecheck=false, width=\@Matlab@style@width, margin=\@Matlab@style@captionleftskip, hangindent=0cm, indention=0cm,
+        justification=justified
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\listingcaptions
@@ -157,37 +153,63 @@
         {%
                 format={\commandkey{format}}, labelformat={\commandkey{labelformat}}, labelfont={sf,white}, textfont={white,sf},
                 width={\commandkey{width}}, singlelinecheck=false, justification=justified, margin={\commandkey{leftskip}},
-                aboveskip={\commandkey{aboveskip}}, belowskip={\commandkey{belowskip}} %hangindent=1cm%, indention=0cm%,
+                aboveskip={\commandkey{aboveskip}}, belowskip={\commandkey{belowskip}}
         }
-        %\let\@tcblistings@captionwidth={\commandkey{width}}
-        %\tcbset{tcblistingCaptionStyle={\commandkey{width}}}
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ tcolorbox Listing Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'Mdframed' Style Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\DeclareTotalTCBox{\commandbox}{s v}{verbatim,colupper=white,colback=black!75!white,colframe=black}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\mdfdefinestyle{commandline}%
 {%
-        \IfBooleanTF{#1}{\textcolor{red}{\ttfamily\bfseries > }}{}%
-        \lstinline[language=command.com, keywordstyle=\fontcolor{blue!35!white}\bfseries]^#2^%
+        leftmargin=5pt, rightmargin=10pt, innerleftmargin=15pt,
+        middlelinecolor=Matlab-terminal-back, middlelinewidth=2pt,
+        frametitlerule=false, backgroundcolor=stdLTgray,
+        frametitle={Command Window},
+        frametitlefont={\normalfont\sffamily\color{white}\hspace{-1em}},
+        frametitlebackgroundcolor=Matlab-terminal-back,
+        singleextra=%
+        {%
+                \draw[stdltgray,line width=12pt]%
+                        ($(O)+(7pt,1pt)$)
+                        -- ($(O|-P)+(7pt,-\mdfframetitleboxtotalheight)-(0,1pt)$);
+                \node[inner sep=0pt,color=black] at ($(O)+(7pt,9pt)$)%
+                        {$\scriptstyle f\!x$};
+        },
+        nobreak
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ tcolorbox Listing Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%%stdgray mistyrose4 peachpuff4 snow4 lightsteelblue4 slategray4 LightSkyBlue4 ivory4 lavenderblush4 lemonchiffon4 lightcyan4 darkslategray4 MineralBlue
+\DeclareTotalTCBox{\commandbox}{s t+ t> v}%
+{
+        verbatim,colupper=white,colback=lightslategrey,colframe=black,
+        code=
+        {
+                \IfBooleanTF{#1}%
+                {%
+                        \IfBooleanTF{#2}%
+                                {\tcbsetforeverylayer{colback=slategrey}}%
+                                {\tcbsetforeverylayer{colback=lightslategrey}}%
+                }%
+                {%
+                        \IfBooleanTF{#2}%
+                                {\tcbsetforeverylayer{colback=Bisque4}}%
+                                {\tcbsetforeverylayer{colback=cornsilk4}}%
+                }%
+        }
+}{
+        \IfBooleanTF{#3}{\textcolor{red}{\ttfamily\bfmseries > }}{}%
+        \lstinline[language=command.com, keywordstyle=\fontcolor{stdDKblue}\bfseries]^#4^%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcbinlinebashbox}{s t! v}{tcbinlinebashboxStyle}
 {%
         \IfBooleanTF{#1}{\raisebox{\dimexpr-0.25\doctextsize\relax}{\rule{0pt}{\doctextsize}}\textcolor{green}{ > }}{}%
         \IfBooleanTF{#2}
-        {
-                \lstinline
-                [
-                        language=bash-extended,  name=bash-extended, style=emptyStyle, showstringspaces=true%, %identifierstyle=\textcolor{white},
-                        %commentstyle=\textcolor{white}, stringstyle=\fontcolor{white}\upshape, keywordstyle={[3]\fontcolor{white}}, %keywordstyle={[1]\fontcolor{white}}, keywordstyle={[2]\fontcolor{white}}
-                ]^#3^%
-        }
-        {
-                \lstinline
-                [
-                        language=bash-extended,  name=bash-extended, showstringspaces=true, style=inlineStyle
-                ]^#3^%
-        }
+                {\lstinline[language=bash-extended,  name=bash-extended, style=lstsyntaxOffStyle, showstringspaces=true]^#3^}
+                {\lstinline[language=bash-extended,  name=bash-extended, showstringspaces=true, style=lstinlineStyle]^#3^}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                                   1 2  3                               4   5
@@ -195,13 +217,10 @@
 {%
         code=
         {
-                %\bookmarksetupnext{keeplevel}%level=\BKM@currentlevel}
-                %\bookmarkX@hypertarget{Terminal}%
-                %\begingroup\linespread@settings[context=Terminal]\endgroup%
-                \setlinespread{Terminal}%
+                \bookmarksetupnext{keeplevel}%
+                \Terminallinespacing%
                 \@set@current@tcb@colors{tcbbashboxColorset}%
                 \renewcommand{\lstlistingname}{\@tcblisting@terminal@caption@title}%
-                %\bookmark[keeplevel, dest=\bookmark@hyperaddress{Terminal}, rellevel=1]{\cftTerminal@toctitle}%
                 \stepcounter{Terminal}
                 \ifstrempty{#4}%
                         {\def\@title@sep{}}%
@@ -210,58 +229,42 @@
         IfBooleanTF={#1}
                 {tcbbashboxStyle={\@tcb@default@boxrule@linewidth}{single}{tcbbashboxColorset-colfill}{tcbbashboxColorset-colinteriorborder}}
                 {tcbbashboxStyle},
-        IfBooleanTF={#2}{top=3.0mm}{},
+        IfBooleanTF={#2}{top=1.0mm,sharp corners=north}{},%, sharpish corners,rounded corners=south
         width=#3,
-        listing options={style=terminalStyle, language=bash-extended, name=bash-extended},
+        listing options={style=lstterminalStyle, language=bash-extended, name=bash-extended},
         listing remove caption=false, listing and comment, listing engine=listings,
         every listing line*={\textcolor{lstterminalColorset-fillcolor}>},
-        %before upper={\vspace{-10mm}\bookmarkX@hypertarget{Terminal}},
-        %before={\bookmarkX@hypertarget{Terminal}\par\bigskip},
-        %after title={\bookmarkX@hypertarget{Terminal}},
-        %before title={\bookmarkX@hypertarget{Terminal}},
         IfValueTF={#5}
                 {comment={#5}}
                 {listing only},
+        IfValueTF={#5}{}{sharpish corners, no finish, bottom=1.5mm},
         IfBooleanTF={#2}
                 {blend before title code={}}
                 {blend before title code={\cftTerminal@hyperblend*{\@title@sep}}},
-                %{blend before title code={\cftTerminal@titleblend*{\@title@sep}}},
         IfBooleanTF={#2}
         {before upper={\vspace{-7mm}\bookmarkX@hypertarget{Terminal}\vspace{-3mm}},title={}}
         {
                 IfValueTF={#4}
-                        %{title={\cftTerminal@tcbtitle@font*{#4}}}
                         {title={\bookmarkX@hypertarget{Terminal}\cftTerminal@hyperblend@title*{}{#4}}}
                         {title={\bookmarkX@hypertarget{Terminal}\space}}
         },
-        %title={\cftfigbox@contentsline{\@title@sep#2}\cftfigbox@hypertitle{\@title@sep}{#2}}]%
-        %title={\cftX@tcbtitle@font*{#2}},
-        %title={\shadowmathfy{#2}},
         IfValueTF={#4}
                 {list entry={\cftTerminal@listentry{\@title@sep#4}}}
                 {list entry={\cftTerminal@listentry{\@title@sep}}},
-        %after={\unskipspacing},
-        after=
-        {%
-                %\par\medskip\smallskip%
-                %\bookmark[keeplevel, dest=\bookmark@hyperaddress{Terminal}, rellevel=1]{\cftTerminal@toctitle}%
-                \cftTerminal@bookmark%
-        }
+        after={\cftTerminal@bookmark!\par\medskip}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newtcbinputlisting[blend into=listings]{\Matlab}[7][]
 {%\Matlab[title]{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
-        MatlabStyle={6pt}{single}{MatlabColorset-colframeborder}{MatlabColorset-colinteriorborder},
+        tcbMatlabStyle={6pt}{single}{MatlabColorset-colframeborder}{MatlabColorset-colinteriorborder},
         code=
         {
-                %\bookmarksetupnext{keeplevel}%level=\BKM@currentlevel}
+                \bookmarksetupnext{keeplevel}%l
                 \@set@current@tcb@colors{MatlabColorset}%
                 \let\@tcblistings@captionwidth=\@Matlab@style@captionwidth
                 \renewcommand{\lstlistingname}{\@tcblisting@Matlab@caption@title}%
-                %\bookmark[keeplevel, dest=\bookmark@hyperaddress{Matlab}, rellevel=1]{\cftMatlab@toctitle}%
                 \stepcounter{Matlab}
-                %\begingroup\linespread@settings[context=Matlab]\endgroup%
-                \setlinespread{Matlab}%
+                \Matlablinespacing%
                 \listingcaptions
                 [
                         format={tcblisting}, labelformat={Matlab}, width={\@Matlab@style@captionwidth},
@@ -274,51 +277,57 @@
         },
         listing options=
         {
-                style=matlabStyle, language=matlab-extended, title={\cftMatlab@tcbtitle\@tcb@title@sep#5},
+                style=lstMatlabStyle, language=matlab-extended, title={\cftMatlab@tcbtitle\@tcb@title@sep#5},
                 label={#6}, firstnumber={#2}, firstline={#3}, lastline={#4},
         },
         listing file={#7}, listing engine=listings, listing only, listing remove caption=false,
-        %blend before title code={\cftfigboxfigure@hyperblend*'\@tcb@subtitle@font'{\@title@sep}\unskipspacing},
-        %title={\cftfigboxfigure@hyperblend@title*{}{#2}},
         blend before title code={\bookmarkX@hypertarget{Matlab}\cftMatlab@hyperblend*{\@title@sep}},
         title={\cftMatlab@hyperblend@title*{}{#1}},
-        %blend before title code={\cftMatlab@titleblend*{\@title@sep}},
-%        title={\cftMatlab@tcbtitle@font*{#1}},
         list entry={\cftMatlab@listentry{\@title@sep#1}},
         after=
         {%
                 \par\medskip\smallskip%
-                \bookmark[keeplevel, dest=\bookmark@hyperaddress{Matlab}, rellevel=1]{\cftMatlab@toctitle}%
+                \cftMatlab@bookmark!%
         }
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Standard 'listings' Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Standard 'listings' Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\lstnewenvironment{script}%
+{% style=lstMatlabStyle
+        %\lstset{language=matlab-extended, basicstyle=\tiny\ttfamily, breaklines=true, aboveskip=0pt, belowskip=0pt}%
+        \lstset{language=Matlab, basicstyle=\tiny\ttfamily, breaklines=true, aboveskip=0pt, belowskip=0pt}%
+}{}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\surroundwithmdframed[style=commandline]{script}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Standard 'listings' Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %% Usage: \cplusplus{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\cpluspluscode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
-    \lstinputlisting[style=codingStyle, language=C++, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
+    \lstinputlisting[style=lstcodingStyle, language=C++, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \ccode{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\ccode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
-    \lstinputlisting[style=codingStyle, language=C, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
+    \lstinputlisting[style=lstcodingStyle, language=C, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \Verilog{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\Verilogcode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
-    \lstinputlisting[style=codingStyle, language=Verilog, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
+    \lstinputlisting[style=lstcodingStyle, language=Verilog, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %% Usage: \Java{number the first line as}{first line in file}{last line in file}{caption}{label}{file}
 \newcommand{\Javacode}[6]{
     \captionsetup[lstlisting]{singlelinecheck=false, width=\linewidth, margin={0.0cm,-1.0cm},justification=justified}
-    \lstinputlisting[style=codingStyle, language=Java, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
+    \lstinputlisting[style=lstcodingStyle, language=Java, firstnumber={#1}, firstline={#2}, lastline={#3}, caption={#4}, label={#5}]{#6}
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Language Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Language Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \lstdefinelanguage{bash-extended}
 {
@@ -435,6 +444,7 @@
         },
         keywordstyle={[10]\bfseries\fontcolor{matlab-extended-keywordcolor10}}
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinelanguage{diff}
 {
   sensitive=true,
@@ -498,9 +508,9 @@
   morecomment=[f][\fontcolor{blue}][0]{9},
 }[comments]
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Style Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Style Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\lstdefinestyle{codingStyle}
+\lstdefinestyle{lstcodingStyle}
 {
         %basicstyle=\ttfamily,                                          % the size of the fonts that are used for the code
         abovecaptionskip=\@tcblistings@abovecaptionskip,                % is the vertical space respectively above each caption.
@@ -575,20 +585,25 @@
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
 %*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% Keys/values whose usage results in (largely undiagnosed) compilation errors
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                 % ERROR list of compiler directives
-        %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc' package if true
+        %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc'
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\lstdefinestyle{emptyStyle}
+\lstdefinestyle{lstsyntaxOffStyle}
 {
         abovecaptionskip=0mm,                                           % is the vertical space respectively above each caption.
         aboveskip=3.5mm,
         alsodigit={-},
         alsoletter={-},
-        backgroundcolor=\fontcolor{lstemptyColorset-backgroundcolor},               % choose the background color. You must add \RequirePackage{color}
+        backgroundcolor=\fontcolor{lstsyntaxoffColorset-backgroundcolor},               % choose the background color. You must add \RequirePackage{color}
         basewidth={0.575em,0.45em},                                     % default: {fixed,flexible mode}={0.6em,0.45em}
         basicstyle=\ttfamily,                                           % the size of the fonts that are used for the code
         belowcaptionskip=0mm,                                           % is the vertical space respectively below each caption.
@@ -600,15 +615,15 @@
         % caption=\lstname,                                             % can be used instead of title
         captionpos=b,                                                   % sets the caption-position to bottom
         columns=[c]fixed,                                               % =[c|l|r]<alignment > (fixed, flexible, spaceflexible, or fullflexible)
-        commentstyle=\fontcolor{lstemptyColorset-commentcolor}\textit,      % comment style
+        commentstyle=\fontcolor{lstsyntaxoffColorset-commentcolor}\textit,      % comment style
         %deletekeywords={...},                                          % if you want to delete keywords from the given language
-        escapebegin=\fontcolor{lstemptyColorset-escapebegin},
-        escapeend=\fontcolor{lstemptyColorset-escapeend},
+        escapebegin=\fontcolor{lstsyntaxoffColorset-escapebegin},
+        escapeend=\fontcolor{lstsyntaxoffColorset-escapeend},
         escapeinside={\%*}{*)},
         %escapechar={},
         extendedchars=true,                                             % lets you use non-ASCII characters; 8-bits encoding only, not UTF-8
         fancyvrb=true,
-        fillcolor=\fontcolor{lstemptyColorset-fillcolor},                           %
+        fillcolor=\fontcolor{lstsyntaxoffColorset-fillcolor},                           %
         firstnumber=auto,
         flexiblecolumns=false,
         float,
@@ -617,20 +632,20 @@
         formfeed=\bigbreak,                                             % Whenever a listing contains a form feed, <tokens> is executed.
         frame=TRBL,                                                     % adds a frame around the code
         %frameround=tttt,                                               %
-        framerule=0mm,                                                  %
-        framesep=0mm,
+        framerule=2mm,                                                  %
+        framesep=2mm,
         %frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
         framexleftmargin=0mm,
         %framexrightmargin=0mm,
-        %framextopmargin=0mm,
-        %framexbottommargin=0mm,
+        framextopmargin=2mm,
+        framexbottommargin=2mm,
         %fvcmdparams={},                                                % =<command1><number1>... \overlay1
-        identifierstyle=\fontcolor{lstemptyColorset-identifiercolor},               % define style used in printing non-keyword/cs/directive text in code
+        identifierstyle=\fontcolor{lstsyntaxoffColorset-identifiercolor},               % define style used in printing non-keyword/cs/directive text in code
         %index=[1][keywords],
         keepspaces=true,                                                % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
-        keywordstyle={[1]\bfseries\fontcolor{lstemptyColorset-keywordcolor1}},      % keyword style
-        keywordstyle={[2]\bfseries\fontcolor{lstemptyColorset-keywordcolor2}},      % keyword style
-        keywordstyle={[3]\bfseries\fontcolor{lstemptyColorset-keywordcolor3}},      % keyword style
+        keywordstyle={[1]\bfseries\fontcolor{lstsyntaxoffColorset-keywordcolor1}},      % keyword style
+        keywordstyle={[2]\bfseries\fontcolor{lstsyntaxoffColorset-keywordcolor2}},      % keyword style
+        keywordstyle={[3]\bfseries\fontcolor{lstsyntaxoffColorset-keywordcolor3}},      % keyword style
         lineskip=0pt, %nolol=false, %fancyvrb=true,
         linewidth=\@tcblistings@linewidth,                              % define width of code listing on page
         mathescape=false,
@@ -639,17 +654,17 @@
         numberfirstline=false,                                          % Sets numbering of first line of code:=<auto|last|number>
         numbers=none,                                                   % where to put the line-numbers
         numbersep=\@tcblistings@numbersep,                              % how far the line-numbers are from the code
-        numberstyle=\tiny\bfseries\fontcolor{lstemptyColorset-numbercolor}, % the style that is used for the line-numbers
+        numberstyle=\tiny\bfseries\fontcolor{lstsyntaxoffColorset-numbercolor}, % the style that is used for the line-numbers
         resetmargins=false,
-        rulecolor=\fontcolor{lstemptyColorset-rulecolor},                   % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens)
-        rulesepcolor=\fontcolor{lstemptyColorset-rulesepcolor},                     %
-        rulesep=0mm,                                                    %
+        rulecolor=\fontcolor{lstsyntaxoffColorset-rulecolor},                   % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens)
+        rulesepcolor=\fontcolor{lstsyntaxoffColorset-rulesepcolor},                     %
+        rulesep=2mm,                                                    %
         sensitive=true,                                                 % makes keywords, control sequences, and directives case sensitive
         showspaces=false,                                               % show spaces adding particular underscores
         showstringspaces=false,                                         % underline spaces within strings
         showtabs=true,                                                  % show tabs within strings adding particular underscores
         stepnumber=1,                                                   % the step between two line-numbers. If it's 1, each line will be numbered
-        stringstyle=\upshape\fontcolor{lstemptyColorset-stringcolor},               % string literal style
+        stringstyle=\upshape\fontcolor{lstsyntaxoffColorset-stringcolor},               % string literal style
         tab=\unskipspacing,                                       %
         tabsize=1,                                                      % sets default tabsize to 2 spaces
         %texcl=false,                                                   % Activate/deactivate TeX comment lines inside code after escapeinside activated
@@ -658,14 +673,19 @@
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
 %*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% Keys/values whose usage results in (largely undiagnosed) compilation errors
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc' if true
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\lstdefinestyle{inlineStyle}
+\lstdefinestyle{lstinlineStyle}
 {
         %basicstyle=\ttfamily,                                          % the size of the fonts that are used for the code
         abovecaptionskip=\@tcblistings@abovecaptionskip,                % is the vertical space respectively above each caption.
@@ -739,15 +759,20 @@
         upquote=true                                                    % Sets left/right quote are printed or `' ('textcomp' required if true)
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
-        %*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% Keys/values whose usage results in (largely undiagnosed) compilation errors
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                           % ERROR determines the input encoding; 'inputenc' required if true
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\lstdefinestyle{matlabStyle}
+\lstdefinestyle{lstMatlabStyle}
 {
         aboveskip=1.5mm,
         belowskip=0mm,
@@ -836,21 +861,26 @@
         %xleftmargin=\@Matlab@style@xleftmargin,%-\@tcblistings@captionleftskip,%
         xrightmargin=\@Matlab@style@xrightmargin
 %*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% Keys/values whose usage results in (largely undiagnosed) compilation errors
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                                           % ERROR determines the input encoding; requires 'inputenc' package if true
         %texcs={},                                                                              % ERROR list of control sequences
         %usekeywordsintag=true,                                                         % ERROR
         %markfirstintag=false,                                                          % ERROR
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\lstdefinestyle{terminalStyle}
+\lstdefinestyle{lstterminalStyle}
 {
         xleftmargin=\@terminal@style@xleftmargin,                                       %
         xrightmargin=\@terminal@style@xrightmargin,
         framerule=\@terminal@style@framerule,                                   %   .25 inv
         rulesep=\@terminal@style@rulesep,                                               %   .25 inv
         framesep=\@terminal@style@framesep,
-        fillcolor=\fontcolor{lstterminalColorset-fillcolor},                                %lstterminalStyle-fillcolor
+        fillcolor=\fontcolor{lstterminalColorset-fillcolor},                                %lstlstterminalStyle-fillcolor
         %frameshape={RYRYNYYYY}{yny}{yny}{RYRYNYYYY},
         framexleftmargin=\@terminal@style@framexleftmargin,
         framexrightmargin=\@terminal@style@framexrightmargin,
@@ -924,25 +954,35 @@
         %xleftmargin=-1pt,
         %xrightmargin=-0.75cm,
 %*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% Keys/values whose usage results in (largely undiagnosed) compilation errors
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                                           % ERROR determines the input encoding; requires 'inputenc' package if true
         %texcs={},                                                                              % ERROR list of control sequences
         %usekeywordsintag=true,                                                         % ERROR
         %markfirstintag=false,                                                          % ERROR
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Other 'listings' Settings/Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Other 'listings' Settings/Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %\lstdefineformat{C}{%
 %\{=\newline\string\newline\indent,%
 %\}=\newline\noindent\string\newline,%
 %;=[\ ]\string\space}
-%\lstMakeShortInline[[options]]hharacter
+%\lstMakeShortInline[<options>]<character>
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
-%*************************************************** End of 'my-listings.sty' package *****************************************************%
+%********************************************** End of 'my-listings.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 %-------------------------------------------------------------------------------------------------------------------------------%
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%level=\BKM@currentlevel} 

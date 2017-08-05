@@ -17,7 +17,7 @@
 %*******************************************************************************************************************************%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -46,18 +46,23 @@
 \renewcommand\chaptername{\ChapterName}                         % Chapter toc title
 \renewcommand{\lstlistingname}{\CodeListingName}                % The caption label for listings.
 \renewcommand{\figurename}{\FigureName}                         % Figure toc title
-\renewcommand{\tablename}{\TableName}                        	% Table toc title
+\renewcommand{\tablename}{\TableName}                           % Table toc title
 \newcommand{\ibptablename}{\IBPtableName}                       % Table toc title
+\newcommand{\longdivtablename}{\LDtableName}                       % Table toc title
 \newcommand{\pldtablename}{\PLDtableName}                       % Table toc title
-\newcommand{\figboxname}{\FigboxName}                        	% Table toc title
+\newcommand{\figboxname}{\FigboxName}                           % Table toc title
 \newcommand{\figboxfigname}{\FigboxFigureName}                  % Table toc title
 \newcommand{\lstcodename}{\CodeListingName}                     % Table toc title
 \newcommand{\lstterminalname}{\TerminalListingName}             % Table toc title
 \newcommand{\lstmatlabname}{\MatlabListingName}                 % Table toc title
 \newcommand{\problemsname}{\ProblemName}                        % The caption label for listings.
-\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
-\newcommand{\funcdetailssname}{\FunctionDetailName}             % The caption label for listings.
 \newcommand{\scriptdefsname}{\ScriptDefName}                    % The caption label for listings.
+\newcommand{\scriptdefsboxname}{\ScriptDefBoxName}                    % The caption label for listings.
+%\newcommand{\scriptdefsname}{\ScriptDefName}                    % The caption label for listings.
+\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
+\newcommand{\funcdefsboxname}{\FunctionDefBoxName}                    % The caption label for listings.
+%\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
+\newcommand{\funcdetailssname}{\FunctionDetailName}             % The caption label for listings.
 \@re@newcommand{listingscaption}{\CodeListingName}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\indexname}{\IndexName}
@@ -82,28 +87,36 @@
         \@gls@grouptitle@font\@gls@grptitle
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+% After the .ist/.mst files have been written with 'filecontents' commands, the \writeist cmd from "my-glossaries" is writing the default style parameters/config to the file ".ist" (with empty file name).  Passing 'automake=false' option to "R2Labs.sty" loading of "my-glossaries" package had no effect, but problem appears to be related to the automake feature.  The command below suppressess writing of this unnecessary file but must be executed near the end of the preamble after package options have controlled its definition but before it has already been added for execution (currently in "\FBMcontent@automake")
+%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+\newcommand*{\@gls@default@istfile@off}{\glet\writeist\relax}
+%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Frontmatter content creation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\@cftmaketoctitle}%
 {%
-  	\addpenalty\@secpenalty
-  	\if@cfthaschapter
-    		\vspace*{\cftbeforetoctitleskip}%
-  	\else
-    		\vspace{\cftbeforetoctitleskip}%
-  	\fi
-  	\@cftpagestyle
-  	{%
-  		\interlinepenalty\@M
-  			{\cfttoctitlefont\bookmarkX@hypertarget{TOC}\contentsname}%
-  			{\cftaftertoctitle}%
-  		\cftmarktoc
-  		\par\nobreak
-  		\vskip \cftaftertoctitleskip
-  		\@afterheading%
-  	}%
+        \addpenalty\@secpenalty
+        \if@cfthaschapter
+                \vspace*{\cftbeforetoctitleskip}%
+        \else
+                \vspace{\cftbeforetoctitleskip}%
+        \fi
+        \@cftpagestyle
+        {%
+                \interlinepenalty\@M
+                        {\cfttoctitlefont\bookmarkX@hypertarget{TOC}\contentsname}%
+                        {\cftaftertoctitle}%
+                \cftmarktoc
+                \par\nobreak
+                \vskip \cftaftertoctitleskip
+                \@afterheading%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand*\tableofcontents
@@ -208,50 +221,28 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Backmatter configuration/helper commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\@automake@index}{G{my-index.mst}}
-%{%makeindex -s my-nomencl.ist -t pCT_Data_Organization_Format.nlg  -o pCT_Data_Organization_Format.nls  pCT_Data_Organization_Format.nlo
-%        \edef\@gls@dothiswrite%
-%        {%
-%                \noexpand\write18%
-%                {%
-%                        makeindex %
-%                                -s my-index.mst\space%
-%                                -t \jobname.ilg\space%
-%                                -o \jobname.idx\space%
-%                                \jobname.ind%
-%                }%
-%        }%
-%        \@gls@dothiswrite
-%}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\def\@FBM@print@list{symbols,acronyms,nomenclature,glossary,index}
-%\def\@FBM@printcmd@list{\printsymbols,\printacronyms,\printnomenclature,\printglossary,\printindex}
-%\imki@exec{\imki@program\imki@options#1.idx}%
-%\def\@FBM@make@exec{\immediate\write18}
-%\def\@FBM@make@exec@options#1#2#3#4{-s #1 -t \jobname.#2 -o \jobname.#3 \jobname.#4}%options=-s my-index.mst
-%\def\@index@make@program{makeindex}
-%\def\@symbols@make@program{makeindex}
-%\def\@nomenclature@make@program{makeindex}
-%\def\@acronyms@make@program{makeindex}
-%%\verbtocs{\decddcmd}|label=, labelindent=-3pt, itemsep=, topsep=, parsep=5pt, leftmargin=|
-%\def\@glossary@make@program{makeglossaries}
-%%\let\imki@options\space
-%%\def\imki@progdefault{makeindex}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@automake@nomenclature}{G{my-nomencl.ist}}
-{%makeindex -s style-file.ist -t doc-name.nlg  -o doc-name.nls  doc-name.nlo
+\DeclareDocumentCommand{\FBMcontent@automake}{m}%
+{%
+        \@gls@default@istfile@off%<------------------------------------- permanency not intended, suppresses ".ist" file write
+        \def\@automake@files{\csuse{@#1@automake@files}}%
+        \setxsvargs{csv}{\@automake@files}%
+        \edef\@@make@prog{\csvargi}%
+        \edef\@@style@file{\csvargii}%
+        \edef\@@log@file{\jobname.\csvargiii}%
+        \edef\@@in@file{\jobname.\csvargiv}%
+        \edef\@@out@file{\jobname.\csvargv}%
         \edef\@gls@dothiswrite%
         {%
                 \noexpand\write18%
                 {%
-                        makeindex %
-                                -s my-nomencl.ist\space%
-                                -t \jobname.nlg\space%
-                                -o \jobname.nls\space%
-                                \jobname.nlo%
+                        \@@make@prog\space%
+                        -s \@@style@file\space%
+                        -t \@@log@file\space%
+                        -o \@@in@file\space%
+                        \@@out@file%
                 }%
         }%
-        \@gls@dothiswrite
+        \@gls@dothiswrite%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@configure@FBM@settings%
@@ -259,10 +250,10 @@
         \ifmylatex@fncychap\remove@fncychap\fi%
         \ifmylatex@twocolumn\cleardoublepage\else\clearpage\fi
         \@enforce@onecolumn%
-        \@pgnum@test@content%
+        %\@pgnum@test@content%
         \togglefalse{@add@PAGE@targets}
         \ifmylatex@backpagenumbering\pagenumbering{\mylatex@backpagenumbering}\fi%
-        \setlinespread{FBM}%
+        \FBMlinespacing%
         \FBM@define@separator!%
         \@for\FBM@print@type:=\@FBM@print@list\do%
         {%
@@ -299,8 +290,7 @@
         \loadgeometry{toc@geometry}%
         \pagestyle{empty}%
         \pagenumbering{\mylatex@frontpagenumbering}%
-        \setlinespread{toc}%
-        %\ifmylatex@frontbackmatter\makeFrontbackMatter\fi%
+        \toclinespacing%
         \ifmylatex@toc\tableofcontents\fi%
         \ifmylatex@frontbackmatter%
                 \addFrontbackMatter%
@@ -309,17 +299,18 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\makeFrontbackMatter}{}
 {
-        \makenomenclature
-        \@automake@nomenclature
-        \makeglossaries\glsaddall
-        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s my-index.mst]
-        \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}%\bookmarkX@hypertarget{TOC}
+        \makenomenclature%
+        \FBMcontent@automake{nomenclature}%
+        \makeglossaries\glsaddall%
+        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s my-index.mst]%
+        \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\addFrontbackMatter}{}
 {
         \bookmark[startatroot, keeplevel, dest=\bookmark@hyperaddress{TOC}, rellevel=0]{\TOCName}
         \@add@listof@lists%
+        \vfill\zsavepos{bottom@page}%
         \clearpage\hypertarget{\@page@one@target@name}{}%%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -329,9 +320,9 @@
         \printsymbols[title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]%
         \printacronyms[title={\@listof@acronyms@toctitle}, toctitle={\@listof@acronyms@toctitle}]%
         \printnomenclature%
-        \@pgnum@test@content%
+        %\@pgnum@test@content%
         \printglossary[type=\glsdefaulttype, title={\@glossary@toctitle},toctitle={\@glossary@toctitle}]%
-        \@pgnum@test@content%
+        %\@pgnum@test@content%
         \printindex%
         \conditional@auxwrite*{\ifdefined\@idx@group@letters}%
         {%
@@ -340,15 +331,11 @@
                \auxwrite@regset{@AUXOUT@idx@total@group@node@count}{\the\value{@idx@group@node@counter}}%
         }%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************* Index/Glossary/Acronyms/Nomenclature style file generation **********************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\catcode`!=12
-%\catcode`\$=\active
-\catcode`|=12
-%\IfFileExists{my-index.mst}{}
-%{
 \begin{filecontents*}{my-index.mst}
         preamble "\\begin{tcolorbox}%
                 [
@@ -359,7 +346,7 @@
                         fonttitle=\\Large\\bfseries,
                         fontupper=\\normalsize\\normalfont,
                         fontlower=\\normalsize\\normalfont,
-                        before upper=\\idxhypernavpanel\\normalsize\\normalfont%\\vskip-1.3cm
+                        before upper=\\idxhypernavpanel\\normalsize\\normalfont
                 ]%
                 \\begin{theindex}"
         postamble "\\end{theindex}\\end{tcolorbox}"
@@ -369,7 +356,6 @@
         heading_prefix "  \\decrementcounter{@idx@entry@counter}\\IndexHeading{"
         heading_suffix "}\n"
 \end{filecontents*}
-%}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -382,8 +368,11 @@
         preamble "\\glossarypreamble\n%
                 \\begin{tcolorbox}%
                 [%
-                        glossariesStyle, before=\\par\\smallskip, after=\\par\\smallskip,
-                        fonttitle=\\Large\\bfseries, fontupper=\\normalsize\\normalfont, %colframe=black,
+                        glossariesStyle,
+                        before=\\par\\smallskip,
+                        after=\\par\\smallskip,
+                        fonttitle=\\Large\\bfseries,
+                        fontupper=\\normalsize\\normalfont,
                         title={\\phantomsection\\glossarysection[\\glossarytoctitle]{\\linkedglossarytitle}}%
                 ]
                 \\begin{theglossary}\\glossaryheader\n"
@@ -414,12 +403,17 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\IfFileExists{my-nomencl.ist}{}
-%{%
 \begin{filecontents*}{my-nomencl.ist}
         keyword    "\\nomenclatureentry"
-        preamble   "\\begin{tcolorbox}[nomenclatureStyle, title={\\toctitletarget{\\nomname}{\\nomname}}, before=\\par\\smallskip, after=\\par\\smallskip, fonttitle=\\Large\\bfseries]%
-                        \\begin{thenomenclature} \n"%
+        preamble   "\\begin{tcolorbox}%
+                [%
+                        nomenclatureStyle,
+                        title={\\toctitletarget{\\nomname}{\\nomname}},
+                        before=\\par\\smallskip,
+                        after=\\par\\smallskip,
+                        fonttitle=\\Large\\bfseries
+                ]%
+                \\begin{thenomenclature} \n"%
         postamble  "\n\n\\end{thenomenclature}\\end{tcolorbox}\n"
         group_skip "\n"
         delim_0    ""
@@ -433,13 +427,15 @@
         heading_suffix "}\n"
         headings_flag  1
 \end{filecontents*}
-%}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************************************** End of 'frontbackmatter.sty' package *********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
-\catcode`|=\active
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%

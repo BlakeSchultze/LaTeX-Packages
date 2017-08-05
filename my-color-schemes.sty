@@ -18,22 +18,10 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
-
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ User defined colors, color mixes, and color schemes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%\usepackage{colorDefs}
-%\usepackage{my-colorsets}
-\def\@colorset@property@names%
-{%
-        colback,colbackupper,colbacklower,colbacktitle,colbackinterior,colframe,colleftframe,colrightframe,
-        colframeborder,colinteriorborder,coltitle,colupper,collower,coltext,coltextshadow,colboxshadow,
-        coldraw,colfill,colfilltext,colfillborder,rulecolor,coldoubleline
-}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Color scheme definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -177,7 +165,7 @@
 \colorlet{tcbDarkBlueScheme-coldraw}{stddkblue}
 \colorlet{tcbDarkBlueScheme-colfill}{stddkblue}
 \colorlet{tcbDarkBlueScheme-colfilltext}{white}
-\colorlet{tcbDarkBlueScheme-colfillborder}{stdyellow}
+\colorlet{tcbDarkBlueScheme-colfillborder}{black}
 \colorlet{tcbDarkBlueScheme-rulecolor}{stddkblue}
 \colorlet{tcbDarkBlueScheme-coldoubleline}{stdyellow}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -433,14 +421,19 @@
 \colorlet{tcbRedScheme-coldraw}{stdred}
 \colorlet{tcbRedScheme-colfill}{stddkred}
 \colorlet{tcbRedScheme-colfilltext}{white}
-\colorlet{tcbRedScheme-colfillborder}{white}
+\colorlet{tcbRedScheme-colfillborder}{black}
 \colorlet{tcbRedScheme-rulecolor}{stdred}
 \colorlet{tcbRedScheme-coldoubleline}{stdltred}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************************************* End of 'my-color-schemes.sty' package *********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 %-------------------------------------------------------------------------------------------------------------------------------%
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

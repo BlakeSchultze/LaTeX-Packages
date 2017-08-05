@@ -1,10 +1,15 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %****************************************************** `my-colors.sty' ********************************************************%
 %*******************************************************************************************************************************%
-% Definition of custom colors, predefined color mixes, and use of these to define sets of colors which collectively define color schemes primarily for 'tcolorbox' styles and 'listings' package code syntax/highlighting/envinroment coloring, but there are some additional color schemes for other applications/contexts. Color schemes are composed of individual color definitions named 'X-Z' according to the color scheme name 'X' and the various color properties 'Z', with nearly every color scheme containing definitions for the same set of color properties 'Z' except for some color schemes with a reduced/expanded set of color properties or a set of color properties for a special application/context. %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Definition of custom colors, predefined color mixes, and use of these to define sets of colors which collectively define color schemes primarily for 'tcolorbox' styles and 'listings' package code syntax/highlighting/envinroment coloring, but there are some additional color schemes for other applications/contexts. Color schemes are composed of individual color definitions named 'X-Z' according to the color scheme name 'X' and the various color properties 'Z', with nearly every color scheme containing definitions for the same set of color properties 'Z' except for some color schemes with a reduced/expanded set of color properties or a set of color properties for a special application/context. %-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \ProvidesPackage{my-colors}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -14,878 +19,1102 @@
 %*******************************************************************************************************************************%
 %************************************************ Processing of package options ************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %***************************************** User defined colors, color mixes, and color schemes *********************************%
 %*******************************************************************************************************************************%
 %\RequirePackage{my-color-schemes}
 %\usepackage{colorDefs}
 %\usepackage{my-colorsets}
+\newcounter{@num@colordefs}                                            % Record # of custom named color mix defined
+\newcounter{@num@colormixes}                                            % Record # of custom named color mix defined
+\newcounter{@num@colorsets}                                             % Record # of color sets (named groups of \colorsetdef defs)
+\newcounter{@num@colorset@colors}                                       % Colors contained in each color set (named groups of \colorsetdef defs)
+\def\@defined@colorsets{default,current}                                % Record names of defined color sets (named groups of \colorsetdef defs)
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\customcolordef}{m m m}%
+{%{TF value/variable}{True code}{False code}
+        \definecolor{#1}{#2}{#3}%
+        \@uniquely@add@to@csvlist{#1}{\@defined@colordefs}%
+        \stepcounter{@num@colordefs}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\colormixdef}{m m}%
+{%{TF value/variable}{True code}{False code}
+        \colorlet{#1}{#2}%
+        \@uniquely@add@to@csvlist{#1}{\@defined@colormixes}%
+        \stepcounter{@num@colormixes}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\colorsetdef}{m m m}%
+{%{TF value/variable}{True code}{False code}
+        \colorlet{#1-#2}{#3}%
+        \@uniquely@add@to@csvlist{#1}{\@defined@colorsets}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbcolorsetdef}{m m m}%
+{%{TF value/variable}{True code}{False code}
+        \colorlet{#1Colorset-#2}{#3}%
+        \@uniquely@add@to@csvlist{#1}{\@defined@tcbcolorsets}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************* User defined named colors ***************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 % Code/listings/figure colors
-\definecolor{dkgreen}{rgb}{0.0, 0.6, 0.0}                                       % Code comment color
-\definecolor{ocre}{HTML}{F16723}
-%BabyBlue,0.54,0.81,0.94;%
-\definecolor{BabyBlue-HTML}{HTML}{89CFF0}
+\customcolordef{dkgreen}{rgb}{0.0, 0.6, 0.0}                               % Code comment color
+\customcolordef{ocre}{HTML}{F16723}
+\customcolordef{BabyBlue-HTML}{HTML}{89CFF0}                            %BabyBlue,0.54,0.81,0.94;%
+%\definecolor{dkgreen}{rgb}{0.0, 0.6, 0.0}                               % Code comment color
+%\definecolor{ocre}{HTML}{F16723}
+%\definecolor{BabyBlue-HTML}{HTML}{89CFF0}                               %BabyBlue,0.54,0.81,0.94;%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\definecolor{java-keyword}{rgb}{1.0, 0.0, 0.67}                         % Code keyword text color
-\definecolor{user-keyword}{rgb}{0.5, 0.0, 0.67}                         % Code keyword text color
-\definecolor{javapurple}{rgb}{0.5, 0.0, 0.35}                           % Old code keyword text color
-\definecolor{listinggray}{gray}{0.9}                                    % Code/listings background color
+\customcolordef{java-keyword}{rgb}{1.0, 0.0, 0.67}                         % Code keyword text color
+\customcolordef{user-keyword}{rgb}{0.5, 0.0, 0.67}                         % Code keyword text color
+\customcolordef{javapurple}{rgb}{0.5, 0.0, 0.35}                           % Old code keyword text color
+\customcolordef{listinggray}{gray}{0.9}                                    % Code/listings background color
 %-------------------------------------------------------------------------------------------------------------------------------%
-\definecolor{BaylorGreen}{HTML}{2B4C3F}
-\definecolor{BaylorGold}{HTML}{FCB514}
-\definecolor{BaylorGoldCMYK}{cmyk}{0.0, 0.21, 1.0, 0.0}         % Coverpage light color
-\definecolor{BaylorGreenCMYK}{cmyk}{0.8, 0.0, 0.63, 0.75}               % Coverpage dark color
-\definecolor{Matlab-autofixhighlight}{RGB}{238,225,180}         % autofix highlight
-\definecolor{Matlab-autohighlight}{RGB}{202,232,232}                    % auto highlight
-\definecolor{Matlab-colback}{RGB}{252, 252, 220}                        % Matlab figure background
-\definecolor{Matlab-commentcolor}{RGB}{34,139,34}                       % Matlab figure background
-\definecolor{Matlab-errortextcolor}{RGB}{230, 0, 0}                     % error text
-\definecolor{Matlab-figcolback}{rgb}{0.27, 0.42, 0.61}          % Matlab figure background
-\definecolor{Matlab-keywordcolor}{RGB}{0, 0, 255}                       % Matlab figure background
-\definecolor{Matlab-partialstringcolor}{RGB}{178,0,0}                   % unterminated strings
-\definecolor{Matlab-sharedscopecolor}{RGB}{0,163,163}                   % shared scope highlight
-\definecolor{Matlab-stringcolor}{RGB}{160,32,240}                       % Matlab figure background
-\definecolor{Matlab-syscmdcolor}{RGB}{178, 140, 0}                      % Matlab figure background
-\definecolor{Matlab-warningscolor}{RGB}{255,148,0}                      % warnings
-\definecolor{Matlab-warningtextcolor}{RGB}{255, 100, 0}         % warning text
+\customcolordef{BaylorGreen}{HTML}{2B4C3F}
+\customcolordef{BaylorGold}{HTML}{FCB514}
+\customcolordef{BaylorGoldCMYK}{cmyk}{0.0, 0.21, 1.0, 0.0}                 % Coverpage light color
+\customcolordef{BaylorGreenCMYK}{cmyk}{0.8, 0.0, 0.63, 0.75}               % Coverpage dark color
+\customcolordef{Matlab-autofixhighlight}{RGB}{238,225,180}                 % autofix highlight
+\customcolordef{Matlab-autohighlight}{RGB}{202,232,232}                    % auto highlight
+\customcolordef{Matlab-colback}{RGB}{252, 252, 220}                        % Matlab figure background
+\customcolordef{Matlab-commentcolor}{RGB}{34,139,34}                       % Matlab figure background
+\customcolordef{Matlab-errortextcolor}{RGB}{230, 0, 0}                     % error text
+\customcolordef{Matlab-figcolback}{rgb}{0.27, 0.42, 0.61}                  % Matlab figure background
+\customcolordef{Matlab-keywordcolor}{RGB}{0, 0, 255}                       % Matlab figure background
+\customcolordef{Matlab-partialstringcolor}{RGB}{178,0,0}                   % unterminated strings
+\customcolordef{Matlab-sharedscopecolor}{RGB}{0,163,163}                   % shared scope highlight
+\customcolordef{Matlab-stringcolor}{RGB}{160,32,240}                       % Matlab figure background
+\customcolordef{Matlab-syscmdcolor}{RGB}{178, 140, 0}                      % Matlab figure background
+\customcolordef{Matlab-warningscolor}{RGB}{255,148,0}                      % warnings
+\customcolordef{Matlab-warningtextcolor}{RGB}{255, 100, 0}                 % warning text
+\customcolordef{Matlab-terminal-back}{rgb}{0.11,0.23,0.60}                 % DarkBlue used in classic Matlab terminal listings %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************ Named color mix definitions **************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------- Standardized Color Mix Definitions --------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{stdgray}{black!50!white}
-\colorlet{stddkgray}{black!75!white}
-\colorlet{stdltgray}{black!25!white}
-\colorlet{stdbackground}{blue!5!yellow!10!white}
-\colorlet{stdblue}{blue!75!black}
-\colorlet{stddkblue}{blue!50!black}
-\colorlet{stdDKblue}{blue!25!black}
-\colorlet{stdltblue}{blue!3!white}
-\colorlet{stddeepskyblue}{deepskyblue!60!black}
-\colorlet{stdbluegreen}{blue!50!green!5!white}
-\colorlet{stddkbluegreen}{blue!60!green!70!black}
-\colorlet{stdltcyan}{cyan!5!white}
-\colorlet{stddkcyan}{cyan!50!black}
-\colorlet{stdDKcyan}{cyan!25!black}
-\colorlet{stdforestgreen}{ForestGreen!75!black}
-\colorlet{stdltforestgreen}{ForestGreen!55!white}
-\colorlet{stddkforestgreen}{ForestGreen!50!black}
-\colorlet{SlateForestGreen}{DarkSlateGray!75!ForestGreen}
-\colorlet{stdSeaGreen}{SeaGreen!70!Green!75!black}
-\colorlet{stdforestyellow}{ForestGreen!50!yellow!30!white}%{yellow!10!ForestGreen!5!white}
-\colorlet{stdgold}{Goldenrod!50!Gold}
-\colorlet{stdjavapurple}{javapurple!75!black}
-\colorlet{stdDKgreen}{green!25!black}
-\colorlet{stddkgreen}{green!50!black}
-\colorlet{stdltgreen}{green!5!white}
-\colorlet{stdgreen}{green!75!black}
-\colorlet{stdGreen}{Green!70!black}
-\colorlet{stdltnavy}{NavyBlue!10!white}
-\colorlet{stdmaroon}{Maroon!75!black}
-\colorlet{stdpeach}{Peach!10!white}
-\colorlet{stddkpeach}{red!50!yellow!50!black}
-\colorlet{stdltpeach}{red!50!yellow!5!white}
-\colorlet{stdred}{red!75!black}
-\colorlet{stddkred}{red!50!black}
-\colorlet{stdltred}{red!5!white}
-\colorlet{stdyellow}{yellow!50!black}
-\colorlet{stdltyellow}{yellow!5!white}
-\colorlet{stdltyellow2}{yellow!10!white}
+%----------------------------------------------- Standardized Color Mix Definitions --------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\colormixdef{stdgray}{black!50!white}
+\colormixdef{stddkgray}{black!75!white}
+\colormixdef{stdltgray}{black!25!white}
+\colormixdef{stdLTgray}{black!10!white}
+\colormixdef{stdbackground}{blue!5!yellow!10!white}
+\colormixdef{stddkbackground}{blue!5!yellow!17!white}
+\colormixdef{stdDKbackground}{blue!5!yellow!25!white}
+\colormixdef{stdltbackground}{LightYellow1}%{stdltyellow}{Ivory1}
+\colormixdef{stdblue}{blue!75!black}
+\colormixdef{stddkblue}{blue!50!black}
+\colormixdef{stdDKblue}{blue!25!black}
+\colormixdef{stdltblue}{blue!25!white}
+\colormixdef{stdLTblue}{blue!3!white}
+\colormixdef{stddeepskyblue}{deepskyblue!60!black}
+\colormixdef{stdbluegreen}{blue!50!green!5!white}
+\colormixdef{stddkbluegreen}{blue!60!green!70!black}
+\colormixdef{stdltcyan}{cyan!5!white}
+\colormixdef{stddkcyan}{cyan!50!black}
+\colormixdef{stdDKcyan}{cyan!25!black}
+\colormixdef{stdforestgreen}{ForestGreen!75!black}
+\colormixdef{stdltforestgreen}{ForestGreen!50!white}
+\colormixdef{stdLTforestgreen}{ForestGreen!15!white}
+\colormixdef{stddkforestgreen}{ForestGreen!50!black}
+\colormixdef{SlateForestGreen}{DarkSlateGray!75!ForestGreen}
+\colormixdef{stdSeaGreen}{SeaGreen!70!Green!75!black}
+\colormixdef{stdforestyellow}{ForestGreen!50!yellow!30!white}%{yellow!10!ForestGreen!5!white}
+\colormixdef{stdgold}{Goldenrod!50!Gold}
+\colormixdef{stdjavapurple}{javapurple!75!black}
+\colormixdef{stdDKgreen}{green!25!black}
+\colormixdef{stddkgreen}{green!50!black}
+\colormixdef{stdltgreen}{green!5!white}
+\colormixdef{stdgreen}{green!75!black}
+\colormixdef{stdGreen}{Green!70!black}
+\colormixdef{stdltnavy}{NavyBlue!10!white}
+\colormixdef{stdmaroon}{Maroon!75!black}
+\colormixdef{stdpeach}{Peach!10!white}
+\colormixdef{stddkpeach}{red!50!yellow!50!black}
+\colormixdef{stdltpeach}{red!50!yellow!5!white}
+\colormixdef{stdred}{red!75!black}
+\colormixdef{stddkred}{red!50!black}
+\colormixdef{stdltred}{red!5!white}
+\colormixdef{stdyellow}{yellow!50!black}
+\colormixdef{stdltyellow}{yellow!5!white}
+\colormixdef{stdltyellow2}{yellow!10!white}
+\colormixdef{stdorangered}{orangered4!75!black}
+\colormixdef{stddkorangered}{orangered4!50!black}
+\colormixdef{stdltorangered}{orangered4!10!white}
+\colormixdef{stdLTorangered}{orangered4!5!white}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{stddkgreen-tint}{green!50!black!50!white}
-\colorlet{stddkgreen-lowtint}{green!50!black!20!white}
-\colorlet{stddkgreen-medtint}{stddkgreen-lowtint!75!black}
-\colorlet{stddkblue-tint}{blue!50!black!20!white}%{blue!50!black!50!white}
-\colorlet{stddkblue-lowtint}{blue!50!black!20!white}
-\colorlet{stddkblue-medtint}{stddkblue-lowtint!75!black}%{blue!37!black!40!white}%
-\colorlet{stddkred-tint}{red!50!black!50!white}
-\colorlet{stddkred-lowtint}{red!50!black!20!white}
+\colormixdef{stddkgreen-tint}{green!50!black!50!white}
+\colormixdef{stddkgreen-lowtint}{green!50!black!20!white}
+\colormixdef{stddkgreen-medtint}{stddkgreen-lowtint!75!black}
+\colormixdef{stddkblue-tint}{blue!50!black!50!white}%{blue!50!black!50!white}
+\colormixdef{stddkblue-lowtint}{blue!50!black!20!white}
+\colormixdef{stddkblue-hightint}{blue!50!black!10!white}
+\colormixdef{stddkblue-medtint}{stddkblue-lowtint!75!black}%{blue!37!black!40!white}%
+\colormixdef{stddkred-tint}{red!50!black!50!white}
+\colormixdef{stddkred-lowtint}{red!50!black!20!white}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{TintedSlateGray}{DarkSlateGray!10!white}
-\colorlet{diagram-background}{stdblue!1!white}
-\colorlet{inlineboxgray}{grey85}
-\colorlet{inlineboxblue}{azure2!75!grey85}
-\colorlet{hyperlinkcolor}{blue!33!green}
-\colorlet{Matlab-autohighlight-shade}{Matlab-autohighlight!75!black}
+\colormixdef{TintedSlateGray}{DarkSlateGray!10!white}
+\colormixdef{diagram-background}{stdblue!1!white}
+\colormixdef{inlineboxgray}{grey85}
+\colormixdef{inlineboxblue}{azure2!75!grey85}
+\colormixdef{inlineboxltblue}{stddkblue-hightint}
+\colormixdef{hyperlinkcolor}{blue!33!green}
+\colormixdef{Matlab-autohighlight-shade}{Matlab-autohighlight!75!black}
+\colormixdef{listboxgray}{black!62!white}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/Universal Color Property Value Containers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\colorlet{default-colback}{stdbackground}
-\colorlet{default-colbackupper}{stdbackground}
-\colorlet{default-colbacklower}{stdbackground}
-\colorlet{default-colbacktitle}{stdgray}
-\colorlet{default-colbackinterior}{stdbackground}
-\colorlet{default-colframe}{stddkblue}
-\colorlet{default-colleftframe}{stddkblue}
-\colorlet{default-colrightframe}{stddkblue}
-\colorlet{default-colframeborder}{black}
-\colorlet{default-colinteriorborder}{black}
-\colorlet{default-coltitle}{white}
-\colorlet{default-colupper}{black}
-\colorlet{default-collower}{black}
-\colorlet{default-coltext}{black}
-\colorlet{default-coltextshadow}{Cyan}
-\colorlet{default-colboxshadow}{stdgray}
-\colorlet{default-coldraw}{stddkblue}
-\colorlet{default-colfill}{stddkblue}
-\colorlet{default-colfilltext}{white}
-\colorlet{default-colfillborder}{black}
-\colorlet{default-rulecolor}{stdblue}
-\colorlet{default-coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{current-colback}{stdbackground}
-\colorlet{current-colbackupper}{stdgold}
-\colorlet{current-colbacklower}{stdgold}
-\colorlet{current-colbacktitle}{stdgray}
-\colorlet{current-colbackinterior}{stdbackground}
-\colorlet{current-colframe}{stddkgreen}
-\colorlet{current-colleftframe}{stddkblue}
-\colorlet{current-colrightframe}{stddkblue}
-\colorlet{current-colframeborder}{black}
-\colorlet{current-colinteriorborder}{black}
-\colorlet{current-coltitle}{stdgreen}
-\colorlet{current-colupper}{black}
-\colorlet{current-collower}{black}
-\colorlet{current-coltext}{black}
-\colorlet{current-coltextshadow}{green}
-\colorlet{current-colboxshadow}{stdgray}
-\colorlet{current-coldraw}{stdgreen}
-\colorlet{current-colfill}{stddkgreen}
-\colorlet{current-colfilltext}{white}
-\colorlet{current-colfillborder}{black}
-\colorlet{current-rulecolor}{black}
-\colorlet{current-coldoubleline}{green}
+\colorsetdef{default}{colback}{stdbackground}
+\colorsetdef{default}{colbackupper}{stdbackground}
+\colorsetdef{default}{colbacklower}{stdbackground}
+\colorsetdef{default}{colbacktitle}{stdgray}
+\colorsetdef{default}{colbackinterior}{stdbackground}
+\colorsetdef{default}{colframe}{stddkblue}
+\colorsetdef{default}{colleftframe}{stddkblue}
+\colorsetdef{default}{colrightframe}{stddkblue}
+\colorsetdef{default}{colframeborder}{black}
+\colorsetdef{default}{colinteriorborder}{black}
+\colorsetdef{default}{coltitle}{white}
+\colorsetdef{default}{colupper}{black}
+\colorsetdef{default}{collower}{black}
+\colorsetdef{default}{coltext}{black}
+\colorsetdef{default}{coltextshadow}{Cyan}
+\colorsetdef{default}{colboxshadow}{stdgray}
+\colorsetdef{default}{coldraw}{stddkblue}
+\colorsetdef{default}{colfill}{stddkblue}
+\colorsetdef{default}{colfilltext}{white}
+\colorsetdef{default}{colfillborder}{black}
+\colorsetdef{default}{rulecolor}{stdblue}
+\colorsetdef{default}{coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{fillednumshape-colfill}{current-colfill}
-\colorlet{fillednumshape-colfilltext}{current-colfilltext}
-\colorlet{fillednumshape-colfillborder}{current-colfillborder}
+\colorsetdef{current}{colback}{stdbackground}
+\colorsetdef{current}{colbackupper}{stdgold}
+\colorsetdef{current}{colbacklower}{stdgold}
+\colorsetdef{current}{colbacktitle}{stdgray}
+\colorsetdef{current}{colbackinterior}{stdbackground}
+\colorsetdef{current}{colframe}{stddkgreen}
+\colorsetdef{current}{colleftframe}{stddkblue}
+\colorsetdef{current}{colrightframe}{stddkblue}
+\colorsetdef{current}{colframeborder}{black}
+\colorsetdef{current}{colinteriorborder}{black}
+\colorsetdef{current}{coltitle}{stdgreen}
+\colorsetdef{current}{colupper}{black}
+\colorsetdef{current}{collower}{black}
+\colorsetdef{current}{coltext}{black}
+\colorsetdef{current}{coltextshadow}{green}
+\colorsetdef{current}{colboxshadow}{stdgray}
+\colorsetdef{current}{coldraw}{stdgreen}
+\colorsetdef{current}{colfill}{stddkgreen}
+\colorsetdef{current}{colfilltext}{white}
+\colorsetdef{current}{colfillborder}{black}
+\colorsetdef{current}{rulecolor}{black}
+\colorsetdef{current}{coldoubleline}{green}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\colorsetdef{fillednumshape}{colfill}{current-colfill}
+\colorsetdef{fillednumshape}{colfilltext}{current-colfilltext}
+\colorsetdef{fillednumshape}{colfillborder}{current-colfillborder}
 %*******************************************************************************************************************************%
 %************************************ Application Specific Color Property Value Containers *************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{definitionColorset-colback}{stdbackground}
-\colorlet{definitionColorset-colbackupper}{stdbackground}
-\colorlet{definitionColorset-colbacklower}{stdbackground}
-\colorlet{definitionColorset-colbacktitle}{stdblue}
-\colorlet{definitionColorset-colbacksubtitle}{stdgray}
-\colorlet{definitionColorset-colbackinterior}{stdbackground}
-\colorlet{definitionColorset-colframe}{stdblue}
-\colorlet{definitionColorset-colleftframe}{stdblue}
-\colorlet{definitionColorset-colrightframe}{stdblue}
-\colorlet{definitionColorset-colframeborder}{black}
-\colorlet{definitionColorset-colinteriorborder}{black}
-\colorlet{definitionColorset-coltitle}{white}
-\colorlet{definitionColorset-colupper}{black}
-\colorlet{definitionColorset-collower}{black}
-\colorlet{definitionColorset-coltext}{black}
-\colorlet{definitionColorset-coltextshadow}{cyan}
-\colorlet{definitionColorset-colboxshadow}{stdgray}
-\colorlet{definitionColorset-coldraw}{stdblue}
-\colorlet{definitionColorset-colfill}{stdblue}
-\colorlet{definitionColorset-colfilltext}{white}
-\colorlet{definitionColorset-colfillborder}{black}
-\colorlet{definitionColorset-rulecolor}{stdblue}
-\colorlet{definitionColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{definition}{colback}{stdbackground}
+\tcbcolorsetdef{definition}{colbackupper}{stdbackground}
+\tcbcolorsetdef{definition}{colbacklower}{stdbackground}
+\tcbcolorsetdef{definition}{colbacktitle}{stdblue}
+\tcbcolorsetdef{definition}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{definition}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{definition}{colframe}{stdblue}
+\tcbcolorsetdef{definition}{colleftframe}{stdblue}
+\tcbcolorsetdef{definition}{colrightframe}{stdblue}
+\tcbcolorsetdef{definition}{colframeborder}{black}
+\tcbcolorsetdef{definition}{colinteriorborder}{black}
+\tcbcolorsetdef{definition}{coltitle}{white}
+\tcbcolorsetdef{definition}{colupper}{black}
+\tcbcolorsetdef{definition}{collower}{black}
+\tcbcolorsetdef{definition}{coltext}{black}
+\tcbcolorsetdef{definition}{coltextshadow}{cyan}
+\tcbcolorsetdef{definition}{colboxshadow}{stdgray}
+\tcbcolorsetdef{definition}{coldraw}{stdblue}
+\tcbcolorsetdef{definition}{colfill}{stdblue}
+\tcbcolorsetdef{definition}{colfilltext}{white}
+\tcbcolorsetdef{definition}{colfillborder}{black}
+\tcbcolorsetdef{definition}{rulecolor}{stdblue}
+\tcbcolorsetdef{definition}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{IBPColorset-colback}{stdbackground}
-\colorlet{IBPColorset-colbackupper}{stdbackground}
-\colorlet{IBPColorset-colbacklower}{stdbackground}
-\colorlet{IBPColorset-colbacktitle}{stdgray}
-\colorlet{IBPColorset-colbacksubtitle}{stdgray}
-\colorlet{IBPColorset-colbackinterior}{stdbackground}
-\colorlet{IBPColorset-colframe}{black}
-\colorlet{IBPColorset-colleftframe}{stdblue}
-\colorlet{IBPColorset-colrightframe}{stdblue}
-\colorlet{IBPColorset-colframeborder}{stdblue}
-\colorlet{IBPColorset-colinteriorborder}{black}
-\colorlet{IBPColorset-coltitle}{white}
-\colorlet{IBPColorset-coltext}{black}
-\colorlet{IBPColorset-colupper}{black}
-\colorlet{IBPColorset-collower}{black}
-\colorlet{IBPColorset-coltextshadow}{black}
-\colorlet{IBPColorset-colboxshadow}{stdgray}
-\colorlet{IBPColorset-coldraw}{stdblue}
-\colorlet{IBPColorset-colfill}{stdblue}
-\colorlet{IBPColorset-colfilltext}{white}
-\colorlet{IBPColorset-colfillborder}{black}
-\colorlet{IBPColorset-rulecolor}{green}
-\colorlet{IBPColorset-colarrow}{stdblue}
-\colorlet{IBPColorset-colline}{stdblue}
-\colorlet{IBPColorset-colsymbols}{stdDKblue}
-\colorlet{IBPColorset-coldoublelines}{green}
-\colorlet{IBPColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{IBP}{colback}{stdbackground}
+\tcbcolorsetdef{IBP}{colbackupper}{stdbackground}
+\tcbcolorsetdef{IBP}{colbacklower}{stdbackground}
+\tcbcolorsetdef{IBP}{colbacktitle}{stdgray}
+\tcbcolorsetdef{IBP}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{IBP}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{IBP}{colframe}{black}
+\tcbcolorsetdef{IBP}{colleftframe}{stdblue}
+\tcbcolorsetdef{IBP}{colrightframe}{stdblue}
+\tcbcolorsetdef{IBP}{colframeborder}{stdblue}
+\tcbcolorsetdef{IBP}{colinteriorborder}{black}
+\tcbcolorsetdef{IBP}{coltitle}{white}
+\tcbcolorsetdef{IBP}{coltext}{black}
+\tcbcolorsetdef{IBP}{colupper}{black}
+\tcbcolorsetdef{IBP}{collower}{black}
+\tcbcolorsetdef{IBP}{coltextshadow}{black}
+\tcbcolorsetdef{IBP}{colboxshadow}{stdgray}
+\tcbcolorsetdef{IBP}{coldraw}{stdblue}
+\tcbcolorsetdef{IBP}{colfill}{stdblue}
+\tcbcolorsetdef{IBP}{colfilltext}{white}
+\tcbcolorsetdef{IBP}{colfillborder}{black}
+\tcbcolorsetdef{IBP}{rulecolor}{green}
+\tcbcolorsetdef{IBP}{colarrow}{stdblue}
+\tcbcolorsetdef{IBP}{colline}{stdblue}
+\tcbcolorsetdef{IBP}{colsymbols}{stdDKblue}
+\tcbcolorsetdef{IBP}{coldoublelines}{green}
+\tcbcolorsetdef{IBP}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{MatlabColorset-colback}{Matlab-figcolback}
-\colorlet{MatlabColorset-colbackupper}{Matlab-figcolback}
-\colorlet{MatlabColorset-colbacklower}{Matlab-figcolback}
-\colorlet{MatlabColorset-colbacktitle}{stdgray}
-\colorlet{MatlabColorset-colbacksubtitle}{stdgray}
-\colorlet{MatlabColorset-colbackinterior}{stdgray}
-\colorlet{MatlabColorset-colframe}{black}
-\colorlet{MatlabColorset-colleftframe}{stdblue}
-\colorlet{MatlabColorset-colrightframe}{stdblue}
-\colorlet{MatlabColorset-colframeborder}{LemonChiffon3}%{Matlab-colback}%{Dandelion!85!black}%{Matlab-figcolback}
-\colorlet{MatlabColorset-colinteriorborder}{black}
-\colorlet{MatlabColorset-coltitle}{white}
-\colorlet{MatlabColorset-colupper}{black}
-\colorlet{MatlabColorset-collower}{black}
-\colorlet{MatlabColorset-coltext}{black}
-\colorlet{MatlabColorset-coltextshadow}{black}
-\colorlet{MatlabColorset-colboxshadow}{stdgray}
-\colorlet{MatlabColorset-coldraw}{stdblue}
-\colorlet{MatlabColorset-colfill}{stdblue}
-\colorlet{MatlabColorset-colfilltext}{Matlab-colback}
-\colorlet{MatlabColorset-colfillborder}{black}
-\colorlet{MatlabColorset-rulecolor}{black}
-\colorlet{MatlabColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{LD}{colback}{stdbackground}
+\tcbcolorsetdef{LD}{colbackupper}{stdbackground}
+\tcbcolorsetdef{LD}{colbacklower}{stdbackground}
+\tcbcolorsetdef{LD}{colbacktitle}{stdgray}
+\tcbcolorsetdef{LD}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{LD}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{LD}{colframe}{black}
+\tcbcolorsetdef{LD}{colleftframe}{stdblue}
+\tcbcolorsetdef{LD}{colrightframe}{stdblue}
+\tcbcolorsetdef{LD}{colframeborder}{stdblue}
+\tcbcolorsetdef{LD}{colinteriorborder}{black}
+\tcbcolorsetdef{LD}{coltitle}{white}
+\tcbcolorsetdef{LD}{colupper}{black}
+\tcbcolorsetdef{LD}{collower}{black}
+\tcbcolorsetdef{LD}{coltext}{black}
+\tcbcolorsetdef{LD}{coltextshadow}{black}
+\tcbcolorsetdef{LD}{colboxshadow}{stdgray}
+\tcbcolorsetdef{LD}{coldraw}{stdblue}
+\tcbcolorsetdef{LD}{colfill}{stdblue}
+\tcbcolorsetdef{LD}{colfilltext}{white}
+\tcbcolorsetdef{LD}{colfillborder}{black}
+\tcbcolorsetdef{LD}{rulecolor}{stdblue}
+\tcbcolorsetdef{LD}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{pldColorset-colback}{stdbackground}
-\colorlet{pldColorset-colbackupper}{stdbackground}
-\colorlet{pldColorset-colbacklower}{stdbackground}
-\colorlet{pldColorset-colbacktitle}{stdgray}
-\colorlet{pldColorset-colbacksubtitle}{stdgray}
-\colorlet{pldColorset-colbackinterior}{stdbackground}
-\colorlet{pldColorset-colframe}{black}
-\colorlet{pldColorset-colleftframe}{stdblue}
-\colorlet{pldColorset-colrightframe}{stdblue}
-\colorlet{pldColorset-colframeborder}{stdblue}
-\colorlet{pldColorset-colinteriorborder}{black}
-\colorlet{pldColorset-coltitle}{white}
-\colorlet{pldColorset-colupper}{black}
-\colorlet{pldColorset-collower}{black}
-\colorlet{pldColorset-coltext}{black}
-\colorlet{pldColorset-coltextshadow}{black}
-\colorlet{pldColorset-colboxshadow}{stdgray}
-\colorlet{pldColorset-coldraw}{stdblue}
-\colorlet{pldColorset-colfill}{stdblue}
-\colorlet{pldColorset-colfilltext}{white}
-\colorlet{pldColorset-colfillborder}{black}
-\colorlet{pldColorset-rulecolor}{stdblue}
-\colorlet{pldColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{Matlab}{colback}{Matlab-figcolback}
+\tcbcolorsetdef{Matlab}{colbackupper}{Matlab-figcolback}
+\tcbcolorsetdef{Matlab}{colbacklower}{Matlab-figcolback}
+\tcbcolorsetdef{Matlab}{colbacktitle}{stdgray}
+\tcbcolorsetdef{Matlab}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{Matlab}{colbackinterior}{stdgray}
+\tcbcolorsetdef{Matlab}{colframe}{black}
+\tcbcolorsetdef{Matlab}{colleftframe}{stdblue}
+\tcbcolorsetdef{Matlab}{colrightframe}{stdblue}
+\tcbcolorsetdef{Matlab}{colframeborder}{LemonChiffon3}%{Matlab-colback}%{Dandelion!85!black}%{Matlab-figcolback}
+\tcbcolorsetdef{Matlab}{colinteriorborder}{black}
+\tcbcolorsetdef{Matlab}{coltitle}{white}
+\tcbcolorsetdef{Matlab}{colupper}{black}
+\tcbcolorsetdef{Matlab}{collower}{black}
+\tcbcolorsetdef{Matlab}{coltext}{black}
+\tcbcolorsetdef{Matlab}{coltextshadow}{black}
+\tcbcolorsetdef{Matlab}{colboxshadow}{stdgray}
+\tcbcolorsetdef{Matlab}{coldraw}{stdblue}
+\tcbcolorsetdef{Matlab}{colfill}{stdblue}
+\tcbcolorsetdef{Matlab}{colfilltext}{Matlab-colback}
+\tcbcolorsetdef{Matlab}{colfillborder}{black}
+\tcbcolorsetdef{Matlab}{rulecolor}{black}
+\tcbcolorsetdef{Matlab}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{problemColorset-colback}{stdltred}
-\colorlet{problemColorset-colbackupper}{stdbackground}
-\colorlet{problemColorset-colbacklower}{stdbackground}
-\colorlet{problemColorset-colbacktitle}{stddkred}
-\colorlet{problemColorset-colbacksubtitle}{stdgray}
-\colorlet{problemColorset-colbackinterior}{stdbackground}
-\colorlet{problemColorset-colframe}{stddkred}
-\colorlet{problemColorset-colleftframe}{stddkred}
-\colorlet{problemColorset-colrightframe}{stddkred}
-\colorlet{problemColorset-colframeborder}{black}
-\colorlet{problemColorset-colinteriorborder}{black}
-\colorlet{problemColorset-coltitle}{stdmaroon}
-\colorlet{problemColorset-colupper}{black}
-\colorlet{problemColorset-collower}{black}
-\colorlet{problemColorset-coltext}{black}
-\colorlet{problemColorset-coltextshadow}{stdltred}
-\colorlet{problemColorset-colboxshadow}{stdgray}
-\colorlet{problemColorset-coldraw}{stddkred}
-\colorlet{problemColorset-colfill}{stddkred}
-\colorlet{problemColorset-colfilltext}{white}
-\colorlet{problemColorset-colfillborder}{black}
-\colorlet{problemColorset-rulecolor}{stdltred}
-\colorlet{problemColorset-coldoubleline}{stdyellow}%
+\tcbcolorsetdef{PLD}{colback}{stdbackground}
+\tcbcolorsetdef{PLD}{colbackupper}{stdbackground}
+\tcbcolorsetdef{PLD}{colbacklower}{stdbackground}
+\tcbcolorsetdef{PLD}{colbacktitle}{stdgray}
+\tcbcolorsetdef{PLD}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{PLD}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{PLD}{colframe}{black}
+\tcbcolorsetdef{PLD}{colleftframe}{stdblue}
+\tcbcolorsetdef{PLD}{colrightframe}{stdblue}
+\tcbcolorsetdef{PLD}{colframeborder}{stdblue}
+\tcbcolorsetdef{PLD}{colinteriorborder}{black}
+\tcbcolorsetdef{PLD}{coltitle}{white}
+\tcbcolorsetdef{PLD}{colupper}{black}
+\tcbcolorsetdef{PLD}{collower}{black}
+\tcbcolorsetdef{PLD}{coltext}{black}
+\tcbcolorsetdef{PLD}{coltextshadow}{black}
+\tcbcolorsetdef{PLD}{colboxshadow}{stdgray}
+\tcbcolorsetdef{PLD}{coldraw}{stdblue}
+\tcbcolorsetdef{PLD}{colfill}{stdblue}
+\tcbcolorsetdef{PLD}{colfilltext}{white}
+\tcbcolorsetdef{PLD}{colfillborder}{black}
+\tcbcolorsetdef{PLD}{rulecolor}{stdblue}
+\tcbcolorsetdef{PLD}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{solutionColorset-colback}{stdpeach}
-\colorlet{solutionColorset-colbackupper}{stdbackground}
-\colorlet{solutionColorset-colbacklower}{stdbackground}
-\colorlet{solutionColorset-colbacktitle}{stddkred}
-\colorlet{solutionColorset-colbacksubtitle}{stdgray}
-\colorlet{solutionColorset-colbackinterior}{stdbackground}
-\colorlet{solutionColorset-colframe}{black}
-\colorlet{solutionColorset-colleftframe}{stddkred}
-\colorlet{solutionColorset-colrightframe}{stddkred}
-\colorlet{solutionColorset-colframeborder}{stddkred}
-\colorlet{solutionColorset-colinteriorborder}{black}
-\colorlet{solutionColorset-coltitle}{white}
-\colorlet{solutionColorset-colupper}{black}
-\colorlet{solutionColorset-collower}{black}
-\colorlet{solutionColorset-coltext}{black}
-\colorlet{solutionColorset-coltextshadow}{stddkred}
-\colorlet{solutionColorset-colboxshadow}{stdgray}
-\colorlet{solutionColorset-coldraw}{stddkred}
-\colorlet{solutionColorset-colfill}{stddkred}
-\colorlet{solutionColorset-colfilltext}{white}
-\colorlet{solutionColorset-colfillborder}{black}
-\colorlet{solutionColorset-rulecolor}{stdltred}
-\colorlet{solutionColorset-coldoubleline}{stdyellow}
+\tcbcolorsetdef{problem}{colback}{stdltred}
+\tcbcolorsetdef{problem}{colbackupper}{stdbackground}
+\tcbcolorsetdef{problem}{colbacklower}{stdbackground}
+\tcbcolorsetdef{problem}{colbacktitle}{stddkred}
+\tcbcolorsetdef{problem}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{problem}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{problem}{colframe}{stddkred}
+\tcbcolorsetdef{problem}{colleftframe}{stddkred}
+\tcbcolorsetdef{problem}{colrightframe}{stddkred}
+\tcbcolorsetdef{problem}{colframeborder}{black}
+\tcbcolorsetdef{problem}{colinteriorborder}{black}
+\tcbcolorsetdef{problem}{coltitle}{stdmaroon}
+\tcbcolorsetdef{problem}{colupper}{black}
+\tcbcolorsetdef{problem}{collower}{black}
+\tcbcolorsetdef{problem}{coltext}{black}
+\tcbcolorsetdef{problem}{coltextshadow}{stdltred}
+\tcbcolorsetdef{problem}{colboxshadow}{stdgray}
+\tcbcolorsetdef{problem}{coldraw}{stddkred}
+\tcbcolorsetdef{problem}{colfill}{stddkred}
+\tcbcolorsetdef{problem}{colfilltext}{white}
+\tcbcolorsetdef{problem}{colfillborder}{black}
+\tcbcolorsetdef{problem}{rulecolor}{stdltred}
+\tcbcolorsetdef{problem}{coldoubleline}{stdyellow}%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbbashboxColorset-colback}{black}
-\colorlet{tcbbashboxColorset-colbackupper}{black}
-\colorlet{tcbbashboxColorset-colbacklower}{stdbackground}
-\colorlet{tcbbashboxColorset-colbacktitle}{stdgray}
-\colorlet{tcbbashboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbbashboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcbbashboxColorset-colframe}{black}%{Matlab-figcolback}
-\colorlet{tcbbashboxColorset-colleftframe}{black}
-\colorlet{tcbbashboxColorset-colrightframe}{black}
-\colorlet{tcbbashboxColorset-colframeborder}{Matlab-figcolback}%{black}
-\colorlet{tcbbashboxColorset-colinteriorborder}{black}
-\colorlet{tcbbashboxColorset-coltitle}{white}
-\colorlet{tcbbashboxColorset-colupper}{black}
-\colorlet{tcbbashboxColorset-collower}{black}
-\colorlet{tcbbashboxColorset-coltext}{white}
-\colorlet{tcbbashboxColorset-coltextshadow}{black}
-\colorlet{tcbbashboxColorset-colboxshadow}{stdgray}
-\colorlet{tcbbashboxColorset-coldraw}{black}
-\colorlet{tcbbashboxColorset-colfill}{stdblue}
-\colorlet{tcbbashboxColorset-colfilltext}{white}
-\colorlet{tcbbashboxColorset-colfillborder}{black}
-\colorlet{tcbbashboxColorset-rulecolor}{green}
-\colorlet{tcbbashboxColorset-segmentationcol}{Matlab-figcolback}
-\colorlet{tcbbashboxColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{solution}{colback}{stdpeach}
+\tcbcolorsetdef{solution}{colbackupper}{stdbackground}
+\tcbcolorsetdef{solution}{colbacklower}{stdbackground}
+\tcbcolorsetdef{solution}{colbacktitle}{stddkred}
+\tcbcolorsetdef{solution}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{solution}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{solution}{colframe}{black}
+\tcbcolorsetdef{solution}{colleftframe}{stddkred}
+\tcbcolorsetdef{solution}{colrightframe}{stddkred}
+\tcbcolorsetdef{solution}{colframeborder}{stddkred}
+\tcbcolorsetdef{solution}{colinteriorborder}{black}
+\tcbcolorsetdef{solution}{coltitle}{white}
+\tcbcolorsetdef{solution}{colupper}{black}
+\tcbcolorsetdef{solution}{collower}{black}
+\tcbcolorsetdef{solution}{coltext}{black}
+\tcbcolorsetdef{solution}{coltextshadow}{stddkred}
+\tcbcolorsetdef{solution}{colboxshadow}{stdgray}
+\tcbcolorsetdef{solution}{coldraw}{stddkred}
+\tcbcolorsetdef{solution}{colfill}{stddkred}
+\tcbcolorsetdef{solution}{colfilltext}{white}
+\tcbcolorsetdef{solution}{colfillborder}{black}
+\tcbcolorsetdef{solution}{rulecolor}{stdltred}
+\tcbcolorsetdef{solution}{coldoubleline}{stdyellow}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbdiagramColorset-colback}{stdbackground!50!white}
-\colorlet{tcbdiagramColorset-colbackupper}{stdbackground!50!white}
-\colorlet{tcbdiagramColorset-colbacklower}{stdbackground!50!white}
-\colorlet{tcbdiagramColorset-colbacktitle}{stdgray}
-\colorlet{tcbdiagramColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbdiagramColorset-colbackinterior}{stdbackground!50!white}
-\colorlet{tcbdiagramColorset-colframe}{black}
-\colorlet{tcbdiagramColorset-colleftframe}{stdDKblue}
-\colorlet{tcbdiagramColorset-colrightframe}{stdDKblue}
-\colorlet{tcbdiagramColorset-colframeborder}{stdblue}
-\colorlet{tcbdiagramColorset-colinteriorborder}{black}
-\colorlet{tcbdiagramColorset-coltitle}{white}
-\colorlet{tcbdiagramColorset-coltext}{black}
-\colorlet{tcbdiagramColorset-colupper}{black}
-\colorlet{tcbdiagramColorset-collower}{black}
-\colorlet{tcbdiagramColorset-coltextshadow}{stdDKblue}
-\colorlet{tcbdiagramColorset-colboxshadow}{stdgray}
-\colorlet{tcbdiagramColorset-coldraw}{stdblue}
-\colorlet{tcbdiagramColorset-colfill}{stdblue}
-\colorlet{tcbdiagramColorset-colfilltext}{white}
-\colorlet{tcbdiagramColorset-colfillborder}{black}
-\colorlet{tcbdiagramColorset-rulecolor}{stdblue}
-\colorlet{tcbdiagramColorset-coldoubleline}{Cyan}
+\tcbcolorsetdef{tcbbashbox}{colback}{black}
+\tcbcolorsetdef{tcbbashbox}{colbackupper}{black}
+\tcbcolorsetdef{tcbbashbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbbashbox}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbbashbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbbashbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbbashbox}{colframe}{black}%{Matlab-figcolback}
+\tcbcolorsetdef{tcbbashbox}{colleftframe}{black}
+\tcbcolorsetdef{tcbbashbox}{colrightframe}{black}
+\tcbcolorsetdef{tcbbashbox}{colframeborder}{Matlab-figcolback}%{black}
+\tcbcolorsetdef{tcbbashbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbbashbox}{coltitle}{white}
+\tcbcolorsetdef{tcbbashbox}{colupper}{black}
+\tcbcolorsetdef{tcbbashbox}{collower}{black}
+\tcbcolorsetdef{tcbbashbox}{coltext}{white}
+\tcbcolorsetdef{tcbbashbox}{coltextshadow}{black}
+\tcbcolorsetdef{tcbbashbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbbashbox}{coldraw}{black}
+\tcbcolorsetdef{tcbbashbox}{colfill}{stdblue}
+\tcbcolorsetdef{tcbbashbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbbashbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbbashbox}{rulecolor}{green}
+\tcbcolorsetdef{tcbbashbox}{segmentationcol}{Matlab-figcolback}
+\tcbcolorsetdef{tcbbashbox}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbenvironmentColorset-colback}{stdbackground}
-\colorlet{tcbenvironmentColorset-colbackupper}{stdbackground}
-\colorlet{tcbenvironmentColorset-colbacklower}{stdbackground}
-\colorlet{tcbenvironmentColorset-colbacktitle}{stddkgreen}
-\colorlet{tcbenvironmentColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbenvironmentColorset-colbackinterior}{stdbackground}
-\colorlet{tcbenvironmentColorset-colframe}{black}
-\colorlet{tcbenvironmentColorset-colleftframe}{stddkgreen}
-\colorlet{tcbenvironmentColorset-colrightframe}{stddkgreen}
-\colorlet{tcbenvironmentColorset-colframeborder}{black}
-\colorlet{tcbenvironmentColorset-colinteriorborder}{black}
-\colorlet{tcbenvironmentColorset-coltitle}{white}
-\colorlet{tcbenvironmentColorset-colupper}{black}
-\colorlet{tcbenvironmentColorset-collower}{black}
-\colorlet{tcbenvironmentColorset-coltext}{black}
-\colorlet{tcbenvironmentColorset-coltextshadow}{green}
-\colorlet{tcbenvironmentColorset-colboxshadow}{stdgray}
-\colorlet{tcbenvironmentColorset-coldraw}{stdgreen}
-\colorlet{tcbenvironmentColorset-colfill}{stddkgreen}
-\colorlet{tcbenvironmentColorset-colfilltext}{white}
-\colorlet{tcbenvironmentColorset-colfillborder}{black}
-\colorlet{tcbenvironmentColorset-rulecolor}{stddkgreen}
-\colorlet{tcbenvironmentColorset-coldoubleline}{green}
+\tcbcolorsetdef{tcbdiagram}{colback}{stdbackground!50!white}
+\tcbcolorsetdef{tcbdiagram}{colbackupper}{stdbackground!50!white}
+\tcbcolorsetdef{tcbdiagram}{colbacklower}{stdbackground!50!white}
+\tcbcolorsetdef{tcbdiagram}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbdiagram}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbdiagram}{colbackinterior}{stdbackground!50!white}
+\tcbcolorsetdef{tcbdiagram}{colframe}{black}
+\tcbcolorsetdef{tcbdiagram}{colleftframe}{stdDKblue}
+\tcbcolorsetdef{tcbdiagram}{colrightframe}{stdDKblue}
+\tcbcolorsetdef{tcbdiagram}{colframeborder}{stdblue}
+\tcbcolorsetdef{tcbdiagram}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbdiagram}{coltitle}{white}
+\tcbcolorsetdef{tcbdiagram}{coltext}{black}
+\tcbcolorsetdef{tcbdiagram}{colupper}{black}
+\tcbcolorsetdef{tcbdiagram}{collower}{black}
+\tcbcolorsetdef{tcbdiagram}{coltextshadow}{stdDKblue}
+\tcbcolorsetdef{tcbdiagram}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbdiagram}{coldraw}{stdblue}
+\tcbcolorsetdef{tcbdiagram}{colfill}{stdblue}
+\tcbcolorsetdef{tcbdiagram}{colfilltext}{white}
+\tcbcolorsetdef{tcbdiagram}{colfillborder}{black}
+\tcbcolorsetdef{tcbdiagram}{rulecolor}{stdblue}
+\tcbcolorsetdef{tcbdiagram}{coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbequationColorset-colback}{stdltpeach}
-\colorlet{tcbequationColorset-colbackupper}{stdbackground}
-\colorlet{tcbequationColorset-colbacklower}{stdbackground}
-\colorlet{tcbequationColorset-colbacktitle}{stddkred}
-\colorlet{tcbequationColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbequationColorset-colbackinterior}{stdbackground}
-\colorlet{tcbequationColorset-colframe}{stddkred}
-\colorlet{tcbequationColorset-colleftframe}{stddkred}
-\colorlet{tcbequationColorset-colrightframe}{stddkred}
-\colorlet{tcbequationColorset-colframeborder}{stddkred}
-\colorlet{tcbequationColorset-colinteriorborder}{black}
-\colorlet{tcbequationColorset-coltitle}{white}
-\colorlet{tcbequationColorset-colupper}{black}
-\colorlet{tcbequationColorset-collower}{black}
-\colorlet{tcbequationColorset-coltext}{black}
-\colorlet{tcbequationColorset-coltextshadow}{stddkred}
-\colorlet{tcbequationColorset-colboxshadow}{stdgray}
-\colorlet{tcbequationColorset-coldraw}{stddkred}
-\colorlet{tcbequationColorset-colfill}{stddkred}
-\colorlet{tcbequationColorset-colfilltext}{white}
-\colorlet{tcbequationColorset-colfillborder}{black}
-\colorlet{tcbequationColorset-rulecolor}{stdred}
-\colorlet{tcbequationColorset-coldoubleline}{stdltred}
+\tcbcolorsetdef{tcbenvironment}{colback}{stdbackground}
+\tcbcolorsetdef{tcbenvironment}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbenvironment}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbenvironment}{colbacktitle}{stddkgreen}
+\tcbcolorsetdef{tcbenvironment}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbenvironment}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbenvironment}{colframe}{black}
+\tcbcolorsetdef{tcbenvironment}{colleftframe}{stddkgreen}
+\tcbcolorsetdef{tcbenvironment}{colrightframe}{stddkgreen}
+\tcbcolorsetdef{tcbenvironment}{colframeborder}{black}
+\tcbcolorsetdef{tcbenvironment}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbenvironment}{coltitle}{white}
+\tcbcolorsetdef{tcbenvironment}{colupper}{black}
+\tcbcolorsetdef{tcbenvironment}{collower}{black}
+\tcbcolorsetdef{tcbenvironment}{coltext}{black}
+\tcbcolorsetdef{tcbenvironment}{coltextshadow}{green}
+\tcbcolorsetdef{tcbenvironment}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbenvironment}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbenvironment}{colfill}{stddkgreen}
+\tcbcolorsetdef{tcbenvironment}{colfilltext}{white}
+\tcbcolorsetdef{tcbenvironment}{colfillborder}{black}
+\tcbcolorsetdef{tcbenvironment}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbenvironment}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbeqnlistboxColorset-colback}{stdbackground}
-\colorlet{tcbeqnlistboxColorset-colbackupper}{stdbackground}
-\colorlet{tcbeqnlistboxColorset-colbacklower}{stdbackground}
-\colorlet{tcbeqnlistboxColorset-colbacktitle}{stddkgreen}
-\colorlet{tcbeqnlistboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbeqnlistboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcbeqnlistboxColorset-colframe}{black}
-\colorlet{tcbeqnlistboxColorset-colleftframe}{stdyellow}
-\colorlet{tcbeqnlistboxColorset-colrightframe}{stdyellow}
-\colorlet{tcbeqnlistboxColorset-colframeborder}{stdgreen}
-\colorlet{tcbeqnlistboxColorset-colinteriorborder}{stdyellow}
-\colorlet{tcbeqnlistboxColorset-coltitle}{white}
-\colorlet{tcbeqnlistboxColorset-colupper}{black}
-\colorlet{tcbeqnlistboxColorset-collower}{black}
-\colorlet{tcbeqnlistboxColorset-coltext}{black}
-\colorlet{tcbeqnlistboxColorset-coltextshadow}{stddkgreen}
-\colorlet{tcbeqnlistboxColorset-colboxshadow}{stdgray}
-\colorlet{tcbeqnlistboxColorset-coldraw}{stddkgreen}
-\colorlet{tcbeqnlistboxColorset-colfill}{stddkgreen}
-\colorlet{tcbeqnlistboxColorset-colfilltext}{white}
-\colorlet{tcbeqnlistboxColorset-colfillborder}{stdyellow}
-\colorlet{tcbeqnlistboxColorset-rulecolor}{green}%{stddkpeach}
-\colorlet{tcbeqnlistboxColorset-coldoubleline}{green}
+\tcbcolorsetdef{tcbequation}{colback}{stdltpeach}
+\tcbcolorsetdef{tcbequation}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbequation}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbequation}{colbacktitle}{stddkred}
+\tcbcolorsetdef{tcbequation}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbequation}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbequation}{colframe}{stddkred}
+\tcbcolorsetdef{tcbequation}{colleftframe}{stddkred}
+\tcbcolorsetdef{tcbequation}{colrightframe}{stddkred}
+\tcbcolorsetdef{tcbequation}{colframeborder}{stddkred}
+\tcbcolorsetdef{tcbequation}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbequation}{coltitle}{white}
+\tcbcolorsetdef{tcbequation}{colupper}{black}
+\tcbcolorsetdef{tcbequation}{collower}{black}
+\tcbcolorsetdef{tcbequation}{coltext}{black}
+\tcbcolorsetdef{tcbequation}{coltextshadow}{stddkred}
+\tcbcolorsetdef{tcbequation}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbequation}{coldraw}{stddkred}
+\tcbcolorsetdef{tcbequation}{colfill}{stddkred}
+\tcbcolorsetdef{tcbequation}{colfilltext}{white}
+\tcbcolorsetdef{tcbequation}{colfillborder}{black}
+\tcbcolorsetdef{tcbequation}{rulecolor}{stdred}
+\tcbcolorsetdef{tcbequation}{coldoubleline}{stdltred}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbfigboxColorset-colback}{stdbackground}
-\colorlet{tcbfigboxColorset-colbackupper}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colbacklower}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colbacktitle}{stdgray}
-\colorlet{tcbfigboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbfigboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcbfigboxColorset-colframe}{black}
-\colorlet{tcbfigboxColorset-colleftframe}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colrightframe}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colframeborder}{Matlab-figcolback}%{stdblue}
-\colorlet{tcbfigboxColorset-colinteriorborder}{black}
-\colorlet{tcbfigboxColorset-coltitle}{white}
-\colorlet{tcbfigboxColorset-colupper}{black}
-\colorlet{tcbfigboxColorset-collower}{black}
-\colorlet{tcbfigboxColorset-coltext}{white}
-\colorlet{tcbfigboxColorset-coltextshadow}{black}
-\colorlet{tcbfigboxColorset-colboxshadow}{stddkgray}
-\colorlet{tcbfigboxColorset-coldraw}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colfill}{Matlab-figcolback}
-\colorlet{tcbfigboxColorset-colfilltext}{Matlab-colback}
-\colorlet{tcbfigboxColorset-colfillborder}{black}
-\colorlet{tcbfigboxColorset-rulecolor}{stdblue}
-\colorlet{tcbfigboxColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{tcbeqnlistbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcbeqnlistbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbeqnlistbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbeqnlistbox}{colbacktitle}{stddkgreen}
+\tcbcolorsetdef{tcbeqnlistbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbeqnlistbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbeqnlistbox}{colframe}{black}
+\tcbcolorsetdef{tcbeqnlistbox}{colleftframe}{stdyellow}
+\tcbcolorsetdef{tcbeqnlistbox}{colrightframe}{stdyellow}
+\tcbcolorsetdef{tcbeqnlistbox}{colframeborder}{stddkgreen}
+\tcbcolorsetdef{tcbeqnlistbox}{colinteriorborder}{stdyellow}
+\tcbcolorsetdef{tcbeqnlistbox}{coltitle}{white}
+\tcbcolorsetdef{tcbeqnlistbox}{colupper}{black}
+\tcbcolorsetdef{tcbeqnlistbox}{collower}{black}
+\tcbcolorsetdef{tcbeqnlistbox}{coltext}{black}
+\tcbcolorsetdef{tcbeqnlistbox}{coltextshadow}{stddkgreen}
+\tcbcolorsetdef{tcbeqnlistbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbeqnlistbox}{coldraw}{stddkgreen}
+\tcbcolorsetdef{tcbeqnlistbox}{colfill}{stddkgreen}
+\tcbcolorsetdef{tcbeqnlistbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbeqnlistbox}{colfillborder}{stdyellow}
+\tcbcolorsetdef{tcbeqnlistbox}{rulecolor}{green}%{stddkpeach}
+\tcbcolorsetdef{tcbeqnlistbox}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbfigureColorset-colback}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colbackupper}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colbacklower}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colbacktitle}{stdgray}
-\colorlet{tcbfigureColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbfigureColorset-colbackinterior}{stdbackground}
-\colorlet{tcbfigureColorset-colframe}{black}
-\colorlet{tcbfigureColorset-colleftframe}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colrightframe}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colframeborder}{black}
-\colorlet{tcbfigureColorset-colinteriorborder}{black}
-\colorlet{tcbfigureColorset-coltitle}{white}
-\colorlet{tcbfigureColorset-colupper}{black}
-\colorlet{tcbfigureColorset-collower}{black}
-\colorlet{tcbfigureColorset-coltext}{black}
-\colorlet{tcbfigureColorset-coltextshadow}{black}
-\colorlet{tcbfigureColorset-colboxshadow}{stdgray}
-\colorlet{tcbfigureColorset-coldraw}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colfill}{Matlab-figcolback}
-\colorlet{tcbfigureColorset-colfilltext}{Matlab-colback}
-\colorlet{tcbfigureColorset-colfillborder}{black}
-\colorlet{tcbfigureColorset-rulecolor}{stdblue}
-\colorlet{tcbfigureColorset-coldoubleline}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcbfigbox}{colbackupper}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colbacklower}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbfigbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbfigbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbfigbox}{colframe}{black}
+\tcbcolorsetdef{tcbfigbox}{colleftframe}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colrightframe}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colframeborder}{Matlab-figcolback}%{stdblue}
+\tcbcolorsetdef{tcbfigbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbfigbox}{coltitle}{white}
+\tcbcolorsetdef{tcbfigbox}{colupper}{black}
+\tcbcolorsetdef{tcbfigbox}{collower}{black}
+\tcbcolorsetdef{tcbfigbox}{coltext}{white}
+\tcbcolorsetdef{tcbfigbox}{coltextshadow}{black}
+\tcbcolorsetdef{tcbfigbox}{colboxshadow}{stddkgray}
+\tcbcolorsetdef{tcbfigbox}{coldraw}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colfill}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigbox}{colfilltext}{Matlab-colback}
+\tcbcolorsetdef{tcbfigbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbfigbox}{rulecolor}{stdblue}
+\tcbcolorsetdef{tcbfigbox}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbfuncdetailboxColorset-colback}{stdbackground}
-\colorlet{tcbfuncdetailboxColorset-colbackupper}{stdbackground}
-\colorlet{tcbfuncdetailboxColorset-colbacklower}{stdbackground}
-\colorlet{tcbfuncdetailboxColorset-colbacktitle}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbfuncdetailboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcbfuncdetailboxColorset-colframe}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colleftframe}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colrightframe}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colframeborder}{black}
-\colorlet{tcbfuncdetailboxColorset-colinteriorborder}{black}
-\colorlet{tcbfuncdetailboxColorset-coltitle}{white}
-\colorlet{tcbfuncdetailboxColorset-colupper}{black}
-\colorlet{tcbfuncdetailboxColorset-collower}{black}
-\colorlet{tcbfuncdetailboxColorset-coltext}{black}
-\colorlet{tcbfuncdetailboxColorset-coltextshadow}{cyan}
-\colorlet{tcbfuncdetailboxColorset-colboxshadow}{stdgray}
-\colorlet{tcbfuncdetailboxColorset-coldraw}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colfill}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-colfilltext}{white}
-\colorlet{tcbfuncdetailboxColorset-colfillborder}{black}
-\colorlet{tcbfuncdetailboxColorset-rulecolor}{stdblue}
-\colorlet{tcbfuncdetailboxColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{tcbfigure}{colback}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colbackupper}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colbacklower}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbfigure}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbfigure}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbfigure}{colframe}{black}
+\tcbcolorsetdef{tcbfigure}{colleftframe}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colrightframe}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colframeborder}{black}
+\tcbcolorsetdef{tcbfigure}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbfigure}{coltitle}{white}
+\tcbcolorsetdef{tcbfigure}{colupper}{black}
+\tcbcolorsetdef{tcbfigure}{collower}{black}
+\tcbcolorsetdef{tcbfigure}{coltext}{black}
+\tcbcolorsetdef{tcbfigure}{coltextshadow}{black}
+\tcbcolorsetdef{tcbfigure}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbfigure}{coldraw}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colfill}{Matlab-figcolback}
+\tcbcolorsetdef{tcbfigure}{colfilltext}{Matlab-colback}
+\tcbcolorsetdef{tcbfigure}{colfillborder}{black}
+\tcbcolorsetdef{tcbfigure}{rulecolor}{stdblue}
+\tcbcolorsetdef{tcbfigure}{coldoubleline}{Matlab-figcolback}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbfunctionenvColorset-colback}{stdbackground}
-\colorlet{tcbfunctionenvColorset-colbackupper}{stdbackground}
-\colorlet{tcbfunctionenvColorset-colbacklower}{stdbackground}
-\colorlet{tcbfunctionenvColorset-colbacktitle}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbfunctionenvColorset-colbackinterior}{stdbackground}
-\colorlet{tcbfunctionenvColorset-colframe}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-colleftframe}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-colrightframe}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-colframeborder}{black}
-\colorlet{tcbfunctionenvColorset-colinteriorborder}{black}
-\colorlet{tcbfunctionenvColorset-coltitle}{stdgreen}
-\colorlet{tcbfunctionenvColorset-colupper}{black}
-\colorlet{tcbfunctionenvColorset-collower}{black}
-\colorlet{tcbfunctionenvColorset-coltext}{black}
-\colorlet{tcbfunctionenvColorset-coltextshadow}{green}
-\colorlet{tcbfunctionenvColorset-colboxshadow}{stdgray}
-\colorlet{tcbfunctionenvColorset-coldraw}{stdgreen}
-\colorlet{tcbfunctionenvColorset-colfill}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-colfilltext}{white}
-\colorlet{tcbfunctionenvColorset-colfillborder}{black}
-\colorlet{tcbfunctionenvColorset-rulecolor}{stddkgreen}
-\colorlet{tcbfunctionenvColorset-coldoubleline}{green}
+\tcbcolorsetdef{tcbfuncdetailbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcbfuncdetailbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbfuncdetailbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbfuncdetailbox}{colbacktitle}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbfuncdetailbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbfuncdetailbox}{colframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colleftframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colrightframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colframeborder}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{coltitle}{white}
+\tcbcolorsetdef{tcbfuncdetailbox}{colupper}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{collower}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{coltext}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{coltextshadow}{cyan}
+\tcbcolorsetdef{tcbfuncdetailbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbfuncdetailbox}{coldraw}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colfill}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbfuncdetailbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbfuncdetailbox}{rulecolor}{stdblue}
+\tcbcolorsetdef{tcbfuncdetailbox}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbfuncdefboxColorset-colback}{stdbackground}
-\colorlet{tcbfuncdefboxColorset-colbackupper}{stdbackground}
-\colorlet{tcbfuncdefboxColorset-colbacklower}{stdbackground}
-\colorlet{tcbfuncdefboxColorset-colbacktitle}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbfuncdefboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcbfuncdefboxColorset-colframe}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colleftframe}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colrightframe}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colframeborder}{black}
-\colorlet{tcbfuncdefboxColorset-colinteriorborder}{black}
-\colorlet{tcbfuncdefboxColorset-coltitle}{white}
-\colorlet{tcbfuncdefboxColorset-colupper}{black}
-\colorlet{tcbfuncdefboxColorset-collower}{black}
-\colorlet{tcbfuncdefboxColorset-coltext}{black}
-\colorlet{tcbfuncdefboxColorset-coltextshadow}{cyan}
-\colorlet{tcbfuncdefboxColorset-colboxshadow}{stdgray}
-\colorlet{tcbfuncdefboxColorset-coldraw}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colfill}{stdblue}
-\colorlet{tcbfuncdefboxColorset-colfilltext}{white}
-\colorlet{tcbfuncdefboxColorset-colfillborder}{black}
-\colorlet{tcbfuncdefboxColorset-rulecolor}{stdblue}
-\colorlet{tcbfuncdefboxColorset-coldoubleline}{cyan}
+\tcbcolorsetdef{tcbfunctionenv}{colback}{stdbackground}
+\tcbcolorsetdef{tcbfunctionenv}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbfunctionenv}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbfunctionenv}{colbacktitle}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbfunctionenv}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbfunctionenv}{colframe}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colleftframe}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colrightframe}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colframeborder}{black}
+\tcbcolorsetdef{tcbfunctionenv}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbfunctionenv}{coltitle}{stdgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colupper}{black}
+\tcbcolorsetdef{tcbfunctionenv}{collower}{black}
+\tcbcolorsetdef{tcbfunctionenv}{coltext}{black}
+\tcbcolorsetdef{tcbfunctionenv}{coltextshadow}{green}
+\tcbcolorsetdef{tcbfunctionenv}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbfunctionenv}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colfill}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{colfilltext}{white}
+\tcbcolorsetdef{tcbfunctionenv}{colfillborder}{black}
+\tcbcolorsetdef{tcbfunctionenv}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbfunctionenv}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcblistboxColorset-colback}{stdbackground}
-\colorlet{tcblistboxColorset-colbackupper}{stdbackground}
-\colorlet{tcblistboxColorset-colbacklower}{blue}
-\colorlet{tcblistboxColorset-colbacktitle}{stdmaroon}
-\colorlet{tcblistboxColorset-colbacksubtitle}{stdgray}
-\colorlet{tcblistboxColorset-colbackinterior}{stdbackground}
-\colorlet{tcblistboxColorset-colframe}{black}
-\colorlet{tcblistboxColorset-colleftframe}{stdyellow}
-\colorlet{tcblistboxColorset-colrightframe}{stdyellow}
-\colorlet{tcblistboxColorset-colframeborder}{stdyellow}
-\colorlet{tcblistboxColorset-colinteriorborder}{black}
-\colorlet{tcblistboxColorset-coltitle}{white}
-\colorlet{tcblistboxColorset-colupper}{black}
-\colorlet{tcblistboxColorset-collower}{black}
-\colorlet{tcblistboxColorset-coltext}{black}
-\colorlet{tcblistboxColorset-coltextshadow}{stdltpeach}
-\colorlet{tcblistboxColorset-colboxshadow}{stdgray}
-\colorlet{tcblistboxColorset-coldraw}{stdmaroon}%{stddkpeach}
-\colorlet{tcblistboxColorset-colfill}{stdmaroon}
-\colorlet{tcblistboxColorset-colfilltext}{white}
-\colorlet{tcblistboxColorset-colfillborder}{white}
-\colorlet{tcblistboxColorset-rulecolor}{stdyellow}
-\colorlet{tcblistboxColorset-coldoubleline}{stdmaroon}
+\tcbcolorsetdef{tcbfuncdefbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcbfuncdefbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbfuncdefbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbfuncdefbox}{colbacktitle}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbfuncdefbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbfuncdefbox}{colframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colleftframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colrightframe}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colframeborder}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{coltitle}{white}
+\tcbcolorsetdef{tcbfuncdefbox}{colupper}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{collower}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{coltext}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{coltextshadow}{cyan}
+\tcbcolorsetdef{tcbfuncdefbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbfuncdefbox}{coldraw}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colfill}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbfuncdefbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbfuncdefbox}{rulecolor}{stdblue}
+\tcbcolorsetdef{tcbfuncdefbox}{coldoubleline}{cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcblistboxentryColorset-colback}{stdbackground}
-\colorlet{tcblistboxentryColorset-colbackupper}{stdbackground}
-\colorlet{tcblistboxentryColorset-colbacklower}{blue}
-\colorlet{tcblistboxentryColorset-colbacktitle}{stddkpeach}
-\colorlet{tcblistboxentryColorset-colbacksubtitle}{stdgray}
-\colorlet{tcblistboxentryColorset-colbackinterior}{stdbackground}
-\colorlet{tcblistboxentryColorset-colframe}{black}
-\colorlet{tcblistboxentryColorset-colleftframe}{stdyellow}
-\colorlet{tcblistboxentryColorset-colrightframe}{stdyellow}
-\colorlet{tcblistboxentryColorset-colframeborder}{stdyellow}
-\colorlet{tcblistboxentryColorset-colinteriorborder}{black}
-\colorlet{tcblistboxentryColorset-coltitle}{white}
-\colorlet{tcblistboxentryColorset-colupper}{black}
-\colorlet{tcblistboxentryColorset-collower}{black}
-\colorlet{tcblistboxentryColorset-coltext}{black}
-\colorlet{tcblistboxentryColorset-coltextshadow}{stdltpeach}
-\colorlet{tcblistboxentryColorset-colboxshadow}{stdgray}
-\colorlet{tcblistboxentryColorset-coldraw}{stddkpeach}
-\colorlet{tcblistboxentryColorset-colfill}{stddkpeach}
-\colorlet{tcblistboxentryColorset-colfilltext}{white}
-\colorlet{tcblistboxentryColorset-colfillborder}{white}
-\colorlet{tcblistboxentryColorset-rulecolor}{stddkpeach}
-\colorlet{tcblistboxentryColorset-coldoubleline}{stdmaroon}
+\tcbcolorsetdef{tcblistbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcblistbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcblistbox}{colbacklower}{blue}
+\tcbcolorsetdef{tcblistbox}{colbacktitle}{stdmaroon}
+\tcbcolorsetdef{tcblistbox}{colbacksubtitle}{listboxgray}
+\tcbcolorsetdef{tcblistbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcblistbox}{colframe}{black}
+\tcbcolorsetdef{tcblistbox}{colleftframe}{stdyellow}
+\tcbcolorsetdef{tcblistbox}{colrightframe}{stdyellow}
+\tcbcolorsetdef{tcblistbox}{colframeborder}{stdyellow}
+\tcbcolorsetdef{tcblistbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcblistbox}{coltitle}{white}
+\tcbcolorsetdef{tcblistbox}{colupper}{black}
+\tcbcolorsetdef{tcblistbox}{collower}{black}
+\tcbcolorsetdef{tcblistbox}{coltext}{black}
+\tcbcolorsetdef{tcblistbox}{coltextshadow}{stdltpeach}
+\tcbcolorsetdef{tcblistbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcblistbox}{coldraw}{stdmaroon}%{stddkpeach}
+\tcbcolorsetdef{tcblistbox}{colfill}{stdmaroon}
+\tcbcolorsetdef{tcblistbox}{colfilltext}{white}
+\tcbcolorsetdef{tcblistbox}{colfillborder}{white}
+\tcbcolorsetdef{tcblistbox}{rulecolor}{stdyellow}
+\tcbcolorsetdef{tcblistbox}{coldoubleline}{stdmaroon}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcblistingsCaptionColorset-colback}{stdgray}                      % was Matlab-colback
-\colorlet{tcblistingsCaptionColorset-colframe}{black}                       % was Matlab-colback
-\colorlet{tcblistingsCaptionColorset-coltext}{black}                        % was Matlab-colback
-\colorlet{tcblistingsCaptionColorset-colbacktitle}{stdgray}
-\colorlet{tcblistingsCaptionColorset-rulecolor}{black}                             %
-\colorlet{tcblistingsCaptionColorset-colfill}{stdblue}
-\colorlet{tcblistingsCaptionColorset-colfilltext}{black}
-\colorlet{tcblistingsCaptionColorset-colfillborder}{black}
-\colorlet{tcblistingsCaptionColorset-coldoubleline}{Cyan}
+\tcbcolorsetdef{tcblistboxentry}{colback}{stdbackground}
+\tcbcolorsetdef{tcblistboxentry}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcblistboxentry}{colbacklower}{blue}
+\tcbcolorsetdef{tcblistboxentry}{colbacktitle}{stddkpeach}
+\tcbcolorsetdef{tcblistboxentry}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcblistboxentry}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcblistboxentry}{colframe}{black}
+\tcbcolorsetdef{tcblistboxentry}{colleftframe}{stdyellow}
+\tcbcolorsetdef{tcblistboxentry}{colrightframe}{stdyellow}
+\tcbcolorsetdef{tcblistboxentry}{colframeborder}{stdyellow}
+\tcbcolorsetdef{tcblistboxentry}{colinteriorborder}{black}
+\tcbcolorsetdef{tcblistboxentry}{coltitle}{white}
+\tcbcolorsetdef{tcblistboxentry}{colupper}{black}
+\tcbcolorsetdef{tcblistboxentry}{collower}{black}
+\tcbcolorsetdef{tcblistboxentry}{coltext}{black}
+\tcbcolorsetdef{tcblistboxentry}{coltextshadow}{stdltpeach}
+\tcbcolorsetdef{tcblistboxentry}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcblistboxentry}{coldraw}{stddkpeach}
+\tcbcolorsetdef{tcblistboxentry}{colfill}{stddkpeach}
+\tcbcolorsetdef{tcblistboxentry}{colfilltext}{white}
+\tcbcolorsetdef{tcblistboxentry}{colfillborder}{black}
+\tcbcolorsetdef{tcblistboxentry}{rulecolor}{stddkpeach}
+\tcbcolorsetdef{tcblistboxentry}{coldoubleline}{stdmaroon}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbsolutionColorset-colback}{stdbackground}
-\colorlet{tcbsolutionColorset-colbackupper}{stdbackground}
-\colorlet{tcbsolutionColorset-colbacklower}{stdbackground}
-\colorlet{tcbsolutionColorset-colbacktitle}{stdgray}
-\colorlet{tcbsolutionColorset-colbacksubtitle}{stdgray}
-\colorlet{tcbsolutionColorset-colbackinterior}{stdbackground}
-\colorlet{tcbsolutionColorset-colupper}{black}
-\colorlet{tcbsolutionColorset-collower}{black}
-\colorlet{tcbsolutionColorset-colframe}{stdgreen}
-\colorlet{tcbsolutionColorset-colleftframe}{stdgreen}
-\colorlet{tcbsolutionColorset-colrightframe}{stdgreen}
-\colorlet{tcbsolutionColorset-colframeborder}{black}
-\colorlet{tcbsolutionColorset-colinteriorborder}{black}
-\colorlet{tcbsolutionColorset-coltitle}{stdltgreen}
-\colorlet{tcbsolutionColorset-coltext}{black}
-\colorlet{tcbsolutionColorset-coltextshadow}{green}
-\colorlet{tcbsolutionColorset-colboxshadow}{stdgray}
-\colorlet{tcbsolutionColorset-coldraw}{stdgreen}
-\colorlet{tcbsolutionColorset-colfill}{stdgreen}
-\colorlet{tcbsolutionColorset-colfilltext}{white}
-\colorlet{tcbsolutionColorset-colfillborder}{black}
-\colorlet{tcbsolutionColorset-rulecolor}{stddkgreen}
-\colorlet{tcbsolutionColorset-coldoubleline}{green}
+\tcbcolorsetdef{tcblistingsCaption}{colback}{stdgray}                      % was Matlab}{colback
+\tcbcolorsetdef{tcblistingsCaption}{colframe}{black}                       % was Matlab}{colback
+\tcbcolorsetdef{tcblistingsCaption}{coltext}{black}                        % was Matlab}{colback
+\tcbcolorsetdef{tcblistingsCaption}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcblistingsCaption}{rulecolor}{black}                             %
+\tcbcolorsetdef{tcblistingsCaption}{colfill}{stdblue}
+\tcbcolorsetdef{tcblistingsCaption}{colfilltext}{black}
+\tcbcolorsetdef{tcblistingsCaption}{colfillborder}{black}
+\tcbcolorsetdef{tcblistingsCaption}{coldoubleline}{Cyan}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbproblemlistbox}{colback}{stdltred}
+\tcbcolorsetdef{tcbproblemlistbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbproblemlistbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbproblemlistbox}{colbacktitle}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbproblemlistbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbproblemlistbox}{colframe}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colleftframe}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colrightframe}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colframeborder}{stdltred}
+\tcbcolorsetdef{tcbproblemlistbox}{colinteriorborder}{stdltred}
+\tcbcolorsetdef{tcbproblemlistbox}{coltitle}{stdmaroon}
+\tcbcolorsetdef{tcbproblemlistbox}{colupper}{black}
+\tcbcolorsetdef{tcbproblemlistbox}{collower}{black}
+\tcbcolorsetdef{tcbproblemlistbox}{coltext}{black}
+\tcbcolorsetdef{tcbproblemlistbox}{coltextshadow}{stdltred}
+\tcbcolorsetdef{tcbproblemlistbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbproblemlistbox}{coldraw}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colfill}{stddkred}
+\tcbcolorsetdef{tcbproblemlistbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbproblemlistbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbproblemlistbox}{rulecolor}{stdltred}
+\tcbcolorsetdef{tcbproblemlistbox}{coldoubleline}{stddkred}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbsolution}{colback}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbsolution}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbsolution}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colupper}{black}
+\tcbcolorsetdef{tcbsolution}{collower}{black}
+\tcbcolorsetdef{tcbsolution}{colframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colleftframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colrightframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colframeborder}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbsolution}{coltitle}{stdltgreen}
+\tcbcolorsetdef{tcbsolution}{coltext}{black}
+\tcbcolorsetdef{tcbsolution}{coltextshadow}{green}
+\tcbcolorsetdef{tcbsolution}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbsolution}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colfill}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colfilltext}{white}
+\tcbcolorsetdef{tcbsolution}{colfillborder}{black}
+\tcbcolorsetdef{tcbsolution}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbsolution}{coldoubleline}{green}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbsolutionlistbox}{colback}{stdbackground}
+\tcbcolorsetdef{tcbsolutionlistbox}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbsolutionlistbox}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbsolutionlistbox}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbsolutionlistbox}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbsolutionlistbox}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbsolutionlistbox}{colupper}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{collower}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{colframe}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{colleftframe}{stdgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{colrightframe}{stdgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{colframeborder}{stddkgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{coltitle}{stdltgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{coltext}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{coltextshadow}{green}
+\tcbcolorsetdef{tcbsolutionlistbox}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbsolutionlistbox}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{colfill}{stdgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{colfilltext}{white}
+\tcbcolorsetdef{tcbsolutionlistbox}{colfillborder}{black}
+\tcbcolorsetdef{tcbsolutionlistbox}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbsolutionlistbox}{coldoubleline}{green}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbsolutionverb}{colback}{stdbackground}
+\tcbcolorsetdef{tcbsolutionverb}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbsolutionverb}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbsolutionverb}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbsolutionverb}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbsolutionverb}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbsolutionverb}{colupper}{black}
+\tcbcolorsetdef{tcbsolutionverb}{collower}{black}
+\tcbcolorsetdef{tcbsolutionverb}{colframe}{stdgreen}
+\tcbcolorsetdef{tcbsolutionverb}{colleftframe}{stdgreen}
+\tcbcolorsetdef{tcbsolutionverb}{colrightframe}{stdgreen}
+\tcbcolorsetdef{tcbsolutionverb}{colframeborder}{black}
+\tcbcolorsetdef{tcbsolutionverb}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbsolutionverb}{coltitle}{stdltgreen}
+\tcbcolorsetdef{tcbsolutionverb}{coltext}{black}
+\tcbcolorsetdef{tcbsolutionverb}{coltextshadow}{green}
+\tcbcolorsetdef{tcbsolutionverb}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbsolutionverb}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbsolutionverb}{colfill}{stdgreen}
+\tcbcolorsetdef{tcbsolutionverb}{colfilltext}{white}
+\tcbcolorsetdef{tcbsolutionverb}{colfillborder}{black}
+\tcbcolorsetdef{tcbsolutionverb}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbsolutionverb}{coldoubleline}{green}
 %*******************************************************************************************************************************%
 %******************************************** Front/back matter color definitions **********************************************%
 %*******************************************************************************************************************************%
-\colorlet{tcbFrontbackMatterColorset-colback}{stdbackground}
-\colorlet{tcbFrontbackMatterColorset-colbacklower}{stdbackground}
-\colorlet{tcbFrontbackMatterColorset-colbacktitle}{SlateForestGreen}
-\colorlet{tcbFrontbackMatterColorset-colframe}{SlateForestGreen}
-\colorlet{tcbFrontbackMatterColorset-colframeborder}{black}
-\colorlet{tcbFrontbackMatterColorset-colinteriorborder}{black}
-\colorlet{tcbFrontbackMatterColorset-coltitle}{white}
-\colorlet{tcbFrontbackMatterColorset-coltext}{black}
-\colorlet{tcbFrontbackMatterColorset-colupper}{black}
-\colorlet{tcbFrontbackMatterColorset-collower}{black}
-\colorlet{tcbFrontbackMatterColorset-colboxshadow}{stdgray}
-\colorlet{tcbFrontbackMatterColorset-coldraw}{SlateForestGreen}
-\colorlet{tcbFrontbackMatterColorset-colfill}{TintedSlateGray}
-\colorlet{tcbFrontbackMatterColorset-coldoubleline}{Cyan}
+\tcbcolorsetdef{tcbFrontbackMatter}{colback}{stdbackground}
+\tcbcolorsetdef{tcbFrontbackMatter}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbFrontbackMatter}{colbacktitle}{SlateForestGreen}
+\tcbcolorsetdef{tcbFrontbackMatter}{colframe}{SlateForestGreen}
+\tcbcolorsetdef{tcbFrontbackMatter}{colframeborder}{black}
+\tcbcolorsetdef{tcbFrontbackMatter}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbFrontbackMatter}{coltitle}{white}
+\tcbcolorsetdef{tcbFrontbackMatter}{coltext}{black}
+\tcbcolorsetdef{tcbFrontbackMatter}{colupper}{black}
+\tcbcolorsetdef{tcbFrontbackMatter}{collower}{black}
+\tcbcolorsetdef{tcbFrontbackMatter}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbFrontbackMatter}{coldraw}{SlateForestGreen}
+\tcbcolorsetdef{tcbFrontbackMatter}{colfill}{TintedSlateGray}
+\tcbcolorsetdef{tcbFrontbackMatter}{coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbGlossaryColorset-colback}{stdbackground}
-\colorlet{tcbGlossaryColorset-colbacklower}{stdbackground}
-\colorlet{tcbGlossaryColorset-colbacktitle}{SlateForestGreen}
-\colorlet{tcbGlossaryColorset-colframe}{SlateForestGreen}
-\colorlet{tcbGlossaryColorset-colframeborder}{black}
-\colorlet{tcbGlossaryColorset-colinteriorborder}{black}
-\colorlet{tcbGlossaryColorset-coltitle}{white}
-\colorlet{tcbGlossaryColorset-coltext}{black}
-\colorlet{tcbGlossaryColorset-colupper}{black}
-\colorlet{tcbGlossaryColorset-collower}{black}
-\colorlet{tcbGlossaryColorset-colboxshadow}{stdgray}
-\colorlet{tcbGlossaryColorset-coldraw}{SlateForestGreen}
-\colorlet{tcbGlossaryColorset-colfill}{TintedSlateGray}
-\colorlet{tcbGlossaryColorset-coldoubleline}{Cyan}
+\tcbcolorsetdef{tcbGlossary}{colback}{stdbackground}
+\tcbcolorsetdef{tcbGlossary}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbGlossary}{colbacktitle}{SlateForestGreen}
+\tcbcolorsetdef{tcbGlossary}{colframe}{SlateForestGreen}
+\tcbcolorsetdef{tcbGlossary}{colframeborder}{black}
+\tcbcolorsetdef{tcbGlossary}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbGlossary}{coltitle}{white}
+\tcbcolorsetdef{tcbGlossary}{coltext}{black}
+\tcbcolorsetdef{tcbGlossary}{colupper}{black}
+\tcbcolorsetdef{tcbGlossary}{collower}{black}
+\tcbcolorsetdef{tcbGlossary}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbGlossary}{coldraw}{SlateForestGreen}
+\tcbcolorsetdef{tcbGlossary}{colfill}{TintedSlateGray}
+\tcbcolorsetdef{tcbGlossary}{coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbIndexColorset-colback}{stdbackground}
-\colorlet{tcbIndexColorset-colbacklower}{stdbackground}
-\colorlet{tcbIndexColorset-colbacktitle}{SlateForestGreen}
-\colorlet{tcbIndexColorset-colframe}{SlateForestGreen}
-\colorlet{tcbIndexColorset-colframeborder}{black}
-\colorlet{tcbIndexColorset-colinteriorborder}{black}
-\colorlet{tcbIndexColorset-coltitle}{white}
-\colorlet{tcbIndexColorset-coltext}{black}
-\colorlet{tcbIndexColorset-colupper}{black}
-\colorlet{tcbIndexColorset-collower}{black}
-\colorlet{tcbIndexColorset-colboxshadow}{stdgray}
-\colorlet{tcbIndexColorset-coldraw}{SlateForestGreen}
-\colorlet{tcbIndexColorset-colfill}{TintedSlateGray}
-\colorlet{tcbIndexColorset-coldoubleline}{Cyan}
+\tcbcolorsetdef{tcbIndex}{colback}{stdbackground}
+\tcbcolorsetdef{tcbIndex}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbIndex}{colbacktitle}{SlateForestGreen}
+\tcbcolorsetdef{tcbIndex}{colframe}{SlateForestGreen}
+\tcbcolorsetdef{tcbIndex}{colframeborder}{black}
+\tcbcolorsetdef{tcbIndex}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbIndex}{coltitle}{white}
+\tcbcolorsetdef{tcbIndex}{coltext}{black}
+\tcbcolorsetdef{tcbIndex}{colupper}{black}
+\tcbcolorsetdef{tcbIndex}{collower}{black}
+\tcbcolorsetdef{tcbIndex}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbIndex}{coldraw}{SlateForestGreen}
+\tcbcolorsetdef{tcbIndex}{colfill}{TintedSlateGray}
+\tcbcolorsetdef{tcbIndex}{coldoubleline}{Cyan}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{tcbNomenclatureColorset-colback}{stdbackground}
-\colorlet{tcbNomenclatureColorset-colbacklower}{stdbackground}
-\colorlet{tcbNomenclatureColorset-colbacktitle}{SlateForestGreen}
-\colorlet{tcbNomenclatureColorset-colframe}{SlateForestGreen}
-\colorlet{tcbNomenclatureColorset-colframeborder}{black}
-\colorlet{tcbNomenclatureColorset-colinteriorborder}{black}
-\colorlet{tcbNomenclatureColorset-coltitle}{white}
-\colorlet{tcbNomenclatureColorset-coltext}{black}
-\colorlet{tcbNomenclatureColorset-colupper}{black}
-\colorlet{tcbNomenclatureColorset-collower}{black}
-\colorlet{tcbNomenclatureColorset-colboxshadow}{stdgray}
-\colorlet{tcbNomenclatureColorset-coldraw}{SlateForestGreen}
-\colorlet{tcbNomenclatureColorset-colfill}{TintedSlateGray}
-\colorlet{tcbNomenclatureColorset-coldoubleline}{Cyan}
-%-------------------------------------------------------------------------------------------------------------------------------% %-------------------------------------------------------------------------------------------------------------------------------% %-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbNomenclature}{colback}{stdbackground}
+\tcbcolorsetdef{tcbNomenclature}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbNomenclature}{colbacktitle}{SlateForestGreen}
+\tcbcolorsetdef{tcbNomenclature}{colframe}{SlateForestGreen}
+\tcbcolorsetdef{tcbNomenclature}{colframeborder}{black}
+\tcbcolorsetdef{tcbNomenclature}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbNomenclature}{coltitle}{white}
+\tcbcolorsetdef{tcbNomenclature}{coltext}{black}
+\tcbcolorsetdef{tcbNomenclature}{colupper}{black}
+\tcbcolorsetdef{tcbNomenclature}{collower}{black}
+\tcbcolorsetdef{tcbNomenclature}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbNomenclature}{coldraw}{SlateForestGreen}
+\tcbcolorsetdef{tcbNomenclature}{colfill}{TintedSlateGray}
+\tcbcolorsetdef{tcbNomenclature}{coldoubleline}{Cyan}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************** Code listing language syntax highlighting and code segment/entry appearance coloring *********************%
 %*******************************************************************************************************************************%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Language Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\colorlet{bash-extended-backgroundcolor}{stdbackground}                         % was Matlab-colback
-\colorlet{bash-extended-colframecaption}{default-coltext}                       % was Matlab-colback
-\colorlet{bash-extended-colbackcaption}{default-colbacktitle}                   % was Matlab-colback
-\colorlet{bash-extended-coltextcaption}{default-coltext}                        % was Matlab-colback
-\colorlet{bash-extended-commentcolor}{dkgreen}
-\colorlet{bash-extended-fillcolor}{BaylorGold}
-\colorlet{bash-extended-identifiercolor}{black}
-\colorlet{bash-extended-keywordcolor1}{java-keyword}                            %
-\colorlet{bash-extended-keywordcolor2}{user-keyword}                            %
-\colorlet{bash-extended-keywordcolor3}{user-keyword}                            % user defined keywords
-\colorlet{bash-extended-keywordcolor4}{Matlab-syscmdcolor}                      % class object,
-\colorlet{bash-extended-keywordcolor5}{RubineRed}                               % function/class identifiers javapurple!75!black
-\colorlet{bash-extended-keywordcolor6}{blue}                                    % control flow statements
-\colorlet{bash-extended-keywordcolor7}{stdltforestgreen}                        % constants (e.g. true/false; both lowercase/uppercase versions
-\colorlet{bash-extended-keywordcolor8}{Matlab-autohighlight-shade}              % function options stdltforestgreen
-\colorlet{bash-extended-keywordcolor9}{Matlab-sharedscopecolor}                 % function options stdltforestgreen
-\colorlet{bash-extended-keywordcolor10}{javapurple}                             % function options stdltforestgreen
-\colorlet{bash-extended-numbercolor}{white}                                     % was stdred/ BaylorGreen
-\colorlet{bash-extended-rulecolor}{black}                                       %
-\colorlet{bash-extended-rulesepcolor}{green}                                    %
-\colorlet{bash-extended-stringcolor}{blue}                                      %
-\colorlet{bash-extended-TeXcolor}{blue}                                         %
-\colorlet{bash-extended-coltext}{stdred}                                        %
-\colorlet{bash-extended-colfill}{stdblue}
-\colorlet{bash-extended-colfilltext}{white}
+\colorsetdef{bash-extended}{backgroundcolor}{stdbackground}                         % was Matlab}{colback
+\colorsetdef{bash-extended}{colframecaption}{default-coltext}                       % was Matlab}{colback
+\colorsetdef{bash-extended}{colbackcaption}{default-colbacktitle}                   % was Matlab}{colback
+\colorsetdef{bash-extended}{coltextcaption}{default-coltext}                        % was Matlab}{colback
+\colorsetdef{bash-extended}{commentcolor}{dkgreen}
+\colorsetdef{bash-extended}{fillcolor}{BaylorGold}
+\colorsetdef{bash-extended}{identifiercolor}{black}
+\colorsetdef{bash-extended}{keywordcolor1}{java-keyword}                            %
+\colorsetdef{bash-extended}{keywordcolor2}{user-keyword}                            %
+\colorsetdef{bash-extended}{keywordcolor3}{user-keyword}                            % user defined keywords
+\colorsetdef{bash-extended}{keywordcolor4}{Matlab-syscmdcolor}                      % class object,
+\colorsetdef{bash-extended}{keywordcolor5}{RubineRed}                               % function/class identifiers javapurple!75!black
+\colorsetdef{bash-extended}{keywordcolor6}{blue}                                    % control flow statements
+\colorsetdef{bash-extended}{keywordcolor7}{stdltforestgreen}                        % constants (e.g. true/false; both lowercase/uppercase versions
+\colorsetdef{bash-extended}{keywordcolor8}{Matlab-autohighlight-shade} % function options stdltforestgreen
+\colorsetdef{bash-extended}{keywordcolor9}{Matlab-sharedscopecolor}                 % function options stdltforestgreen
+\colorsetdef{bash-extended}{keywordcolor10}{javapurple}                             % function options stdltforestgreen
+\colorsetdef{bash-extended}{numbercolor}{white}                                     % was stdred/ BaylorGreen
+\colorsetdef{bash-extended}{rulecolor}{black}                                       %
+\colorsetdef{bash-extended}{rulesepcolor}{green}                                    %
+\colorsetdef{bash-extended}{stringcolor}{blue}                                      %
+\colorsetdef{bash-extended}{TeXcolor}{blue}                                         %
+\colorsetdef{bash-extended}{coltext}{stdred}                                        %
+\colorsetdef{bash-extended}{colfill}{stdblue}
+\colorsetdef{bash-extended}{colfilltext}{white}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{git-backgroundcolor}{stdbackground}                                   % was Matlab-colback
-\colorlet{git-colframecaption}{default-coltext}                                 % was Matlab-colback
-\colorlet{git-colbackcaption}{default-colbacktitle}                             % was Matlab-colback
-\colorlet{git-coltextcaption}{default-coltext}                                  % was Matlab-colback
-\colorlet{git-commentcolor}{dkgreen}
-\colorlet{git-fillcolor}{BaylorGold}
-\colorlet{git-identifiercolor}{black}
-\colorlet{git-keywordcolor1}{java-keyword}                                      %
-\colorlet{git-keywordcolor2}{java-keyword}                                      %
-\colorlet{git-keywordcolor3}{user-keyword}                                      % user defined keywords
-\colorlet{git-keywordcolor4}{Matlab-syscmdcolor}                                % class object,
-\colorlet{git-keywordcolor5}{RubineRed}                                         % function/class identifiers javapurple!75!black
-\colorlet{git-keywordcolor6}{blue}                                              % control flow statements
-\colorlet{git-keywordcolor7}{stdltforestgreen}                                  % constants (e.g. true/false; both lowercase/uppercase versions
-\colorlet{git-keywordcolor8}{Matlab-autohighlight-shade}                        % function options stdltforestgreen
-\colorlet{git-keywordcolor9}{Matlab-sharedscopecolor}                           % function options stdltforestgreen
-\colorlet{git-keywordcolor10}{javapurple}                                       % function options stdltforestgreen
-\colorlet{git-numbercolor}{white}                                               % was stdred/ BaylorGreen
-\colorlet{git-rulecolor}{black}                                                 %
-\colorlet{git-rulesepcolor}{green}                                              %
-\colorlet{git-stringcolor}{blue}                                                %
-\colorlet{git-TeXcolor}{blue}                                                   %
-\colorlet{git-coltext}{stdred}                                                  %
-\colorlet{git-colfill}{stdblue}
-\colorlet{git-colfilltext}{white}
+\colorsetdef{git}{backgroundcolor}{stdbackground}                                   % was Matlab}{colback
+\colorsetdef{git}{colframecaption}{default-coltext}                                 % was Matlab}{colback
+\colorsetdef{git}{colbackcaption}{default-colbacktitle}                             % was Matlab}{colback
+\colorsetdef{git}{coltextcaption}{default-coltext}                                  % was Matlab}{colback
+\colorsetdef{git}{commentcolor}{dkgreen}
+\colorsetdef{git}{fillcolor}{BaylorGold}
+\colorsetdef{git}{identifiercolor}{black}
+\colorsetdef{git}{keywordcolor1}{java-keyword}                                      %
+\colorsetdef{git}{keywordcolor2}{java-keyword}                                      %
+\colorsetdef{git}{keywordcolor3}{user-keyword}                                      % user defined keywords
+\colorsetdef{git}{keywordcolor4}{Matlab-syscmdcolor}                                % class object,
+\colorsetdef{git}{keywordcolor5}{RubineRed}                                         % function/class identifiers javapurple!75!black
+\colorsetdef{git}{keywordcolor6}{blue}                                              % control flow statements
+\colorsetdef{git}{keywordcolor7}{stdltforestgreen}                                  % constants (e.g. true/false; both lowercase/uppercase versions
+\colorsetdef{git}{keywordcolor8}{Matlab-autohighlight-shade} % function options stdltforestgreen
+\colorsetdef{git}{keywordcolor9}{Matlab-sharedscopecolor}                           % function options stdltforestgreen
+\colorsetdef{git}{keywordcolor10}{javapurple}                                       % function options stdltforestgreen
+\colorsetdef{git}{numbercolor}{white}                                               % was stdred/ BaylorGreen
+\colorsetdef{git}{rulecolor}{black}                                                 %
+\colorsetdef{git}{rulesepcolor}{green}                                              %
+\colorsetdef{git}{stringcolor}{blue}                                                %
+\colorsetdef{git}{TeXcolor}{blue}                                                   %
+\colorsetdef{git}{coltext}{stdred}                                                  %
+\colorsetdef{git}{colfill}{stdblue}
+\colorsetdef{git}{colfilltext}{white}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{matlab-extended-commentcolor}{Matlab-commentcolor}
-\colorlet{matlab-extended-escapebegin}{dkgreen}
-\colorlet{matlab-extended-escapeend}{black}
-\colorlet{matlab-extended-numbercolor}{white}
-\colorlet{matlab-extended-stringcolor}{Matlab-stringcolor}
-\colorlet{matlab-extended-keywordcolor1}{java-keyword}                          %
-\colorlet{matlab-extended-keywordcolor2}{java-keyword}                          %
-\colorlet{matlab-extended-keywordcolor3}{user-keyword}                          % user defined keywords
-\colorlet{matlab-extended-keywordcolor4}{Matlab-syscmdcolor}                    % class object,
-\colorlet{matlab-extended-keywordcolor5}{RubineRed}                             % function/class identifiers javapurple!75!black
-\colorlet{matlab-extended-keywordcolor6}{blue}                                  % control flow statements
-\colorlet{matlab-extended-keywordcolor7}{stdltforestgreen}                      % constants (e.g. true/false; both lowercase/uppercase versions
-\colorlet{matlab-extended-keywordcolor8}{Matlab-autohighlight-shade}            % function options stdltforestgreen
-\colorlet{matlab-extended-keywordcolor9}{Matlab-sharedscopecolor}               % function options stdltforestgreen
-\colorlet{matlab-extended-keywordcolor10}{javapurple}                           % function options stdltforestgreen
+\colorsetdef{matlab-extended}{commentcolor}{Matlab-commentcolor}
+\colorsetdef{matlab-extended}{escapebegin}{dkgreen}
+\colorsetdef{matlab-extended}{escapeend}{black}
+\colorsetdef{matlab-extended}{numbercolor}{white}
+\colorsetdef{matlab-extended}{stringcolor}{Matlab-stringcolor}
+\colorsetdef{matlab-extended}{keywordcolor1}{java-keyword}                          %
+\colorsetdef{matlab-extended}{keywordcolor2}{java-keyword}                          %
+\colorsetdef{matlab-extended}{keywordcolor3}{user-keyword}                          % user defined keywords
+\colorsetdef{matlab-extended}{keywordcolor4}{Matlab-syscmdcolor}                    % class object,
+\colorsetdef{matlab-extended}{keywordcolor5}{RubineRed}                             % function/class identifiers javapurple!75!black
+\colorsetdef{matlab-extended}{keywordcolor6}{blue}                                  % control flow statements
+\colorsetdef{matlab-extended}{keywordcolor7}{stdltforestgreen}                      % constants (e.g. true/false; both lowercase/uppercase versions
+\colorsetdef{matlab-extended}{keywordcolor8}{Matlab-autohighlight-shade} % function options stdltforestgreen
+\colorsetdef{matlab-extended}{keywordcolor9}{Matlab-sharedscopecolor}               % function options stdltforestgreen
+\colorsetdef{matlab-extended}{keywordcolor10}{javapurple}                           % function options stdltforestgreen
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing Colorset Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Listing  Definition Color Properties ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\colorlet{lstcodingColorset-backgroundcolor}{stdbackground}                                % was Matlab-colback pink
-\colorlet{lstcodingColorset-commentcolor}{dkgreen}
-\colorlet{lstcodingColorset-fillcolor}{stdbackground}
-\colorlet{lstcodingColorset-identifiercolor}{black}
-\colorlet{lstcodingColorset-keywordcolor1}{java-keyword}                           %
-\colorlet{lstcodingColorset-keywordcolor2}{java-keyword}                           %
-\colorlet{lstcodingColorset-keywordcolor3}{user-keyword}                           % user defined keywords
-\colorlet{lstcodingColorset-numbercolor}{green}                                    % was stdred/ BaylorGreen
-\colorlet{lstcodingColorset-rulecolor}{black}                                              %
-\colorlet{lstcodingColorset-rulesepcolor}{cyan}                                    %
-\colorlet{lstcodingColorset-stringcolor}{blue}                                     %
+\tcbcolorsetdef{lstcoding}{backgroundcolor}{stdbackground}                                % was Matlab}{colback pink
+\tcbcolorsetdef{lstcoding}{commentcolor}{dkgreen}
+\tcbcolorsetdef{lstcoding}{fillcolor}{stdbackground}
+\tcbcolorsetdef{lstcoding}{identifiercolor}{black}
+\tcbcolorsetdef{lstcoding}{keywordcolor1}{java-keyword}                           %
+\tcbcolorsetdef{lstcoding}{keywordcolor2}{java-keyword}                           %
+\tcbcolorsetdef{lstcoding}{keywordcolor3}{user-keyword}                           % user defined keywords
+\tcbcolorsetdef{lstcoding}{numbercolor}{green}                                    % was stdred/ BaylorGreen
+\tcbcolorsetdef{lstcoding}{rulecolor}{black}                                              %
+\tcbcolorsetdef{lstcoding}{rulesepcolor}{cyan}                                    %
+\tcbcolorsetdef{lstcoding}{stringcolor}{blue}                                     %
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{lstemptyColorset-backgroundcolor}{black}                                 % was Matlab-colback
-\colorlet{lstemptyColorset-commentcolor}{white}
-\colorlet{lstemptyColorset-escapebegin}{dkgreen}
-\colorlet{lstemptyColorset-escapeend}{black}
-\colorlet{lstemptyColorset-fillcolor}{black}
-\colorlet{lstemptyColorset-identifiercolor}{white}
-\colorlet{lstemptyColorset-keywordcolor1}{white}                                   %
-\colorlet{lstemptyColorset-keywordcolor2}{white}                                   %
-\colorlet{lstemptyColorset-keywordcolor3}{white}                                   % user defined keywords
-\colorlet{lstemptyColorset-numbercolor}{white}                                     % was stdred/ BaylorGreen
-\colorlet{lstemptyColorset-rulecolor}{black}                                               %
-\colorlet{lstemptyColorset-rulesepcolor}{black}                                    %
-\colorlet{lstemptyColorset-stringcolor}{white}                                     %
+\tcbcolorsetdef{lstsyntaxoff}{backgroundcolor}{black}                                 % was Matlab}{colback
+\tcbcolorsetdef{lstsyntaxoff}{commentcolor}{white}
+\tcbcolorsetdef{lstsyntaxoff}{escapebegin}{dkgreen}
+\tcbcolorsetdef{lstsyntaxoff}{escapeend}{black}
+\tcbcolorsetdef{lstsyntaxoff}{fillcolor}{black}
+\tcbcolorsetdef{lstsyntaxoff}{identifiercolor}{white}
+\tcbcolorsetdef{lstsyntaxoff}{keywordcolor1}{white}                                   %
+\tcbcolorsetdef{lstsyntaxoff}{keywordcolor2}{white}                                   %
+\tcbcolorsetdef{lstsyntaxoff}{keywordcolor3}{white}                                   % user defined keywords
+\tcbcolorsetdef{lstsyntaxoff}{numbercolor}{white}                                     % was stdred/ BaylorGreen
+\tcbcolorsetdef{lstsyntaxoff}{rulecolor}{black}                                               %
+\tcbcolorsetdef{lstsyntaxoff}{rulesepcolor}{black}                                    %
+\tcbcolorsetdef{lstsyntaxoff}{stringcolor}{white}                                     %
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{lstinlineColorset-colbacktitle}{stdgray}
-\colorlet{lstinlineColorset-backgroundcolor}{pink}                                         % was Matlab-colback
-\colorlet{lstinlineColorset-colframecaption}{black}                                        % was Matlab-colback
-\colorlet{lstinlineColorset-colbackcaption}{stdgray}                                       % was Matlab-colback
-\colorlet{lstinlineColorset-coltextcaption}{black}                                         % was Matlab-colback
-\colorlet{lstinlineColorset-commentcolor}{dkgreen}
-\colorlet{lstinlineColorset-fillcolor}{BaylorGold}
-\colorlet{lstinlineColorset-identifiercolor}{white}
-\colorlet{lstinlineColorset-keywordcolor1}{green}                                          %
-\colorlet{lstinlineColorset-keywordcolor2}{java-keyword}                                   %
-\colorlet{lstinlineColorset-keywordcolor3}{user-keyword}                                   % user defined keywords
-\colorlet{lstinlineColorset-keywordcolor4}{Matlab-syscmdcolor}                             % class object,
-\colorlet{lstinlineColorset-keywordcolor5}{RubineRed}                                      % identifiers Matlab-partialstringcolor javapurple!75!black
-\colorlet{lstinlineColorset-keywordcolor6}{blue}                                           % control flow statements
-\colorlet{lstinlineColorset-keywordcolor7}{stdltforestgreen}                               % constants (e.g. true/false; both lowercase/uppercase versions
-\colorlet{lstinlineColorset-keywordcolor8}{Matlab-autohighlight-shade}                     % function options stdltforestgreen
-\colorlet{lstinlineColorset-keywordcolor9}{Matlab-sharedscopecolor}                        % function options stdltforestgreen
-\colorlet{lstinlineColorset-keywordcolor10}{javapurple}                                    % function options stdltforestgreen
-\colorlet{lstinlineColorset-numbercolor}{white}                                            % was stdred/ BaylorGreen
-\colorlet{lstinlineColorset-rulecolor}{black}                                              %
-\colorlet{lstinlineColorset-rulesepcolor}{green}                                           %
-\colorlet{lstinlineColorset-stringcolor}{blue}                                             %
-\colorlet{lstinlineColorset-TeXcolor}{blue}                                                %
-\colorlet{lstinlineColorset-coltext}{stdred}                                               %
-\colorlet{lstinlineColorset-colfill}{stdblue}
-\colorlet{lstinlineColorset-colfilltext}{black}
+\tcbcolorsetdef{lstinline}{colbacktitle}{stdgray}
+\tcbcolorsetdef{lstinline}{backgroundcolor}{pink}                                         % was Matlab}{colback
+\tcbcolorsetdef{lstinline}{colframecaption}{black}                                        % was Matlab}{colback
+\tcbcolorsetdef{lstinline}{colbackcaption}{stdgray}                                       % was Matlab}{colback
+\tcbcolorsetdef{lstinline}{coltextcaption}{black}                                         % was Matlab}{colback
+\tcbcolorsetdef{lstinline}{commentcolor}{dkgreen}
+\tcbcolorsetdef{lstinline}{fillcolor}{BaylorGold}
+\tcbcolorsetdef{lstinline}{identifiercolor}{white}
+\tcbcolorsetdef{lstinline}{keywordcolor1}{green}                                          %
+\tcbcolorsetdef{lstinline}{keywordcolor2}{java-keyword}                                   %
+\tcbcolorsetdef{lstinline}{keywordcolor3}{user-keyword}                                   % user defined keywords
+\tcbcolorsetdef{lstinline}{keywordcolor4}{Matlab-syscmdcolor}                             % class object,
+\tcbcolorsetdef{lstinline}{keywordcolor5}{RubineRed}                                      % identifiers Matlab}{partialstringcolor javapurple!75!black
+\tcbcolorsetdef{lstinline}{keywordcolor6}{blue}                                           % control flow statements
+\tcbcolorsetdef{lstinline}{keywordcolor7}{stdltforestgreen}                               % constants (e.g. true/false; both lowercase/uppercase versions
+\tcbcolorsetdef{lstinline}{keywordcolor8}{Matlab-autohighlight-shade}                     % function options stdltforestgreen
+\tcbcolorsetdef{lstinline}{keywordcolor9}{Matlab-sharedscopecolor}                        % function options stdltforestgreen
+\tcbcolorsetdef{lstinline}{keywordcolor10}{javapurple}                                    % function options stdltforestgreen
+\tcbcolorsetdef{lstinline}{numbercolor}{white}                                            % was stdred/ BaylorGreen
+\tcbcolorsetdef{lstinline}{rulecolor}{black}                                              %
+\tcbcolorsetdef{lstinline}{rulesepcolor}{green}                                           %
+\tcbcolorsetdef{lstinline}{stringcolor}{blue}                                             %
+\tcbcolorsetdef{lstinline}{TeXcolor}{blue}                                                %
+\tcbcolorsetdef{lstinline}{coltext}{stdred}                                               %
+\tcbcolorsetdef{lstinline}{colfill}{stdblue}
+\tcbcolorsetdef{lstinline}{colfilltext}{black}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{lstMatlabColorset-colbackcaption}{stdgray}                                       % was Matlab-colback
-\colorlet{lstMatlabColorset-colframecaption}{black}                                        % was Matlab-colback
-\colorlet{lstMatlabColorset-coltextcaption}{black}                                 % was Matlab-colback
-\colorlet{lstMatlabColorset-backgroundcolor}{stdbackground}                                % was Matlab-colback
-\colorlet{lstMatlabColorset-commentcolor}{dkgreen}
-\colorlet{lstMatlabColorset-escapebegin}{dkgreen}
-\colorlet{lstMatlabColorset-escapeend}{black}
-\colorlet{lstMatlabColorset-fillcolor}{stdbackground}
-\colorlet{lstMatlabColorset-identifiercolor}{black}
-\colorlet{lstMatlabColorset-keywordcolor1}{java-keyword}                           %
-\colorlet{lstMatlabColorset-keywordcolor2}{java-keyword}                           %
-\colorlet{lstMatlabColorset-keywordcolor3}{user-keyword}                           % user defined keywords
-\colorlet{lstMatlabColorset-keywordcolor4}{Matlab-syscmdcolor}                     % class object,
-\colorlet{lstMatlabColorset-keywordcolor5}{RubineRed}                                      % function/class identifiers javapurple!75!black
-\colorlet{lstMatlabColorset-keywordcolor6}{blue}                                   % control flow statements
-\colorlet{lstMatlabColorset-keywordcolor7}{stdltforestgreen}                               % constants (e.g. true/false; both lowercase/uppercase versions
-\colorlet{lstMatlabColorset-keywordcolor8}{Matlab-autohighlight-shade}             % function options stdltforestgreen
-\colorlet{lstMatlabColorset-keywordcolor9}{Matlab-sharedscopecolor}                        % function options stdltforestgreen
-\colorlet{lstMatlabColorset-keywordcolor10}{javapurple}                            % function options stdltforestgreen
-\colorlet{lstMatlabColorset-numbercolor}{white}                                    % was stdred/ BaylorGreen
-\colorlet{lstMatlabColorset-rulecolor}{black}                                              %
-\colorlet{lstMatlabColorset-rulesepcolor}{Cyan}                                    %
-\colorlet{lstMatlabColorset-stringcolor}{blue}
-\colorlet{lstMatlabColorset-TeXcolor}{blue}                                                %
+\tcbcolorsetdef{lstMatlab}{colbackcaption}{stdgray}                                       % was Matlab}{colback
+\tcbcolorsetdef{lstMatlab}{colframecaption}{black}                                        % was Matlab}{colback
+\tcbcolorsetdef{lstMatlab}{coltextcaption}{black}                                 % was Matlab}{colback
+\tcbcolorsetdef{lstMatlab}{backgroundcolor}{stdbackground}                                % was Matlab}{colback
+\tcbcolorsetdef{lstMatlab}{commentcolor}{dkgreen}
+\tcbcolorsetdef{lstMatlab}{escapebegin}{dkgreen}
+\tcbcolorsetdef{lstMatlab}{escapeend}{black}
+\tcbcolorsetdef{lstMatlab}{fillcolor}{stdbackground}
+\tcbcolorsetdef{lstMatlab}{identifiercolor}{black}
+\tcbcolorsetdef{lstMatlab}{keywordcolor1}{java-keyword}                           %
+\tcbcolorsetdef{lstMatlab}{keywordcolor2}{java-keyword}                           %
+\tcbcolorsetdef{lstMatlab}{keywordcolor3}{user-keyword}                           % user defined keywords
+\tcbcolorsetdef{lstMatlab}{keywordcolor4}{Matlab-syscmdcolor}                     % class object,
+\tcbcolorsetdef{lstMatlab}{keywordcolor5}{RubineRed}                                      % function/class identifiers javapurple!75!black
+\tcbcolorsetdef{lstMatlab}{keywordcolor6}{blue}                                   % control flow statements
+\tcbcolorsetdef{lstMatlab}{keywordcolor7}{stdltforestgreen}                               % constants (e.g. true/false; both lowercase/uppercase versions
+\tcbcolorsetdef{lstMatlab}{keywordcolor8}{Matlab-autohighlight-shade}             % function options stdltforestgreen
+\tcbcolorsetdef{lstMatlab}{keywordcolor9}{Matlab-sharedscopecolor}                        % function options stdltforestgreen
+\tcbcolorsetdef{lstMatlab}{keywordcolor10}{javapurple}                            % function options stdltforestgreen
+\tcbcolorsetdef{lstMatlab}{numbercolor}{white}                                    % was stdred/ BaylorGreen
+\tcbcolorsetdef{lstMatlab}{rulecolor}{black}                                              %
+\tcbcolorsetdef{lstMatlab}{rulesepcolor}{Cyan}                                    %
+\tcbcolorsetdef{lstMatlab}{stringcolor}{blue}
+\tcbcolorsetdef{lstMatlab}{TeXcolor}{blue}                                                %
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{lstterminalColorset-backgroundcolor}{black}                                   % was Matlab-colback
-\colorlet{lstterminalColorset-commentcolor}{dkgreen}
-\colorlet{lstterminalColorset-escapebegin}{dkgreen}
-\colorlet{lstterminalColorset-escapeend}{black}
-\colorlet{lstterminalColorset-fillcolor}{green}
-\colorlet{lstterminalColorset-identifiercolor}{white}
-\colorlet{lstterminalColorset-keywordcolor1}{java-keyword}                              %
-\colorlet{lstterminalColorset-keywordcolor2}{java-keyword}                              %
-\colorlet{lstterminalColorset-keywordcolor3}{user-keyword}                              % user defined keywords
-\colorlet{lstterminalColorset-numbercolor}{white}                                       % was stdred/ BaylorGreen
-\colorlet{lstterminalColorset-rulecolor}{black}                                 %
-\colorlet{lstterminalColorset-rulesepcolor}{black}                                      %
-\colorlet{lstterminalColorset-stringcolor}{blue}                                        %
+\tcbcolorsetdef{lstterminal}{backgroundcolor}{black}                                   % was Matlab}{colback
+\tcbcolorsetdef{lstterminal}{commentcolor}{dkgreen}
+\tcbcolorsetdef{lstterminal}{escapebegin}{dkgreen}
+\tcbcolorsetdef{lstterminal}{escapeend}{black}
+\tcbcolorsetdef{lstterminal}{fillcolor}{green}
+\tcbcolorsetdef{lstterminal}{identifiercolor}{white}
+\tcbcolorsetdef{lstterminal}{keywordcolor1}{java-keyword}                              %
+\tcbcolorsetdef{lstterminal}{keywordcolor2}{java-keyword}                              %
+\tcbcolorsetdef{lstterminal}{keywordcolor3}{user-keyword}                              % user defined keywords
+\tcbcolorsetdef{lstterminal}{numbercolor}{white}                                       % was stdred/ BaylorGreen
+\tcbcolorsetdef{lstterminal}{rulecolor}{black}                                 %
+\tcbcolorsetdef{lstterminal}{rulesepcolor}{black}                                      %
+\tcbcolorsetdef{lstterminal}{stringcolor}{blue}                                        %
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Environment Color Schemes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{majorSectionHeading-colback}{MidnightBlue}%{MidnightBlue}%{DeepSkyBlue}%{LightSkyBlue}%{Turquoise}%{Turquoise}%{Turquoise}%Cyan
-\colorlet{majorSectionHeading-coltitle}{white}
-\colorlet{majorSectionHeading-colbacktitle}{skyblue}
-\colorlet{majorSectionHeading-coldraw}{black}
+\colorsetdef{majorSectionHeading}{colback}{MidnightBlue}%{MidnightBlue}%{DeepSkyBlue}%{LightSkyBlue}%{Turquoise}%{Turquoise}%{Turquoise}%Cyan
+\colorsetdef{majorSectionHeading}{coltitle}{white}
+\colorsetdef{majorSectionHeading}{colbacktitle}{skyblue}
+\colorsetdef{majorSectionHeading}{coldraw}{black}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\colorsetdef{diagram}{colback}{stdbackground!50!white}
+\colorsetdef{diagram}{colbackupper}{stdbackground!50!white}%{stdblue!1!white}
+\colorsetdef{diagram}{colbacklower}{stdbackground!50!white}%{stdblue!5!white}
+\colorsetdef{diagram}{coldraw}{stdblue}
+\colorsetdef{diagram}{colframe}{black}
+\colorsetdef{diagram}{colframeborder}{stdblue}
+\colorsetdef{diagram}{dir-coldraw}{stddkgreen-tint}
+\colorsetdef{diagram}{dir-topcolor}{white}
+\colorsetdef{diagram}{dir-bottomcolor}{stddkgreen-lowtint}
+\colorsetdef{diagram}{file-coldraw}{stddkblue-medtint}
+\colorsetdef{diagram}{file-topcolor}{white}
+\colorsetdef{diagram}{file-bottomcolor}{stddkblue-lowtint}
+\colorsetdef{diagram}{text-coldraw}{stdbackground!50!white}
+\colorsetdef{diagram}{text-topcolor}{stdbackground!50!white}
+\colorsetdef{diagram}{text-bottomcolor}{stdbackground!50!white}
+\colorsetdef{diagram}{end-coldraw}{stddkred-tint}
+\colorsetdef{diagram}{end-topcolor}{white}
+\colorsetdef{diagram}{end-bottomcolor}{stddkred-lowtint}
+\colorsetdef{diagram}{point-colfill}{stdgray}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\colorsetdef{documentation}{colfilltext}{white}
+\colorsetdef{documentation}{constdir}{stdGreen}
+\colorsetdef{documentation}{colfill}{DodgerBlue3}
+\colorsetdef{documentation}{gitaccount}{deeppink3}
+\colorsetdef{documentation}{gitrepo}{violetred4}
+\colorsetdef{documentation}{gitbranch}{MediumOrchid}
+\colorsetdef{documentation}{gitcommand}{Turquoise}%Aquamarine
+\colorsetdef{documentation}{dir}{Peru}
+\colorsetdef{documentation}{file}{stddeepskyblue}
+\colorsetdef{documentation}{fileset}{blue}
+\colorsetdef{documentation}{subcategory}{stdSeaGreen}
+\colorsetdef{documentation}{script}{stddeepskyblue}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Color definition/manipulation/selection commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\pgfmathsetmacro{\@SHADE@FACTOR@SEP}{25}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@color@tint}{o m D(){50} t+ t-}
+{%
+        %\colorsetdef{stddkgreen-lowtint}{green!50!black!20!white}
+        %\colorsetdef{stddkgreen-medtint}{green!50!black!20!white!75!black}
+        %\colorsetdef{stddkgreen-tint}{green!50!black!50!white}
+
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@color@shade}{o m D(){50} t+ t-}
+{%
+        \IfValueTF{#1}%
+                {\csdef{@color@prefix}{#1}}%
+                {\csdef{@color@prefix}{#2}}%
+        \numdef\@shade@coefficient@setpoint{#3}%
+        \pgfmathsetmacro{\@shade@coefficient}{\@shade@coefficient@setpoint}%
+        \IfBooleanTF{#4}{\pgfmathsetmacro{\@shade@coefficient}{int(\@shade@coefficient@setpoint+\@SHADE@FACTOR@SEP)}}{}%
+        \IfBooleanTF{#5}{\pgfmathsetmacro{\@shade@coefficient}{int(\@shade@coefficient@setpoint-\@SHADE@FACTOR@SEP)}}{}%
+        \@shade@coefficient\\%
+        %\numToText{\@shade@coefficient}\\%
+%\IfBooleanTF{#4}{\pgfmathadd{int(add(\@shade@coefficient@setpoint,\@SHADE@FACTOR@SEP))}}{}%
+        %\IfBooleanTF{#5}{\pgfmathadd{int(add(\@shade@coefficient@setpoint,-\@SHADE@FACTOR@SEP))}}{}%
+        %\pgfmathsetmacro{\@shade@coefficient}{\pgfmathresult}%
+        %       \pgfmathsetmacro{\@shade@coefficient}{\pgfmathresult}
+%        \xp\colorsetdef\xp{\@color@prefix-shade}{#1!#2!black}
+}
+%\colorsetdef{stddkgreen-tint}{green!50!black!50!white}
+%\colorsetdef{stddkgreen-lowtint}{green!50!black!20!white}
+%\colorsetdef{stddkgreen-medtint}{stddkgreen-lowtint!75!black}
+%\colorsetdef{stddkblue-tint}{blue!50!black!20!white}%{blue!50!black!50!white}
+%\colorsetdef{stddkblue-lowtint}{blue!50!black!20!white}
+%\colorsetdef{stddkblue-medtint}{stddkblue-lowtint!75!black}%{blue!37!black!40!white}%
+%\colorsetdef{stddkred-tint}{red!50!black!50!white}
+%\colorsetdef{stddkred-lowtint}{red!50!black!20!white}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@major@section@header@colors}{m}
 {%
@@ -893,59 +1122,38 @@
         {%
                 {Part}%
                 {%
-                        \colorlet{majorSectionHeading-colback}{LightSkyBlue}%
-                        \colorlet{majorSectionHeading-colbacktitle}{MidnightBlue}%
+                        \colorsetdef{majorSectionHeading}{colback}{LightSkyBlue}%
+                        \colorsetdef{majorSectionHeading}{colbacktitle}{MidnightBlue}%
                 }%
                 {Topic}%
                 {%
-                        \colorlet{majorSectionHeading-colback}{MidnightBlue}%
-                        \colorlet{majorSectionHeading-colbacktitle}{Cerulean}%
+                        \colorsetdef{majorSectionHeading}{colback}{MidnightBlue}%
+                        \colorsetdef{majorSectionHeading}{colbacktitle}{Cerulean}%
                 }%
                 {Chapter}%
                 {%
-                        \colorlet{majorSectionHeading-colback}{LightSkyBlue}%
-                        \colorlet{majorSectionHeading-colbacktitle}{MidnightBlue}%
+                        \colorsetdef{majorSectionHeading}{colback}{LightSkyBlue}%
+                        \colorsetdef{majorSectionHeading}{colbacktitle}{MidnightBlue}%
                 }%
         }%
 }
-%-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{diagram-colback}{stdbackground!50!white}
-\colorlet{diagram-colbackupper}{stdbackground!50!white}%{stdblue!1!white}
-\colorlet{diagram-colbacklower}{stdbackground!50!white}%{stdblue!5!white}
-\colorlet{diagram-coldraw}{stdblue}
-\colorlet{diagram-colframe}{black}
-\colorlet{diagram-colframeborder}{stdblue}
-\colorlet{diagram-dir-coldraw}{stddkgreen-tint}
-\colorlet{diagram-dir-topcolor}{white}
-\colorlet{diagram-dir-bottomcolor}{stddkgreen-lowtint}
-\colorlet{diagram-file-coldraw}{stddkblue-medtint}
-\colorlet{diagram-file-topcolor}{white}
-\colorlet{diagram-file-bottomcolor}{stddkblue-lowtint}
-\colorlet{diagram-text-coldraw}{stdbackground!50!white}
-\colorlet{diagram-text-topcolor}{stdbackground!50!white}
-\colorlet{diagram-text-bottomcolor}{stdbackground!50!white}
-\colorlet{diagram-end-coldraw}{stddkred-tint}
-\colorlet{diagram-end-topcolor}{white}
-\colorlet{diagram-end-bottomcolor}{stddkred-lowtint}
-\colorlet{diagram-point-colfill}{stdgray}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\colorlet{documentation-colfilltext}{white}
-\colorlet{documentation-constdir}{stdGreen}
-\colorlet{documentation-colfill}{DodgerBlue3}
-\colorlet{documentation-gitaccount}{deeppink3}
-\colorlet{documentation-gitrepo}{violetred4}
-\colorlet{documentation-gitbranch}{MediumOrchid}
-\colorlet{documentation-gitcommand}{Turquoise}%Aquamarine
-\colorlet{documentation-dir}{Peru}
-\colorlet{documentation-file}{stddeepskyblue}
-\colorlet{documentation-fileset}{blue}
-\colorlet{documentation-subcategory}{stdSeaGreen}
-\colorlet{documentation-script}{stddeepskyblue}
-%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************************************** End of 'my-colors.sty' package ************************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 %-------------------------------------------------------------------------------------------------------------------------------%
 \endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\@PKGTESTING@HEADING:
+% Cerulean Dandelion NavyBlue Dandelion stddkblue-lowtint Cerulean stdltblue stdltyellow Ivory1
+%\DDAplot:
+% OpalineGreen,OpalineGreen,aquamarine1,SeaGreen,JungleGreen,TerraCotta,darkseagreen3,chartreuse2,greenyellow,mediumspringgreen, palegreen1,seagreen2,LightSalmon2,PaleGreen,Lilas,Mimosa,lightsalmon,olivedrab2,springgreen3,tan2,yellowgreen,yellowgreen
+% OpalineGreen,Mimosa,LightSalmon2,lightsalmon,TerraCotta,olivedrab2,darkseagreen3,Lilas,seagreen2,,,
+%Ivory1 Papyrus!50  white Cornsilk1!50!white Azure1!50!white LightYellow1!50!white DarkSeaGreen1!20!white
+% LightBlue!15!white PowderBlue!15!white
+% Cornsilk1 LightYellow1 LightBlue1 DarkSeaGreen1 PaleGreen1 SeaGreen SeaGreen1 Azure1 LightBlue PowderBlue AquaFoam Papyrus Honeydew honeydew1 honeydew

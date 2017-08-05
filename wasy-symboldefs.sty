@@ -1,0 +1,167 @@
+%*******************************************************************************************************************************%
+%**************************************************** `wasy-symboldefs.sty' ****************************************************%
+%*******************************************************************************************************************************%
+% Defines 'wasyfamily' encoding and uses it to provide plain TeX definitions of the 'wasysym' package symbols (except for the integral symbols and math mode only symbols).  The corresponding \def's provide the relevant symbol by switching to the 'wasyfamily' font encoding/family and accessing the symbol via \charXXX character code, then grouping the series of commands by placing them inside a box command (\hbox/\mbox) or a brace group such that these commands only have local scope and have no persisting effect outside the group.  By providing access to these symbols through plain TeX macros rather than the standard \DeclareMathSymbol definitions, no 'wasy' symbol font/alphabet declarations are required, easing the burden on the limited number of fonts/alphabets that can simultaneously be supported, particularly helpful given that the number of desired fonts/alphabets already exceeds the maximum availability and this has already forced the removal of several desirable fonts/alphabets.
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{wasy-symboldefs}                    % Provides \def's for inserting 'wasysym' package symbols  
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{wasy-symboldefs}{Unknown \CurrentOption}}
+%*******************************************************************************************************************************%
+%************************************************ Processing of package options ************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\wasyfamily{\fontencoding{U}\fontfamily{wasy}\selectfont}
+%\DeclareTextFontCommand{\textwasy}{\wasyfamily}
+%\DeclareSymbolFont{wasy}{U}{wasy}{m}{n}
+%\SetSymbolFont{wasy}{bold}{U}{wasy}{b}{n}
+%\def\wasy@over#1#2{{\setbox0\hbox{$#2$}\hbox to \wd0{\hss
+%    $#1$\hss}\kern-\wd0\box0}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\male       {\mbox{\wasyfamily\char26}}
+\def\female     {\mbox{\wasyfamily\char25}}
+\def\currency   {{\wasyfamily\char27}}
+\def\phone      {{\wasyfamily\char7}}
+\def\recorder   {{\wasyfamily\char6}}
+\def\clock      {{\wasyfamily\char28}}
+\def\lightning  {{\wasyfamily\char18}}
+\def\pointer    {{\wasyfamily\char9}}
+\def\RIGHTarrow {{\wasyfamily\char17}}
+\def\LEFTarrow  {{\wasyfamily\char16}}
+\def\UParrow    {{\wasyfamily\char75}}
+\def\DOWNarrow  {{\wasyfamily\char76}}
+\def\diameter   {\mbox{\wasyfamily\char31}}
+\def\invdiameter{\mbox{\wasyfamily\char21}}
+\def\varangle   {\mbox{\wasyfamily\char30}}
+\def\wasylozenge{\mbox{\wasyfamily\char53}}
+\def\kreuz      {\mbox{\wasyfamily\char54}}
+\def\smiley     {\mbox{\wasyfamily\char44}}
+\def\frownie    {\mbox{\wasyfamily\char47}}
+\def\blacksmiley{\mbox{\wasyfamily\char45}}
+\def\sun        {\mbox{\wasyfamily\char46}}
+\def\checked    {\mbox{\wasyfamily\char8}}
+\def\bell       {\mbox{\wasyfamily\char10}}
+\def\ataribox   {\mbox{\wasyfamily\char109}}
+\def\cent       {\mbox{\wasyfamily\char103}}
+\def\permil     {\mbox{\wasyfamily\char104}}
+\def\brokenvert {\mbox{\wasyfamily\char124}}
+\def\wasytherefore{\mbox{\wasyfamily\char5}}
+\def\Bowtie     {\mbox{\wasyfamily\char49}}
+\def\agemO      {{\wasyfamily\char48}}
+%-------------------------------------------------------------------
+\def\AC         {\mbox{\kern0.5pt\wasyfamily\char58\kern0.5pt}}
+\def\HF         {\leavevmode
+        \lower0.9pt\hbox to 0pt{\kern0.5pt\wasyfamily\char58\hss}%
+        \raise0.9pt\hbox{\kern0.5pt\wasyfamily\char58\kern0.5pt}}
+\def\VHF        {\mbox{\wasyfamily\char64}}
+\def\photon     {\mbox{\wasyfamily\char58\char58\char58\char58}}
+\def\gluon      {\mbox{\wasyfamily\char81\char80\char80\char80\char80\char80\char80\char82}}
+%------------------------------------------------------------------------
+\def\Square     {\mbox{$\Box$}}
+\def\CheckedBox {\leavevmode\hbox to 0pt{\wasyfamily\char50\hss}%
+                 \hbox{\wasyfamily\char8}}
+\def\XBox       {\mbox{\wasyfamily\char52}}
+\def\hexagon    {\mbox{\wasyfamily\char55}}
+\def\varhexagon {\mbox{\wasyfamily\char57}}
+\def\pentagon   {\mbox{\wasyfamily\char68}}
+\def\octagon    {\mbox{\wasyfamily\char56}}
+\def\hexstar    {\mbox{\wasyfamily\char65}}
+\def\varhexstar {\mbox{\wasyfamily\char66}}
+\def\davidsstar {\mbox{\wasyfamily\char67}}
+%------------------------------------------------------------------------
+\def\eighthnote {\mbox{\wasyfamily\char11}}
+\def\quarternote{\mbox{\wasyfamily\char12}}
+\def\halfnote   {\mbox{\wasyfamily\char13}}
+\def\fullnote   {\mbox{\wasyfamily\char14}}
+\def\twonotes   {\mbox{\wasyfamily\char15}}
+%------------------------------------------------------------------------
+\def\Circle     {\mbox{\wasyfamily\char35}}
+\def\CIRCLE     {\mbox{\wasyfamily\char32}}
+\def\Leftcircle {\mbox{\wasyfamily\char73}}
+\def\LEFTCIRCLE {\mbox{\wasyfamily\char71}}
+\def\Rightcircle{\mbox{\wasyfamily\char74}}
+\def\RIGHTCIRCLE{\mbox{\wasyfamily\char72}}
+\def\LEFTcircle {\leavevmode%
+                 \hbox to 0pt{\wasyfamily\char71\hss}%
+                 \hbox{\wasyfamily\char35}}
+\def\RIGHTcircle{\leavevmode%
+                 \hbox to 0pt{\wasyfamily\char72\hss}%
+                 \hbox{\wasyfamily\char35}}
+\def\leftturn   {\mbox{\wasyfamily\char34}}
+\def\rightturn  {\mbox{\wasyfamily\char33}}
+%------------------------------------------------------------------------
+\def\vernal     {\mbox{\wasyfamily\char23}}
+\def\ascnode    {\mbox{\wasyfamily\char19}}
+\def\descnode   {\mbox{\wasyfamily\char20}}
+\let\fullmoon   \Circle
+\let\newmoon    \CIRCLE
+\def\leftmoon   {\mbox{\wasyfamily\char36}}
+\def\rightmoon  {\mbox{\wasyfamily\char37}}
+\def\astrosun   {\mbox{$\odot$}}
+\def\mercury    {\mbox{\wasyfamily\char39}}
+\def\venus      {\leavevmode\raise0.2ex\hbox{\wasyfamily\char25}}
+\def\earth      {\leavevmode\lower0.3ex\hbox{\wasyfamily\char38}}
+\def\mars       {\leavevmode\lower0.2ex\hbox{\wasyfamily\char26}}
+\def\jupiter    {\mbox{\wasyfamily\char88}}
+\def\saturn     {\mbox{\wasyfamily\char89}}
+\def\uranus     {\mbox{\wasyfamily\char90}}
+\def\neptune    {\mbox{\wasyfamily\char91}}
+\def\pluto      {\mbox{\wasyfamily\char92}}
+%------------------------------------------------------------------------
+\let\aries      \vernal
+\def\taurus     {\mbox{\wasyfamily\char93}}
+\def\gemini     {\mbox{\wasyfamily\char94}}
+\def\cancer     {\mbox{\wasyfamily\char95}}
+\let\leo        \ascnode
+\def\virgo      {\mbox{\wasyfamily\char96}}
+\def\libra      {\mbox{\wasyfamily\char97}}
+\def\scorpio    {\mbox{\wasyfamily\char98}}
+\def\sagittarius{\mbox{\wasyfamily\char99}}
+\def\capricornus{\mbox{\wasyfamily\char100}}
+\def\aquarius   {\mbox{\wasyfamily\char101}}
+\def\pisces     {\mbox{\wasyfamily\char102}}
+\def\conjunction{{\wasyfamily\char86}}
+\def\opposition {{\wasyfamily\char87}}
+%------------------------------------------------------------------------
+\def\APLstar    {\mbox{\wasyfamily\char69}}
+\def\APLlog     {\mbox{\wasyfamily\char22}}
+\def\APLbox     {\mbox{\wasyfamily\char126}}
+\def\APLup      {\mbox{\wasyfamily\char0}}
+\def\APLdown    {\mbox{\wasyfamily\char70}}
+\def\APLinput   {\mbox{\wasyfamily\char125}}
+\def\APLcomment {\mbox{\wasyfamily\char127}}
+\def\APLinv     {{\leavevmode\hbox to 0pt{$\div$\hss}\APLbox}}
+\def\APLuparrowbox{\mbox{\wasyfamily\char110}}
+\def\APLdownarrowbox{\mbox{\wasyfamily\char111}}
+\def\APLleftarrowbox{\mbox{\wasyfamily\char112}}
+\def\APLrightarrowbox{\mbox{\wasyfamily\char113}}
+\def\notbackslash{\wasy@over{\backslash}{-}}
+\def\notslash   {\wasy@over{/}{-}}
+\def\APLminus   {\leavevmode\raise0.7ex\hbox{$-$}}
+\def\APLnot#1{\wasy@over{\sim}{#1}}
+\def\APLcirc#1{\wasy@over{\circ}{#1}}
+\def\APLvert#1{\wasy@over{\vert}{#1}}
+%------------------------------------------------------------------------
+\DeclareTextCommand{\dh}{OT1}{{\wasyfamily\char107}}
+\DeclareTextCommand{\DH}{OT1}{\leavevmode{\rm\setbox0\hbox{D}\hbox to\wd0{\kern 0.04em\char32\hss D}}}
+\def\thorn      {{\wasyfamily\char105}}
+\def\Thorn      {{\wasyfamily\char106}}
+\def\openo      {{\wasyfamily\char108}}
+\def\inve       {{\wasyfamily\char85}}
+%*******************************************************************************************************************************%
+%********************************************** End of 'wasy-symboldefs' package ***********************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
+\makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput

@@ -17,41 +17,43 @@
 %*******************************************************************************************************************************%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------  -------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************** Define new LaTeX commands **************************************************%
 %*******************************************************************************************************************************%
 \newcommand{\gobblenext}[1]{\csvdel#1\@ifnextchar\bgroup{\gobblenext}{}}        % Gobble next "argument"
 \newcommand{\checknextarg}{\@ifnextchar\bgroup{\gobblenext}{}}                  % Check if another "argument" exists
-\newcommand{\resetcounter}[1]{\setcounter{#1}{0}}                         	% Removes following token from input stream
-\WithSuffix\newcommand\resetcounter*[1]{\setcounter{#1}{1}}                  	% Removes following token from input stream
+\newcommand{\resetcounter}[1]{\setcounter{#1}{0}}                               % Removes following token from input stream
+\WithSuffix\newcommand\resetcounter*[1]{\setcounter{#1}{1}}                     % Removes following token from input stream
+\newcommand*{\counternumdigits}[1]{\numdigits{\value{#1}}}
 %\newcommand{\pagereftop}[1]{\hyperlink{page.\getpagerefnumber{#1}}{\pageref*{#1}}}
 \newcommand{\probtag}[1]{\tag*{\bfseries(#1)}\decrementcounter{equation}}       % Adds tag text (#1) to equation line
 \newcommand{\deftag}[1]{\tag*{\bfseries(#1)}\decrementcounter{equation}}        % Adds tag text (#1) to equation line
-\newcommand*{\getValue}[2]{\pgfmathsetmacro#1{#2}}                 		% Create \<#1> = #2 stripped of units
-\newcommand*{\getLength}[2]{\pgfmathsetlengthmacro#1{#2}}        		% Create \<#1> = #2 in pt units
+\newcommand*{\getValue}[2]{\pgfmathsetmacro#1{#2}}                              % Create \<#1> = #2 stripped of units
+\newcommand*{\getLength}[2]{\pgfmathsetlengthmacro#1{#2}}                       % Create \<#1> = #2 in pt units
 \newcommand{\convertto}[2]{\strip@pt\dimexpr 1#1*65536/\number\dimexpr 1#2}     % Convert value of #1 to units of #2
 \newcommand{\printLength}[2][pt]{\uselengthunit{#1}\printlength{#2}}            % Wrapper for \printlength command
-\newcommand{\solnshift}{\hspace{-0.4cm}}                   			% Shift text after (Sol.)
+\newcommand{\solnshift}{\hspace{-0.4cm}}                                        % Shift text after (Sol.)
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\soln}                                         			% Provides classic "(Sol.)" text label, used to mark
-{%                                                         			% the beginning of a solution, in italic font style
-        \@ifstar                                           			% and bold if starred version is used
+\newcommand{\soln}                                                              % Provides classic "(Sol.)" text label, used to mark
+{%                                                                              % the beginning of a solution, in italic font style
+        \@ifstar                                                                % and bold if starred version is used
         {\textit{(Sol.) \solnshift}}%
         {\textbfit{(Sol.) }\solnshift}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\printcsvlist}[2][,]%
+\newcommand{\doprintcsvlist}[2][,]%
 {%
         \def\itemdelim{\def\itemdelim{#1}}%                                   Item delimiter delayed by one cycle
         \renewcommand*{\do}[1]{\itemdelim##1}%                                How each item is processed
         \docsvlist{#2}%
 }%                                                      Process CSV list
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\test}[1]{%
+\newcommand{\casetest}[1]{%
         \ifcase\numexpr1\noexpand#11\relax
         % -
         \or   % other
@@ -80,11 +82,11 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\breakuline}[1]%
 {%
-	\llap%
-	{%
-		\textcolor{white}{\the\SOUL@token}%
-		\hspace{#1pt}%
-	}%
+        \llap%
+        {%
+                \textcolor{white}{\the\SOUL@token}%
+                \hspace{#1pt}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\tdotfill[1][\repfrac]
@@ -139,13 +141,12 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Universal macro creation/return commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %*******************************************************************************************************************************%
-%\DeclareDocumentCommand{\new@or@renewcommand}{m O{0} m m}
-%\DeclareDocumentCommand{\re@newcommand}{m O{0} m m}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@re@newcommand}{m m}
 {%
-        \ifcsdef{#1}% 
-        	{\xp@renewcommand{#1}{#2}}%
-        	{\xp@newcommand{#1}{#2}}%
+        \ifcsdef{#1}%
+                {\csname@nyN\renewcommand{#1}{#2}}%
+                {\csname@nyN\newcommand{#1}{#2}}%%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\newstarcommand}{m O{0} m m}
@@ -154,39 +155,592 @@
         \WithSuffix\newcommand#1*[#2]{#4}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@def@by@type}{m t' m m}
+\DeclareDocumentCommand{\environment@alias}{t= t- t> u{;}}{\IfBooleanTF{#1}{\environment@aliasB#4;}{\environment@aliasA#4;}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\keyenvironment@alias}{t= t- t> u{;}}{\IfBooleanTF{#1}{\keyenvironment@aliasB#4;}{\keyenvironment@aliasA#4;}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\environment@aliasA}{t- t> u{=} u{;}}
 {%
+        \global\csletcs{#3}{#4}%
+        \global\csletcs{end#3}{end#4}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\keyenvironment@aliasA}{t- t> u{=} u{;}}
+{%
+        \DeclareDocumentEnvironment{#3}{o}
+                {\IfValueTF{##1}{\begin{#4}[##1]}{\begin{#4}}}%
+                {\end{#4}}%%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\environment@aliasB}{t= u{->} u{;}}
+{%
+        \global\csletcs{#2}{#3}%
+        \global\csletcs{end#2}{end#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\keyenvironment@aliasB}{t= u{->} u{;}}
+{%
+        \DeclareDocumentEnvironment{#2}{o}
+                {\IfValueTF{##1}{\begin{#3}[##1]}{\begin{#3}}}%
+                {\end{#3}}%%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@define@by@deftype}{m t' m m}
+{%\@define@by@deftype{BooleanTrue/False arg=newcommand/def usage}<!=new/existing cs>{value type}{variable/cs name}
         \IfSubBooleanTF{#1}%
         {%
                 \IfBooleanTF{#2}%
-                        {\renewcommand{#4}{\@saved@scalar}}%
-                        {\newcommand{#4}{\@saved@scalar}}%
+                        {\renewcommand{#3}{#4}}%
+                        {\newcommand{#3}{#4}}%
         }%
-        {\xdef#4{\@saved@scalar}}%
+        {\xdef#3{#4}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\return}{t= u{;}}{\gdef\result{#2}}
+%                                      1 2     3 4   5   6        7     8
+\DeclareDocumentCommand{\csdefnumname}{s D(){} m d'' O{} D||{\csnumname@prefix} D//{} m}%
+{%<+=ordinals><*=NA>{numerator #}'denominator #'[key/value numname seps](cs storing numname result)|cs prefix|/cs suffix/{csdef}
+        \cfg@numToX#2{#3}{#4}[#5]%
+        \csgdef{#6\textout#7}{#8}%
+        \IfBooleanTF{#1}{\csuse{#6\textout#7}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                   1     2 3 4   5        6
+\DeclareDocumentCommand{\thecsnumname}{D(){} m g O{} D||{\csnumname@prefix} D//{}}%
+{%\thecsnumname<+=ordinals><*=NA>{numerator #}{denominator #}[key/value numname seps](csdef <= numname)|cs prefix|/cs suffix/
+        \cfg@numToX#1{#2}{#3}[#4]%
+        \csuse{#5\@the@numname#6}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\pack@csoptions}{s O{@env@options} m}{\csgdef{#2}{[#3]}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\return}{d() t= u{;}}%
+{%
+        \gdef\RETURN{#3}%
+        \IfValueTF{#1}{\csgdef{#1}{#3}}{}%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\returntrue}{g O{if}}%
 {%
-        \IfValueTF{#1}{\setTFindicator[\TRUE]{#2}{#1}}{}%
+        \IfValueTF{#1}{\cssetTF[\TRUE]{#2}{#1}}{}%
         \return=\binaryT;%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\returnfalse}{g O{if}}%
 {%
-        \IfValueTF{#1}{\setTFindicator[\FALSE]{#2}{#1}}{}%
+        \IfValueTF{#1}{\cssetTF[\FALSE]{#2}{#1}}{}%
         \return=\binaryF;%
+}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document settings/configuration commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fancyfoot@settings}{}%
+{%
+        \setlength\@cfoot@yshift{\paperheight - (1in + \voffset + \topmargin + \headheight + \headsep + \textheight) - \footskip}%
+        \@fancyfoot@labeling%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fancyheadfoot}{O{}}%
+{%
+        \fancyfoot@settings%
+        \fancyfoot[C]%
+        {%
+                \do@once{@measure@cfootpos}{\zsavepos{cfootpos}}%
+                \@footpage@label%
+        }%
+        \fancyhead[R]{\parbox[c]{\@header@image@width}{\@header@image}\vskip-8pt}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@fractional@spacing}{s}
+{%
+        \foreach \@@fracargpair in \@fracspacing@frac@pairs%
+        {%
+                \xp\numToText\xp!\@@fracargpair%
+                \edef\@@fracspace@name{\textout @spacing}%
+                \xp\setbsvargs\xp{\@@fracargpair}%
+                \pgfmathsetmacro\@@fraccalcval{\bsvargi / \bsvargii}%
+                \xp\csdimgdef\xp{\xp\@@fracspace@name\xp}\xp{\@@fraccalcval\space@length}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setlinespread}{s g o}
+{%\setlinespread<*=NA>{context}[key/val options]%
+        %\begingroup
+        \IfValueTF{#2}%
+        {%
+                \IfValueTF{#3}%
+                        {\linespread@settings[context=#2,#3]}%
+                        {\linespread@settings[context=#2]}%
+        }%
+        {%
+                \IfValueTF{#3}%
+                        {\linespread@settings[#3]}%
+                        {\linespread@settings[]}%
+        }%
+        \selectfont%
+        %\endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%doc,coverpage,toc,MDFdefbox,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM
+\DeclareDocumentCommand{\linespacing}{G{doc}}
+{%
+        \global\deflength\arrayrulewidth{\csuse{@#1@arrayrulewidth}}%
+        \global\renewcommand\baselinestretch{\csuse{@#1@baselinestretch}}%
+        \global\renewcommand\arraystretch{\csuse{@#1@arraystretch}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@define@linespace@commands}{o}
+{%
+        \foreach \linespace@context in \linespace@contexts%
+                {\xp\@swaparg\xp{\xp\linespacing\xp{\linespace@context}}{\csgdef{\linespace@context linespacing}}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~ Argument (single, variable #, list) parsing, manipulation, forwarding, and storage ~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                         1 2 3   4   5   6   7   8   9
+\DeclareDocumentCommand{\stripdelimiters}{g o d() d|| d<> d:: d'' d-- d!!}{}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\removebrackets}{o}{}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\IfValueFT}{m m m}{\IfValueTF{#1}{#3}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\IfBooleanFT}{m m m}{\IfBooleanTF{#1}{#3}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardBoolean}{m m}{\IfBooleanTF{#1}{#2*}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardBooleanNot}{m m}{\IfBooleanTF{#1}{#2}{#2*}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\createBooleanList}{d() m}%
+{%
+        \xdef\@@boolean@arg@list{#2}%
+        \gdef\@@boolean@symbol@list{}%
+        \foreach \@boolean@arg/\@boolean@argText in \@@boolean@arg@list%
+                {\IfSubBooleanTF{\@boolean@arg}{\xappto{\@@boolean@symbol@list}{\@boolean@argText}}{}}%
+        \IfValueTF{#1}{\csxdef{#1}{\@@boolean@symbol@list}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardBooleanList}{m m}%
+{%
+        \createBooleanList{#2}%
+ %       \edef\@@boolean@arg@list{#2}%
+%        \gdef\@@boolean@symbol@list{}%
+%        \foreach \@boolean@arg/\@boolean@argText in \@@boolean@arg@list%
+%                {\IfSubBooleanTF{\@boolean@arg}{\xappto{\@@boolean@symbol@list}{\@boolean@argText}}{}}%
+        \xp#1\@@boolean@symbol@list%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardBooleanNotList}{m m}%
+{%
+        \edef\@@boolean@arg@list{#2}%
+        \def\@@boolean@symbol@list{}%
+        \foreach \@boolean@arg/\@boolean@argText in \@@boolean@arg@list%
+                {\IfSubBooleanFT{\@boolean@arg}{\xappto{\@@boolean@symbol@list}{\@boolean@argText}}{}}%
+        \xp#1\@@boolean@symbol@list%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardBooleanMixList}{m m}%
+{%
+        \edef\@@boolean@arg@list{#2}%
+        \def\@@boolean@symbol@list{}%
+        \foreach \@boolean@arg/\@boolean@argText/\@bool@order in \@@boolean@arg@list%
+        {%
+                \csuse{IfSubBoolean\@bool@order}{\@boolean@arg}%
+                        {\xappto{\@@boolean@symbol@list}{\@boolean@argText}}{}%
+        }%
+        \xp#1\@@boolean@symbol@list%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Performs equivalent of \IfBooleanTF on an 's'/'t' argument forwarded directly from another macro
+\DeclareDocumentCommand{\IfSubBooleanTF}{m m m}{\expandafter\ifstrequal\expandafter{#1}{\BooleanTrue}{#2}{#3}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Performs equivalent of \IfBooleanFT on an 's'/'t' argument forwarded directly from another macro
+\DeclareDocumentCommand{\IfSubBooleanFT}{m m m}{\expandafter\ifstrequal\expandafter{#1}{\BooleanTrue}{#3}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardSubBoolean}{m m}{\IfSubBooleanTF{#1}{#2*}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\forwardSubBooleanNot}{m m}{\IfSubBooleanTF{#1}{#2}{#2*}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@parse@boolean}{m m}
+{%
+        \IfSubBooleanTF{#1}%
+        {%
+                \xp\global\@nameuse{#2true}%
+                \csgdef{#2TF}{\BooleanTrue}%
+                \csgdef{#2FT}{\BooleanFalse}%
+        }%
+        {%
+                \xp\global\@nameuse{#2false}%
+                \csgdef{#2TF}{\BooleanFalse}%
+                \csgdef{#2FT}{\BooleanTrue}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                   1                   2          3 4
+\DeclareDocumentCommand{\csvargdef}{D(){\csvarg@prefix} O{\roman}  m m}%
+{%
+        \setcounter{@macro@counter}{#3}%
+        \setcsvargs[#2]{#4}%
+        \csxdef{#1#2{@macro@counter}}{#4}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\createxsvargs}{O{\roman} m D(){\csvarg@prefix} m D||{}}%
+{%
+        \csxdef{#2arg@prefix}{#3}%
+        \setxsvargs[#1]{#2}{#4}%
+        \csxdef{#2arg@prefix}{\csuse{#2arg@default@prefix}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\bsvarg#1{\thexsvarg{bsv}{#1}}
+\gdef\csvarg#1{\thexsvarg{csv}{#1}}
+\gdef\ssvarg#1{\thexsvarg{ssv}{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\thexsvarg}{O{\romannumeral} s m m}%
+{%
+        \setcountval{#4}%
+        \IfBooleanTF{#2}%
+                {\xsvarg@numeral\@macro@count}%
+                {\csname\xsvarg@numeral\@macro@count\endcsname}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\renewxsvargcommand}{O{\romannumeral} s m m}%
+        {\xp@csname@nnY\renewcommand{#3}{\xsvarg@numeral{#4}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\create@csvgrouplist}{t< D(){thecsvgroup} m}%
+{%{macro receiving args via cs}{cs name containing arg group}
+        \csundef{#2}%
+        \foreach \@@csv@group@item [count=\@@csv@group@index] in #3%{#3}%
+        {%
+                \ifcsundef{#2}
+                {%
+                        \protected@csxdef{#2}{(\@@csv@group@item)}%
+                        \global\letcs{\@@thecsvgroup}{#2}%
+                }%
+                {\xp\add@to@csvgrouplist\xp{\xp\@@thecsvgroup\xp}\xp{\@@csv@group@item}}%
+        }%
+        \global\cslet{#2}{\@@thecsvgroup}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%
+\DeclareDocumentCommand{\add@to@csvgrouplist}{t< m m}%
+{%{macro receiving args via cs}{cs name containing arg group}
+        \ifundef{#2}
+        {\gdef#2{(#3)}}%
+        {%
+                \IfBooleanTF{#1}%
+                        {\xp@nnY\gpreto{#2}{(#3),}}%
+                        {\xp@nnY\gappto{#2}{,(#3)}}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                               1 2 3   4   5
+\DeclareDocumentCommand{\csvlists@to@grouplist}{s m D(){csvgroupslist}}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \foreach \@@csvlist [count=\@@csvlist@index] in {#2}%
+        {%
+                \ifnumequal{\@@csvlist@index}{1}%
+                        {\xp\create@csvgrouplist\xp{\@@csvlist}}%
+                        {\xp\csvgrouplist@distribute@csv\xp{\xp\thecsvgroup\xp}\xp{\@@csvlist}}%(listone)
+        }%
+        %\xp\csgdef\xp{\xp#4\xp}\xp{\@@appendedcsvgrouplist}%
+        \global\cslet{#3}{\thecsvgroup}%
+        %\IfBooleanTF{#1}{thecsvgroupout=\xp\parsecsvgrouplist\thecsvgroup;}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%
+\DeclareDocumentCommand{\csvgrouplist@distribute@csv}{t! m m D(){appendedcsvgrouplist}}%
+{%{macro receiving args via cs}{cs name containing arg group}
+        %\ifx#2\relax
+        \ifundef{#2}%
+        {\create@csvgrouplist{#3}}%
+        {%
+        %\else% \create@csvgrouplist{#3}
+                \xp@nnY\gdef\remainingcsvgroup{#3,}%
+                \undef{\@@appendedcsvgrouplist}%
+                \foreach \@@csv@group [count=\@@csv@group@index] in #2%
+                {%
+                        \xp@nnyy\append@to@csvgroup\@@appendedcsvgrouplist\@@csv@group(\remainingcsvgroup)%
+                        %\xp\xp\xp\append@to@csvgroup\xp\xp\xp\@@appendedcsvgrouplist\xp\@@csv@group\xp(\remainingcsvgroup)
+                }%
+                %\xp\csgdef\xp{\xp#4\xp}\xp{\@@appendedcsvgrouplist}%
+                \global\cslet{#4}{\@@appendedcsvgrouplist}%
+                \IfBooleanTF{#1}{}{\global\letcs{#2}{#4}}%
+                \undef{\@@appendedcsvgrouplist}%
+        %\fi
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                           1                   2 3   4 5   6   7  8
+\DeclareDocumentCommand{\parsecsvgrouplist}{D''{\printcsvgroup} g d() o d|| d<> t, u{;}}%
+{%
+        \IfValueTF{#2}{#1{#2}}{}%
+        \IfValueTF{#3}{#1(#3)}{}%
+        \IfValueTF{#4}{#1[#4]}{}%
+        \IfValueTF{#5}{#1[#5]}{}%
+        \IfValueTF{#6}{#1<#6>}{}%
+        \IfBooleanTF{#7}%
+                {\parsecsvgrouplist'#1'#8;}%
+                {\ifstrempty{#8}{}{\parsecsvgrouplist'#1'{#8};}}%
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                       1 2   3 4   5
+\DeclareDocumentCommand{\parsecsvgroup}{g d() o d|| d<>}%
+{%
+        \IfValueTF{#1}{\setcsvargs{#1}}{}%
+        \IfValueTF{#2}{\setcsvargs{#2}}{}%
+        \IfValueTF{#3}{\setcsvargs{#3}}{}%
+        \IfValueTF{#4}{\setcsvargs{#4}}{}%
+        \IfValueTF{#5}{\setcsvargs{#5}}{}%
+        \ifnumequal{\narg}{3}{Triplet}{Pair}\\
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                            1 2   3   4   5
+\DeclareDocumentCommand{\append@to@csvgroup}{m r() d(, d() u{)} }
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \gdef\remainingcsvgroup{#5}%
+        \add@to@csvgrouplist{#1}{#2,#3}%
+}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\setGcsvarg}{m m m}{\csxdef{csvargG#1\roman{#2}}{\csuse{#3}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\parsevargs}{m m m}
+{%
+        \numToText!^{#1}%
+        %\setxsvargs[\@the@numname\roman]{csv}{#3}%
+        \setcsvargs[\@the@numname\roman]{#3}%
+        \setcounter{@saved@counter}{1}%
+        \foreach \@ [count=\@csv@arg@index from 1] in {1,...,#2}%
+        {%
+                \setcounter{argcounter}{\@csv@arg@index}%
+                \ifnumequal{\@csv@arg@index}{1}%
+                {%
+                        \xdef\@argcounter@counter@arg@name{\csvarg@prefix\@the@numname\roman{argcounter}}%
+                        \setGcsvarg{\@the@numname}{argcounter}{\@argcounter@counter@arg@name}%
+                }%
+                {%
+                        \ifcsundef{\csvarg@prefix\@the@numname\roman{argcounter}}{}{\incrementcounter{@saved@counter}}%
+                        \xdef\@saved@counter@arg@name{\csvarg@prefix\@the@numname\roman{@saved@counter}}
+                        \setGcsvarg{\@the@numname}{argcounter}{\@saved@counter@arg@name}%
+                }%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\parsevarglist}{m m}
+        {\foreach \@varg [count=\@varg@index from 1] in #2{\parsevargs{\@varg@index}{#1}{\@varg}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\dosplitcsv}{m m m}
+{%
+        \def\cmdlist{#1}%
+        \def\leftsplitarglist{<#2>}%
+        \def\rightsplitarglist{<#3>}%
+        \xp\xp\xp\xp\xp\xp\xp%
+        \@parse@split@csv@args\xp\xp\xp\xp\xp\xp\xp%
+        {%
+                \xp\xp\xp%
+                \cmdlist\xp\xp\xp%
+        }%
+        \xp\leftsplitarglist\xp=\rightsplitarglist%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@split@csv@args@cmd}{m}
+{%
+        %\ifismacro{#1}{-#1-}{N}%
+        %\ifismacro{#1}{\gdef\@split@csv@args@cmd{#1}}%
+        %{%
+                \IfStrEqCase{#1}%
+                {%
+                        {setlength}{\gdef\@split@csv@args@cmd{\gxp\deflength}}%
+                        {setcounter}{\gdef\@split@csv@args@cmd{\gxp\defcounter}}%
+                        {let}{\gdef\@split@csv@args@cmd{\global\csletcs}}%
+                        {def}{\gdef\@split@csv@args@cmd{\csgdef}}%
+                        {edef}{\gdef\@split@csv@args@cmd{\csxdef}}%
+                        {gdef}{\gdef\@split@csv@args@cmd{\csgdef}}%
+                        {xdef}{\gdef\@split@csv@args@cmd{\csxdef}}%
+                        {numdef}{\gdef\@split@csv@args@cmd{\csnumgdef}}%
+                        {dimdef}{\gdef\@split@csv@args@cmd{\csdimgdef}}%
+                }[\csname@nnY\gdef\@split@csv@args@cmd{#1}]%
+                %}[ABC\xp\gdef\xp\@split@csv@args@cmd\xp{\csname#1\endcsname}]%
+        %}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@process@split@csv@args}{m}
+{%
+        \xdef\the@split@csv@args@cmdlist{#1}%
+        \foreach \@cmd@type [count=\@cmdlist@index from 1] in \the@split@csv@args@cmdlist%
+        {%
+                \@set@split@csv@args@cmd{\@cmd@type}%
+                \setcounter{@macro@counter}{\@cmdlist@index}%
+                \csname@nYY\@split@csv@args@cmd{\csvarg@prefix\romannumeral\@cmdlist@index}{\csvarg@prefix\Roman{@macro@counter}}%
+                %\ifnumequal{\@csv@arg@index}{1}{\csname@nYY\@split@csv@args@cmd{\csvarg@prefix\romannumeral\@csv@arg@index}{\csvarg@prefix\Roman{@macro@counter}}}{}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                               1 2  3      4
+\DeclareDocumentCommand{\@parse@split@csv@args}{m t< u{>=<} u{>}}
+{%
+        \setcsvargs{#3}%
+        \setcsvargs[\Roman]{#4}%
+        \@csvlist@length[@mixed@csv@args]{{#1}}%
+        %\gdef\@@cmd@listB{#1}%
+        \gdef\@@cmd@list{{#1}}%
+        \gdef\@@cmdarg@list{#4}%
+        \ifnumequal{\@mixed@csv@args@length}{1}%
+                %{\@dup@item@csvlist(1){\narg}{#1}{\@split@csv@args@cmdlist}}%
+                {\@dup@item@csvlist{\@@cmdarg@list}{\@@cmd@list}{\@split@csv@args@cmdlist}}%
+                {\def\@split@csv@args@cmdlist{#1}}%
+        \@process@split@csv@args{\@split@csv@args@cmdlist}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%
+\DeclareDocumentCommand{\csv@to@bsv}{s t+ r<> O{\@four@arg@test@print}}
+{%{macro receiving args via cs}{cs name containing arg group}
+        \edef\@the@csv@args{#3}%
+        \gdef\@the@bsv@args{}%%
+        \setcsvargs[\roman]{\@the@csv@args}%
+        \foreach \@@csv@arg [count=\@@csv@arg@index from 1] in \@the@csv@args%
+                {\add@bsvgroup@element{\@the@bsv@args}{\@@csv@arg}}%
+        \IfBooleanTF{#1}{@the@bsv@args:\\\xp#4\@the@bsv@args}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%
+\DeclareDocumentCommand{\add@bsvgroup@element}{t< m m}%
+{%{macro receiving args via cs}{cs name containing arg group}
+        \IfBooleanTF{#1}%
+                {\xp@nnY\gpreto{#2}{\xp{#3}}}%
+                {\xp@nnY\gappto{#2}{\xp{#3}}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@modparse@bsv@args}{m m m}
+{%
+        \xp\def\xp\thearg\xp{#2}%
+        %\setxsvargs{bsv}{\thearg}%
+        \setbsvargs{\thearg}%
+        \lastvargcmd@def{#2}%
+        \@validate@modparse@arglist{#1}{\narg}%
+        \xdef\@bsvarg@modparse@group{}%
+        \whiledo{\narg > #1}%
+        {%
+                %\setxsvargs{bsv}{\thearg}%
+                \setbsvargs{\thearg}%
+                %\add@bsvgroup@element{}{\@bsvarg@modparse@group}%
+                #3%
+                \nargparse{#1}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@validate@modparse@arglist}{m m}
+{%
+        \moduloInt{#1}{#2}%
+        \ifnumcomp{\pgfmathresult}{>}{0}%
+        {%
+                \errmessage%
+                {%
+                        The #2 arguments provided cannot be parsed evenly #1 at a time.  Hence, the macros corresponding to these %
+                        \pgfmathresult\space missing arguments will not be set during the final parse so they will retain their %
+                        values from the previous #1 parsed arguments.%
+                }%
+        }{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                       1 2 3 4 5 6
+\DeclareDocumentCommand{\oneargparse}  {m u{-}}{\gdef\thearg{#2}}
+\DeclareDocumentCommand{\twoargparse}  {m m u{-}}{\gdef\thearg{#3}}
+\DeclareDocumentCommand{\threeargparse}{m m m u{-}}{\gdef\thearg{#4}}
+\DeclareDocumentCommand{\fourargparse} {m m m m u{-}}{\gdef\thearg{#5}}
+\DeclareDocumentCommand{\fiveargparse} {m m m m m u{-}}{\gdef\thearg{#6}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\nargparse}{m}%
+{%
+        \ifcase#1\relax%
+        \or\xp\oneargparse\thearg-%
+        \or\xp\twoargparse\thearg-%
+        \or\xp\threeargparse\thearg-%
+        \or\xp\fourargparse\thearg-%
+        \or\xp\fiveargparse\thearg-%
+        \fi
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                   1  2  3  4 5  6 7  8  9
+\DeclareDocumentCommand{\parsepair}{t< t( t[ m t, m t] t) t>}%t|
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \gdef\@pair@arg@one{#4}%
+        \gdef\@pair@arg@one{#6}%
+}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\@process@multiarg}{m}{\@process@multiarg@command#1}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\@process@multiarg@list}{m >{\SplitList{;}} m}
+%{%
+%        \def\@process@multiarg@command{#1}
+%        \ProcessList{#2}{\@process@multiarg}%
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                 1 2    3
+\DeclareDocumentCommand{\argpack}{m u{-} m}
+{%{arg list}{var arg cmd}{print cmds}
+        %\setxsvargs{csv}{#1}%
+        \setcsvargs{#1}%
+        \lastvargcmd@def{#2}%
+        #3%
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Register variable creation, manipulation, and usage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setcountval}{s d() m}%
+{%
+        \ifdefcounter{#3}%
+        {%
+                \gdef\@@argval@type{defcounter}%
+                \global\@macro@count=#3%
+        }%
+        {%
+                \ifltxcounter{#3}{\gdef\@@argval@type{ltxcounter}\global\@macro@count=\value{#3}}{}%
+                \ifcscounter{#3}{\gdef\@@argval@type{cscounter}\global\@macro@count=\csname#3\endcsname}{}%
+                %\IfInteger{#3}{\gdef\@@argval@type{integer}\global\@macro@count=#3 }{}%
+                \IfInteger{#3}{\gdef\@@argval@type{integer}\global\setcount\@macro@count{#3}}{}%
+         }%
+         \IfValueTF{#2}{\xp\global#2=\@macro@count\relax}{}%
+         \IfBooleanTF{#1}{\string#3:\@@argval@type=\xsvarg@numeral\@macro@count\\}{}%
+}
+%                     1                   2           3         4 5
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@format@counters}{s o}
+{%\@format@counters
+        \renewcommand{\thesection}%
+        {%
+                \ifnum\c@chapter<1 \@arabic\c@section
+                \else \thechapter.\@arabic\c@section
+                \fi
+        }
+        \renewcommand{\the@prob@counter}{%
+                \ifnum\c@@chap@counter<1 \@arabic\c@@prob@counter
+                \else \the@chap@counter.\@arabic\c@@prob@counter
+                \fi
+        }
+        \renewcommand{\theTopic}{%
+                \ifnum\c@Part<1 \@arabic\c@Topic
+                \else  \thePart-\@arabic\c@Topic
+                \fi
+        }
+        %\addtolength{\cftPartnumwidth}{\widthof{\thePart} + 0.75em}
+        %\addtolength{\cftTopicnumwidth}{\widthof{\theTopic} + 1.0em}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\counterwithin@nonzero}{m m}%
 {%
         \counterwithin{#1}{#2}%
-        \xp@renewcommand{the#1}%
+        %\xp@renewcommand{the#1}%
+        \csname@nyN\renewcommand{the#1}%
         {%
-                \xp@ifnum{c@#2}<1 %
+                %\xp@ifnum{c@#2}<1 %
+                \csname@ny\ifnum{c@#2}<1 %
                         \@arabic\@nameuse{c@#1}%
                 \else%
                         \@nameuse{the#2}.\@arabic\@nameuse{c@#1}%
@@ -212,43 +766,77 @@
         }{\refstepcounter{#1}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\save@value}{m m}
+\DeclareDocumentCommand{\ifnumcountcase}{m m}
 {%
+    \ifltxcounter{#1}%
+        {\ifcountcase{#1}{#2}}%
+        {\ifcase#1\relax#2\fi}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\set@value}{m m o}
+{%
+        \def\@saved@name{@saved@#1}%
         \IfStrEqCase{#1}%
         {%
-                {length}{\setlength\@saved@length{#2}}%
-                {scalar}{\xdef\@saved@scalar{#2}}%
-                {counter}{\setcounter{@saved@count}{\the\value{#2}}}%
-                {string}{\xdef\@saved@string{#2}}%
-                {csname}{\csgdef{@saved@csname}{#2}}%
-                {def}{\gdef\@saved@string{#2}}%
-                {command}{\expandafter\newcommand\expandafter\@saved@command\expandafter{#2}}%
-                {box}{\global\setbox\@saved@box#2}%
-                {savebox}{\savebox{\@saved@savebox}{\usebox{#2}}}%
-                {token}{\global\@saved@token=#2}%
+                {length}{\csname@nyN\setlength{\@saved@name}{#2}}%
+                {scalar}{\csname@nyN\xdef{\@saved@name}{#2}}%
+                %{counter}{\xp@set{counter}{\@saved@name}{\the\value{#2}}}%
+                {counter}{\csname@nyN\setcounter{\@saved@name}{\the\value{#2}}}%
+                {string}{\csname@nyN\xdef{\@saved@name}{#2}}%
+                {csname}{\csgdef{\@saved@name}{#2}}%
+                {def}{\csname@nyN\gdef{\@saved@name}{#2}}%
+                {command}{\csname@nyN\newcommand{\@saved@name}{#2}}%
+                {box}{\csname@nyN\setbox{\@saved@name}{#2}}%
+                {savebox}{\csname@nyN\savebox{\@saved@name}{\usebox{#2}}}%
+                {token}{\csgname@ny\token{\@saved@name}{#2}}%
                 {toggle}
                 {%
                         \iftoggle{#2}%
-                                {\toggletrue{\@saved@toggle}}%
-                                {\togglefalse{\@saved@toggle}}}%
-                {verb}{\verbtocs{\@saved@verb}|#2|}%
+                                {\g@toggletrue{\@saved@name}}%
+                                {\g@togglefalse{\@saved@name}}}%
+                {verb}{\verbtocs{\csuse{\@saved@name}}|#2|}%
+        }
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\save@value}{m m o}
+{%\save@value{value type}{saved value}[NA]
+        \xdef\@saved@name{@saved@#1}%
+        \IfStrEqCase{#1}%
+        {%
+                {length}{\csname@nyN\setlength{\@saved@name}{#2}}%
+                {scalar}{\csname@nyN\xdef{\@saved@name}{#2}}%
+                {counter}{\setcounter{\@saved@name}{\value{#2}}}%
+                %{counter}{\xp@set{counter}{\@saved@name}{\the\value{#2}}}%
+                {string}{\csname@nyN\xdef{\@saved@name}{#2}}%
+                {csname}{\csgdef{\@saved@name}{#2}}%
+                {def}{\csname@nyN\gdef{\@saved@name}{#2}}%
+                {command}{\csname@nyN\newcommand{\@saved@name}{#2}}%
+                {box}{\csname@nyN\setbox{\@saved@name}{#2}}%
+                {savebox}{\csname@nyN\savebox{\@saved@name}{\usebox{#2}}}%
+                {token}{\csgname@ny\token{\@saved@name}{#2}}%
+                {toggle}
+                {%
+                        \iftoggle{#2}%
+                                {\g@toggletrue{\@saved@name}}%
+                                {\g@togglefalse{\@saved@name}}}%
+                {verb}{\verbtocs{\csuse{\@saved@name}}|#2|}%
         }
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\restore@value}{s m m}
-{%
+{%\restore@value<*=>{value type}{variable/cs name}
         \IfStrEqCase{#2}%
         {%
                 {length}{\setlength{#3}{\@saved@length}}%
-                {scalar}{\@def@by@type#1'{#2}{#3}}%
-                {counter}{\setcounter{#3}{\the\value{@saved@count}}}%
+                {scalar}{\@define@by@deftype#1'{#3}{\@saved@scalar}}%
+                {counter}{\setcounter{#3}{\value{@saved@counter}}}%
                 {string}{\@namedef{#3}{\@saved@string}}%
                 {csname}{\csgdef{#3}{\@saved@csname}}%
                 {def}{\@namedef{#3}{\@saved@string}}%
                 {command}{\renewcommand{#3}{\@saved@command}}%
-                {box}{\expandafter\global\expandafter\setbox\csname#3\endcsname\@saved@box}%
+                {box}{\gxp\setbox\csname#3\endcsname\@saved@box}%
                 {savebox}{\savebox{#3}{\usebox{\@saved@savebox}}}%
-                {token}{\expandafter\global\csname#3\endcsname=\@saved@token}%
+                {token}{\xp\global\csname#3\endcsname=\@saved@token}%
                 {toggle}{\iftoggle{@saved@toggle}{\toggletrue{#3}}{\togglefalse{#3}}}%
                 {verb}{\verbtocs{\@saved@verb}|#3|}%
         }
@@ -258,21 +846,10 @@
 {%
         \IfStrEqCase{#2}
         {
-                {length}{\expandafter\setlength\csname#3\endcsname{#4}}
-                {dimen}{\expandafter\setlength\csname#3\endcsname{#4}}
-                {skip}{\expandafter\setlength\csname#3\endcsname{#4}}
-                {counter}{\expandafter\setcounter{#3}{#4}}
-        }
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@regprint@lut}{s m m}
-{%
-        \IfStrEqCase{#2}
-        {
-                {length}{\expandafter\the\csname#3\endcsname}
-                {dimen}{\expandafter\the\csname#3\endcsname}
-                {skip}{\expandafter\the\csname#3\endcsname}
-                {counter}{\the\value{#3}}
+                {length}{\csname@nyN\setlength{#3}{#4}}
+                {dimen}{\csname@nyN\setlength{#3}{#4}}
+                {skip}{\csname@nyN\setlength{#3}{#4}}
+                {counter}{\setcounter{#3}{#4}}
         }
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -281,24 +858,24 @@
 {%
         \def\@newreg@cmd{\csname new#2\endcsname}%
         \ifcsundef{#3#4}%
-                {\expandafter\@newreg@cmd\csname#3#4\endcsname}{}%
+                {\csname@cmd@y{new#2}{#3#4}}{}%%{\xp\@newreg@cmd\csname#3#4\endcsname}{}%%{\csname@ny\@newreg@cmd{#3#4}}{}%
         \@regset@cmd@lut{#2}{#3#4}{#5}
-        \IfBooleanTF{#1}{\@regprint@lut{#2}{#3#4}\\}{}
+        \IfBooleanTF{#1}{\@regprint@lut{#2}{#3#4}}{}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                             1 2 3   4 5
 \DeclareDocumentCommand{\@premeasure@savebox}{s o d<> m o}
-{%
-        \IfValueTF{#2}{\expandafter\let\csname#2@savebox\endcsname\@premeasured@savebox}{}%
+{%<*:\usebox off>[savebox alias]<savebox dimension aliases>{savebox content}[prefix new savebox dimension length registers ]
+        \IfValueTF{#2}{\cslet{#2@savebox}{\@premeasured@savebox}}{}%
         \savebox{\@premeasured@savebox}{#4}%
         \setlength\@premeasured@savebox@width{\wd\@premeasured@savebox}%
         \setlength\@premeasured@savebox@height{\ht\@premeasured@savebox}%
         \setlength\@premeasured@savebox@depth{\dp\@premeasured@savebox}%
         \IfValueTF{#3}%
         {%
-                \expandafter\let\csname#3@width\endcsname\@premeasured@savebox@width%
-                \expandafter\let\csname#3@height\endcsname\@premeasured@savebox@height%
-                \expandafter\let\csname#3@depth\endcsname\@premeasured@savebox@depth%
+                \cslet{#3@width}{\@premeasured@savebox@width}%
+                \cslet{#3@height}{\@premeasured@savebox@height}%
+                \cslet{#3@depth}{\@premeasured@savebox@depth}%
         }{}%
         \IfValueTF{#5}%
         {%
@@ -326,355 +903,165 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setlinespread}{s g o}
+% Calculate length of alignat environment
+\DeclareDocumentCommand{\settowidthofalign}{m m}
 {%
-        \IfValueTF{#2}%
-        {%
-                \IfValueTF{#3}%
-                        {\linespread@settings[context=#2,#3]}%
-                        {\linespread@settings[context=#2]}%
-        }%
-        {%
-                \IfValueTF{#3}%
-                        {\linespread@settings[#3]}%
-                        {\linespread@settings[]}%
-        }\selectfont%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setulsettings}{s g o}
-{%*<NA>{ul type to set}[additional key/value pair settings]
-        \IfValueTF{#2}%
-        {%
-                \IfValueTF{#3}%
-                        {\ULsettings[type=#2,#3]}%
-                        {\ULsettings[type=#2]}%
-        }%
-        {%
-                \IfValueTF{#3}%
-                        {\ULsettings[#3]}%
-                        {\ULsettings[]}%
-        }%
+    \setbox\z@=\vbox
+    {
+        \begin{alignat*}{2}
+            #2
+            \ifmeasuring@\else\global\let\got@maxcolwd\maxcolumn@widths\fi
+        \end{alignat*}
+    }%
+    \begingroup
+    \def\or{+}\edef\x{\endgroup#1=\dimexpr\got@maxcolwd\relax}\x
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                          1  2 3 4
 \DeclareDocumentCommand{\@zsavepos@unique}{t! m m m}
 {%!<\clearpage unallowed>{zsavepos name}{zsavepos counter}{\clearpage threshold on remaining height}
         \xdef\@zsavepos@unique@name{#2\Roman{#3}}%
-        \zsavepos{\@zsavepos@unique@name}%
-        %\IfBooleanTF{#1}{}{\stepcounter{#3}}%
+        \xdef\@zsavepos@unique@dimen{#2\Roman{#3}@dimen}%
+        \xp\zsavepos\xp{\@zsavepos@unique@name}%
         \stepcounter{#3}%
-        \setlength\@zsavepos@used@page@height{\dimexpr\zposy{top@coverpage}sp - \zposy{\@zsavepos@unique@name}sp\relax}%
-        \setlength\@zsavepos@remaining@page@height{\dimexpr\zposy{\@zsavepos@unique@name}sp -\zposy{cfootpos}sp\relax}%
-        \setlength\@zsavepos@startpos{\dimexpr\zposy{\@zsavepos@unique@name}sp -\zposy{cfootpos}sp\relax}%
+        %\IfBooleanTF{#1}{}{\stepcounter{#3}}%
+        \setlength\@zsavepos@used@page@height{\dimexpr\zposy{top@docpage}sp - \zposy{\@zsavepos@unique@name}sp\relax}%
+        %\setlength\@zsavepos@remaining@page@height{\dimexpr\zposy{\@zsavepos@unique@name}sp -\zposy{cfootpos}sp\relax}%
+        \setlength\@zsavepos@remaining@page@height{\dimexpr\zposy{\@zsavepos@unique@name}sp -\zposy{bottom@page}sp\relax}%
+        \setlength\@zsavepos@startpos{\dimexpr\zposy{\@zsavepos@unique@name}sp -\zposy{bottom@page}sp\relax}%
+        %\setlength\@zsavepos@startpos{\dimexpr\zposy{\@zsavepos@unique@name}sp\relax}%
+        %\setlength\@zsavepos@startpos{\dimexpr\zposy{\@zsavepos@unique@name}sp -100pt\relax}%
+        \csdimgdef{\@zsavepos@unique@dimen}{0.85\@zsavepos@startpos}%
         \IfBooleanTF{#1}{}{\iflength{\@zsavepos@remaining@page@height}{<}{#4}{\clearpage}{}}%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~ Argument (single, variable #, list) parsing, manipulation, forwarding, and storage ~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Hyperlinking and References ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@set@split@csv@args@cmd}{m}
+\DeclareDocumentCommand{\pagelink}{s m O{}}
+{
+        \begingroup%
+                \pgfmathsetmacro{\@destination@pagenum}{#2}
+                \pgfmathparse{ifthenelse(\@destination@pagenum==1, 1, 0)}
+                \if\pgfmathresult 1\relax
+                        \hyperlink{\@page@one@target@name}{#3}%
+                \else
+                        \hyperlink{\@page@n@target@name#2}{#3}%
+                \fi
+        \endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbhypertarget}{o m m}
 {%
-        \IfStrEqCase{#1}%
-        {%
-                {setlength}{\gdef\@split@csv@args@cmd{\xp\global\xp\deflength}}%
-                {setcounter}{\gdef\@split@csv@args@cmd{\xp\global\xp\defcounter}}%
-                {let}{\gdef\@split@csv@args@cmd{\global\csletcs}}%
-                {def}{\gdef\@split@csv@args@cmd{\csgdef}}%
-        }[\gdef\@split@csv@args@cmd{\csgdef}]%
+        \IfValueTF{#1}%
+                {\hypertarget{#2}{\fontcolor{#1}#3}}%
+                {\hypertarget{#2}{#3}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@split@csv@args}{m}
+\DeclareDocumentCommand{\tcbhyperlink}{o m m}
 {%
-	\xdef\@the@split@csv@arg@list{#1}%
-        \foreach \@split@csv@args@cmd@type [count=\@csv@arg@index from 1] in \@the@split@csv@arg@list%
-        {%
-		\@set@split@csv@args@cmd{\@split@csv@args@cmd@type}%
-        	\ifnumcomp{\@csv@arg@index}{=}{1}{\@split@csv@args@cmd\argi{\argI}}{}%
-	        \ifnumcomp{\@csv@arg@index}{=}{2}{\@split@csv@args@cmd\argii{\argII}}{}%
-	        \ifnumcomp{\@csv@arg@index}{=}{3}{\@split@csv@args@cmd\argiii{\argIII}}{}%
-	        \ifnumcomp{\@csv@arg@index}{=}{4}{\@split@csv@args@cmd\argiv{\argIV}}{}%
-	        \ifnumcomp{\@csv@arg@index}{=}{5}{\@split@csv@args@cmd\argv{\argV}}{}%
-	        \ifnumcomp{\@csv@arg@index}{=}{6}{\@split@csv@args@cmd\argvi{\argVI}}{}%
-        }%
+        \IfValueTF{#1}
+                {\hyperlink{#2}{\fontcolor{#1}#3}}%
+                {\hyperlink{#2}{#3}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                                     1 2  3      4
-\DeclareDocumentCommand{\@parse@split@csv@args}{m t< u{>=<} u{>}}
+\DeclareDocumentCommand{\@autohyperlink}{m m m}
 {%
-        \getcsvargs{#3}%
-        \getcsvargs[\Roman]{#4}%
-        \@csvlist@length[@mixed@csv@args]{{#1}}%
-        \ifnumcomp{\@mixed@csv@args@length}{=}{1}%
-        	{\@dup@item@csvlist{\narg}{#1}{\@the@dup@item@csvlist}}%
-        	{\def\@the@dup@item@csvlist{#1}}%
-        \@split@csv@args{\@the@dup@item@csvlist}%
+        \begingroup%
+                %\ifcsstrequal{#1}{Chapter}{\unskipspacing\docsectionX@hyperlink[0pt]{#1}{#2}{#3}}{}%
+                %\ifcsstrequal{#1}{Section}{\unskipspacing\docsectionX@hyperlink[0pt]{#1}{#2}{#3}}{}%
+                %\ifcsstrequal{#1}{Subsection}{\unskipspacing\docsectionX@hyperlink[0pt]{#1}{#2}{#3}}{}%
+                \unskipspacing\docsectionX@hyperlink[0pt]{#1}{#2}{#3}
+        \endgroup%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                 1 2    3
-\DeclareDocumentCommand{\argpack}{m u{-} m}
-{%{arg list}{var arg cmd}{print cmds}
-        \getcsvargs{#1}%
-        \argcmd@def{#2}%
-        #3%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                       1 2 3 4 5 6
-\DeclareDocumentCommand{\oneargparse}  {m u{-}}{\def\thearg{#2}}
-\DeclareDocumentCommand{\twoargparse}  {m m u{-}}{\def\thearg{#3}}
-\DeclareDocumentCommand{\threeargparse}{m m m u{-}}{\def\thearg{#4}}
-\DeclareDocumentCommand{\fourargparse} {m m m m u{-}}{\def\thearg{#5}}
-\DeclareDocumentCommand{\fiveargparse} {m m m m m u{-}}{\def\thearg{#6}}
-\DeclareDocumentCommand{\nargparse}{m}%
+\DeclareDocumentCommand{\autotcbref}{D(){figure} O{1}}
 {%
-        \ifcase#1\relax%
-        \or\expandafter\oneargparse\thearg-%
-        \or\expandafter\twoargparse\thearg-%
-        \or\expandafter\threeargparse\thearg-%
-        \or\expandafter\fourargparse\thearg-%
-        \or\expandafter\fiveargparse\thearg-%
-        \fi
-}
-\def\@validate@modparse@arglist#1#2%
-{%
-        \moduloInt{#1}{#2}%
-        \ifnumcomp{\pgfmathresult}{>}{0}%
-        {%
-        	\errmessage%
-        	{%
-        		The #2 arguments provided cannot be parsed evenly #1 at a time.  Hence, the macros corresponding to these %
-        		\pgfmathresult\space missing arguments will not be set during the final parse so they will retain their %
-         		values from the previous #1 parsed arguments.%
-        	}%
-        }{}%
+    \ifstrequal{#1}{figure}{\autoref{\reffig{#2}}}{}%
+    \ifstrequal{#1}{equation}{\autoref\refeq{#2}}{}%
+    \ifstrequal{#1}{listing}{\autoref{\reflst{#2}}}{}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@modparse@bsv@args#1#2#3%
-{%
-        \@xp@def\expandafter\thearg\expandafter{#2}%
-        \getbsvargs{\thearg}%
-        \argcmd@def{#2}%
-        \@validate@modparse@arglist{#1}{\narg}%
-        \whiledo{\narg > #1}%
-        {%
-                \getbsvargs{\thearg}%
-                #3%
-                \nargparse{#1}%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-% Performs equivalent of \IfBooleanTF on an 's'/'t' argument forwarded directly from another macro
-\DeclareDocumentCommand{\IfSubBooleanTF}{m m m}{\ifstrequal{#1}{\BooleanTrue}{#2}{#3}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\forwardBoolean}{m m}{\IfSubBooleanTF{#1}{#2*}{#2}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@process@multiarg}{m}{\@process@multiarg@command#1}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@process@multiarg@list}{m >{\SplitList{;}} m}
-{%
-        \def\@process@multiarg@command{#1}
-        \ProcessList{#2}{\@process@multiarg}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                         1 2 3   4   5   6   7   8   9
-\DeclareDocumentCommand{\stripdelimiters}{g o d() d|| d<> d:: d'' d-- d!!}{}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\removebrackets}{o}{}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Conditional evaluation and T/F code execution commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\negate}{m m m m g}%
+{%
+        \IfValueTF{#5}%
+                {#1{#2}{#3}{#5}{#4}}%
+                {#1{#2}{#4}{#3}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\pgfifthenelse}{r() m m}
+{%
+        \pgfmathparse{ifthenelse(#1, 1, 0)}%
+        \ifnumequal{\pgfmathresult}{1}{#2}{#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\ifthenelse@conditional}{s m m m m}
 {%
         \IfBooleanTF{#1}%
                 {#2#4\else#5\fi}%
-                {\expandafter#2#3#4\else#5\fi}%
+                {\xp#2#3#4\else#5\fi}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\TFcode@conditional}{s m m m m}
+\DeclareDocumentCommand{\TF@conditional}{s m m m m}
 {%
         \IfBooleanTF{#1}%
                 {#2{#4}{#5}}%
-                {\expandafter#2#3{#4}{#5}}%
+                {\xp#2#3{#4}{#5}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\thecsname@argcmd}{s m m}
 {%
         \@create@tokenlist{#2}{\@token@list}%
-        \foreach \m [count=\@list@index] in \@token@list
+        \foreach \m [count=\@list@index] in \@token@list%
         {%
                 \xdef#3%
                 {%
-                        \expandafter\expandafter\expandafter\secondoftwo%
-                        \expandafter\detokenize%
-                        \expandafter{\m}%
+                        \xp\xp\xp\secondoftwo%
+                        \xp\detokenize%
+                        \xp{\m}%
                 }%
                 \breakforeach%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@set@conditional@cmd}{s m}
+\DeclareDocumentCommand{\@set@conditional}{s m}
 {%
         \IfStrEqCase{#2}%
         {%
-                {\thecsname{\ifnumcomp}}{\gdef\@conditional@cmd{\TFcode@conditional*}}{}%
-                {\thecsname{\ifcounter}}{\gdef\@conditional@cmd{\TFcode@conditional*}}{}%
-                {\thecsname{\iftoggle}}{\gdef\@conditional@cmd{\TFcode@conditional*}}{}%
+                {\thecsname{\ifcounter}}{\gdef\@conditional@cmd{\TF@conditional*}}{}%
+                {\thecsname{\iftoggle}}{\gdef\@conditional@cmd{\TF@conditional*}}{}%
                 {\thecsname{\ifdefined}}{\gdef\@conditional@cmd{\ifthenelse@conditional*}}{}%
                 {\thecsname{\if}}{\gdef\@conditional@cmd{\ifthenelse@conditional*}}{}%
                 {\thecsname{\ifx}}{\gdef\@conditional@cmd{\ifthenelse@conditional*}}{}%
                 {\thecsname{\ifnum}}{\gdef\@conditional@cmd{\ifthenelse@conditional*}}{}%
-                {\thecsname{\IfSubBooleanTF}}{\gdef\@conditional@cmd{\TFcode@conditional*}}{}%
+                {\thecsname{\ifnumcomp}}{\gdef\@conditional@cmd{\TF@conditional*}}{}%
+                {\thecsname{\ifnumequal}}{\gdef\@conditional@cmd{\TF@conditional*}}{}%
+                {\thecsname{\IfSubBooleanTF}}{\gdef\@conditional@cmd{\TF@conditional*}}{}%
         }[\gdef\@conditional@cmd{\ifthenelse@conditional*}]%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\conditional}{s m m m}
 {%
         \thecsname@argcmd{#2}{\@conditional@cmd@name}%
-        \@set@conditional@cmd{\@conditional@cmd@name}%
+        \@set@conditional{\@conditional@cmd@name}%
         \@conditional@cmd{#2}{}{#3}{#4}%%
         \IfBooleanTF{#1}{}{\gdef\@token@list{}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@conditional@comparison}{s O{TF} m m}
+\DeclareDocumentCommand{\TFcompare}{s O{TF} m m}
 {%
-        \setTFindicator[#3]{binary}{@condition@one}%
-        \setTFindicator[#4]{binary}{@condition@two}%
-        \ifnumcomp{\@condition@one}{=}{\@condition@two}%
+        \cssetTF[#3]{binary}{@condition@one}%
+        \cssetTF[#4]{binary}{@condition@two}%
+        \ifnumequal{\@condition@one}{\@condition@two}%
                 {\conditional@comparison@T@action}{\conditional@comparison@F@action}%
-        \forwardBoolean{#1}{\@print@conditional}{@conditional@status@}{#2}%
+        \IfBooleanTF{#1}{\@print@conditional{@conditional@status@}{#2}}{}%
+        %\forwardBoolean{#1}{\@print@conditional}{@conditional@status@}{#2}%
 }
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@TF@indicator@type@to@index}{s m}%
-{%
-        \foreach \@test@indicator@type [count=\@test@indicator@index from 0] in \@TF@indicator@types%
-        {%
-                \IfStrEq{\@test@indicator@type}{#2}%
-                {%
-                        \xdef\@indicator@type{\@test@indicator@type}%
-                        \xdef\@indicator@index{\@test@indicator@index}%
-                        \breakforeach%
-                }{}%
-        }%
-        \IfBooleanTF{#1}{\@indicator@index\\}{}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@parse@TF@setval}{m}%
-{%
-        \xdef\@explicit@val{#1}%
-        \ifxparsebool{#1}{}%%
-        {%
-                \ifltxcounter{#1}{\xdef\@explicit@val{\the\value{#1}}}{}%
-                \ifltxif{#1}{\xdef\@explicit@val{\ifval{#1}}}{}%
-                \ifltxtoggle{#1}{\xdef\@explicit@val{\toggleval{#1}}}{}%
-        }%
-        \return=\@explicit@val;
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand\@set@indicator@vars@T{o}%
-{%
-        \IfValueTF{#1}%
-                {\gdef\@TF@indicators@prefix{#1}}%
-                {\gdef\@TF@indicators@prefix{@TF@indicator}}%
-        \xp@gdef{\@TF@indicators@prefix @num}{1}%
-        \xp@gdef{\@TF@indicators@prefix @letter}{T}%
-        \xp@gdef{\@TF@indicators@prefix @Word}{True}%
-        \xp@gdef{\@TF@indicators@prefix @word}{true}%
-        \returntrue%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand\@set@indicator@vars@F{o}%
-{%
-        \IfValueTF{#1}%
-                {\gdef\@TF@indicators@prefix{#1}}%
-                {\gdef\@TF@indicators@prefix{@TF@indicator}}%
-        \xp@gdef{\@TF@indicators@prefix @num}{0}%
-        \xp@gdef{\@TF@indicators@prefix @letter}{F}%
-        \xp@gdef{\@TF@indicators@prefix @Word}{False}%
-        \xp@gdef{\@TF@indicators@prefix @word}{false}%
-        \returnfalse%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@@set@TF@indicator@vars}{m O{\@default@indicator@vars@prefix}}%
-{%
-        \IfInteger{#1}%
-        {%
-                \ifnumcomp{#1}{=}{\@binary@T@indicator}%
-                        {\@set@indicator@vars@T[#2]}%
-                        {\@set@indicator@vars@F[#2]}}%
-        {%
-                \IfStrEqCase{#1}
-                {%
-                        {T}{\@@set@TF@indicator@vars{\@binary@T@indicator}}%
-                        {F}{\@@set@TF@indicator@vars{\@binary@F@indicator}}%
-                        {true}{\@@set@TF@indicator@vars{\@binary@T@indicator}}%
-                        {false}{\@@set@TF@indicator@vars{\@binary@F@indicator}}%
-                        {True}{\@@set@TF@indicator@vars{\@binary@T@indicator}}%
-                        {False}{\@@set@TF@indicator@vars{\@binary@F@indicator}}%
-                        {\BooleanTrue}{\@@set@TF@indicator@vars{\@binary@T@indicator}}%
-                        {\BooleanFalse}{\@@set@TF@indicator@vars{\@binary@F@indicator}}%
-                }%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@set@TF@indicator@vars}{g O{\@default@indicator@vars@prefix}}%
-{%
-        \IfValueTF{#1}%
-        {\@@set@TF@indicator@vars{\@explicit@val}[#2]}%
-        {%
-                \if@equality@status@%
-                        \@@set@TF@indicator@vars{\@binary@T@indicator}[#2]%
-                \else%
-                        \@@set@TF@indicator@vars{\@binary@F@indicator}[#2]%
-                \fi%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setTFindicator}{s o m m D(){\@default@indicator@vars@prefix} t!}%
-{%*[explicit value]{TF type index or word}{name result variable}(explicit indicator vars prefix)<!no var setting/printing>
-        \IfInteger{#3}%
-                {\def\@indicator@index{#3}}%
-                {\@TF@indicator@type@to@index{#3}}%
-        \@parse@TF@setval{#2}%
-        \@set@TF@indicator@vars{#2}[#5]%
-        \IfBooleanTF{#6}{}%
-        {%
-                \ifcase\@indicator@index\relax%
-                        \@set@TF@indicator{#1}{TF}{{#4}(@\@TF@indicator@letter @indicator)}%                    0=TF
-                        \or\@set@TF@indicator{#1}{TF}{{#4}(@\@TF@indicator@letter @indicator)}%                 1=TrueFalse
-                        \or\@set@TF@indicator{#1}{bool}{#4}%%                                                   2=if
-                        \or\@set@TF@indicator{#1}{toggle}{#4}%%                                                 3=toggle
-                        \or\@set@TF@indicator{#1}{TF}{{#4}(@binary@\@TF@indicator@letter @indicator)}%          4=binary
-                        \or\@set@TF@indicator{#1}{counter}{#4}%%                                                5=counter
-                        \or\@set@TF@indicator{#1}{TF}{{#4}(Boolean\@TF@indicator@Word)}%                        6=xparse
-                        \else INVALID True/False Indicator%                                                    >6=Invalid
-                \fi%
-        }%%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2 3                                  6        7
-\DeclareDocumentCommand{\@set@TF@indicator}{m m m}
-{%{X->newX}{var name}
-        \@nameuse{provide#2}{#3}%
-        \@nameuse{g@#2\@TF@indicator@word}{#3}%
-        \IfSubBooleanTF{#1}{\@nameuse{@print@#2@value}{#3}}{}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                  1 2 3 4
-\DeclareDocumentCommand{\setTFvar}{s m m D(){\@default@indicator@vars@prefix}}%
-{%*<print on/off>{target TF variable}{T/F value/variable used to set #2}(explicit indicator vars prefix)
-        \@parse@TF@setval{#3}%
-        \@set@TF@indicator@vars{#3}[#4]%
-        \ifxparsebool{#2}{\@set@TF@indicator{#1}{TF}{{#2}(Boolean\@TF@indicator@Word)}}%
-        {%
-                \ifltxcounter{#2}{\@set@TF@indicator{#1}{counter}{#2}}{}%
-                \ifltxif{#2}{\@set@TF@indicator{#1}{bool}{#2}}{}%
-                \ifltxtoggle{#2}{\@set@TF@indicator{#1}{toggle}{#2}}{}%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@condition@list@item@action}{m G{\@@type} G{\@@condition}}
 {%
@@ -689,25 +1076,15 @@
         \@ifnextchar\bgroup%
         {%
                 \if@conditional@status@%
-                        \expandafter\firstoftwo%
+                        \xp\firstoftwo%
                 \else%
-                        \expandafter\secondoftwo%
+                        \xp\secondoftwo%
                 \fi%
         }%
         {%
                 \IfBooleanTF{#1}%
-                        {\cprint{#2=\the@conditional@status}}%
-                        {\cprint{\the@conditional@status}}%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\ifTFdo}{m m m}%
-{%{TF value/variable}{True code}{False code}
-        \ifxparsebool{#1}{\TFcode@conditional{\IfSubBooleanTF{#1}}{}{#2}{#3}}%
-        {%
-                \ifltxcounter{#1}{\TFcode@conditional*{\ifcounter{#1}}{}{#2}{#3}}{}%
-                \ifltxif{#1}{\ifthenelse@conditional*{\@nameuse{if#1}}{}{#2}{#3}}{}%
-                \ifltxtoggle{#1}{\TFcode@conditional*{\iftoggle{#1}}{}{#2}{#3}}{}%
+                        {\tprint{#2=\the@conditional@status}}%
+                        {\tprint{\the@conditional@status}}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -715,9 +1092,9 @@
 {%
         \setlocalprint{#1}%
         \returnfalse%
-        \global\@conditional@status@false
+        \global\@conditional@status@false%
         \foreach \@@condition/\@@type [count=\@list@index] in {#2}{\@condition@list@item@action{Or}}%
-        \cprint{ifOr=\the@conditional@status}%
+        \tprint{ifOr=\the@conditional@status}%
         \@condition@list@TF@action{ifOr}%%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -725,9 +1102,9 @@
 {%
         \setlocalprint{#1}%
         \returntrue%
-        \global\@conditional@status@true
+        \global\@conditional@status@true%
         \foreach \@@condition/\@@type [count=\@list@index] in {#2}{\@condition@list@item@action{And}}%
-        \cprint{ifAnd=\the@conditional@status}%
+        \tprint{ifAnd=\the@conditional@status}%
         \@condition@list@TF@action{ifAnd}%%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -737,15 +1114,28 @@
         \returnfalse%
         \global\@conditional@status@false
         \foreach \@@condition/\@@type [count=\@list@index] in {#2}{\@condition@list@item@action{XOr}}%
-        \cprint{ifXOr=\the@conditional@status}%
+        \tprint{ifXOr=\the@conditional@status}%
         \@condition@list@TF@action{ifXOr}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\ifTFdo}{m m m}%
+{%{TF value/variable}{True code}{False code}
+        \ifxparsebool{#1}{\TF@conditional{\IfSubBooleanTF{#1}}{}{#2}{#3}}%
+        {%
+                \ifltxcounter{#1}{\TF@conditional*{\ifcounter{#1}}{}{#2}{#3}}{}%
+                \ifltxif{#1}{\ifthenelse@conditional*{\@nameuse{if#1}}{}{#2}{#3}}{}%
+                \ifltxtoggle{#1}{\TF@conditional*{\iftoggle{#1}}{}{#2}{#3}}{}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\do@once}{m m O{}}%
 {%
-        \ifTFdo{#1}{#2}{#3}
-        \setTFvar{#1}{\FALSE}%
+        \ifTFdo{#1}{#2}{#3}%
+        \csregsetTF{#1}{\FALSE}%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                        1 2  3 4 5 6         7
 \DeclareDocumentCommand{\ifstrequallist}{s t! m m m O{binary} D(){eq@ifstrequallist}}%
@@ -765,69 +1155,286 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\IfCSEqCase}{m m} %
 {%
-        \xpdef\thearg{#2}%
-        \getbsvargs{\thearg}%
+        \xp@nnY\def\thearg{#2}%
+        \setbsvargs{\thearg}%
+        %\setxsvargs{bsv}{\thearg}%
         \whiledo{\narg > 2}%
         {%
-                \getbsvargs{\thearg}%
-                \ifcsequal{#1}{\argi}{\argii}{}%
-                \expandafter\twoargparse\thearg-%
+                \setbsvargs{\thearg}%
+                %\setxsvargs{bsv}{\thearg}%
+                %\ifcsequal{#1}{\bsvargi}{\bsvargii}{}%
+                \csname@nynn\ifcsequal{#1}{\xsvarg@numeral{\ONE}}{\bsvarg{2}}{}%
+                \xp\twoargparse\thearg-%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\IfCSNameEqCase}{m m} %
+{%
+        \xp@nnY\def\thearg{#2}%
+        \xp@nnY\def\thecmd{\thecsname{#1}}%
+        \setbsvargs{\thearg}%
+        \whiledo{\narg > 2}%
+        {%
+                \setbsvargs{\thearg}%
+                %\ifcsequal{\thecmd}{\bsvargi}{\bsvargii}{}%
+                \csname@nynn\ifcsequal{\thecmd}{\xsvarg@numeral{\ONE}}{\bsvarg{2}}{}%
+                \xp\twoargparse\thearg-%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\IfDefEqCase}{m m} %
 {%
-        \xpdef\thearg{#2}%
-        \getbsvargs{\thearg}%
+        \xp@nnY\def\thearg{#2}%
+        \setbsvargs{\thearg}%
         \whiledo{\narg > 2}%
         {%
-                \getbsvargs{\thearg}%
-                \ifdefequal{#1}{\argi}{\argii}{}%
-                \expandafter\twoargparse\thearg-%
+                \setbsvargs{\thearg}%
+                \csname@nynn\ifdefequal{#1}{\xsvarg@numeral{\ONE}}{\bsvarg{2}}{}%
+                \xp\twoargparse\thearg-%
         }%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\IfDefStringCase}{m m} %
+{%
+        \xp@nnY\def\thearg{#2}%
+        \setbsvargs{\thearg}%
+        \whiledo{\narg > 2}%
+        {%
+                \setbsvargs{\thearg}%
+                %\ifdefstring{#1}{\bsvargi}{\bsvargii}{}%
+                \csname@nynn\ifdefstring{#1}{\xsvarg@numeral{\ONE}}{\bsvarg{2}}{}%
+                \xp\twoargparse\thearg-%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\if@tcbenclosure}{m}
+{%
+        \iftoggle{@in@tcbenclosure}%
+        {%
+                \IfStrEqCase{#1}%
+                {%
+                        {function}{\gdef\@the@style{tcbfunctiondefboxStyle={current}{hbox}}}%
+                        {script}{\gdef\@the@style{tcbscriptdefboxStyle={current}{hbox}}}%
+                        %{details}{\gdef\@the@style{tcbfunctiondefdetailboxStyle={current}{hbox}}}%
+                }%
+        }%
+        {%
+                \IfStrEqCase{#1}%
+                {%
+                        {function}{\gdef\@the@style{tcbfunctiondefboxStyle={current}{width=\linewidth}}}%
+                        {script}{\gdef\@the@style{tcbscriptdefboxStyle={current}{width=\linewidth}}}%
+                        %{details}{\gdef\@the@style{tcbfunctiondefdetailboxStyle={current}{width=\linewidth}}}%
+                }%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@TF@type@to@index}{s m}%
+{%
+        \foreach \@@TF@indicator@type [count=\@@TF@indicator@index from 0] in \@TF@indicator@types%
+        {%
+                \IfStrEq{\@@TF@indicator@type}{#2}%
+                {%
+                        \xdef\@TF@indicator@type{\@@TF@indicator@type}%
+                        \xdef\@TF@indicator@index{\@@TF@indicator@index}%
+                        \breakforeach%
+                }{}%
+        }%
+        \IfBooleanTF{#1}{\@TF@indicator@index\\}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\parseTFval}{m}%
+{%
+        \xdef\@TF@val{#1}%
+        \ifxparsebool{#1}{}%%
+        {%
+                \ifltxcounter{#1}{\xdef\@TF@val{\the\value{#1}}}{}%
+                \ifltxif{#1}{\xdef\@TF@val{\ifval{#1}}}{}%
+                \ifltxtoggle{#1}{\xdef\@TF@val{\thetoggleval{#1}}}{}%
+        }%
+        \return=\@TF@val;%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@set@TF@vars@T{o}%
+{%
+        \IfValueTF{#1}%
+                {\gdef\@TF@indicators@prefix{#1}}%
+                {\gdef\@TF@indicators@prefix{@TF@indicator}}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @num}{1}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @letter}{T}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @Word}{True}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @word}{true}%
+        \returntrue%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@set@TF@vars@F{o}%
+{%
+        \IfValueTF{#1}%
+                {\gdef\@TF@indicators@prefix{#1}}%
+                {\gdef\@TF@indicators@prefix{@TF@indicator}}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @num}{0}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @letter}{F}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @Word}{False}%
+        \csname@nyN\gdef{\@TF@indicators@prefix @word}{false}%
+        \returnfalse%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@@set@TF@vars}{m O{\@default@TF@vars@prefix}}%
+{%
+        \IfInteger{#1}%
+        {%
+                \ifnumequal{#1}{\@binary@T@indicator}%
+                        {\@set@TF@vars@T[#2]}%
+                        {\@set@TF@vars@F[#2]}}%
+        {%
+                \IfStrEqCase{#1}%
+                {%
+                        {T}{\@@set@TF@vars{\@binary@T@indicator}}%
+                        {F}{\@@set@TF@vars{\@binary@F@indicator}}%
+                        {true}{\@@set@TF@vars{\@binary@T@indicator}}%
+                        {false}{\@@set@TF@vars{\@binary@F@indicator}}%
+                        {True}{\@@set@TF@vars{\@binary@T@indicator}}%
+                        {False}{\@@set@TF@vars{\@binary@F@indicator}}%
+                        {\BooleanTrue}{\@@set@TF@vars{\@binary@T@indicator}}%
+                        {\BooleanFalse}{\@@set@TF@vars{\@binary@F@indicator}}%
+                }%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@TF@vars}{g O{\@default@TF@vars@prefix}}%
+{%
+        \IfValueTF{#1}%
+        {\@@set@TF@vars{\@TF@val}[#2]}%
+        {%
+                \if@equality@status@%
+                        \@@set@TF@vars{\@binary@T@indicator}[#2]%
+                \else%
+                        \@@set@TF@vars{\@binary@F@indicator}[#2]%
+                \fi%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cssetTF}{s o m m D(){\@default@TF@vars@prefix} t!}%
+{%*[explicit value]{TF type index or word}{name result variable}(explicit indicator vars prefix)<!no var setting/printing>
+        \IfInteger{#3}%
+                {\def\@TF@indicator@index{#3}}%
+                {\@TF@type@to@index{#3}}%
+        \parseTFval{#2}%
+        \@set@TF@vars{#2}[#5]%
+        \IfBooleanTF{#6}{}%
+        {%
+                \ifcase\@TF@indicator@index\relax%
+                        \@cs@set@TF{#1}{TF}{{#4}(@\@TF@indicator@letter @indicator)}%                    0=TF
+                        \or\@cs@set@TF{#1}{TF}{{#4}(@\@TF@indicator@letter @indicator)}%                 1=TrueFalse
+                        \or\@cs@set@TF{#1}{bool}{#4}%%                                                   2=if
+                        \or\@cs@set@TF{#1}{toggle}{#4}%%                                                 3=toggle
+                        \or\@cs@set@TF{#1}{TF}{{#4}(@binary@\@TF@indicator@letter @indicator)}%          4=binary
+                        \or\@cs@set@TF{#1}{counter}{#4}%%                                                5=counter
+                        \or\@cs@set@TF{#1}{TF}{{#4}(Boolean\@TF@indicator@Word)}%                        6=xparse
+                        \else INVALID True/False Indicator%                                                    >6=Invalid
+                \fi%
+        }%%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2 3                                  6        7
+\DeclareDocumentCommand{\@cs@set@TF}{m m m}
+{%{X->newX}{var name}
+        \@nameuse{provide#2}{#3}%
+        \@nameuse{g@#2\@TF@indicator@word}{#3}%
+        \IfSubBooleanTF{#1}{\@nameuse{@print@#2@value}{#3}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2 3 4
+\DeclareDocumentCommand{\csregsetTF}{s m m D(){\@default@TF@vars@prefix}}%
+{%*<print on/off>{target TF variable}{T/F value/variable used to set #2}(explicit indicator vars prefix)
+        \parseTFval{#3}%
+        \@set@TF@vars{#3}[#4]%
+        \ifxparsebool{#2}{\@cs@set@TF{#1}{TF}{{#2}(Boolean\@TF@indicator@Word)}}%
+        {%
+                \ifltxcounter{#2}{\@cs@set@TF{#1}{counter}{#2}}{}%
+                \ifltxif{#2}{\@cs@set@TF{#1}{bool}{#2}}{}%
+                \ifltxtoggle{#2}{\@cs@set@TF{#1}{toggle}{#2}}{}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Number to text conversion commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@digits@to@name}{m m O{} G{@the@digits@text}}
 {%
-        \csxdef{#4}{}
-        \ifcountcase{#2}
-                \IfSubBooleanTF{#1}{\csxdef{#4}{zero}}{\csxdef{#4}{#3}}
-                \or\csxdef{#4}{one#3}
-                \or\csxdef{#4}{two#3}
-                \or\csxdef{#4}{three#3}
-                \or\csxdef{#4}{four#3}
-                \or\csxdef{#4}{five#3}
-                \or\csxdef{#4}{six#3}
-                \or\csxdef{#4}{seven#3}
-                \or\csxdef{#4}{eight#3}
-                \or\csxdef{#4}{nine#3}
-        \fi%
+        \csxdef{#4}{}%
+        \ifnumcountcase{#2}%
+        {%
+                \csxdef{#4}{#3}%\IfSubBooleanTF{#1}{\csxdef{#4}{zero}}{\csxdef{#4}{#3}}
+                \or\csxdef{#4}{one#3}%
+                \or\csxdef{#4}{two#3}%
+                \or\csxdef{#4}{three#3}%
+                \or\csxdef{#4}{four#3}%
+                \or\csxdef{#4}{five#3}%
+                \or\csxdef{#4}{six#3}%
+                \or\csxdef{#4}{seven#3}%
+                \or\csxdef{#4}{eight#3}%
+                \or\csxdef{#4}{nine#3}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@digits@to@ordinal}{m m O{} G{@the@digits@text}}
 {%
-        \csxdef{#4}{}
-        \ifcountcase{#2}
-                \IfSubBooleanTF{#1}{\csxdef{#4}{th}}{\csxdef{#4}{#3}}
-                \or\csxdef{#4}{first}
-                \or\csxdef{#4}{second}
-                \or\csxdef{#4}{third}
-                \or\csxdef{#4}{fourth}
-                \or\csxdef{#4}{fifth}
-                \or\csxdef{#4}{sixth}
-                \or\csxdef{#4}{seventh}
-                \or\csxdef{#4}{eighth}
-                \or\csxdef{#4}{ninth}
-        \fi
+        \csxdef{#4}{}%
+        \ifnumcountcase{#2}%
+        {%
+                \IfSubBooleanTF{#1}{\csxdef{#4}{th}}{\csxdef{#4}{#3}}%
+                \or\csxdef{#4}{first}%
+                \or\csxdef{#4}{second}%
+                \or\csxdef{#4}{third}%
+                \or\csxdef{#4}{fourth}%
+                \or\csxdef{#4}{fifth}%
+                \or\csxdef{#4}{sixth}%
+                \or\csxdef{#4}{seventh}%
+                \or\csxdef{#4}{eighth}%
+                \or\csxdef{#4}{ninth}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@tens@to@base}{s m m G{@the@tens@base}}
+\DeclareDocumentCommand{\@digits@to@fraction}{m m O{\@fraction@suffix} G{@the@digits@text}}
 {%
         \csxdef{#4}{}%
-        \ifcountcase{#2}%
+        \ifnumcountcase{#2}%
+        {%
+                \IfSubBooleanTF{#1}{\csxdef{#4}{th#3}}{\csxdef{#4}{#3}}%
+                \or\csxdef{#4}{whole}%
+                \or%
+                        \ifcase\the\value{csm@mctr}\relax%
+                                \IfStrEq{#3}{s}%
+                                        {\csxdef{#4}{halve#3}}%
+                                        {\csxdef{#4}{half#3}}%
+                        \else%
+                                \csxdef{#4}{second#3}%
+                        \fi%
+                %
+                \or\csxdef{#4}{third#3}%
+                \or%
+                        \ifcase\the\value{csm@mctr}\relax%
+                                \csxdef{#4}{quarter#3}%
+                        \else%
+                                \csxdef{#4}{fourth#3}%
+                        \fi%
+                \or\csxdef{#4}{quarter#3}%
+                \or\csxdef{#4}{fifth#3}%
+                \or\csxdef{#4}{sixth#3}%
+                \or\csxdef{#4}{seventh#3}%
+                \or\csxdef{#4}{eighth#3}%
+                \or\csxdef{#4}{ninth#3}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tens@to@base}{s m G{y} G{@the@tens@base}}
+{%
+        \csxdef{#4}{}%
+        \ifnumcountcase{#2}%
+        {%
                 \csxdef{#4}{}%
                 \or\csxdef{#4}{}%
                 \or\csxdef{#4}{twent#3}%
@@ -838,13 +1445,14 @@
                 \or\csxdef{#4}{sevent#3}%
                 \or\csxdef{#4}{eight#3}%
                 \or\csxdef{#4}{ninet#3}%
-        \fi%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@teens@to@base}{s m O{} G{@the@teens@base}}
 {%
         \csxdef{#4}{}%
-        \ifcountcase{#2}%
+        \ifnumcountcase{#2}%
+        {%
                 \csxdef{#4}{ten#3}%
                 \or\csxdef{#4}{eleven#3}%
                 \or\csxdef{#4}{twelve#3}%
@@ -855,54 +1463,72 @@
                 \or\csxdef{#4}{seventeen#3}%
                 \or\csxdef{#4}{eighteen#3}%
                 \or\csxdef{#4}{nineteen#3}%
-        \fi%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@tens@to@name}{s m}{\@tens@to@base{#2}{y}{@the@tens@text}}
 \DeclareDocumentCommand{\@tens@to@ordinal}{s m}{\@tens@to@base{#2}{ieth}{@the@tens@text}}
 \DeclareDocumentCommand{\@teens@to@name}{s m O{}}{\@teens@to@base{#2}{@the@teens@text}}
 \DeclareDocumentCommand{\@teens@to@ordinal}{s m O{}}{\@teens@to@base{#2}[th]{@the@teens@text}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@num@to@text@control}{s G{}}
+\DeclareDocumentCommand{\@set@numname@cmds}{m}
 {%
         \gdef\@the@digits@text{}%
         \gdef\@the@tens@text{}%
         \gdef\@the@teens@text{}%
         \gdef\@the@digits@text{}%
-        \gdef\@combined@digit@text{}%
-        \gdef\@numname@units{}%
+        \gdef\@the@numname@group@text{}%
+        \gdef\@curr@numname@unit@sep{}%
+        \IfSubBooleanTF{#1}%
+        {%
+                \let\@digits@to@X\@digits@to@text%
+                \let\@teens@to@X\@teens@to@text%
+                \let\@tens@to@X\@tens@to@text%
+        }%
+        {%
+                \let\@digits@to@X\@digits@to@name%
+                \let\@teens@to@X\@teens@to@name%
+                \let\@tens@to@X\@tens@to@name%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@num@to@text@control}{s G{}}
+{%
         \IfStrEqCase{#2}%
         {%
-                {k}{\gdef\@numname@units{\numname@sep thousand}}%
-                {m}{\gdef\@numname@units{\numname@sep million}}%
-        }%
-        \IfBooleanTF{#1}%
+                {k}{\csxdef{@numname@units}{\@the@numname@item@sep thousand}}%
+                {m}{\csxdef{@numname@units}{\@the@numname@item@sep million}}%
+                {b}{\csxdef{@numname@units}{\@the@numname@item@sep billion}}%
+        }[\csxdef{@numname@units}{}]%
+        \@set@numname@cmds{#1}%
+        % Construct numname text for lowest 2 digits (tens/digits places) of current (3-digit) group
+        \ifcountcase{x#2sm@mctr}%
         {%
-                \ifcountcase{x#2sm@mctr}%
-                        \@digits@to@text{#1}{#2sm@mctr}%                                                0
-                        \or\@teens@to@text{#2sm@mctr}%                                                  1
-                        \else\@tens@to@text{x#2sm@mctr}\@digits@to@text{\BooleanFalse}{#2sm@mctr}%      >=2
-                \fi%
-                \xdef\@combined@digit@text{\@the@tens@text\@the@teens@text\@the@digits@text{\@numname@units}}%
+                \@digits@to@X{#1}{#2sm@mctr}%                                                                   x# = 0
+                \or\@teens@to@X{#2sm@mctr}%                                                                     x# = 1
+                \else% Append \@the@numname@suffix to numname text for lowest nonzero digit of current group    x# > 2
+                \ifcountcase{#2sm@mctr}%
+                {%              Units place digit is zero
+                                \@tens@to@X{x#2sm@mctr}%
+                                \@digits@to@X{\BooleanFalse}{#2sm@mctr}%
+                        \else%  Units place digit is nonzero
+                                \@tens@to@name{x#2sm@mctr}%
+                                \@digits@to@X{\BooleanFalse}{#2sm@mctr}%
+                                \csxdef{@curr@numname@unit@sep}{\@the@numname@unit@sep}%
+                }%
         }%
-        {%
-                \ifcountcase{x#2sm@mctr}%
-                        \@digits@to@name{#1}{#2sm@mctr}%                                                0
-                        \or\@teens@to@name{#2sm@mctr}%                                                  1
-                        \else\@tens@to@name{x#2sm@mctr}\@digits@to@name{\BooleanFalse}{#2sm@mctr}%      >=2
-                \fi%
-                \xdef\@combined@digit@text{\@the@tens@text\@the@teens@text\@the@digits@text{\@numname@units}}%
-        }%
+        % If nonzero digits in tens & ones places, separate their numname text w/ \@the@numname@unit@sep
+        \csxdef{@the@numname@group@text}{\@the@tens@text\@the@teens@text\@curr@numname@unit@sep\@the@digits@text\@numname@units}%
+        % Append numname text for hundreds place digit to current group numname text, empty unless nonzero hundreds place digit
         \ifcountcase{c#2sm@mctr}%
-        \else%
-                \@digits@to@name{\BooleanFalse}{c#2sm@mctr}[\numname@unit@sep hundred]%
-                \IfBooleanTF{#1}%
-                        {\xdef\@combined@digit@text{\@the@digits@text\numname@sep\@combined@digit@text}}%
-                        {\xdef\@combined@digit@text{\@the@digits@text\numname@sep\@combined@digit@text\numname@group@sep}}%
-        \fi%
-        \IfBooleanTF{#1}%
-                {\xdef\@the@numname{\@combined@digit@text}}%
-                {\xdef\@the@numname{\@combined@digit@text\numname@sep\@the@numname}}%
+        {%              Hundreds place digit is zero    => empty numname text for hundreds place
+                \else%  Hundreds place digit is nonzero => nonempty numname text for hundreds place
+                \@digits@to@name{\BooleanFalse}{c#2sm@mctr}[\@the@numname@item@sep hundred]%
+                \csxdef{@the@numname@group@text}{\@the@digits@text\@the@numname@item@sep\@the@numname@group@text}%
+        }%
+        % Add group separator if current group is not the 1st group with nonzero digits, i.e. if \@the@numname isn't empty
+        \ifdefempty{\@the@numname}%
+                {\csxpreto{@the@numname}{\@the@numname@group@text}}%                            1st group added to \@the@numname
+                {\csxpreto{@the@numname}{\@the@numname@group@text\@the@numname@group@sep}}%     >1st group appended to \@the@numname
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@num@to@text}{s G{}}
@@ -918,64 +1544,193 @@
                 )%
         }%
         \ifcase\pgfmathresult\relax%
-                \IfBooleanTF{#1}{\xdef\@the@numname{\@the@numname@suffix}}{}%
+                \IfBooleanTF{#1}{\csxdef{@the@numname}{\@the@numname@suffix}}{}%
         \else%
-                \IfBooleanTF{#1}%
-                        {\@num@to@text@control*{#2}}%
-                        {\@num@to@text@control{#2}}%
-        \fi
+                \forwardBoolean{#1}{\@num@to@text@control}{#2}%
+        \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\num@to@text}{m m O{}}
+\DeclareDocumentCommand{\num@to@text}{m m O{} d()}
 {%
-        \xdef\@the@numname{}%
-        \num@to@text@seps[#3]
-        \expandafter\let\expandafter\@digits@to@text\csname @digits@to@\@the@numtext@type\endcsname%
-        \expandafter\let\expandafter\@teens@to@text\csname @teens@to@\@the@numtext@type\endcsname%
-        \expandafter\let\expandafter\@tens@to@text\csname @tens@to@\@the@numtext@type\endcsname%
+        \csxdef{@the@numname}{}%
+        \num@to@text@seps[#3]%
+        \letcs{\@solo@digits@to@text}{@digits@to@\@the@numtext@type}%
+        \letcs{\@digits@to@text}{@digits@to@\@the@numdigit@type}%
+        \letcs{\@teens@to@text}{@teens@to@\@the@numtext@type}%
+        \letcs{\@tens@to@text}{@tens@to@\@the@numtext@type}%
         \numdigits{#2}%
         \@num@to@text*%
         \@num@to@text{k}%
         \@num@to@text{m}%
-        \ifcountcase{bsm@mctr}%
-        \else%
-                \@digits@to@text{#1}{bsm@mctr}%
-                \xdef\@the@numname{\trim@spaces{\@the@digits@text\numname@unit@sep billion\numname@sep\@the@numname}}%
-        \fi%
-        \ifdefstring{\@the@numname}{th}{\xdef\@the@numname{zeroth}}{}%
-        \ifdefempty{\@the@numname}{\xdef\@the@numname{zero}}{}%
-        \@the@numname%
+        \@num@to@text{b}%
+        \ifdefstring{\@the@numname}{th}{\csxdef{@the@numname}{zeroth}}{}%
+        \ifdefempty{\@the@numname}{\csxdef{@the@numname}{zero}}{}%
+        \IfValueTF{#4}{\csxdef{#4}{\@the@numname}}{}%
+        \return(textout)=\@the@numname;%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\num@to@name}{s m O{}}
-{%
+%                                     1  2 3  4 5   6
+\DeclareDocumentCommand{\num@to@name}{t! s t^ m O{} d()}
+{%\num@to@name<*=unused><!=print off>{input #}[numname sep key/value options](name cs <= numname result)
         \xdef\@the@numname@suffix{}%
+        \xdef\@the@numdigit@type{name}%
         \xdef\@the@numtext@type{name}%
-        \num@to@text{#1}{#2}[#3]%
+        \num@to@text{#2}{#4}[#5](#6)%
+        \IfBooleanFT{#3}{\forwardBooleanNot{#1}{\tprint}{\textout}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\num@to@ordinal}{s m O{}}
-{%
+%                                        1  2 3  4 5   6
+\DeclareDocumentCommand{\num@to@ordinal}{t! s t^ m O{} d()}
+{%\num@to@ordinal<*=NA><!=print off>{input #}[numname sep key/value options](name cs <= numname result)
         \xdef\@the@numname@suffix{th}%
+        \xdef\@the@numdigit@type{ordinal}%
         \xdef\@the@numtext@type{ordinal}%
-        \num@to@text{#1}{#2}[#3]%
+        \num@to@text{#2}{#4}[#5](#6)%
+        \IfBooleanFT{#3}{\forwardBooleanNot{#1}{\tprint}{\textout}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\numToText}{s m O{}}
-{%
+%                                         1  2 3  4 5 6   7
+\DeclareDocumentCommand{\num@to@fraction}{t! s t^ m m O{} d()}
+{%\num@to@fraction<*=NA><!=print off>{numerator#}{denominator#}[key/value numname seps](name cs <= numname result)
+        \forwardBooleanList{\num@to@name}%
+                {\BooleanTrue/!,#2/*,\BooleanTrue/^}%
+                {#4}[#6](@the@numerator)%
         \xdef\@the@numname@suffix{th}%
+        \xdef\@the@numdigit@type{fraction}%
         \xdef\@the@numtext@type{ordinal}%
-        \num@to@text{#1}{#2}[#3]%
+        \ifnumcomp{#4}{>}{1}%                           If numerator > 1 => pluralize denominator:
+                {\xdef\@fraction@suffix{s}}%            plural denominator
+                {\xdef\@fraction@suffix{}}%             singular denominator
+        \num@to@text{#2}{#5}[#6](@the@denominator)%
+        \return(textout)=\@the@numerator\@the@numname@frac@sep\@the@denominator;%
+        \IfBooleanFT{#3}{\forwardBooleanNot{#1}{\tprint}{\textout}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                  1                     2 
-\DeclareDocumentCommand{\varuline}{D<>{1.25pt,0.5pt,1.8} m}%
+%                                   1  2  3 4  5 6 7   8
+\DeclareDocumentCommand{\numToText}{t! t+ s t^ m g O{} d()}
+{%\numToText<!=print off><+=ordinals><*=NA><^=submacro>{numerator #}{denominator #}[key/value numname seps](csdef <= numname)
+        \edef\@boolean@arglist{\BooleanTrue/!,#3/*,\BooleanTrue/^}%
+        \setcountval(\@numerator@count){#5}%
+        \IfValueFT{#6}%
+        {%
+                \IfBooleanTF{#2}%
+                        {\forwardBooleanList{\num@to@ordinal}{\@boolean@arglist}{\@numerator@count}[#7](#8)}%
+                        {\forwardBooleanList{\num@to@name}{\@boolean@arglist}{\@numerator@count}[#7](#8)}%
+        }%
+        {%
+                \setcountval(\@denominator@count){#6}%
+                \forwardBooleanList{\num@to@fraction}{\@boolean@arglist}{\@numerator@count}{\@denominator@count}[#7](#8)%
+        }%
+        \forwardBooleanMixList{\tprint}{#1/*/FT,#4/!/TF}{\textout}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                    1  2  3 4 5 6
+\DeclareDocumentCommand{\cfg@numToX}{t! t+ s m g O{}}%
+{%\cfg@numToX<!=suppress output><+=ordinals><*=NA>{numerator #}{denominator #}[key/value numname seps]
+        \forwardBooleanList{\numToText}%
+                {#1/!,#2/+,#3/*,\BooleanTrue/^}%
+                {#4}{#5}[#6]%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Configured/structured text entries ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\caratenclosed}{s m}
+{%\shadowText<title font>'color style'{title text}
+        \IfBooleanTF{#1}%
+                {$<$\emph{#2}$>$}%
+                {$<$#2$>$}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\csvdirpath}{s m t+ D(){dirpath}}
+{%
+        \gdef\@@csvdirs{#2}%
+        \gdef\@@dirpath{}%
+        \foreach \@@dir in \@@csvdirs%
+                {\xp@nNY\gappto{\@@dirpath}{\xp\dirsep\@@dir}}%
+        \IfBooleanTF{#3}{\gappto{\@@dirpath}{\dirsep $\dots$}}{}%
+        \global\cslet{#4}{\@@dirpath}%
+        \IfBooleanTF{#1}{\@@dirpath}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                  1    2        3
+\DeclareDocumentCommand{\vardir}{s m D(){thevardir}}
+{%
+        \caratenclosed*{#2}%
+        \csgdef{#3}{\caratenclosed*{#2}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\legendentry}{s O{documentation-file} m m}
+{
+        \begingroup%
+                \bfseries\fontcolor{#2}{\textbf{#3}} \fontcolor{Black}: #4%
+                \IfBooleanTF{#1}{\parnoskip}%
+        \endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fileentry}{s O{documentation-file} m m}
+{
+        \begingroup%
+                \fontcolor{#2}{\textbf{\textit{#3}}} \fontcolor{Black}: #4%
+                \IfBooleanTF{#1}{\parnoskip}%
+        \endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\docentry}{s t! O{file} m}
+{%
+        \begingroup%
+        %\@xp@def\expandafter\@text@input\expandafter{#4}%
+        %\xpdef\@text@input{#4}%
+        \xp@nnY\def\@text@input{#4}%
+        \IfBooleanTF{#1}%
+                {\def\@text@entry{``\@text@input''}}%\textcolor{blue}
+                {\def\@text@entry{\@text@input}}%
+        \ifstrequal{#3}{file}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+        \ifstrequal{#3}{fileset}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+        \ifstrequal{#3}{constdir}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+        \ifstrequal{#3}{dir}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+        \ifstrequal{#3}{subcategory}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textit{\@text@entry}}}}{}%
+        \ifstrequal{#3}{gitrepo}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+        \ifstrequal{#3}{gitaccount}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\dirsep\@text@entry}}}{}%
+        \ifstrequal{#3}{gitbranch}{\def\@Atext@entry{\coloredtext*{documentation-#3}{\texttt{\@text@entry}}}}{}%
+        \ifstrequal{#3}{script}{\def\@Atext@entry{\coloredtext*!{documentation-#3}{\textup\@text@entry}}}{}%
+        \IfBooleanTF{#2}%
+                {\bfseries``\@Atext@entry''\unskipspacing}%
+                {\bfseries\@Atext@entry\unskipspacing}%
+        \endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text output styling and print commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setulsettings}{s g o}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \IfValueTF{#2}%
+        {%
+                \IfValueTF{#3}%
+                        {\ULsettings[type=#2,#3]}%
+                        {\ULsettings[type=#2]}%
+        }%
+        {%
+                \IfValueTF{#3}%
+                        {\ULsettings[#3]}%
+                        {\ULsettings[]}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                  1                     2
+\DeclareDocumentCommand{\varuline}{D<>{1.25pt,0.5pt,1.0} m}%
 {% arg 1: underline depth; arg 2: underline thickness; arg 3: space around descenders in pt (!)
-        \getcsvargs{#1}
-        \renewcommand\ULdepth{\argi}%
-        \renewcommand\ULthickness{\argii}%
+        \setxsvargs{csv}{#1}%\thexsvarg{csv}{\TWO}
+        %\xp\xp\xp\renewcommand\xp\xp\xp\ULdepth\xp\xp\xp{\thexsvargB{\ONE}}%\csvarg@prefix\romannumeral
+        \renewxsvargcommand{\ULdepth}{\ONE}%
+        \renewxsvargcommand{\ULthickness}{\TWO}%
+        %\xp\renewcommand\xp\ULdepth\xp{\thexsvargB{\ONE}}%\csvarg@prefix\romannumeral
+        %\xp\renewcommand\xp\ULthickness\xp{\csname\xsvarg@numeral{\TWO}\endcsname}%{\csvarg*{\TWO}}%\csvarg{\TWO}
         \uline{\phantom{\smash{#2}}}%
-        \foreach \hshift in {0.0, 0.1, ..., \argiii}%
+        \foreach \hshift in {0.0, 0.1, ..., \csname\xsvarg@numeral{\THREE}\endcsname}%\csvarg{\THREE}
         {%
                 \foreach \upshift in {-0.4, -0.3, ..., 1.0}%
                 {%
@@ -1014,21 +1769,32 @@
         \endgroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\printresult}{s}{\IfBooleanTF{#1}{\cprint{result=}}{}\cprint{\result\\}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@print@conditional}{s m m}
-{%{print value or variable}{conditional type indicator index or word}
-        \setlocalprint{#1}%
-        \setTFindicator[#2]{#3}{}!%
-        \cprint{\csuse{@#3@\@TF@indicator@letter @indicator}}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\print@expanded@csname}{s m}
+%                                1   2   3            4   5       6
+\DeclareDocumentCommand{\tikzUL}{d<> d<> D''{current} d() O{rect} m}
 {%
-        \IfBooleanTF{#1}%
-                {\detok@csname{#2}=\the#2\\}%
-                {\detok@csname{#2}=#2\\}%
+        \@set@current@tcb@colors{#3}%
+        \IfValueTF{#1}{\setlength\@tikzUL@thickness{#1}}{}%
+        \IfValueTF{#2}{\setlength\@tikzUL@depth{#2}}{}%
+        \IfValueTF{#4}{\def\@tikzUL@color{#4}}{}%
+        \setkeys[tcb]{tikzUL}{linecap=#5}
+        \tikz%
+        [
+                baseline=(text.base),
+                node font=\the\font,
+                inner sep=0pt,
+                line width=\@tikzUL@thickness,
+                line cap=\@tikzUL@line@cap, % rect, butt, also decorations, ...
+        ]
+        \draw node (text) {\set@cf@color#6}
+                (text.south east) ++(0.0pt, -\@tikzUL@depth) coordinate (tmp)
+                -- (text.south west |- tmp);
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text/info print commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\printEnvExitCode}{s m}
 {%
@@ -1043,13 +1809,13 @@
                         \textcolor{blue}{\}}%
                 } %
                 Closure of \textcolor{green}{\texttt{#2}} Environment%
-        }\\[0.5em]
-        Content Generated Around ``MARKERTEXT'':
+        }\\[0.5em]%
+        Content Generated Around ``MARKERTEXT'':%
         \AfterEndEnvironment{#2}{\qq}%
         \IfBooleanTF{#1}%
                 {\ensuremath{\begin{#2}MARKERTEXT\end{#2}\qq}}%
                 {\begin{#2}MARKERTEXT\end{#2}\qq}%
-\\
+        \\%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                            1 2 3
@@ -1059,8 +1825,97 @@
         #1=\the\@macro@height%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@regprint@lut}{s m m}
+{%
+        \IfStrEqCase{#2}
+        {
+                {length}{\csname@ny\the{#3}}
+                {dimen}{\csname@ny\the{#3}}
+                {skip}{\csname@ny\the{#3}}
+                {counter}{\the\value{#3}}
+        }
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setprint}{s t! g}
+{%
+        \IfSubBooleanTF{#1}{\@@print@on}{}%
+        \IfValueTF{#3}{\@setprint{#3}}{}%
+        %\overridelocalprint{#2}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tprint}{s t! m}
+{%{manual print on}{print statement}
+        %\IfSubBooleanTF{#1}{\setlocalprint{\BooleanTrue}}{}%
+        \setlocalprint{#1}%
+        %\if@local@print@override@on@\resetlocalprint\fi%
+        %\@local@print@on@true
+        %\resetlocalprint
+        %\@@print@on
+        \IfSubBooleanFT{#2}{\@tprint{#3}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printresult}{s}{\IfBooleanTF{#1}{\tprint{result=}}{}\tprint{\result\\}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@print@conditional}{t! m m}
+{%{print value or variable}{conditional type indicator index or word}
+        %\setprint{\BooleanTrue}%
+        %\setlocalprint{\BooleanTrue}%
+        \setlocalprint{#1}%
+        %\@local@print@override@on@false
+        %\@local@print@override@on@true
+        \cssetTF[#2]{#3}{}!%
+        %\@@print@on
+        \forwardBooleanNot{#1}{\tprint}{\csuse{@#3@\@TF@indicator@letter @indicator}}%
+        %\csuse{@#3@\@TF@indicator@letter @indicator}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@expanded@csname}{s m}
+{%
+        \IfBooleanTF{#1}%
+                {\detok@csname{#2}=\the#2\\}%
+                {\detok@csname{#2}=#2\\}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printargs}{O{\csvarg@prefix} m m}%
+{%
+        \setxsvargs{#2}{#3}%
+        \setcounter{arg@index}{0}%
+        \whiledo{\thearg@index < \narg}%
+        {%
+                \stepcounter{arg@index}%
+                \csname\xsvarg@prefix\@xsvargs@numformat{arg@index}\endcsname%
+                \printlist@addsep{\thearg@index}{\narg}%
+        }\\%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printcsvIndex}{m m m m m}%> { \ReverseBoolean }
+{%
+        \IfSubBooleanTF{#1}%
+        {%
+                \IfSubBooleanTF{#2}{Index #3 = #5}%
+                {$\big\lbrace\text{#4}\big\rbrace_{\scriptstyle\text{#3 Mod(\@csv@elements)=\@csv@mod@index}}$ = #5}%
+        }{#5}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2   3 4   5
+\DeclareDocumentCommand{\printcsvgroup}{g d() o d|| d<>}%
+{%
+        \IfValueTF{#1}{\{#1\}}{}%
+        \IfValueTF{#2}{(#2)}{}%
+        \IfValueTF{#3}{[#3]}{}%
+        \IfValueTF{#4}{|#4|}{}%
+        \IfValueTF{#5}{<#5>}{}%
+        \\%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                           1 2   3 4   5
+\DeclareDocumentCommand{\printcsvgrouplist}{m}%
+{%
+        \xp\xp\xp\parsecsvgrouplist#1;
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ CSV list property queries and creation/manipulation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \DeclareDocumentCommand{\@csvlist@length}{s o m}%
 {%
@@ -1068,85 +1923,110 @@
                 {\def\@csvlist@csname{#2}}%
                 {\def\@csvlist@csname{\thecsname{#3}}}%
         \foreach \@csv@element [count=\@csv@elements] in #3{}%
-        \@namedef{\@csvlist@csname @length}{\@csv@elements}%
-        \IfBooleanTF{#1}{\@csvlist@csname @length=\@nameuse{\@csvlist@csname @length}\\}{}%
+        \csxdef{\@csvlist@csname @length}{\@csv@elements}%
+        \IfBooleanTF{#1}{\@csvlist@csname @length=\@nameuse{\@csvlist@csname @length}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@dup@item@csvlist}{t! m m m}
+\DeclareDocumentCommand{\@dup@item@csvlist}{s t! t= m m g}
 {%
-        \IfBooleanTF{#1}{}{\undef{#4}}%
-        \foreach \@item@duplication@num [count=\@csvlist@index from 1] in {1,...,#2} {\@add@to@csvlist{#3}{#4}}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\printCSVIndex}{m m m m}%> { \ReverseBoolean }
-{%
-	\IfSubBooleanTF{#1}%
-	{%
-		\IfSubBooleanTF{#2}{Index #3 = \thelistitem}%
-		{$\big\lbrace\text{#4}\big\rbrace_{\scriptstyle\text{#3 Mod(\@csv@elements)=\pgfmathresult}}$ = \thelistitem}%
-	}{}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\getCSVIndex}{s t= t@ t! m m}%> { \ReverseBoolean } 
-{%
-	\edef\@stop@loop@count{#5}%
-	\@csvlist@length[getCSVIndex]{#6}%
-        \IfBooleanTF{#4}%
+        \gdef\@@partial@csvlist{#5}%
+        \xdef\@@xp@partial@csvlist{#5}%
+        \@csvlist@length{\@@xp@partial@csvlist}%
+        \IfBooleanTF{#3}%
+        {\numgdef\@@missing@elements{#4-\@@xp@partial@csvlist@length}}%
         {%
-        	\ifnumcomp{#5}{>}{\getCSVIndex@length}%
-                        {\errmessage{Index #5 inaccessible from list of length = \getCSVIndex@length}}{}%
-	}{}%	
-	\moduloInt{\@csv@elements}{#5}%
-	\setcounter{@macro@counter}{\pgfmathresult}%
-	\foreach \@list@item [count=\@list@index from 1] in #6%
-	{%
-		\ifnumcomp{\@list@index}{=}{\value{@macro@counter}}%
-    			{\breakforeach\xdef\thelistitem{\@list@item}}{}%
-	}%
-        \IfBooleanTF{#1}{\printCSVIndex{#2}{#3}{#5}{#6}}{}%
+                \@csvlist@length[@full@list]{#4}%
+                \numgdef\@@missing@elements{\@full@list@length-\@@xp@partial@csvlist@length}%
+        }%
+        \numgdef\@@start@index{\@@xp@partial@csvlist@length-1}%
+        \xp\getcsvindex\xp{\xp\@@start@index\xp}\xp{\@@partial@csvlist}%\\
+        \xdef\@@filled@csvlist{\@@partial@csvlist}%
+        \foreach \@item@duplication@num in {1,...,\@@missing@elements}{\@add@to@csvlist{\@mod@list@element}{\@@filled@csvlist}}%
+        \IfValueTF{#6}%
+        {%
+                \IfBooleanTF{#2}{}{\undef{#6}}%
+                \xdef#6{\@@filled@csvlist}%
+        }%
+        {\xdef\@@partial@csvlist{\@@filled@csvlist}}%
+        \IfBooleanTF{#1}{\printcsvlists(@@){filled,partial}(@csvlist)}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\getCSVModIndex}{t@ m m g}
+\DeclareDocumentCommand{\printcsvlist}{m}%
 {%
-	\@csvlist@length[@mod@list]{#3}%
-	\pgfmathparse{int(Mod(#2,\@csv@elements))}%
-	\setcounter{@macro@counter}{\pgfmathresult}%
-	\foreach \x [count=\@list@index] in #3%
-	{%
-        	\ifnumcomp{\@list@index}{=}{\value{@macro@counter}}%
-                        {\breakforeach\xdef\@mod@list@element{\x}}{}%
-        }%
-        $\big\lbrace\text{#3}\big\rbrace_{\scriptstyle\text{#2 Mod(\@csv@elements)}}$ %
-        = $\big\lbrace\text{#3}\big\rbrace_\pgfmathresult$ = \@mod@list@element\\%
+        \def\@@csvlist@length@name{@@csvlist}%
+        \edef\@@xp@csvlist{#1}%
+        \@csvlist@length[\@@csvlist@length@name]{\@@xp@csvlist}%
+        \thecsname{#1}(\@@csvlist@length)=#1%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printcsvlists}{D(){} m D(){}}%
+{%
+        \edef\@@csvlists{#2}%
+        \foreach \@@csvlist in \@@csvlists{\csname@ny\printcsvlist{#1\@@csvlist#3}\\}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                     1 2  3  4  5  6 7
+\DeclareDocumentCommand{\getcsvindex}{s t= t@ t+ t< m m}%> { \ReverseBoolean }
+{%
+        \edef\@stop@loop@count{#6}%
+        \@csvlist@length[getcsvindex]{#7}%
+        \IfBooleanTF{#5}%
+        {%
+                \ifnumcomp{#6}{>}{\getcsvindex@length}%
+                        {\errmessage{Index #6 inaccessible from list of length = \getcsvindex@length}}{}%
+        }{}%
+        \forwardBooleanList{\getcsvModindex}{#1/*,#2/=,#3/@,#4/+}{#6}{#7}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                        1 2  3  4  5 6 7
+\DeclareDocumentCommand{\getcsvModindex}{s t= t@ t+ m m d()}
+{%
+        \@csvlist@length[getcsvModindex]{#6}%
+        \moduloInt{\getcsvModindex@length}{#5}(@csv@mod@index)%
+        \setcounter{@macro@counter}{\pgfmathresult}%
+        \IfBooleanTF{#4}%
+                {\def\@@start@index{\ONE}}%
+                {\def\@@start@index{\ZERO}}%
+        \foreach \@list@item [count=\@list@index from \@@start@index] in #6%
+        {%
+                \ifnumequal{\@list@index}{\value{@macro@counter}}%
+                        {\breakforeach\xdef\@mod@list@element{\@list@item}}{}%
+        }%
+        \IfValueTF{#7}{\csxdef{#7}{\@mod@list@element}}{}%
+        \IfBooleanTF{#1}{\printcsvIndex{#2}{#3}{#5}{#6}{\@mod@list@element}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\resetcsv{m}{\global\let#1\empty}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Auxiliary/output file setup/writing macros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\DeclareDocumentCommand{\auxwrite@macro}{O{xdef} m m}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\auxwrite@macro{O{xdef} m m}
 {
         \protected@write\@auxout{}%
         {%
-                \expandafter\expandafter\expandafter\string%
-                \expandafter\csname #1\endcsname%\newcommand%
-                \expandafter\string%
-                \expandafter#2%
-                \expandafter{#3}%
+                \xp\xp\xp\string%
+                \xp\csname #1\endcsname%\newcommand%
+                \xp\string%
+                \xp#2%
+                \xp{#3}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\auxwrite@regset}{O{setcounter} m m}
+\DeclareDocumentCommand\auxwrite@regset{O{setcounter} m m}
 %\newcommand\auxwrite@regset[3][setcounter]%
 {%
         \protected@write\@auxout{}%
         {%
-                \expandafter\expandafter\expandafter\string%
-                \expandafter\csname #1\endcsname%
-                \expandafter{\expandafter\string#2}%
-                \expandafter{#3}%
+                \xp\xp\xp\string%
+                \xp\csname #1\endcsname%
+                \xp{\xp\string#2}%
+                \xp{#3}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@auxwrite}{s m}
+\DeclareDocumentCommand\@auxwrite{s m}
 %\newcommand\auxwrite@regset[3][setcounter]%
 {%
          \IfBooleanTF{#1}%
@@ -1154,7 +2034,7 @@
                 {#2}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\auxwrite}{s m m}
+\DeclareDocumentCommand\auxwrite{s m m}
 %\newcommand\auxwrite@regset[3][setcounter]%
 {%
          \IfBooleanTF{#1}%
@@ -1162,7 +2042,7 @@
                 {#2}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\conditional@auxwrite}{s m m}
+\DeclareDocumentCommand\conditional@auxwrite{s m m}
 %\newcommand\auxwrite@regset[3][setcounter]%
 {%
          \conditional{#2}%
@@ -1171,6 +2051,146 @@
                         {\appto{\@AUXOUT@LIST}{#3}}%
                         {#3}%
          }{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'tcolorbox' options testing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%               \begin{tcbitembox}[left=-4mm,boxrule=1.5pt,width=\@macro@width,attach title,center title,colbacktitle=stdgray,coltitle=white]{tcboptions:}%
+%                       \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+%                       \foreach\@tcboption in \@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@tcboption}%
+%               \end{tcbitembox}
+%\myblindtext
+\DeclareDocumentEnvironment{tcbsplitbox}{s D<>{0.5\linewidth} O{} m m}
+{%
+        %\tcbsidebyside%
+        \tcolorbox%
+        [
+                sidebyside,
+                sidebyside align=top seam, segmentation empty, lefthand width=#2,
+                %sidebyside adapt=both,
+                %IfBooleanTF{#1}{sidebyside switch}{},
+                TBLR={-1mm}{-1mm}{}{},
+                %top=-1mm, bottom=-1mm,
+                shrink tight, opacityfill=0.0,notitle,
+                #3
+        ]%
+}%
+{%
+                #4
+                \tcblower%
+                #5
+        \endtcolorbox%
+        %\endtcbsidebyside%
+}
+\DeclareDocumentCommand\tcbsplitLRbox{s D<>{0.5\linewidth} O{} m m}
+{%
+        \tcbsidebyside%
+        %\tcolorbox%
+        [
+                @tcb@sidebyside@props={top seam}{\@tcb@default@sidebyside@gap}{both}{0.5\linewidth},
+                %sidebyside,
+                %sidebyside align=top seam, segmentation empty, lefthand width=#2,
+                %sidebyside adapt=both,
+                %IfBooleanTF{#1}{sidebyside switch}{},
+                TBLR={-1mm}{-1mm}{}{},
+                %top=-1mm, bottom=-1mm,
+                shrink tight, opacityfill=0.0,notitle,
+                #3
+        ]%
+        {#4}{#5}%
+}%
+%%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@tcboptions@set{m m}{\@add@to@csvlist{#1={#2}}{\@tcboptions@list}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@apply@tcboptions@list{t= m m u{;}}{\parsecsvgrouplist'\@apply@tcboptions{#1}{#2}{#3}'#4;}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand\@apply@tcboptions{s m m m r()}%
+{%
+        \dosplitcsv{@tcboptions@set}{#4}{#5}%
+        \setlength\@macro@width{0pt}%
+        \setlength\@macro@length{0pt}%
+        %\IfBooleanTF{#1}%
+%                {\xp@nyII\tcbset{{\xp#3\xp,\@tcboptions@list}}}%
+%                {\xp@nyII\tcbsetforeverylayer{{\xp#3\xp,\@tcboptions@list}}}%
+%                %{\xp@nyII\tcbset{{\@tcboptions@list}}}%
+                %{\xp@nyII\tcbsetforeverylayer{{\@tcboptions@list}}}%
+                %{\xp\xp\xp\tcbset\xp\xp\xp{\xp#3\xp,\@tcboptions@list}}%
+                %{\xp\xp\xp\tcbsetforeverylayer\xp\xp\xp{\xp#3\xp,\@tcboptions@list}}%
+                \xp@nyII\tcolorbox[\xp#3\xp,\@tcboptions@list]%
+                %\xp\xp\xp\tcolorbox\xp\xp\xp[\xp#3\xp,\@tcboptions@list]%[@tcb@outline@frame]%[@tcb@outline@frame]%[#2]%
+                \IfSubBooleanTF{#2}%
+                {%
+                        \foreach \@tcboption in \@tcboptions@list
+                        {%
+                                \settowidth{\@macro@length}{\tt\@tcboption}
+                                \ifdimgreater{\@macro@length}{\@macro@width}%
+                                        {\global\deflength\@macro@width{\@macro@length}}{}%
+                        }
+                        \addtolength\@macro@width{10mm}%
+                        %\@PKGTESTING@SUBHEADING{tcboptions}%
+                        \begin{tcbsplitbox}<\@macro@width>%
+                        {%
+                                \begin{tcbitembox}[left=-4mm,boxrule=1.5pt,width=\@macro@width,attach title,center title,colbacktitle=stdgray,coltitle=white]{tcboptions:}%
+                                        %\myblindtext
+                                        \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+                                        \foreach\@tcboption in \@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@tcboption}%
+                                \end{tcbitembox}
+                        }{\myblindtext}
+                        \end{tcbsplitbox}
+%                       \tcbsplitLRbox<\@macro@width>%
+%                        {%
+%                                \begin{tcbitembox}[left=-4mm,boxrule=1.5pt,width=\@macro@width,attach title,center title,colbacktitle=stdgray,coltitle=white]{tcboptions:}%
+%                                        %\myblindtext
+%                                        \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+%                                        \foreach\@tcboption in \@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@tcboption}%
+%                                \end{tcbitembox}
+%                        }{\myblindtext}
+                        \global\deflength\@macro@length{0pt}%
+                }{\myblindtext}%               %
+        \endtcolorbox%\endtcolorbox%
+        \clearcsv\@tcboptions@list%
+        \tcbset{reset}%
+        \tcbsetforeverylayer{title={},notitle}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tcboptions@test@contentbox}{O{\linewidth} m D||{tcboptions:}}%
+{%
+        \xdef\@@tcboptions@list{#2}%
+        \begin{tcbsplitbox}<#1>%
+        {%
+                \begin{tcbitembox}[left=-4mm,boxrule=1.5pt,width=#1,attach title,center title,colbacktitle=stdgray,coltitle=white]{#3}%
+                        %\myblindtext
+                        \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+                        \foreach\@@tcboption in \@@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@@tcboption}%
+                \end{tcbitembox}
+        }{\myblindtext}
+        \end{tcbsplitbox}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tcboptions@testing}{m m m}%
+{%
+        \xp\gdef\xp\@@tcb@commonopts\xp{#1}%
+        \xp\gdef\xp\@@tcboptlist\xp{#2}%
+        \xp\gdef\xp\@@tcboptvallist\xp{#3}
+        \xp\csvlists@to@grouplist\xp{\@@tcboptvallist}(tcbopt@grouplist)%
+        \xp\@apply@tcboptions@list\xp=\xp{\xp\@@tcb@commonopts\xp}\xp\@@tcboptlist\tcbopt@grouplist;
+        %\xp@nnny{\@apply@tcboptions@list=}{\tcb@commonopts}{\tcboptlist}\tcbopt@grouplist;
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tcboptions@style@testing}{D''{tcbBlueScheme} m O{}}%
+{%
+        \xdef\@@tcbstyle@csvlist{#2}%
+        \@set@current@tcb@colors{#1}%
+        \foreach \@@tcbstyle in \@@tcbstyle@csvlist%
+        {%
+                \tcbset{enhanced,fonttitle=\large\ttfamily\bfmseries,title={\@@tcbstyle},#3}%
+                \xp\tcolorbox\xp[\@@tcbstyle]%
+                        \myblindtext
+                \endtcolorbox%
+        }%
+        \tcbset{reset}%
 }
 %*******************************************************************************************************************************%
 %************************************************ Define Robust LaTeX commands *************************************************%
@@ -1184,6 +2204,12 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \cs_new_protected:Npn \fp_mul:Nn #1 #2 {\fp_set:Nn #1 { #1*#2 }}
 \cs_new_protected:Npn \fp_div:Nn #1 #2 {\fp_set:Nn #1 { #1/#2 }}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\NewDocumentCommand{\IsMember}{mm+m+m}%
+{%
+        \clist_set:Nx \l_tmpa_clist {#1}
+        \clist_if_in:NnTF \l_tmpa_clist {#2} {#3} {#4}
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \cs_new:Npn \break_var_uline:n #1
 {
@@ -1206,19 +2232,115 @@
         \seq_map_inline:Nn \l_tmpa_seq { \current@item {##1} }
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\ExplSyntaxOff
-%*******************************************************************************************************************************%
-%************************** Default control sequence initializations and alias creation/definitions ****************************%
-%*******************************************************************************************************************************%
+\cs_new_protected:Npn \DeclareMathCommand #1#2#3
+  { \__xparse_declare_cmd:Nnn #1 {#2} {\mathon#3\mathoff} }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\let\printargsC\printssvargs
-\let\@sorted@list\@empty
-\let\l@lstlisting\l@listings
-\let\@tcb@figbox@width\@macro@width
-\let\@tcb@figbox@skip\@macro@length
-\let\tcbfunctiondef\tcbcode
-\let\tcbfunctiondetails\tcbcode
-\let\tcbscriptdef\tcbcode
+\cs_new_protected:Npn \NewMathCommand #1#2#3
+  {
+    \cs_if_exist:NTF #1
+      {
+        \__msg_kernel_error:nnx { xparse } { command-already-defined }
+          { \token_to_str:N #1 }
+      }
+      { \__xparse_declare_cmd:Nnn #1 {#2} {\mathon#3\mathoff} }
+  }
+\cs_new_protected:Npn \RenewMathCommand #1#2#3
+  {
+    \cs_if_exist:NTF #1
+      { \__xparse_declare_cmd:Nnn #1 {#2} {\mathon#3\mathoff} }
+      {
+        \__msg_kernel_error:nnx { xparse } { command-not-yet-defined }
+          { \token_to_str:N #1 }
+      }
+  }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \ProvideMathCommand #1#2#3
+  { \cs_if_exist:NF #1 { \__xparse_declare_cmd:Nnn #1 {#2} {\mathon#3\mathoff} } }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \DeclareMathEnvironment #1#2#3#4
+  { \__xparse_declare_env:nnnn {#1} {#2} {\mathon#3} {#4\mathoff} }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \NewMathEnvironment #1#2#3#4
+  {
+    \cs_if_exist:cTF {#1}
+      { \__msg_kernel_error:nnx { xparse } { environment-already-defined } {#1} }
+      { \__xparse_declare_env:nnnn {#1} {#2} {\mathon#3} {#4\mathoff} }
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \RenewMathEnvironment #1#2#3#4
+  {
+    \cs_if_exist:cTF {#1}
+      { \__xparse_declare_env:nnnn {#1} {#2} {\mathon#3} {#4\mathoff} }
+      { \__msg_kernel_error:nnx { xparse } { environment-not-yet-defined } {#1} }
+  }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \ProvideMathEnvironment #1#2#3#4
+  { \cs_if_exist:cF { #1 } { \__xparse_declare_env:nnnn {#1} {#2} {\mathon#3} {#4\mathoff} } }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\cs_new_protected:Npn \DeclareExpandableMathCommand #1#2#3
+  { \__xparse_declare_expandable_cmd:Nnn #1 {#2} {\mathon#3\mathoff} }
+%-------------------------------------------------------------------------------------------------------------------------------%
+\clist_new:N \l@myvararg@parameters@clist
+\tl_new:N    \l@myvararg_current@item@tl
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printcsv}{m}%
+{%
+        \int_while_do:nNnn { \clist_count:N #1 } > { 1 }
+        {%
+                \clist_pop:NN #1 \l@myvararg_current@item@tl%
+                \tl_use:N \l@myvararg_current@item@tl,%
+        }%
+        \clist_pop:NN #1\l@myvararg_current@item@tl
+        {} ~ and ~ \tl_use:N \l@myvararg_current@item@tl\\%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\makecsv}{s m}%
+{%
+        \clist_set:Nn \l@myvararg@parameters@clist { #2 }%
+        \foreach \@clist@element in \l@myvararg@parameters@clist%
+        {
+                \@clist@element,\space
+        }
+        \\
+        %\IfBooleanTF{#1}{\printcsv{\l@myvararg@parameters@clist}}{}%
+        %\printcsv{\l@myvararg@parameters@clist}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\useExplcmd}{m}%
+{%
+        \ExplSyntaxOn
+                #1
+        \ExplSyntaxOff
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ExplSyntaxOff
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~ Default control sequence initializations and alias creation/definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\RETURNVAL\RETURN%
+\global\let\RESULT\RETURN%
+\global\let\result\RETURN%
+\global\let\textout\RETURN%
+\global\let\RETURNTRUE\returntrue%
+\global\let\RETURNFALSE\returnfalse%
+\global\let\returnT\returntrue%
+\global\let\returnF\returnfalse%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\cswrapped@args@cmd\xp@csargs
+\global\let\unwrap@csargs\xp@csargs
+\global\let\xp@csdef@args\xp@csargs
+\global\let\xp@csname@args\xp@csargs
+\global\let\xp@cswrapped@args\xp@csargs
+\global\let\csvtobsv\csv@to@bsv
+%\global\let\csvtobsv\csv@to@bsv
+\global\let\clearcsv\resetcsv
+\global\let\emptycsv\resetcsv
+\global\let\thecsvlist\l@myvararg@parameters@clist
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \global\let\@if@T@indicator\@binary@T@indicator
 \global\let\@if@F@indicator\@binary@F@indicator
@@ -1232,16 +2354,114 @@
 \global\let\FALSE\@TrueFalse@F@indicator
 \global\let\boolT\@xparse@T@indicator
 \global\let\boolF\@xparse@F@indicator
+\global\let\IfNotBooleanTF\IfBooleanFT
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\negateTF\negate
+\global\let\switchTF\negate
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Definitions used here for alias commands since \let only works with single tokens
+\gdef\ifdefnotempty{\negate\ifdefempty}
+\gdef\ifstrnotempty{\negate\ifstrempty}
+\gdef\ifcsnotempty{\negate\ifcsempty}
+\gdef\ifdefunequal{\negate\ifdefequal}
+\gdef\ifdefstrunequal{\negate\ifdefstrequal}
+\gdef\ifnotdefstring{\negate\ifdefstring}
+\gdef\ifstrunequal{\negate\ifstrequal}
+\gdef\ifnotcsstring{\negate\ifcsstring}
+\gdef\ifcsstrunequal{\negate\ifcsstrequal}
+\gdef\gdeflength{\global\deflength}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\printtext\tprint%
+\global\let\streamout\tprint%
+\global\let\ostream\tprint%
+\global\let\ostreamAdd\tprint%
+\global\let\textostream\tprint%
+\global\let\ostringstream\tprint%
+\global\let\printargsC\printssvargs
+\global\let\printzsavepos\@print@zsavepos@pt
+\global\let\cmdprint\errcmd
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\Lfoot\lfoot
+\global\let\Cfoot\cfoot
+\global\let\Rfoot\rfoot
 %-------------------------------------------------------------------------------------------------------------------------------%
 \global\let\numToName\num@to@name
 \global\let\numToOrdinal\num@to@ordinal
-\global\let\numToText\num@to@text
-%-------------------------------------------------  -------------------------------------------------%
+\global\let\numToFrac\num@to@fraction
+\global\let\cfgnumToX\cfg@numToX
+\global\let\numToX\cfg@numToX
+%\global\let\numToText\num@to@text
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\tcboxmathtable\tcbmathbox
+\global\let\tcbmathtable\tcbmathbox
+\global\let\intbyparts\tcbIBP
+\global\let\intbypartsbox\tcbIBP
+\global\let\tcbpolylongdiv\tcbPLD
+\global\let\equationtcbox\tcbequation
+\global\let\tcboxequation\tcbequation
+\global\let\tcbeqbox\tcbequation
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\@sorted@list\@empty
+\global\let\l@lstlisting\l@listings
+\global\let\@tcb@figbox@width\@macro@width
+\global\let\@tcb@figbox@skip\@macro@length
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\tcbfunctiondef\tcbcode
+\global\let\tcbfunctiondetails\tcbcode
+\global\let\tcbscriptdef\tcbcode
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\@tcb@scriptdefboxdef@first@column\@tcb@scriptdef@first@column
+\global\let\@tcb@scriptdefboxdef@second@column\@tcb@scriptdef@second@column
+\global\let\@tcb@scriptdefboxdef@column@sep\@tcb@scriptdef@column@sep
+\global\let\@tcb@functiondefboxdef@first@column\@tcb@functiondef@first@column
+\global\let\@tcb@functiondefboxdef@second@column\@tcb@functiondef@second@column
+\global\let\@tcb@functiondefboxdef@column@sep\@tcb@functiondef@column@sep
+\global\let\@scriptdef@color@scheme\@script@color@scheme
+\global\let\@functiondef@color@scheme\@function@color@scheme
+\global\let\@functiondefdetail@color@scheme\@details@color@scheme
+\global\let\@scriptdefboxdef@color@scheme\@script@color@scheme
+\global\let\@functiondefboxdef@color@scheme\@function@color@scheme
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\definedColorsetPairs\colortable@entry@pairs
+\global\let\colorsetDefPairs\colortable@entry@pairs
+\global\let\colorsettables\@csv@colorset@tables
+\global\let\colortablerows\@csv@colortable@rows
+\global\let\colordefs\@defined@colordefs
+\global\let\colormixdefs\@defined@colormixes
+\global\let\colorsets\@defined@colorsets
+\global\let\tcbcolorsets\@defined@tcbcolorsets
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\baseColors\basecolors@csvlist
+\global\let\xllnameColors\xllnames@csvlist
+\global\let\svgnameColors\svgcolors@csvlist
+\global\let\dvipsnameColors\dvipsnamecolors@csvlist
+\global\let\gvColors\gvcolors@csvlist
+\global\let\pantoneColors\pantonecolors@csvlist
+\global\let\crayolaColors\crayolacolors@csvlist
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------- Definitions of Prefixed Command Aliases -------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Environment/keyenvironment alias definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\keyenvironment@alias=tcbfunction->tcbcode;
+%-------------------------------------------------------------------------------------------------------------------------------%
+\environment@alias=colorsettablebox->@csv@colorset@table@box;
+\environment@alias=colorsettable->@csv@colorset@table;
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-commands.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -1251,4 +2471,13 @@
 #4@num=\csuse{#4@num}\\%
 #4@letter=\csuse{#4@letter}\\%
 #4@Word=\csuse{#4@Word}\\%
-#4@word=\csuse{#4@word}\\%
+#4@word=\csuse{#4@word}\\% %                        \begin{tcolorbox}[sidebyside,notitle,opacityfill=0.0,segmentation empty,lefthand width=\@macro@width,sidebyside align=top seam,top=-1mm,bottom=-1mm,shrink tight]%
+%                                \begin{tcbitembox}[left=-4mm,boxrule=1.5pt,width=\@macro@width,attach title,center title,colbacktitle=stdgray,coltitle=white]{tcboptions:}%
+%                                       %\myblindtext
+%                                       \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+%                                       \foreach\@tcboption in \@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@tcboption}%
+%                               \end{tcbitembox}
+%                               \tcblower%lefttitle=1mm,left=-4mm,width=\@macro@width,
+%                                \myblindtext
+%                                %\foreach\@tcboption in \@tcboptions@list{\xp\item\xp\tt\xp\noexpand\@tcboption}%
+%                        \end{tcolorbox} 

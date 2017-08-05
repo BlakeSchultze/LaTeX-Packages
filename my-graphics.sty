@@ -18,21 +18,22 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %************************************************* Package register variables **************************************************%
 %*******************************************************************************************************************************%
-
+\gdef\p@s{*1pt}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@default@cube@scale{1.0}
 \def\@default@cube@rotation{0}
 \def\@cube@rotation{\@default@cube@rotation}
 %\def\@rotate@cube@around@x{0}
 %\def\@rotate@cube@around@y{0}
 %\def\@rotate@cube@around@z{0}
-%*******************************************************************************************************************************%
-%******************************************************** Package Body *********************************************************%
-%*******************************************************************************************************************************%
-%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@cube@origin@angle@x{210}
 \def\@cube@origin@angle@y{-30}
 \def\@cube@origin@angle@z{90}
@@ -73,19 +74,69 @@
         \def\@cube@rotate@around@z{#3}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\xdef\@default@direction@name{up}%
 \def\@upload@button{\includegraphics[width=6.5mm]{upload-button.png}}                   % Upload arrow symbol
 %-------------------------------------------------------------------------------------------------------------------------------%
 % The angles of x,y,z-axes
 \newcommand\xaxis{\@cube@origin@angle@x}
 \newcommand\yaxis{\@cube@origin@angle@y}
 \newcommand\zaxis{\@cube@origin@angle@z}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\numdef\@origin@shift@x@numpts{20}%
+\numdef\@origin@shift@y@numpts{20}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\numgdef\@tikzgrid@default@width@numunits{5}
+\numgdef\@tikzgrid@default@height@numunits{5}
+\dimgdef\@tikzgrid@default@width{5cm}
+\dimgdef\@tikzgrid@default@height{5cm}
+\dimdef\@tikzgrid@major@marker@size{1.422637pt}%0.05cm
+\dimdef\@tikzgrid@minor@marker@size{0.4pt}%
+\dimdef\@tikzgrid@minor@marker@radius{\@tikzgrid@minor@marker@size / 2}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@tikzgrid@coordinates@prefix{Pt}
+\gdef\@tikzgrid@hline@coordinate@prefix{H}
+\gdef\@tikzgrid@vline@coordinate@prefix{V}
+\gdef\@tikzgrid@hline@prefix{h}
+\gdef\@tikzgrid@vline@prefix{v}
+\xdef\@tikzgrid@major@marker@suffix{majormark}
+\xdef\@tikzgrid@major@marker@label@suffix{\@tikzgrid@major@marker@suffix-label}
+\xdef\@tikzgrid@minor@marker@suffix{minormark}
+\gdef\@tikzgrid@line@colors{ProcessBlue,OpalineGreen,Lilas}
+\gdef\@tikzgrid@line@prefix{tikzgridline}
+\gdef\@tikzgrid@node@span@color{ProcessBlue}
+\gdef\@tikzgrid@pixel@colfill{stdbackground}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\dimdef\@xdir@spanline@xshift{\@tikzgrid@minor@marker@radius}
+\dimdef\@xdir@spanline@yshift{0\p@}
+\dimdef\@ydir@spanline@xshift{0\p@}
+\dimdef\@ydir@spanline@yshift{\@tikzgrid@minor@marker@radius}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tikz/PGF node shape (circle, arrow, dart,...) commands  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                        1 2         3            4            5   6 7        8
+\DeclareDocumentCommand{\fillednumshape}{s O{circle} D(){\arabic} D''{current} d"" m D(){5mm} D<>{0.5pt}}
+{%\fillednumshape[*<counter on>][shape](counter print format){color style}{character/text or counter}(min size)<inner sep>
+        \@set@current@tcb@colors{#4}
+        \IfBooleanTF{#1}
+                {\edef\shapecontents{#3{#6}}}
+                {\edef\shapecontents{#6}}
+        \IfValueTF{#5}
+                {\edef\@line@color{#5}}
+                {\edef\@line@color{#4-colfillborder}}
+        \tikz[baseline=(char.base)]%
+        {%
+                \node[shape=#2, font=\small, fill=fillednumshape-colfill, draw=\@line@color, thick, minimum size=#7, inner sep=#8, align=flush center] (char) {\textcolor{fillednumshape-colfilltext}{\hspace{0pt}\bfseries\shapecontents}};%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\@circle@node
 [%
-	enum shape={circle,dart}, at={(0,0)}, name={c\Roman{@node@auto@naming}}, scale=1.0, size=6mm, 
-	linewidth=0.25pt, colorscheme=current, linewidth=0.5pt,fill=, draw=, outline=%
+        enum shape={circle,dart}, at={(0,0)}, name={c\Roman{@node@auto@naming}}, scale=1.0, size=6mm,
+        linewidth=0.25pt, colorscheme=current, linewidth=0.5pt,fill=, draw=, outline=%
 ]
 {%
         \stepcounter{@node@auto@naming}%
@@ -102,6 +153,7 @@
             scale=\commandkey{scale},
             name=\commandkey{name},
             circle,
+            anchor=center,
             fill=\@@fill@@,
             draw=\@@draw@@,
             line width=\commandkey{linewidth},
@@ -114,8 +166,8 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\@dart@node
 [%
-	enum shape={circle,dart}, at={(0,0)}, name={d\Roman{@node@auto@naming}}, scale=1.0, 
-	linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=%
+        enum shape={circle,dart}, at={(0,0)}, name={d\Roman{@node@auto@naming}}, scale=1.0,
+        linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=%
 ]
 {%
         %\stepcounter{@node@auto@naming}
@@ -129,7 +181,7 @@
         \ifcommandkey{outline}{\xdef\@@draw@@{\commandkey{outline}}}{}%
         \node at \commandkey{at}%
         [
-            anchor=base,
+            anchor=base,rotate=90,
             scale=\@@scale@@,
             dart,
             line width=\commandkey{linewidth},
@@ -141,10 +193,26 @@
         ] {};%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@arrow@direction}{G{\@default@direction@name}}%\@rotation@angle
+{%
+        \xdef\@direction@name{#1}%
+        \IfStrEqCase{#1}%
+        {%
+                {right}{\gdef\@rotation@angle{0}}%
+                {up}{\gdef\@rotation@angle{90}}%
+                {left}{\gdef\@rotation@angle{180}}%
+                {down}{\gdef\@rotation@angle{-90}}%
+                {east}{\gdef\@rotation@angle{0}}%
+                {north}{\gdef\@rotation@angle{90}}%
+                {west}{\gdef\@rotation@angle{180}}%
+                {south}{\gdef\@rotation@angle{-90}}%
+        }[\gdef\@rotation@angle{0}]%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\@arrow@node
 [%
-	enum shape={circle,dart}, at={(0,0)}, name={a\Roman{@node@auto@naming}}, scale=1.0, 
-	linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=%
+        enum shape={circle,dart}, enum direction={up,down,left,right}, at={(0,0)}, name={a\Roman{@node@auto@naming}}, scale=1.0,
+        linewidth=0.5pt, colorscheme=current, linewidth=0.25pt,fill=, draw=, outline=, rotate=%
 ]
 {%
         %\stepcounter{@node@auto@naming}
@@ -156,9 +224,14 @@
                 {\xdef\@@fill@@{\commandkey{fill}}}%
                 {\xdef\@@fill@@{current-colfill}}%
         \ifcommandkey{outline}{\edef\@@draw@@{\commandkey{outline}}}{}%
+        \xdef\@@direction@@{\commandkey{direction}}%
+        %\@set@arrow@direction{\@@direction@@}%
+        \ifcommandkey{rotate}{\edef\@rotation@angle{\commandkey{rotate}}}{}%
         \node at \commandkey{at}%
         [
                 anchor=base,
+                rotate=\@rotation@angle,
+                %rotate=\commandkey{rotate},
                 scale=\@@scale@@,
                 single arrow,
                 line width=0.75*\commandkey{linewidth},
@@ -169,44 +242,76 @@
                 single arrow head extend=2mm,
                 single arrow head indent=.65mm,
                 shape border uses incircle,
-                shape border rotate=90
+                shape border rotate=0%\@rotation@angle
         ]{};%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newkeycommand\BMKcircle
+\newkeycommand\directionSymbol
 [%
-	enum shape={arrow,circle,dart}, at={(0,0)}, scale=1.0, linewidth=0.5pt, 
-	colorscheme=current, fill={}, draw=, outline=%
+        enum shape={arrow,circle,dart}, enum thedirection={up,down,left,right}, at={(0,0)},
+        scale=1.0, linewidth=0.5pt, colorscheme=current, fill={}, draw=, outline=%
 ]
-{%enum orientation={up,down,left,right},
-        \normalsize%
+{%
         \xdef\@shape@{\commandkey{shape}}%
         \xdef\@scale@{\commandkey{scale}}%
         \xdef\@linewidth@{\commandkey{linewidth}}%
         \xdef\@size@{\commandkey{size}}%
         \xdef\@at@{\commandkey{at}}%
-        \pgfmathsetmacro\@@scale@@{0.67 * \@scale@ }
+        \xdef\@@thedirection{\commandkey{thedirection}}%
+        \xdef\@colorscheme@{\commandkey{colorscheme}}%
         \ifcommandkey{draw}%
                 {\edef\@draw@{\commandkey{draw}}}%
                 {\edef\@draw@{current-coldraw}}%
         \ifcommandkey{fill}%
                 {\edef\@fill@{\commandkey{fill}}}%
                 {\edef\@fill@{current-colfill}}%
-        \xdef\@colorscheme@{\commandkey{colorscheme}}%
-        \@set@current@tcb@colors{\@colorscheme@}%tcbBlueScheme
         \ifcommandkey{outline}{\edef\@draw@{\commandkey{outline}}}{}%
-        \begin{tikzpicture}%[scale=1.5]
-                %\@circle@node[shape=circle, at={\@at@}, name=s, scale=\@scale@, size=13mm, draw=\@draw@, linewidth=\@linewidth@,fill=\@fill@]%at={(frame.north)},
+        \pgfmathsetmacro\@@scale@@{0.67 * \@scale@ }
+        \@set@current@tcb@colors{\@colorscheme@}%
+        \@set@arrow@direction{\@@thedirection}%
+        \normalsize%
+        \begin{tikzpicture}[baseline,yshift=1.5mm]%
                 \@circle@node[shape=circle,  name=s, scale=\@scale@, size=13mm, draw=\@draw@, linewidth=\@linewidth@,fill=\@fill@]%
                 \@circle@node[shape=circle, at={(s.center)}, name=t, scale=\@scale@, size=10mm, draw=\@draw@, linewidth=\@linewidth@,fill=white]%
                 \@circle@node[shape=circle, at={(s.center)}, name=u, scale=\@scale@, size=7.0mm, linewidth=\@linewidth@, draw=\@draw@, fill=\@fill@]%
                 \IfStrEqCase{\@shape@}%
                 {%
-                        {arrow}{\@arrow@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
+                        {arrow}{\@arrow@node[at={(u.base)}, rotate={\@rotation@angle}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
                         {dart}{\@dart@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
                         {circle}{\@dart@node[at={(u.base)}, scale=\@scale@, linewidth=\@linewidth@,draw=\@draw@,fill=white]}%
                 }%
         \end{tikzpicture}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                                  1 2          3        4 5 6
+\DeclareDocumentCommand{\@directional@symbol@link}{s D(){arrow} D<>{0.4} m o D(){upload-button.png}}%
+{%\@directional@symbol@link*<clear page>!<add vskip after>'color scheme'{Subsection title}(hypertarget label prefix)[description text]
+        %\flushleft\unskipspacing%
+        \IfValueTF{#5}%
+                {\def\@link@address{#5}}%
+                {\def\@link@address{\@nameuse{cft#4@toc@hyperaddress}}}%
+                %{\def\@link@address{\cft@hyperaddress{#2}}}
+        \IfBooleanTF{#1}%
+        {%
+                \reversemarginpar%
+                \marginnote%
+                {%
+                        %\directionSymbol[shape=arrow,scale=0.5, colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue, outline=black]
+                        %\tocX@hyperlink{#1}%colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue,
+                        \hyperlink{\@link@address}%
+                        {%
+                                \normalsize\normalfont\directionSymbol[shape=#2,scale=#3, outline=black]%
+                                %\includegraphics[width=6.5mm]{#2}%
+                        }%
+                }%%
+        }%
+        {%
+                \hyperlink{\@link@address}%
+                {%
+                       \normalsize\normalfont\directionSymbol[shape=#2,scale=#3, outline=black]%
+                       %\includegraphics[width=6.5mm]{#2}%
+                }%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -224,42 +329,42 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@bottom@cube@face}{m m m m}
 {%
-      	\draw [fill=\@bottom@face@color,draw=\@edge@color] %
-      		(#1,#2,#3-1) -- (#1+1,#2,#3-1) -- (#1+1, #2+1, #3-1) -- (#1, #2+1, #3-1) -- cycle;
+        \draw [fill=\@bottom@face@color,draw=\@edge@color] %
+                (#1,#2,#3-1) -- (#1+1,#2,#3-1) -- (#1+1, #2+1, #3-1) -- (#1, #2+1, #3-1) -- cycle;
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@front@cube@face}{m m m m}
 {%
         \draw [fill=\@front@face@color, draw=\@edge@color] %
-        	(#1+1,#2,#3) -- (#1+1,#2+1,#3) -- (#1+1, #2+1, #3-1) -- (#1+1, #2, #3-1) -- cycle;
+                (#1+1,#2,#3) -- (#1+1,#2+1,#3) -- (#1+1, #2+1, #3-1) -- (#1+1, #2, #3-1) -- cycle;
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@back@cube@face}{m m m m}
 {%
         \draw [fill=\@back@face@color, draw=\@edge@color] %
-        	(#1,#2,#3) -- (#1,#2+1,#3) -- (#1, #2+1, #3-1) -- (#1, #2, #3-1) -- cycle;
+                (#1,#2,#3) -- (#1,#2+1,#3) -- (#1, #2+1, #3-1) -- (#1, #2, #3-1) -- cycle;
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@right@cube@face}{m m m m}
 {%
         \draw [fill=\@right@face@color,draw=\@edge@color] %
-        	(#1,#2+1,#3) -- (#1+1,#2+1,#3) -- (#1+1, #2+1, #3-1) -- (#1, #2+1, #3-1) -- cycle;
+                (#1,#2+1,#3) -- (#1+1,#2+1,#3) -- (#1+1, #2+1, #3-1) -- (#1, #2+1, #3-1) -- cycle;
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@left@cube@face}{m m m m}
 {%
         \draw [fill=\@left@face@color,draw=\@edge@color] %
-        	(#1,#2,#3) -- (#1+1,#2,#3) -- (#1+1, #2, #3-1) -- (#1, #2, #3-1) -- cycle;
+                (#1,#2,#3) -- (#1+1,#2,#3) -- (#1+1, #2, #3-1) -- (#1, #2, #3-1) -- cycle;
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %1                         2                                     3                             4 5                        6
 \DeclareDocumentCommand{\blockstructure}%
 {D<>{\@default@cube@scale} D(){\@default@cube@rotate@around@xyz} O{\@default@cube@sidelengths} m O{\@default@cube@colors} d||}
 {%!!!
-        \xp@cmd\@set@cube@rotate@around@xyz(#2)
-        \xp@cmd\@set@cube@sidelengths(#3)
-        \xp@cmd\@set@cube@colors(#5)
-        \IfValueTF{#6}{\xp@cmd\@set@cube@bicolors(#6)}{}
+        \xp@cmd\@set@cube@rotate@around@xyz(#2)%\xp#1\xp#2 \xp\@set@cube@rotate@around@xyz\xp(#2)
+        \xp@cmd\@set@cube@sidelengths(#3)%\xp#1\xp#2 \xp\@set@cube@sidelengths\xp(#3)
+        \xp@cmd\@set@cube@colors(#5)%\xp#1\xp#2 \xp\@set@cube@colors\xp(#5)
+        \IfValueTF{#6}{\xp@cmd\@set@cube@bicolors(#6)}{}%\xp#1\xp#2 \xp\@set@cube@bicolors\xp(#6)
         \begin{tikzpicture}
         [
                 scale=#1,
@@ -275,8 +380,8 @@
                 rotate around y=\@cube@rotate@around@y,
                 rotate around z=\@cube@rotate@around@z
         ]%
-        {%       
-        	\foreach \m [count=\y] in {#4}%
+        {%
+                \foreach \m [count=\y] in {#4}%
                 {%
                         \foreach \n [count=\x] in \m%
                         {%
@@ -330,7 +435,7 @@
                                 \fi%
                         }%
                 }%
-	}%
+        }%
         \end{tikzpicture}
 %\node [rotate around x=\@cube@rotate@around@x, rotate around y=\@cube@rotate@around@y, rotate around z=\@cube@rotate@around@z] at (\x+0.5, \y, \n-1.0) {\n};
 }
@@ -347,11 +452,391 @@
         %\xp@cmd\@set@cube@rotate@around@xyz(\commandkey{rotatexyz})
         %\ifcommandkey{secondary colors}{\xp@cmd\@set@cube@bicolors(\commandkey{secondary colors})}{}%
         %\expandafter\@set@cube@rotate@around@xyz\expandafter(\expandafter\fullyexpand\expandafter{\commandkey{rotatexyz}})%
-        \expandafter\@set@cube@rotate@around@xyz\expandafter(\@rotatexyz)%
-        \expandafter\@set@cube@sidelengths\expandafter(\@cube@sidelengths)%
-        \expandafter\@set@cube@colors\expandafter(\@primary@colors)%
-        \ifcommandkey{secondary colors}{\expandafter\@set@cube@bicolors\expandafter(\@secondary@colors)}{}
+        \xp\@set@cube@rotate@around@xyz\xp(\@rotatexyz)%
+        \xp\@set@cube@sidelengths\xp(\@cube@sidelengths)%
+        \xp\@set@cube@colors\xp(\@primary@colors)%
+        \ifcommandkey{secondary colors}{\xp\@set@cube@bicolors\expandafter(\@secondary@colors)}{}
         %\blockstructure{#1}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Tikz grid w/ coordinate specified line/point drawings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%*******************************************************************************************************************************%
+
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@mark@above@node@dims{{xdir}{0}{\@@shift@dist}{-0.75*\@@shift@dist}{1}}
+\gdef\@mark@below@node@dims{{xdir}{0}{-2.5}{0.75*\@@shift@dist}{0}}
+\gdef\@mark@left@node@dims{{ydir}{-\@@shift@dist}{0}{0.0}{0.75*\@@shift@dist}}
+\gdef\@mark@right@node@dims{{ydir}{\@@shift@dist}{0}{0.0}{-0.75*\@@shift@dist}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@def@label@colors}{G{\@tikzgrid@line@colors} D(){collabel}}
+{%
+        \createxsvargs{csv}(#2){#1}%
+%       \collabeli\\%
+%       \collabelii\\%
+%       \collabeliii\\%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@label@color}{D(){\@tikzgrid@line@colors} m}
+{%
+        %\setcountval{#2}%
+        %\edef\@@line@colors{#1}%
+        \getcsvModindex+{#2}{#1}(@collabel)%
+        \getcsvModindex+{#2}{#1}(@collabelB)%
+%        \foreach \@@color [count=\@@color@index from 1] in \@@line@colors%
+%        {%
+%                \ifnumequal{\@macro@count}{\@@color@index}%
+%                {%
+%                        \xdef\@collabel{\@@color}%
+%                        \xdef\@collabelB{\@@color}%
+%                }{}%
+%        }
+        %\@macro@count
+}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\@label@color}{D(){\@tikzgrid@line@colors} m}
+%{%
+%       \setcountval{#2}%
+%       \edef\@@line@colors{#1}%
+%       \foreach \@@color [count=\@@color@index from 1] in \@@line@colors%
+%       {%
+%               \ifnumequal{\@macro@count}{\@@color@index}%
+%               {%
+%                       \xdef\@collabel{\@@color}%
+%                       \xdef\@collabelB{\@@color}%
+%               }{}%
+%       }
+%        %\@macro@count
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@set@node@span@dims}{m m m m m}
+{%
+        \dimgdef\@@spanline@xshift{#2\p@}%
+        \dimgdef\@@spanline@yshift{#3\p@}%{-0.5*\@@xshift}{-0.5*\@@yshift}
+        %\def\@tikzgrid@hline@coordinate@prefix{H}
+        %\def\@tikzgrid@vline@coordinate@prefix{V}
+        %\numdef\@xdir@spanline@yshift{0}
+        %\ifstrequal{#1}{xdir}{}{}%\@@spanline@xshift
+        %\ifstrequal{#1}{ydir}{}{}%
+        \dimgdef\@spanline@nodes@xshift{\csuse{@#1@spanline@xshift}}
+        \dimgdef\@spanline@nodes@yshift{\csuse{@#1@spanline@yshift}}
+        \dimgdef\@spanline@LT@xshift{\@@spanline@xshift-\@spanline@nodes@xshift}
+        \dimgdef\@spanline@LT@yshift{\@@spanline@yshift+\@spanline@nodes@yshift}
+        \dimgdef\@spanline@BR@xshift{\@@spanline@xshift+\@spanline@nodes@xshift}
+        \dimgdef\@spanline@BR@yshift{\@@spanline@yshift-\@spanline@nodes@yshift}
+        %\ifdefequal{#1}{\@tikzgrid@hline@coordinate@prefix}{}{}%
+        %\ifdefequal{#1}{\@tikzgrid@vline@coordinate@prefix}{}{}%
+        \gdef\@@label@xshift{#2}%
+        \gdef\@@label@yshift{#3}%
+        \gdef\@@inner@xsep{#4}%
+        \gdef\@@inner@ysep{#5}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                         1 2  3 4 5 6 7
+\DeclareDocumentCommand{\@mark@node@span}{s t! m m m m O{\@tikzgrid@node@span@color}}
+{%
+        \gdef\@@spanline@color{#7}%
+        \xdef\@@spanline@label@color{#7!75!black}%
+        \IfBooleanTF{#1}{\def\@@shift@dist{2.75}}{\def\@@shift@dist{2}}%
+        \cswrapped@args@cmd\@set@node@span@dims{@mark@#3@node@dims}
+        \IfBooleanTF{#1}{\gdef\@@label@xshift{0.0}\gdef\@@label@yshift{0.0}}{}
+        \coordinate (LTspan) at ([xshift=\@spanline@LT@xshift,yshift=\@spanline@LT@yshift]#4);
+        \coordinate (RBspan) at ([xshift=\@spanline@BR@xshift,yshift=\@spanline@BR@yshift]#5);
+        \coordinate (#4#5-Cspan) at ($0.5*(LTspan)+0.5*(RBspan)$);
+        %\filldraw (#4#5-Cspan) circle (\@tikzgrid@minor@marker@size) node (Cspancorner) {};
+        \draw[#7,thick] (#4) -- (#5) node [#3, midway, no sep, autoshift spanline] {};
+        \draw[span line=#7] (LTspan) -- (RBspan) node [#3,midway, no sep]{}; %
+        \IfBooleanTF{#2}{}{\node [auto labeling,text=\@@spanline@label@color] at ([autoshift label] #4#5-Cspan) (#4#5-span) {#6};}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@label@major@marker}{m d() m D<>{0,0}}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \@parse@split@csv@args{xdef}<@@xshift,@@yshift>=<#4>%
+        \xdef\@uppercase@name{\uppercase{#1}}%
+        \IfValueTF{#2}%
+                {\def\@major@marker@label{#2}}%
+                {\def\@major@marker@label{\@uppercase@name}}
+        \filldraw (#1) circle (\@tikzgrid@major@marker@size) node[anchor=#3,inner sep=0pt,fill=white,xshift=\@@xshift\p@s,yshift=\@@yshift\p@s] %
+                (#1-\@tikzgrid@major@marker@label@suffix) {\@major@marker@label};
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@add@minor@markers}{r() O{} m D<>{\@tikzgrid@minor@marker@size}}
+{%
+        \xdef\@minor@marker@list{#3}%
+        \foreach \@node@location in \@minor@marker@list%
+        {%
+               \filldraw[#1,very thick,#2] (\@node@location) circle (#4) node (\@node@location-\@tikzgrid@minor@marker@suffix) {};
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\markangle}{m m m m m m}
+{%
+        \begin{scope}
+                \path[clip] (#1) -- (#2) -- (#3);
+                \fill[color=stdltgray,fill opacity=1.0,draw=black,very thick, name path=circle]
+                (#1) circle (#4);
+        \end{scope}
+        % middle calculation
+        \path[name path=line one] (#1) -- (#2);
+        \path[name path=line two] (#1) -- (#3);
+        \path[%
+                name intersections={of=line one and circle, by={inter one}},
+                name intersections={of=line two and circle, by={inter two}}
+        ] (inter one) -- (inter two) coordinate[pos=.5] (middle);%\edef\f@size{\cf@size}%
+        %\node at ($(#1)!#5!(middle)$) {\xdef\f@size{6}#6};%
+        \node [xshift=-0.5pt,inner sep=0pt, outer sep=0pt,fill=white,opacity=1.0] at ($(#1)!#5!(middle)$) {\fontsize{10}{0}#6};
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\markrightangle}{m m m D<>{1ex} D(){1} O{}}
+{%
+        \filldraw%
+        [%
+                %anglemarker,
+                thick, draw=black, color=stdltgray, fill opacity=1.0,
+                right angle scale=2,
+                right angle length=#4,
+                right angle quadrant=#5,
+                right angle symbol={#1}{#2}{#3},#6%
+        ]
+        ($(#1)!(#3)!(#2)$);
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\drawrightangle}{m D(){1} D<>{0.75ex} O{thick}}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \pgfmathsetmacro\xshiftdir{{1,1,-1,-1}[#2-1]}%          Determine if xshift is positive/negative
+        \pgfmathsetmacro\yshiftdir{{1,-1,-1,1}[#2-1]}%          Determine if yshift is positive/negative
+        \coordinate (first) at ($(#1)+(\xshiftdir*#3,0pt)$);
+        \coordinate (third) at ($(#1)+(0pt,\yshiftdir*#3)$);
+        \coordinate (corner) at ($(#1)+(\xshiftdir*#3,\yshiftdir*#3)$);
+        \filldraw[fill opacity=1.0, #4, color=stdltgray, draw=black] (#1) -- (first) -- (corner) -- (third) -- cycle;
+        %\filldraw[anglemarker={#4}] (#1) -- (first) -- (corner) -- (third) -- cycle;
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fillPixels}{u{;}}{\parsecsvgrouplist'\fill@pixel'#1;}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fill@pixel}{t( m t, m t)}
+{%*<NA>{ul type to set}[additional key/value pair settings]%\@lcase@alphabet
+        \numgdef\@next@pixel@xnum{#2 + 1}%
+        \numgdef\@next@pixel@ynum{#4 + 1}%
+        \edef\@TL@corner{\@tikzgrid@coordinates@prefix#2\@next@pixel@ynum}%
+        \edef\@TR@corner{\@tikzgrid@coordinates@prefix\@next@pixel@xnum\@next@pixel@ynum}%
+        \edef\@BL@corner{\@tikzgrid@coordinates@prefix#2#4}%
+        \edef\@BR@corner{\@tikzgrid@coordinates@prefix\@next@pixel@xnum#4}%
+        \filldraw[fill=\@tikzgrid@pixel@colfill, line width=1pt] (\@TL@corner) -- (\@TR@corner) -- (\@BR@corner) -- (\@BL@corner) -- cycle;
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@define@coordinates}{s}
+{%*<NA>
+        \multido{\iX=\@xmin+1}{\@xsteps}
+                {\multido{\iY=\@ymin+1}{\@ysteps}%
+                        {\coordinate (\@tikzgrid@coordinates@prefix\iX\iY) at (\iX,\iY);}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@crossline@coordinate@def}{s m r<>}%\@tikzgrid@hline@coordinate@prefix
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \@parse@split@csv@args{xdef}<@@xcoord,@@ycoord>=<#3>%
+        \xdef\@gridline@endpoints@name{\csuse{@tikzgrid@#2line@coordinate@prefix}\@@xcoord\@@ycoord}%
+        \coordinate (\@gridline@endpoints@name) at (\@@xcoord,\@@ycoord);
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@crossline@coordinate@defs}{s m r<> r<>}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \@tikzgrid@crossline@coordinate@def{#2}<#3>%
+        \@tikzgrid@crossline@coordinate@def{#2}<#4>%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                             1        2                                                                         3   4
+\DeclareDocumentCommand{\@tikzgrid@configure}{D(){0,0} D(){\@tikzgrid@default@width@numunits,\@tikzgrid@default@height@numunits}}
+{%
+        \setcsvargs{#1}%
+        \setcsvargs[\Roman]{#2}%
+        \numgdef\@xmin{\csvargi}%
+        \numgdef\@ymin{\csvargii}%
+        \numgdef\@xmax{\csvargI}%
+        \numgdef\@ymax{\csvargII}%
+        \numgdef\@xsteps{\@xmax-\@xmin+1}%
+        \numgdef\@ysteps{\@ymax-\@ymin+1}%
+        \global\let\@Hline@min\@xmin%
+        \global\let\@Hline@max\@xmax%
+        \global\let\@Vline@min\@ymin%
+        \global\let\@Vline@max\@ymax%
+        \global\let\@Hline@coordname@patchcmd\preto%
+        \global\let\@Vline@coordname@patchcmd\appto%
+        \multido{\iY=\@ymin+1}{\@ysteps}{\@tikzgrid@crossline@coordinate@defs{\@tikzgrid@hline@prefix}<\@xmin,\iY><\@xmax,\iY>}%
+        \multido{\iX=\@xmin+1}{\@xsteps}{\@tikzgrid@crossline@coordinate@defs{\@tikzgrid@vline@prefix}<\iX,\@ymin><\iX,\@ymax>}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                                    1        2                                                                         3   4   5
+%\DeclareDocumentCommand{\@tikzgridline@define@endpoints}{D(){0,0} D(){\@tikzgrid@default@width@numunits,\@tikzgrid@default@height@numunits} r<> r<> d()}
+\DeclareDocumentCommand{\@tikzgridline@define@endpoints}{d()}
+{%
+        \IfValueTF{#1}%
+        {%
+                \@parse@split@csv@args{def}<@first@node,@last@node>=<#1>%
+                \xdef\@corner@node@name{\@first@node\@last@node-corner}%
+                \coordinate (\@first@node) at (\@xi,\@yi);%
+                \coordinate (\@last@node) at (\@xf,\@yf);%
+                \coordinate (\@corner@node@name) at (\@xi,\@yf);%
+        }{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                  1    2        3
+\DeclareDocumentCommand{\tikzgrid@set@bounds}{m m m o}
+{%
+        \@parse@split@csv@args{numdef}<@xi,@yi>=<#1>%
+        \@parse@split@csv@args{numdef}<@xf,@yf>=<#2>%
+        \@tikzgridline@define@endpoints(#3)%
+        \pgfmathsetmacro{\@entry@corner@x}{floor(\@xi)}%
+        \IfValueTF{#4}{\coordinate (#4) at (\@entry@corner@x,\@yi);}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@line@intersection@points}{m m m}%
+{%
+        \edef\@@first@point@suffix{#3}%
+        \edef\@@second@point@suffix{#3}%
+        \csuse{@#1line@coordname@patchcmd}{\@@first@point@suffix}{\csuse{@#1line@min}}%
+        \csuse{@#1line@coordname@patchcmd}{\@@second@point@suffix}{\csuse{@#1line@max}}%
+        \edef\@@first@point{#2\@@first@point@suffix}%
+        \edef\@@second@point{#2\@@second@point@suffix}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@tikzgrid@hline@intersections}{m m m}
+{%*<NA>{ul type to set}[additional key/value pair settings]%\@lcase@alphabet
+        \xdef\@@intermediate@coordinate@triplets{#3}%
+        \foreach \@@node@location/\@@crossline@dir/\@@crossline@num in \@@intermediate@coordinate@triplets%
+        {%
+                \@tikzgrid@line@intersection@points{\@@crossline@dir}{\@@crossline@dir}{\@@crossline@num}%
+                \edef\@@first@line{\@@first@point--\@@second@point\space}%
+                \def\@@second@line{#2}%
+                \edef\@@intersection@def{\@@first@line and \@@second@line}%
+                \coordinate(\@@node@location) at (intersection 1 of \@@intersection@def);
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@node@extension}{t> t- t^ t- m O{100}}
+{%*<NA>{ul type to set}[additional key/value pair settings]
+        \def\@extension@line@prefix{line}%
+        \IfBooleanTF{#1}{\def\@@xextension{#6}}{\def\@@xextension{0}}
+        \IfBooleanTF{#2}{\preto{\@@xextension}{-}}{}
+        \IfBooleanTF{#3}{\def\@@yextension{#6}}{\def\@@yextension{0}}
+        \IfBooleanTF{#4}{\preto{\@@yextension}{-}}{}
+        \IfBooleanTF{#1}{\preto{\@extension@line@prefix}{\@tikzgrid@hline@prefix}}{}
+        \IfBooleanTF{#3}{\preto{\@extension@line@prefix}{\@tikzgrid@vline@prefix}}{}
+        \coordinate (#5-\@extension@line@prefix) at ($(#5)+(\@@xextension,\@@yextension)$);
+        \coordinate (#5extension) at ($(#5)+(\@@xextension,\@@yextension)$);
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                  1    2        3
+\DeclareDocumentCommand{\tikzgrid}{O{2} D(){0,0} D(){\@tikzgrid@default@width@numunits,\@tikzgrid@default@height@numunits}}
+{%
+        \gdef\@@scale{#1}%
+        \gdef\p@s{*#1*1pt}%
+        \begin{tikzpicture}[font=\sffamily\small,scale=\@@scale]%
+                \@tikzgrid@configure(#2)(#3)%
+                \@tikzgrid@define@coordinates%
+        \end{tikzpicture}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Standard 'picture' x/y axes drawings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\configxaxis}{G{8cm} G{8} G{0.25} O{\small}}
+{%
+        \dimdef\@xaxis@length{#1}%
+        \numdef\@num@xticks{#2}%
+        \numdef\@num@xtick@labels{#2+1}%
+        \numdef\@xtick@increment{#3}%
+        \gdef\@axis@font@cmds{#4}%
+        \pgfmathsetmacro\@tick@length@numpts{\@tick@length}%
+        \pgfmathsetmacro\@half@tick@length@numpts{\@half@tick@length - \@xaxis@origin@xhift}%
+        \pgfmathsetmacro\@x@extension@length@numpts{\@xaxis@length / \@num@xticks / 2}%
+        \pgfmathsetmacro\@box@width@numpts{\@xaxis@length + 3 * \@x@extension@length@numpts}%
+        \pgfmathsetmacro\@tcbenclosure@width@numpts{\@box@width@numpts + 2 * \@origin@shift@x@numpts + \@x@extension@length@numpts}%
+        \pgfmathsetmacro\@xaxis@length@numpts{\@xaxis@length + \@x@extension@length@numpts}%
+        \pgfmathsetmacro\@xaxis@increment@numpts{\@xaxis@length / \@num@xticks}%
+        \pgfmathsetmacro \@xtick@start@pos@x@numpts{\@origin@shift@x@numpts + \@half@tick@length}%
+        \pgfmathsetmacro\@xlabel@start@pos@x@numpts{\@xtick@start@pos@x@numpts}%
+        \pgfmathsetmacro \@xtick@start@pos@y@numpts{\@origin@shift@y@numpts - \@half@tick@length}%
+        \pgfmathsetmacro\@xlabel@start@pos@y@numpts{\@xtick@start@pos@y@numpts - \@tick@length}%
+        \@axis@font@cmds%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\configyaxis}{G{8cm} G{8} G{0.25} O{\small}}
+{%
+        \dimdef\@yaxis@length{#1}%
+        \numdef\@num@yticks{#2}%
+        \numdef\@num@ytick@labels{#2+1}%
+        \numdef\@ytick@increment{#3}%
+        \gdef\@axis@font@cmds{#4}%
+        \pgfmathsetmacro\@tick@length@numpts{\@tick@length}%
+        \pgfmathsetmacro\@y@extension@length@numpts{\@yaxis@length / \@num@yticks / 2}%
+        \pgfmathsetmacro\@box@height@numpts{\@yaxis@length + 3 * \@y@extension@length@numpts}%
+        \pgfmathsetmacro\@tcbenclosure@height@numpts{\@box@height@numpts + \@y@extension@length@numpts}%
+        \pgfmathsetmacro\@yaxis@length@numpts{\@yaxis@length + \@y@extension@length@numpts}%
+        \pgfmathsetmacro\@yaxis@increment@numpts{\@yaxis@length / \@num@yticks}%
+        \pgfmathsetmacro \@ytick@start@pos@x@numpts{\@origin@shift@x@numpts - \@half@tick@length}%
+        \pgfmathsetmacro\@ylabel@start@pos@x@numpts{\@ytick@start@pos@x@numpts - \@tick@length  - \f@halfsize}%
+        \pgfmathsetmacro \@ytick@start@pos@y@numpts{\@origin@shift@y@numpts + \@half@tick@length}%
+        \pgfmathsetmacro\@ylabel@start@pos@y@numpts{\@ytick@start@pos@y@numpts}%
+        \@axis@font@cmds%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\drawxaxis}{G{8cm} G{8} G{0.25} O{\small}}
+{%
+        \begin{picture}(\@box@width@numpts,0)(\@half@tick@length@numpts,0.0)%(\@num@ticks,1)(\@xaxis@length@numpts,\@xaxis@length@numpts)%
+                \put(\@origin@shift@x@numpts,\@origin@shift@y@numpts){\vector(1,0){\@xaxis@length@numpts}}%
+                \multido%
+                {%
+                        \nD=\@origin@shift@x@numpts+\@xaxis@increment@numpts,%
+                        \nL=\@xlabel@start@pos@x@numpts +\@xaxis@increment@numpts,%
+                        \nX=0+\@xtick@increment%
+                }{\@num@xtick@labels}%
+                {%
+                        \put(\nD,\@xtick@start@pos@y@numpts){\line(0,1){\@tick@length@numpts}}%
+                        \put(\nL,\@xlabel@start@pos@y@numpts){\makebox(0,0)[t]{\nX}}%
+                }%
+        \end{picture}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\drawyaxis}{G{8cm} G{8} G{0.25} O{\small}}
+{%
+        \begin{picture}(0,\@box@height@numpts)(0.0,0.0)%(\@num@ticks,1)(\@xaxis@length@numpts,\@xaxis@length@numpts)%
+                \put(\@origin@shift@x@numpts,\@origin@shift@y@numpts){\vector(0,1){\@yaxis@length@numpts}}%
+                \multido%
+                {%
+                        \nD=\@origin@shift@y@numpts+\@yaxis@increment@numpts,%
+                        \nL=\@ylabel@start@pos@y@numpts +\@yaxis@increment@numpts,%
+                        \nY=0+\@ytick@increment%
+                }{\@num@ytick@labels}{%
+                \put(\@ytick@start@pos@x@numpts,\nD){\line(1,0){\@tick@length@numpts}}%
+                \put(\@ylabel@start@pos@x@numpts,\nL){\makebox(0,0)[t]{\nY}}}%
+        \end{picture}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\drawaxes}{D<>{8cm,8cm} G{8} G{0.25,0.5} O{\small}}
+{%
+        \gdef\@num@vargs{2}%
+        \gdef\thevarglist{{#1},{#2},{#3},{#4}}%
+        hello1\\
+        \parsevarglist{\@num@vargs}{\thevarglist}%
+        hello2\\
+        \configxaxis{\csvargGonei}{\csvargGtwoi}{\csvargGthreei}[\csvargGfouri]%
+        \configyaxis{\csvargGoneii}{\csvargGtwoii}{\csvargGthreeii}[\csvargGfourii]%
+        hello3\\
+        \begin{tcbenclosure}[type=graph, width={\@tcbenclosure@width@numpts\p@}]%
+                 \drawyaxis%
+                 \drawxaxis%
+        \end{tcbenclosure}
+	%\setxsvnumnames{#1}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
@@ -360,10 +845,8 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                                         1  2
-%3                                       4                          5 6
-\DeclareDocumentCommand{\@header@tikzpicture@pagenum@node}{s D<>{\@tikzheading@xshift} D<>{\@tikzheading@node@yshift} O{current page.south} m D<>{\@tikzheading@baseheight}}
-{%{Chapter title}
+\DeclareDocumentCommand{\@header@tikzpicture@pagenum@node}{s O{current page.south} G{}}%
+{%<*=NA>[node position]{Chapter title}
         \begin{tikzpicture}[remember picture,overlay]%
                 \node%
                 [%
@@ -371,36 +854,38 @@
                         anchor=center,
                         draw=majorSectionHeading-coldraw,
                         fill=white,
-                        minimum size=9mm,
+                        %fill opacity=1.0,
+                        fill opacity=0.9,
+                        minimum size=\@docsection@pagenum@node@size,
                         xshift=\dimexpr 0mm\relax,
-                        yshift=\dimexpr#3 + \footskip +\f@size\p@\relax,
+                        yshift=\dimexpr\@cfoot@yshift + \f@halfsize\relax,%\f@size\p@ 5pt
                         line width=\@tikzheading@title@linewidth,
                         font=\footnotesize
-                ] at (#4)%%
-                {#5};
+                ] at (#2)%%
+                {#3};
         \end{tikzpicture}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                                 1  2   3   4   5                                 6        7
 \DeclareDocumentCommand{\@header@tikzpicture@rect@node}{s O{}}
 {%{Chapter title}
-	\draw[fill=majorSectionHeading-colback, line width=\@tikzheading@linewidth, draw=black]
-		(0,0) rectangle (0.9\@tikzheading@width, \@tikzheading@height);%
+        \draw[fill=majorSectionHeading-colback, line width=\@tikzheading@linewidth, draw=black]
+                (0,0) rectangle (0.9\@tikzheading@width, \@tikzheading@height);%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                                       1 2   3 
+%                                                       1 2   3
 \DeclareDocumentCommand{\@header@tikzpicture@titlenode}{s O{} m}
 {%{Chapter title}
-	\node%
-	[%
-		anchor=\@tikzheading@anchor,
-		draw=majorSectionHeading-coldraw, fill=majorSectionHeading-colbacktitle,
-		rounded rectangle, rounded rectangle arc length=\@tikzheading@rounded@arclength,
-		xshift=\@tikzheading@title@xshift,
-		inner xsep=\@tikzheading@inner@xsep, inner ysep=\@tikzheading@inner@ysep,
-		line width=\@tikzheading@title@linewidth, font=\@tikzheading@font
-	]%
-	{#3};
+        \node%
+        [%
+                anchor=\@tikzheading@anchor,
+                draw=majorSectionHeading-coldraw, fill=majorSectionHeading-colbacktitle,
+                rounded rectangle, rounded rectangle arc length=\@tikzheading@rounded@arclength,
+                xshift=\@tikzheading@title@xshift,
+                inner xsep=\@tikzheading@inner@xsep, inner ysep=\@tikzheading@inner@ysep,
+                line width=\@tikzheading@title@linewidth, font=\@tikzheading@font
+        ]%
+        {#3};
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                                 1  2   3   4   5                                 6        7
@@ -429,7 +914,7 @@
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-graphics.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 %-------------------------------------------------------------------------------------------------------------------------------%
 \endinput
@@ -448,11 +933,22 @@
 %        %\xp@cmd\@set@cube@colors(\commandkey{primary colors})
 %        %\xp@cmd\@set@cube@rotate@around@xyz(\commandkey{rotatexyz})
 %        %\ifcommandkey{secondary colors}{\xp@cmd\@set@cube@bicolors(\commandkey{secondary colors})}{}%
-%        %\expandafter\@set@cube@rotate@around@xyz\expandafter(\expandafter\fullyexpand\expandafter{\commandkey{rotatexyz}})%
-%        %\expandafter\@set@cube@rotate@around@xyz\expandafter(\@rotatexyz)%
-%        %\expandafter\@set@cube@sidelengths\expandafter(\@cube@sidelengths)%
-%        %\expandafter\@set@cube@colors\expandafter(\@primary@colors)%
-%        %\ifcommandkey{secondary colors}{\expandafter\@set@cube@bicolors\expandafter(\@secondary@colors)}{}
+%        %\xp\@set@cube@rotate@around@xyz\xp(\xp\fullyexpand\xp{\commandkey{rotatexyz}})%
+%        %\xp\@set@cube@rotate@around@xyz\xp(\@rotatexyz)%
+%        %\xp\@set@cube@sidelengths\xp(\@cube@sidelengths)%
+%        %\xp\@set@cube@colors\xp(\@primary@colors)%
+%        %\ifcommandkey{secondary colors}{\xp\@set@cube@bicolors\xp(\@secondary@colors)}{}
 %        \blockstructure{#1}
 %        %\blockstructure<\@cube@scale>(\@rotatexyz)[\@cube@sidelengths]{#1}[\@primary@colors]|\@secondary@colors|
 %}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\path [name intersections={of=d--dextension and c--cvline,by=hello}];
+        %\node (Y) at (intersection of A--B and {0,1}--{1,0}){Y};
+        %\path [scope fading=south] (-2,-2) rectangle (2,2);
+        %\path [pattern=checkerboard,pattern color=black!30](-1.2,-1.2) rectangle (1.2,1.2);
+        %\path [pattern=checkerboard,pattern color=black!30](0,0) rectangle (5,5);
+        %\draw plot coordinates {(0,0) (1,1) (2,0) (3,1) (2,1) (10:2cm)};
+        %\draw (0,0) -- (1,1) plot coordinates {(2,0) (4,0)};
+        %\draw[color=red,xshift=5cm](0,0) -- (1,1) -- plot coordinates {(2,0) (4,0)};

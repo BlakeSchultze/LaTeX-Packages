@@ -18,7 +18,8 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                             % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+\mathon                                 % Change '|' to active character to support |...| shortcut for $\boldsymbol{...}$
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -26,6 +27,12 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define Math Operators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
+\def\@default@differential@var{x}
+\def\@differential@var{\@default@differential@var}
+\def\g@differential@var{\@default@differential@var}
+\def\l@@differential@var{\@default@differential@var}
 \def\thisstyle#1%
 {%
         \begingroup%
@@ -37,48 +44,50 @@
                 #1%
         \endgroup%
 }
-\def\@pre@text@operator@kern{\kern-2.0pt}
-\def\@post@text@operator@kern{\kern-2.5pt}
-\def\@text@operator@surrounding#1{\kern-1.5pt#1\kern-2.0pt}
-\def\@delimiter@surrounding#1{\kern1pt#1\kern1pt}
-\def\@numset@surrounding#1{\kern-1.0pt#1\kern-1.0pt}
-\def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
 %\def\d#1{\kern1pt d#1}
 %\def\myastb{\myast}
 %\def\mymath#1§{$\boldsymbol{#1}$}
-\catcode`|=\active
 \def|#1|{\bmath{#1}}
-%\catcode`!=\active
-%\catcode`\!=\active
-%\catcode`\:=11
-%\catcode`\$=\active
 %\gdef\mathdollar$#1${\[\boldsymbol{#1}\]}
 %\let\mathexclam=!
 %\def!#1!{hello}
 %\gdef$#1${\[\mathbf{#1}\]}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\lnodelim{.}
+\gdef\rnodelim{.}
+\def\@longdiv@rparen@kern{-0.425pt}
+\def\@longdiv@vert@kern{-0.425pt}
+\def\@delimiter@surrounding#1{\kern1pt#1\kern1pt}
+\def\@numset@surrounding#1{\kern-1.0pt#1\kern-1.0pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\newlinecounts{}%
+\gdef\ampersandcounts{}%
+\gdef\newlinemacro{\\}%
+\gdef\ampersandmacro{&}%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newlength\@pld@tcb@width
 \newlength\@pld@tcb@leftrightskip
 \newlength\@pld@tcb@extrude@right
-\newlength\@top@binom@height                                            % Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@bottom@binom@height                                         % Height of 'k' in "n choose k" environment \nchoosek
-\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}     % Height of math character 'X' in current font
+\newlength\@top@binom@height                                                            % Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@bottom@binom@height                                                         % Height of 'k' in "n choose k" environment \nchoosek
+\newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}                     % Height of math character 'X' in current font
 \newlength\@height@math@symbols\settoheight{\@height@math@symbols}{$\displaystyle X$}
 \newlength\@height@math@comma\settoheight{\@height@math@comma}{$\displaystyle ,$}
-\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}     % Height of math character 'X' in current font
-\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}           % Height of math character 'X' in current font
-\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$} % Height of math character 'X' in current font
-\newlength\@total@heght                                                 % Height of 'n' in "n choose k" environment \nchoosek
-\newlength\@dbl@verted@shift                                            % Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}             % Height of math character 'X' in current font
+\newlength\@k@height\settoheight\@k@height{$\displaystyle k$}                           % Height of math character 'X' in current font
+\newlength\@vert@height\settoheight\@vert@height{$\displaystyle \vert$}                 % Height of math character 'X' in current font
+\newlength\@total@heght                                                                 % Height of 'n' in "n choose k" environment \nchoosek
+\newlength\@dbl@verted@shift                                                            % Height of 'n' in "n choose k" environment \nchoosek
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcount\gpten                                                         % (global) power-of-ten -- tells which digit we are doing
-\countdef\rtot2                                                         % running total -- remainder so far
-\countdef\LDscratch4                                                    % scratch
+\newcount\gpten                                                                         % (global) power-of-ten -- tells which digit we are doing
+\countdef\rtot2                                                                         % running total -- remainder so far
+\countdef\LDscratch4                                                                    % scratch
 \newcounter{@current@IBP@row@counter}
-\@init@counter{@IBP@instances@counter}                                  % Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@rows@counter}[0]                                    % Counter indicating # of rows added to IBP environment
-\@init@counter{@IBP@nodes@counter}[1]                                   % Node # of left column in IBP environment
-\@init@counter{@left@IBP@nodes@counter}                                 % Node # of left column in IBP environment
-\@init@counter{@right@IBP@nodes@counter}[2]                             % Node # of right column in IBP environment
+\@init@counter{@IBP@instances@counter}                                                  % Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@rows@counter}[0]                                                    % Counter indicating # of rows added to IBP environment
+\@init@counter{@IBP@nodes@counter}[1]                                                   % Node # of left column in IBP environment
+\@init@counter{@left@IBP@nodes@counter}                                                 % Node # of left column in IBP environment
+\@init@counter{@right@IBP@nodes@counter}[2]                                             % Node # of right column in IBP environment
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newtoggle{@add@sub@TF}
 \let\@ss@style=\scriptscriptstyle
@@ -92,7 +101,7 @@
 \DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}                             % Directional vector for 1st dimension e1 (i.e. x-axis)
 \DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}                             % Directional vector for 1st dimension e1 (i.e. y-axis)
 \DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}  % Directional vector for 1st dimension e1 (i.e. z-axis)
-\DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}                                 % Degrees symbol
+\ifundef{\degrees}{\DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}}{}                                 % Degrees symbol
 \DeclareMathOperator{\dB}{\mathrm{dB}}                                                  % decibels, dB
 \DeclareMathOperator{\degF}{\si{\degree} \mathsf{F}}                                    % Degrees Fahrenheit
 \DeclareMathOperator{\convolutionSym}{\ast}                                             % Convolution symbol
@@ -107,7 +116,7 @@
 \DeclareMathOperator{\setor}{\mathop{\lvert}}
 \DeclareMathOperator{\rectSym}{\sqcap}                                                  % Rectangular function symbol
 \DeclareMathOperator{\triSym}{\wedge}                                                   % Rectangular function symbol
-\DeclareMathOperator{\combSym}{\mathrms{III}}                                           % Rectangular function symbol
+\DeclareMathOperator{\combSym}{\mathrmst{III}}                                           % Rectangular function symbol
 \DeclareMathOperator{\meanSym}{\mu}                                                     % exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\meanSymUp}{\muup}                                                 % exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\stddevSym}{\sigma}                                                % exponential function, exp(x): \e{<arg>}
@@ -177,49 +186,51 @@
 \DeclareMathOperator{\lcdText}{lcd}                                                     % Lowest common denominator (LCD)
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Forward/Inverse linear transformation operators
-\DeclareMathOperator{\Fourier}{\mathbick{F}}                                                                    % Fourier transform symbol
-\DeclareMathOperator{\DFourier}{\Fourier\@ss@style\kern-4pt_D}                                                  % Discrete Fourier transform symbol
-\DeclareMathOperator{\DTFourier}{\Fourier\@ss@style\kern-4pt_{DT}}                                              % Discrete Time Fourier transform symbol
-\DeclareMathOperator{\FourierSlant}{\mathrsfso{F}}                                                      % Alternative Fourier transform symbol
-\DeclareMathOperator{\FTpairSym}{\overset{\Fourier}{\longleftrightarrow}}                                       % Fourier transform pair symbol
-\DeclareMathOperator{\Laplace}{\mathbick{L}}                                                                    % Laplace transform symbol
-\DeclareMathOperator{\LaplaceSlant}{\mathrsfso{L}}                                                      % Alternative Laplace transform symbol
-\DeclareMathOperator{\Radon}{\mathbick{R}}                                                                              % Radon transform symbol
-\DeclareMathOperator{\ZTsym}{\mathcalst{Z}}                                                                     % z-transform symbol
-\DeclareMathOperator{\ZTpair}{\;\;\overset{\ZTsym}{\longleftrightarrow}\;\;}                                    % z-transform pair symbol
+\DeclareMathOperator{\Fourier}{\mathbick{F}}                                            % Fourier transform symbol
+\DeclareMathOperator{\DFourier}{\Fourier\@ss@style\kern-4pt_D}                          % Discrete Fourier transform symbol
+\DeclareMathOperator{\DTFourier}{\Fourier\@ss@style\kern-4pt_{DT}}                      % Discrete Time Fourier transform symbol
+\DeclareMathOperator{\FourierSlant}{\mathrsfso{F}}                                      % Alternative Fourier transform symbol
+\DeclareMathOperator{\FTpairSym}{\overset{\Fourier}{\longleftrightarrow}}               % Fourier transform pair symbol
+\DeclareMathOperator{\Laplace}{\mathbick{L}}                                            % Laplace transform symbol
+\DeclareMathOperator{\LaplaceSlant}{\mathrsfso{L}}                                      % Alternative Laplace transform symbol
+\DeclareMathOperator{\Radon}{\mathbick{R}}                                              % Radon transform symbol
+\DeclareMathOperator{\ZTsym}{\mathcalst{Z}}                                             % z-transform symbol
+\DeclareMathOperator{\ZTpair}{\;\;\overset{\ZTsym}{\longleftrightarrow}\;\;}            % z-transform pair symbol
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathOperator{\iFourier}{\Fourier^{-1}}                                                          % Inverse Fourier transform symbol
-\DeclareMathOperator{\iLaplace}{\Laplace^{-1}}                                                          % Inverse Laplace transform symbol
-\DeclareMathOperator{\iDFourier}{\DFourier^{-1}}                                                                        % Inverse Discrete Fourier transform symbol
-\DeclareMathOperator{\iDTFourier}{\DTFourier^{-1}}                                                                      % Inverse Discrete Time Fourier transform symbol
-\DeclareMathOperator{\iRadon}{\Radon^{-1}}                                                                              % Inverse Radon transform symbol
-\DeclareMathOperator{\iZTsym}{\ZTsym^{-1}}                                                                      % Inverse z-transform pair symbol
+\DeclareMathOperator{\iFourier}{\Fourier^{-1}}                                          % Inverse Fourier transform symbol
+\DeclareMathOperator{\iLaplace}{\Laplace^{-1}}                                          % Inverse Laplace transform symbol
+\DeclareMathOperator{\iDFourier}{\DFourier^{-1}}                                        % Inverse Discrete Fourier transform symbol
+\DeclareMathOperator{\iDTFourier}{\DTFourier^{-1}}                                      % Inverse Discrete Time Fourier transform symbol
+\DeclareMathOperator{\iRadon}{\Radon^{-1}}                                              % Inverse Radon transform symbol
+\DeclareMathOperator{\iZTsym}{\ZTsym^{-1}}                                              % Inverse z-transform pair symbol
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathOperator{\tDFourier}{\mathsfst{DFT}}                                                                        % Text Symbol for Discrete Fourier transform
-\DeclareMathOperator{\tDTFourier}{\mathsfst{DTFT}}                                                                      % Text Symbol for Discrete Time Fourier transform
-\DeclareMathOperator{\tiDFourier}{\tDFourier^{-1}}                                                                      % Text Symbol for Inverse Discrete Fourier transform
-\DeclareMathOperator{\tiDTFourier}{\tDTFourier^{-1}}                                                                    % Text Symbol for Inverse Discrete Time Fourier transform
+\DeclareMathOperator{\tDFourier}{\mathsfst{DFT}}                                        % Text Symbol for Discrete Fourier transform
+\DeclareMathOperator{\tDTFourier}{\mathsfst{DTFT}}                                      % Text Symbol for Discrete Time Fourier transform
+\DeclareMathOperator{\tiDFourier}{\tDFourier^{-1}}                                      % Text Symbol for Inverse Discrete Fourier transform
+\DeclareMathOperator{\tiDTFourier}{\tDTFourier^{-1}}                                    % Text Symbol for Inverse Discrete Time Fourier transform
 %*******************************************************************************************************************************%
 %**************************************************** Define Delimeter Commands ************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}                    % Enclose argument in parentheses
-\DeclarePairedDelimiterX\bracketed[1]{\lbrack}{\rbrack}{\mathop{#1}\mathopen{}}                         % Enclose argument in square brackets
-\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathop{#1}\mathopen{}}                                    % Enclose argument in curly braces
-\DeclarePairedDelimiterX\verted[1]{\lvert}{\rvert}{\mathop{#1}\mathopen{}}                                      % Enclose argument in vertical bars
-\DeclarePairedDelimiterX\angled[1]{\langle}{\rangle}{\mathop{{#1}}\mathopen{}}                          % Enclose argument in angle brackets
-\DeclarePairedDelimiterX\bra[1]{\langle}{\rvert}{\@delimiter@surrounding{\mathop{#1}}}                  % 'Bra'' indicating (typically prior) quantum mechanical state
-\DeclarePairedDelimiterX\ket[1]{\lvert}{\rangle}{\,\mathop{#1}\,}                                                       % 'Ket'' indicating (typically next) quantum mechanical state
-\DeclarePairedDelimiterX\braket[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,}              % A     mplitude (inner product) between 2 quantum mechanical 2 states
+\DeclarePairedDelimiterX\nodelim[1]{.}{.}{\mathord{#1}}                                 % No delimiters, passed to macros expecting delimiters
+\DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}    % Enclose argument in parentheses
+\DeclarePairedDelimiterX\bracketed[1]{\lbrack}{\rbrack}{\mathop{#1}\mathopen{}}         % Enclose argument in square brackets
+\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathop{#1}\mathopen{}}            % Enclose argument in curly braces
+\DeclarePairedDelimiterX\verted[1]{\lvert}{\rvert}{\mathop{#1}\mathopen{}}              % Enclose argument in vertical bars
+\DeclarePairedDelimiterX\angled[1]{\langle}{\rangle}{\mathop{{#1}}\mathopen{}}          % Enclose argument in angle brackets
+\DeclarePairedDelimiterX\Bra[1]{\langle}{\rvert}{\@delimiter@surrounding{\mathop{#1}}}  % 'Bra'' indicating (typically prior) quantum mechanical state
+\DeclarePairedDelimiterX\Ket[1]{\lvert}{\rangle}{\,\mathop{#1}\,}                       % 'Ket'' indicating (typically next) quantum mechanical state
+\DeclarePairedDelimiterX\BraKet[2]{\langle}{\rangle}{#1\,\delimsize\vert\,\mathopen{}#2\,}      % A mplitude (inner product) between 2 quantum mechanical 2 states
 %-------------------------------------------------------------------------------------------------------------------------------%
-\reDeclarePairedDelimiterInnerWrapper\parenthesized{star}{\mathinner{#1\mathord{#2}#3}}                 % Automatically scale parentheses to match argument
-\reDeclarePairedDelimiterInnerWrapper\bracketed{star}{\mathinner{#1#2#3}}                                       % Automatically scale square brackets to match argument
-\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1#2#3}}                                          % Automatically scale curly braces to match argument
-\reDeclarePairedDelimiterInnerWrapper\verted{star}{\mathinner{#1#2#3}}                                          % Automatically scale vertical bars to match argument
-\reDeclarePairedDelimiterInnerWrapper\angled{star}{\mathinner{#1#2#3}}                                          % Automatically scale angle brackets to match argument
-\reDeclarePairedDelimiterInnerWrapper\bra{star}{\mathinner{#1#2#3}}                                             % Automatically scale bra to match argument
-\reDeclarePairedDelimiterInnerWrapper\ket{star}{\mathinner{#1#2#3}}                                             % Automatically scale ket to match argument
-\reDeclarePairedDelimiterInnerWrapper\braket{star}{\mathinner{#1#2#3}}                                          % Automatically scale braket to match argument
+\reDeclarePairedDelimiterInnerWrapper\nodelim{star}{\mathinner{#1\mathord{#2}#3}}       % Automatically scale parentheses to match argument
+\reDeclarePairedDelimiterInnerWrapper\parenthesized{star}{\mathinner{#1\mathord{#2}#3}} % Automatically scale parentheses to match argument
+\reDeclarePairedDelimiterInnerWrapper\bracketed{star}{\mathinner{#1#2#3}}               % Automatically scale square brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1#2#3}}                  % Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\verted{star}{\mathinner{#1#2#3}}                  % Automatically scale vertical bars to match argument
+\reDeclarePairedDelimiterInnerWrapper\angled{star}{\mathinner{#1#2#3}}                  % Automatically scale angle brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\Bra{star}{\mathinner{#1#2#3}}                     % Automatically scale bra to match argument
+\reDeclarePairedDelimiterInnerWrapper\Ket{star}{\mathinner{#1#2#3}}                     % Automatically scale ket to match argument
+\reDeclarePairedDelimiterInnerWrapper\BraKet{star}{\mathinner{#1#2#3}}                  % Automatically scale braket to match argument
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Generate p-norm delimiters with 2 closely spaced 'vert' symbols.  Automatic delimiter scaling of the standard double vert symbol (\Vert) for large arguments
 % unfortunately results in an increase in the separation between the 2 vertical bars.  Hence, the double vert is constructed from 2 individual vert symbols with
@@ -242,25 +253,87 @@
 {\@place@norm@verts}
 {\kern-1.2pt\@place@norm@verts}
 {#1}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\set@lr@delimiters}{m d<>}%
+{%
+        \IfStrEqCase{#1}%
+        {%
+                {b}{\gdef\@delim@op@suffix{brack}}%
+                {brack}{\gdef\@delim@op@suffix{brack}}%
+                {bracketed}{\gdef\@delim@op@suffix{brack}}%
+                {n}{\gdef\@delim@op@suffix{nodelim}}%
+                {nodelim}{\gdef\@delim@op@suffix{nodelim}}%
+                {none}{\gdef\@delim@op@suffix{nodelim}}%
+                {p}{\gdef\@delim@op@suffix{paren}}%
+                {paren}{\gdef\@delim@op@suffix{paren}}%
+                {parenthesized}{\gdef\@delim@op@suffix{paren}}%
+                {v}{\gdef\@delim@op@suffix{vert}}%
+                {vert}{\gdef\@delim@op@suffix{vert}}%
+                {verted}{\gdef\@delim@op@suffix{vert}}%
+        }[\gdef\@delim@op@suffix{brack}]%
+        \IfValueTF{#2}%
+        {\@parse@split@csv@args{xdef}<the@ldelim,the@rdelim>=<#2>}%
+        {%
+                \gdef\the@ldelim{\csuse{l\@delim@op@suffix}}%
+                \gdef\the@rdelim{\csuse{r\@delim@op@suffix}}%
+        }%
+}
 %*******************************************************************************************************************************%
 %************************ Definition of various set/symbol, operator, vector/matrix, etc. commands *****************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}                               % Raises argument #2 by distance #1 with appropriate style (#2)
-\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}                        % Wrapper for \raisem@th
-%\newcommand{\bmath}[1]{$\boldsymbol{#1}$}                                      % Insertion of bold math symbol/expression inside text mode
-\newcommand{\bmath}[1]{\ensuremath{\boldsymbol{#1}}}                            % Insertion of bold math \newcommand{\abs}[1]{\verted*{#1}}                                                                             % Absolute value operator
-\newcommand{\timeavg}[1]{\angled*{#1}}                                          % Time average of random variable
-\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}                         % Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
-\newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                   % Identity matrix with dimensions included
-\newcommand{\ink}[1]{\in^{#1}}                                                  % k-th order set membership symbol
-\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}                                    % NOT IN k-th order set membership symbol
-\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}                         % Defines set { #1 | #2 }
+\newcommand{\raisem@th}[3]{\raisebox{#1}{$#2#3$}}                                       % Raises argument #2 by distance #1 with appropriate style (#2)
+\newcommand{\raisemath}[1]{\mathpalette{\raisem@th{#1}}}                                % Wrapper for \raisem@th
+%\newcommand{\bmath}[1]{$\boldsymbol{#1}$}                                              % Insertion of bold math symbol/expression inside text mode
+\newcommand{\bmath}[1]{\ensuremath{\boldsymbol{#1}}}                                    % Insertion of bold math \newcommand{\abs}[1]{\verted*{#1}}                                                                             % Absolute value operator
+\newcommand{\timeavg}[1]{\angled*{#1}}                                                  % Time average of random variable
+\newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}                                 % Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
+\newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                           % Identity matrix with dimensions included
+\newcommand{\ink}[1]{\in^{#1}}                                                          % k-th order set membership symbol
+\newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}                                            % NOT IN k-th order set membership symbol
+\newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}                                 % Defines set { #1 | #2 }
+\newcommand{\setmaxwd}[1]{\eqmakebox[BM-\theBMatrix][\BMalign]{$#1$}}                   % Query and set array/table column width to max argument
 \newcommand\inline@dfrac[2]{\frac{\displaystyle#1}{\displaystyle#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\query@num@newlines}{O{\newlinecounts} m}
+{%
+        \expandarg%
+        \StrCount{#2}{\newlinemacro}[#1]%
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\query@num@ampersands}{O{\ampersandcounts} m}
+{%
+        \expandarg%
+        \StrCount{#2}{\ampersandmacro}[#1]%
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\query@array@dims}{s m m}
+{%
+        \query@num@newlines{#3}%
+        \query@num@ampersands{#3}%
+        \IfSubBooleanTF{#2}%
+        {%
+                \setcounter{array@row@count}{\newlinecounts}%
+                \setcounter{array@column@count}{\ampersandcounts / \newlinecounts + 1}%
+        }%
+        {%
+                \setcounter{array@row@count}{\newlinecounts + 1}%
+                \setcounter{array@column@count}{\ampersandcounts / \value{array@row@count} + 1}%
+        }%
+        \IfBooleanTF{#1}%
+        {%
+                Number of newline tokens (looking ahead): \newlinecounts\\%
+                Number of table ampersands (looking ahead): \ampersandcounts\\%
+                Number of desired table rows (looking ahead): \arabic{array@row@count}\\%
+                Number of desired table columns (looking ahead): \arabic{array@column@count}\\%
+        }{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand\@differential@op{s G{x} O{1}}%
 {%
-        \ifnumcomp{#3}{=}{1}%
+        \ifnumequal{#3}{1}%
                 {\def\@diff@suffix{}}%
                 {\def\@diff@suffix{\raisebox{4pt}{$\scriptscriptstyle#3$}}}%
         \IfBooleanTF{#1}%
@@ -408,7 +481,7 @@
         {\matx{#1}^{\@math@super@script{T}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\Herm}{m}
-        {\matx{#1}^{\@math@super@script{ H}}}
+        {\matx{#1}^{\@math@super@script{H}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\dagmatx}{m}
         {\matx{#1}^{\@math@super@script{\dagger}}}
@@ -417,19 +490,19 @@
 %******************************************************** Function operators ***************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\mathOp}{m m m}
-        {\ensuremath{\mathop{#1}\mathopen{}#2*{#3}}}
+\DeclareDocumentCommand{\mathOp}{m m m m}
+        {\ensuremath{\mathop{#1}\process@sub@super#2\mathopen{}#3*{#4}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\rect}{s O{\parenthesized} m}
-        {\mathOp{\sqcap}{#2}{#3}}
-\DeclareDocumentCommand{\tri}{s O{\parenthesized} m}
-        {\mathOp{\wedge}{#2}{#3}}
-\DeclareDocumentCommand{\comb}{s O{\parenthesized} m}
-        {\mathOp{\mathrms{III}}{#2}{#3}}
-\DeclareDocumentCommand{\pdf}{s m O{\parenthesized} m}
-        {\mathOp{\mathcal{#2}}{#3}{#4}}
-\DeclareDocumentCommand{\normpdf}{s O{\parenthesized} m}
-        {\mathOp{\mathcal{N}}{#2}{#3}}
+\DeclareDocumentCommand{\rect}{s e{_^} O{\parenthesized} m}
+        {\mathOp{\sqcap}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\tri}{s e{_^} O{\parenthesized} m}
+        {\mathOp{\wedge}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\comb}{s e{_^} O{\parenthesized} m}
+        {\mathversion{stix}\mathOp{\mathrmst{III}}{#2}{#3}{#4}\mathversion{normal}}
+\DeclareDocumentCommand{\pdf}{s m e{_^} O{\parenthesized} m}
+        {\mathOp{\mathcal{\uppercase{#2}}}{#3}{#4}{#5}}
+\DeclareDocumentCommand{\normpdf}{s e{_^} O{\parenthesized} m}
+        {\mathOp{\mathcal{N}}{#2}{#3}{#4}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Replacement for {n\choose k} with improved usage (does not require {...}) and improved vertical placement and separation of n/k
 \DeclareDocumentCommand{\nchoosek}{m m}
@@ -455,94 +528,117 @@
                 {-\dimexpr\@bottom@binom@height - 0.7mm + (\@top@binom@height - \@bottom@binom@height)/5\relax}
                 {\hstretch{2.0}{\stretchto{\rparen}{\@tot@ht pt}}}
 }
-%*******************************************************************************************************************************%
-%************************************ Text operator w/ paired delimiter options definitions ************************************%
-%*******************************************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text operator w/ paired delimiter options definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%\mathop{\operator@font sin}\nolimits
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\textOp}{m m m t'}
-        {\ensuremath{\mathop{\text{#1}}\mathopen{}#2*{#3}}}
+\DeclareDocumentCommand{\process@sub@super}{m m}%
+{%
+        \IfValueTF{#1}{_{#1}}{}%
+        \IfValueTF{#2}{^{#2}}{}%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\erf}{s O{\parenthesized} m}
-        {\textOp{erf}{#2}{#3}}
-\DeclareDocumentCommand{\erfi}{s O{\parenthesized} m}
-        {\textOp{erfi}{#2}{#3}}
-\DeclareDocumentCommand{\Tr}{s O{\parenthesized} m}
-        {\textOp{Tr}{#2}{#3}}
-\DeclareDocumentCommand{\var}{s O{\braced} m}
-        {\textOp{var}{#2}{#3}}
-\DeclareDocumentCommand{\det}{s O{\parenthesized} m}
-        {\textOp{det}{#2}{#3}}
-\DeclareDocumentCommand{\sup}{s O{\parenthesized} m}
-        {\textOp{sup}{#2}{#3}}
-\DeclareDocumentCommand{\inf}{s O{\parenthesized} m}
-        {\textOp{inf}{#2}{#3}}
-\DeclareDocumentCommand{\sin}{s O{\parenthesized} m}
-        {\textOp{sin}{#2}{#3}}
-\DeclareDocumentCommand{\cos}{s O{\parenthesized} m}
-        {\textOp{cos}{#2}{#3}}
-\DeclareDocumentCommand{\tan}{s O{\parenthesized} m}
-        {\textOp{tan}{#2}{#3}}
-\DeclareDocumentCommand{\sec}{s O{\parenthesized} m}
-        {\textOp{sec}{#2}{#3}}
-\DeclareDocumentCommand{\csc}{s O{\parenthesized} m}
-        {\textOp{csc}{#2}{#3}}
-\DeclareDocumentCommand{\cot}{s O{\parenthesized} m}
-        {\textOp{cot}{#2}{#3}}
-\DeclareDocumentCommand{\asin}{s O{\parenthesized} m}
-        {\textOp{asin}{#2}{#3}}
-\DeclareDocumentCommand{\acos}{s O{\parenthesized} m}
-        {\textOp{acos}{#2}{#3}}
-\DeclareDocumentCommand{\atan}{s O{\parenthesized} m}
-        {\textOp{atan}{#2}{#3}}
-\DeclareDocumentCommand{\acot}{s O{\parenthesized} m}
-        {\textOp{acot}{#2}{#3}}
+\DeclareDocumentCommand{\textOp}{m m m m}
+        {\ensuremath{\mathop{\operator@font#1}\nolimits\process@sub@super#2\mathopen{}#3*{#4}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\sinh}{s O{\parenthesized} m}
-        {\textOp{sinh}{#2}{#3}}
-\DeclareDocumentCommand{\cosh}{s O{\parenthesized} m}
-        {\textOp{cosh}{#2}{#3}}
-\DeclareDocumentCommand{\tanh}{s O{\parenthesized} m}
-        {\textOp{tanh}{#2}{#3}}
-\DeclareDocumentCommand{\coth}{s O{\parenthesized} m}
-        {\textOp{coth}{#2}{#3}}
-\DeclareDocumentCommand{\sech}{s O{\parenthesized} m}
-        {\textOp{sech}{#2}{#3}}
-\DeclareDocumentCommand{\csch}{s O{\parenthesized} m}
-        {\textOp{csch}{#2}{#3}}
+\DeclareDocumentCommand{\erf}{s e{_^} O{\parenthesized} m}
+        {\textOp{erf}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\erfi}{s e{_^} O{\parenthesized} m}
+        {\textOp{erfi}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\Tr}{s e{_^} O{\parenthesized} m}
+        {\textOp{Tr}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\var}{s e{_^} O{\braced} m}
+        {\textOp{var}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\det}{s e{_^} O{\parenthesized} m}
+        {\textOp{det}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\sup}{s e{_^} O{\parenthesized} m}
+        {\textOp{sup}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\inf}{s e{_^} O{\parenthesized} m}
+        {\textOp{inf}{#2}{#3}{#4}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\asinh}{s O{\parenthesized} m}
-        {\textOp{asinh}{#2}{#3}}
-\DeclareDocumentCommand{\acosh}{s O{\parenthesized} m}
-        {\textOp{acosh}{#2}{#3}}
-\DeclareDocumentCommand{\atanh}{s O{\parenthesized} m}
-        {\textOp{atanh}{#2}{#3}}
-\DeclareDocumentCommand{\acoth}{s O{\parenthesized} m}
-        {\textOp{acoth}{#2}{#3}}
-\DeclareDocumentCommand{\asech}{s O{\parenthesized} m}
-        {\textOp{asech}{#2}{#3}}
-\DeclareDocumentCommand{\acsch}{s O{\parenthesized} m}
-        {\textOp{acsch}{#2}{#3}}
+\DeclareDocumentCommand{\sin}{s e{_^} O{\parenthesized} m}
+        {\textOp{sin}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\cos}{s e{_^} O{\parenthesized} m}
+        {\textOp{cos}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\tan}{s e{_^} O{\parenthesized} m}
+        {\textOp{tan}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\sec}{s e{_^} O{\parenthesized} m}
+        {\textOp{sec}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\csc}{s e{_^} O{\parenthesized} m}
+        {\textOp{csc}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\cot}{s e{_^} O{\parenthesized} m}
+        {\textOp{cot}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\asin}{s e{_^} O{\parenthesized} m}
+        {\textOp{asin}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\acos}{s e{_^} O{\parenthesized} m}
+        {\textOp{acos}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\atan}{s e{_^} O{\parenthesized} m}
+        {\textOp{atan}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\acot}{s e{_^} O{\parenthesized} m}
+        {\textOp{acot}{#2}{#3}{#4}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\ln}{s O{\parenthesized} m}
-        {\textOp{ln}{#2}{#3}}
-\DeclareDocumentCommand{\exp}{s O{\parenthesized} m}
-        {\textOp{exp}{#2}{#3}}
-\DeclareDocumentCommand{\log}{s O{\parenthesized} m}
-        {\textOp{log}{#2}{#3}}
-\DeclareDocumentCommand{\sinc}{s O{\parenthesized} m}
-        {\textOp{sinc}{#2}{#3}}
-\DeclareDocumentCommand{\jinc}{s O{\parenthesized} m}
-        {\textOp{jinc}{#2}{#3}}
-\DeclareDocumentCommand{\signum}{s O{\parenthesized} m}
-        {\textOp{signum}{#2}{#3}}
-\DeclareDocumentCommand{\sign}{s O{\parenthesized} m}
-        {\textOp{sign}{#2}{#3}}
-\DeclareDocumentCommand{\sgn}{s O{\parenthesized} m}
-        {\textOp{sgn}{#2}{#3}}
-\DeclareDocumentCommand{\log}{s O{\parenthesized} m}
-        {\textOp{log}{#2}{#3}}
-\DeclareDocumentCommand{\log}{s O{\parenthesized} m}
-        {\textOp{log}{#2}{#3}}
+\DeclareDocumentCommand{\sinh}{s e{_^} O{\parenthesized} m}
+        {\textOp{sinh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\cosh}{s e{_^} O{\parenthesized} m}
+        {\textOp{cosh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\tanh}{s e{_^} O{\parenthesized} m}
+        {\textOp{tanh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\coth}{s e{_^} O{\parenthesized} m}
+        {\textOp{coth}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\sech}{s e{_^} O{\parenthesized} m}
+        {\textOp{sech}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\csch}{s e{_^} O{\parenthesized} m}
+        {\textOp{csch}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\asinh}{s e{_^} O{\parenthesized} m}
+        {\textOp{asinh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\acosh}{s e{_^} O{\parenthesized} m}
+        {\textOp{acosh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\atanh}{s e{_^} O{\parenthesized} m}
+        {\textOp{atanh}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\acoth}{s e{_^} O{\parenthesized} m}
+        {\textOp{acoth}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\asech}{s e{_^} O{\parenthesized} m}
+        {\textOp{asech}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\acsch}{s e{_^} O{\parenthesized} m}
+        {\textOp{acsch}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\sinc}{s e{_^} O{\parenthesized} m}
+        {\textOp{sinc}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\jinc}{s e{_^} O{\parenthesized} m}
+        {\textOp{jinc}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\signum}{s e{_^} O{\parenthesized} m}
+        {\textOp{signum}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\sign}{s e{_^} O{\parenthesized} m}
+        {\textOp{sign}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\sgn}{s e{_^} O{\parenthesized} m}
+        {\textOp{sgn}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\exp}{s e{_^} O{\parenthesized} m}
+        {\textOp{exp}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\log}{s e{_^} O{\parenthesized} m}
+        {\textOp{log}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\loga}{s e{_^} O{\parenthesized} m}
+        {\textOp{log}{#2}{#3}{#4}}
+\DeclareDocumentCommand{\dlog}{s E{^}{{}} O{\parenthesized} m}
+        {\loga_{10}^{#2}[#3]{#4}}
+\DeclareDocumentCommand{\blog}{s E{^}{{}} O{\parenthesized} m}
+        {\loga_{2}^{#2}[#3]{#4}}
+\DeclareDocumentCommand{\elog}{s E{^}{{}} O{\parenthesized} m}
+        {\loga_{e}^{#2}[#3]{#4}}
+\DeclareDocumentCommand{\ln}{s e{_^} O{\parenthesized} m}
+        {\textOp{ln}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~ Operator w/ overset/underset expressions & paired delimiter options definitions ~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\limOp}{m m m m}
+        {\ensuremath{\mathop{\operator@font#1}\displaylimits\process@sub@super#2\mathopen{}#3*{#4}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\Lim}{s e{_^} O{\parenthesized} m}
+        {\limOp{lim}{#2}{#3}{#4}}
 %*******************************************************************************************************************************%
 %*************************************************** Transform Operator Definitions ********************************************%
 %*******************************************************************************************************************************%
@@ -627,9 +723,21 @@
                 {\txformOp*{mathcal}{R}[^{\kern-0.5pt\inverseSym}\kern-1.5pt]{#2}{#3}}
                 {\txformOp{mathcalst}{R}[^{\inverseSym}\kern-1.5pt]{#2}{#3}}
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %**************************************** Configuration/setup/component helper commands ****************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\SetMathVar}{t! G{\@default@differential@var} o}%
+{%
+        \IfValueTF{#3}{\csgdef{#3}{#2}}{}%
+        \IfBooleanTF{#1}%
+        {\gdef\l@differential@var{#2}}%
+        {%
+                \gdef\l@differential@var{#2}%
+                \gdef\g@differential@var{#2}%
+        }%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@set@inprod@comma@pos}{m m m}
 {
@@ -646,12 +754,12 @@
     \endgroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@add@IBP@node}{m}
+\DeclareDocumentCommand{\@add@IBP@node}{m}%
 {%
         \tikz[overlay, remember picture, baseline] \node (#1) {};}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\addIBProw}{m m s}
-{
+\DeclareDocumentCommand{\addIBProw}{m m s}%
+{%
         \IfBooleanTF{#3}
         {
                 \textstyle#1\quad
@@ -666,7 +774,7 @@
                 &\@add@IBP@node{Right \the\numexpr\value{@IBP@rows@counter}+1\relax}
                 &\textstyle#2
         }
-        \addtocounter{@IBP@rows@counter}{1}
+        \stepcounter{@IBP@rows@counter}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@add@arrow@sign}{m}
@@ -681,7 +789,6 @@
 {%
         \begin{tikzpicture}[overlay, remember picture]
                 \toggletrue{@add@sub@TF}
-                %\forloop{@current@IBP@row@counter}{1}{\value{@current@IBP@row@counter} < \value{@IBP@rows@counter}}
                 \forLoop{1}{\numexpr\value{@IBP@rows@counter}-1\relax}{@current@IBP@row@counter}
                 {
                         \draw[IBPdiagArrows]
@@ -728,208 +835,380 @@
         {\boldmath\IfBooleanTF{#1}{\csname alignat*\endcsname{2}}{\alignat{2}}}
         {\IfBooleanTF{#1}{\csname endalignat*\endcsname}{\endalignat}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@default@differential@var{x}
-\def\@differential@var{\@default@differential@var}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\SetMathVar}{G{\@default@differential@var}}{\gdef\@differential@var{\@default@differential@var}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%% Generates table for the 'tabular method' of 'integration by parts' (IBP), arrows are added on 2nd pass
-%                                   1 2  3   4 5 6 7
-\DeclareDocumentEnvironment{tcbIBP}{s t! d() o m m g}
-{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
-        \setlength\doublerulesep{0pt}%
-        \setlength{\arrayrulewidth}{0.75pt}%
-        %\linespread@settings[context=IBP]
-        %\setcounter{@IBP@rows@counter}{0}%
-        \resetcounter{@IBP@rows@counter}%
-        \stepcounter{IBPtable}%
-        %\stepcounter{table}%
-        \@set@current@tcb@colors{IBPColorset}%
-        \def\@save@baselinestretch{\baselinestretch}%
-        \def\@save@arraystretch{\arraystretch}%
-        \arrayrulecolor{IBPColorset-coldraw}%
-        \def\IBP@text@content{}%
-        \IfValueTF{#7}{\def\@differential@var{#7}}{}%
-        \IfBooleanTF{#2}{\def\IBP@math@content{}}%
+%\DeclareDocumentCommand{\xmatrix}{s O{nmatrix} D(){{\c@array@column@count}} m}
+\DeclareDocumentCommand{\xmatrix}{s D(){nmatrix} O{} m}
+{%
+        \text%
         {%
-                \IfValueTF{#3}%
+                \query@array@dims{#1}{#4}%
+                \ensuremath%
                 {%
-                        \def\IBP@math@content{\protect\BreakableShadowText*:\cftX@tcbtitle@fontfamily:{#3}}%
-                        \def\IBP@text@content{#3}%
+                        \begin{#2}{\c@array@column@count}#3%
+                                #4%
+                        \end{#2}%
                 }%
-                {
-                        \IfValueTF{#4}%
-                                {\def\IBP@math@content{\protect\shadowmath*!{#4}}}%
-                                {\def\IBP@math@content{\protect\shadowmath*!{\int #5#6\@differential@op{\@differential@var}}}}%
-                }%
-                \IfBooleanTF{#1}%
-                        {\preto{\IBP@math@content}{\\[0.3em]}}{}%
         }%
-        \savebox{\@IBP@math@content@box}{\IBP@math@content}%
-        \savebox{\@IBP@text@content@box}{\IBP@text@content}%
-        \setlength{\@tcb@IBP@math@content@width}{\wd\@IBP@math@content@box}%
-        \setlength{\@tcb@IBP@text@content@width}{\wd\@IBP@text@content@box}%
-        \centering%
-        %\tocX@hypertarget[65pt]{table}[IBPtable]
-        \IBPtable{>{$}c<{$} c @{\hspace{\@tcb@IBP@column@separation}} c  >{$}c<{$}}{\IBP@math@content}[\IBP@text@content]%
-                \centering%\linespread@settings[context=IBP]%
-                \boldsymbol{u} && &\boldsymbol{dv}\\[\@tcb@IBP@before@hrule@skip]%
-                \arrayrulecolor{IBPColorset-coldraw}\hline\arrayrulecolor{IBPColorset-rulecolor}%
-                \hline\arrayrulecolor{IBPColorset-coldraw}%
-                \hline\\[\@tcb@IBP@after@hrule@skip]%
-                \addIBProw{#5}{#6}\\%
-}{%
-        \endIBPtable%
-        \@draw@IBP@arrows\\%
-        %\renewcommand{\baselinestretch}{\@save@baselinestretch}%
-        %\renewcommand{\arraystretch}{\@save@arraystretch}%
+}
+\DeclareDocumentEnvironment{xxmatrix}{s}{\xmatrix\bgroup}{\egroup}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\NewEnviron{collectMBODY}{\query@array@dims{\BooleanFalse}{\BODY}\ensuremath{\begin{Xmatrix}\BODY\end{Xmatrix}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\NewEnviron{collectMATHBODYTEXT}{\text{\begin{Xmatrix}\BODY\end{Xmatrix}}}
+\NewEnviron{collectMATHBODYTEXT}{\text{\xmatrix{\BODY}}}
+\NewEnviron{collectMATHBODYTEXTB}{\protect{\text{\xmatrix{\BODY}}}}
+\NewEnviron{collectMATHBODYTEXTC}{\protect{\begin{collectMATHBODYTEXT}\BODY\end{collectMATHBODYTEXT}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\NewEnviron{collectMATHBODY}[3][nmatrix]%
+{%
+        \text%
+        {%
+                \query@array@dims{\BooleanFalse}{\BODY}%
+                \ensuremath%
+                {%
+                        \begin{#1}{#2}#3%
+                               \BODY%
+                        \end{#1}%
+                }%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\NewEnviron{collectedBODY}{\unskipspacing\BODY}
+% Problem environment box fitted to content instead of width of line, for short problem statements
+\newenviron{genmatrix}[0]%[1]%[nmatrix]%
+{%
+        %\gdef\@@envname{#1}%
+        %\protect\bgroup
+        %\ensuremath\bgroup
+        %\xmatrix\bgroup
+        %\text\bgroup%
+        %\query@array@dims{\BooleanFalse}\bgroup
+        %{%\begin{Xmatrix}%\end{align*}
+}
+{%
+        %\end{Xmatrix}%\begin{align*}%
+        %\egroup\\%
+        %\text%
+        %{%
+                \query@array@dims{\BooleanFalse}{\genmatrixbody}%
+%                \ensuremath%
+%                {%
+%                        %\begin{#1}{#2}#3%{{\c@array@column@count}[v]}
+%                        \xp\begin\xp{\@@envname}{\c@array@column@count}%#3%{{\c@array@column@count}[v]}
+%                               \genmatrixbody%
+%                        \xp\end\xp{\@@envname}%
+%                }%
+        %}%
+        %\egroup%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\dualtcbIBP}{s o m m}
-{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
-        \savebox{\@tcb@dualIBP@left@content@box}{\begin{collectedBODY}#3\\[-2.5em]\end{collectedBODY}}%
-        \savebox{\@tcb@dualIBP@right@content@box}{\begin{collectedBODY}#4\\[-2.5em]\end{collectedBODY}}%
-        \setlength{\@env@BODY@width}{\wd\@tcb@dualIBP@left@content@box + \wd\@tcb@dualIBP@right@content@box + 14mm}%
-        \setlength{\@tcb@dualIBP@text@leftcontent@width}{\wd\@tcb@dualIBP@left@content@box}%
-        \setlength{\@tcb@dualIBP@text@rightcontent@width}{\wd\@tcb@dualIBP@right@content@box}%
-        \setlength{\@macro@length@diff}{\wd\@tcb@dualIBP@left@content@box - \wd\@tcb@dualIBP@right@content@box}%
-        \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
-        \@set@current@tcb@colors{tcbBlueScheme}%
-        \IfValueTF{#2}%
-        {
-                \gdef\@the@title@included{title}
-                \toggletrue{tcbtitle@included}
-                \tcbset{title={#2}}
-        }
-        {
-                \gdef\@the@title@included{notitle}
-                \togglefalse{tcbtitle@included}
-                \tcbset{title={}}
-        }
-        \IfBooleanTF{#1}%
+% Parse array environment content to determine the # of rows/columns
+\DeclareDocumentEnvironment{Xmatrix}{s D(){nmatrix} G{\c@array@column@count} O{}}%
+{%
+        %\text\bgroup%
+        %\collectBODY
+        \collectMATHBODY[#2]{#3}{#4}
+        %\collectMBODY
+        %\collectMMBODY[#2]{#3}{#4}
+        %\begin{collectMATHBODY}
+}
+{%
+        %\endcollectBODY%\egroup
+        %\endcollectMMBODY%\egroup
+%        %\endcollectMBODY%\egroup
+        \endcollectMATHBODY
+%        \query@array@dims{#1}{\BODY}%
+%        %\text{%
+%        \ensuremath%
+%        {%
+%        %$%
+%                \begin{#2}#3%
+%                       \BODY%
+%                \end{#2}%
+%        %$
+%        }%
+%        %\egroup%
+%        %}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Row reduction array process, particularly useful w/ "xmatrix" determining array dimensions
+\DeclareDocumentEnvironment{rmatrix}{m O{c}}
+        {\array{@{}r |@{\hspace{3pt}} @{\,}*{#1} #2 |}}
+        {\endarray}%\kern-\arraycolsep
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Normal matrix with # columns set explicitly, particularly useful w/ "xmatrix" determining array dimensions
+\DeclareDocumentEnvironment{nmatrix}{m O{c} D(){b}}%
+{%
+        \setcounter{@macro@counter}{#1}
+        \set@lr@delimiters{#3}%
+        \left\the@ldelim%
+        \array{@{\,}*{#1} #2}%
+}
+{%
+        \endarray%
+        \kern-0.5\arraycolsep%
+        \right\the@rdelim%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\MHInternalSyntaxOn
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentEnvironment{BMatrix}{g t! O{c} D(){b}}
+{%
+        \def\BMalign{#3}%
+        \stepcounter{BMatrix}%
+        \set@lr@delimiters{#4}%
+        \left\the@ldelim%
+        \IfBooleanTF{#2}{}{\hskip -0.5\arraycolsep}%
+        \MH_let:NwN \@ifnextchar \MH_nospace_ifnextchar:Nnn%
+        \IfValueTF{#1}%
+                {\def\@@colcount{#1}}%
+                {\def\@@colcount{\numexpr\c@MaxMatrixCols-1}}
+        \array{ #3 *{\@@colcount} {>{\collectcell\setmaxwd}#3<{\endcollectcell}}}%
+}
+{%
+        \endarray%
+        \IfBooleanTF{#2}{}{\hskip -0.5\arraycolsep}%
+        \right\the@rdelim%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\MHInternalSyntaxOff
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
+%                                   1         2            3 4 5
+\DeclareDocumentCommand{\longdivop}{O{\Large} D(){\rparen} m m D;;{\@current@font}}
+{%
+        \let\@longdiv@open@delimiter=#2%
+        %\let\@math@fontstyle=#5%
+        \def\@math@fontstyle{#5}%
+%        \IfDefEqCase{\@longdiv@open@delimiter}%
+%        {%
+%                {\rparen}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@rparen@kern}}%
+%                {\vert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%                {\rvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%                {\lvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%        }%
+%        \ifdefstring{\rparen}{rparen}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@rparen@kern}}{}%
+%        \ifdefstring{\rparen}{vert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}{}%
+%        \ifdefstring{\rparen}{rvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}{}%
+%        \ifdefstring{\rparen}{lvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}{}%
+%        \IfDefStringCase{\rparen}%
+%        {%
+%                {rparen}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@rparen@kern}}%
+%                {vert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%                {rvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%                {lvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%
+%        }%
+        \IfDefEqCase{\rparen}%
         {%
-                \tcbsidebyside%
-                [
-                        dualIBPtable, sidebyside align=bottom seam, left=1mm, lefttitle=2mm, segmentation empty,
-                        sidebyside gap=2mm, width=\@env@BODY@width, sidebyside adapt=both, left skip=\@macro@shift
-                ]%
+                {\rparen}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@rparen@kern}}%{hello\\}%
+                {\vert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%{hello\\}%
+                {\rvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%{hello\\}%
+                {\lvert}{\csgdef{@longdiv@open@delimiter@kern}{\kern\@longdiv@vert@kern}}%{hello\\}%
         }%
-        {%
-                \tcbsidebyside[dualIBPtable, sidebyside align=bottom seam, left=-1mm, lefttitle=2mm,
-                        segmentation empty, sidebyside gap=0mm]%
-        }%
-        {%
-                \unskipspacing%
-                       \centering\usebox{\@tcb@dualIBP@left@content@box}
-        }%
-        {%
-                \unskipspacing%
-                \centering\usebox{\@tcb@dualIBP@right@content@box}
-        }%
+        #1%
+        $%
+                %\@math@fontstyle%
+                %{%
+                #4\,%
+                \overline%
+                {%
+                        \vphantom{\big\@longdiv@open@delimiter}%
+                        \@longdiv@open@delimiter@kern%
+                        \hbox%
+                        {%
+                                \smash%
+                                {%
+                                        \raise3.5\fontdimen8\textfont3%
+                                        \hbox{$\big\@longdiv@open@delimiter$}%
+                                }%
+                        }%
+                        \mkern2mu #3
+                }
+                %}%
+        $%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 % From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
-\DeclareDocumentCommand{\longdiv}{m m}
-{
-        \vtop
-        {
-                \normalbaselines \offinterlineskip
+%                                 1  2         3            4 5 6
+\DeclareDocumentCommand{\longdiv}{t! O{\Large} D(){\rparen} m m D;;{\@current@font}}
+{%
+        \let\@longdiv@fontsize=#2%
+        \let\@longdiv@open@delimiter=#3%
+        \def\@dividend{#4}
+        \def\@divisor{#5}
+        \def\@longdiv@math@fontstyle{#6}%
+        \vtop%
+        {%
+                \@longdiv@fontsize\normalbaselines \offinterlineskip
                 \setbox\strutbox\hbox{\vrule height 2.1ex depth .5ex width0ex}%
-                \def\showdig{$\underline{\the\LDscratch\strut}$\cr\the\rtot\strut\cr\noalign{\kern-.2ex}}%
-                \global\rtot=#1\relax
-                \count0=\rtot\divide\count0by#2\edef\quotient{\the\count0}%\show\quotient
+                % Print/underline value subtracted from current power of 10 dividend=divisor * greatest # s.t. result > 0
+                \def\showdig%
+                {%
+                        $\underline{\textendash\hskip1.5pt\the\LDscratch\strut}$\cr %
+                        $\the\rtot$\strut\cr\noalign{\kern-.2ex}%
+                }%
+                \global\rtot=\@dividend\relax
+                \count0=\rtot\divide\count0by\@divisor\edef\quotient{\the\count0}%
                 % make list macro out of digits in quotient:
-                \def\temp##1{\ifx##1\temp\else \noexpand\dodig ##1\expandafter\temp\fi}%
-                \edef\routine{\expandafter\temp\quotient\temp}%
+                \def\temp##1{\ifx##1\temp\else \noexpand\dodig ##1\xp\temp\fi}%
+                \edef\routine{\xp\temp\quotient\temp}%
                 % process list to give power-of-ten:
                 \def\dodig##1{\global\multiply\gpten by10 }\global\gpten=1 \routine
                 % to display effect of one digit in quotient (zero ignored):
                 \def\dodig##1%
                 {
                         \global\divide\gpten by10
-                \LDscratch =\gpten
-                \multiply\LDscratch  by##1%
-                \multiply\LDscratch  by#2
-                \global\advance\rtot-\LDscratch \relax
-                \ifnum\LDscratch>0 \showdig \fi % must hide \cr in a macro to skip it
+                        \LDscratch =\gpten
+                        \multiply\LDscratch  by##1%
+                        \multiply\LDscratch  by\@divisor
+                        \global\advance\rtot-\LDscratch \relax
+                        % Print current dividend = previous dividend - (divisor * greatest # s.t. result > 0)
+                        \ifnum\LDscratch>0 \showdig \fi % must hide \cr in a macro to skip it
                 }
                 \tabskip=0pt
                 \halign
                 {
                         \hfil##\cr % \halign for entire division problem
+                        % Print quotient result above line of dividend/divisor and long division operator
                         $\quotient$\strut\cr%
-                        #2$\,\overline{\vphantom{\big)}%
-                        \hbox{\smash{\raise3.5\fontdimen8\textfont3\hbox{$\big)$}}%
-                }
-                \mkern2mu \the\rtot
-        }
-        $\cr\noalign{\kern-.2ex}
-        \routine \cr % do each digit in quotient
-}}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\@tcb@pld@title@label#1%
-{%
-        \ifstrempty{#1}
-                {\cftPLDtable@hyperblend*'\Large\bfmseries\sffamily'{#1}}
-                {\cftPLDtable@hyperblend*'\Large\bfmseries\sffamily'{\@tcb@title@sep#1}}
+                        % Construct top line with divisor and dividend inside division operator symbol/overline
+                        \longdivop[\@longdiv@fontsize](\@longdiv@open@delimiter){\@dividend}{\@divisor};\@longdiv@math@fontstyle;%
+                        \cr\cr\noalign{\kern-.2ex}%
+                        % Print long division process, suppressed if xparse Boolean '!' given in call
+                        \IfBooleanTF{#1}{}{\routine \cr }% do each digit in quotient
+                }%
+        }%
+        \normalsize%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                      1 2  3   4            5 6 7   8 9
-\DeclareDocumentCommand{\polyDivision@parse@booleans}{s t! t- t+}
-{%
-        \newif\if@include@zero@coefficients@%
-        \newif\if@supress@title@%
-        \newif\if@ignore@math@content@%
-        \newif\if@include@conclusion@%
+% From longdiv.tex located at <TeX distribution directory>\tex\generic\genmisc\longdiv.tex
+%                                    1  2         3            4 5 6                                             7
+\DeclareDocumentCommand{\tcblongdiv}{t! O{\Large} D(){\rparen} m m D::{\BreakableShadowText*!:\@tcb@title@font:} D;;{\shadowmath*!}}
+{
+        \@set@current@tcb@colors{LDColorset}%
+        \stepcounters{table,LDtable}%
+        \def\@tcblongdiv@title@text@fontstyle{#6}%
+        \def\@tcblongdiv@title@math@fontstyle{#7}%
+        \savebox{\@tcb@mathbox@content@box}{\longdiv[#2](#3){#4}{#5}}%
+        \setlength\@env@BODY@width{\maxof{\wd\@tcb@mathbox@content@box}{\@tcb@mathbox@min@setwidth}}%
         \IfBooleanTF{#1}%
-                {\@nameuse{@include@zero@coefficients@true}}%
-                {\@nameuse{@include@zero@coefficients@false}}%
-        \IfBooleanTF{#2}%
-                {\@nameuse{@supress@title@true}}%
-                {\@nameuse{@supress@title@false}}%
-        \IfBooleanTF{#3}%
-                {\@nameuse{@ignore@math@content@true}}%
-                {\@nameuse{@ignore@math@content@false}}%
-        \IfBooleanTF{#4}%
-                {\@nameuse{@include@conclusion@true}}%
-                {\@nameuse{@include@conclusion@false}}%
+                {\def\@LDtable@title@sep{}}%
+                {\def\@LDtable@title@sep{\@tcb@title@sep}}%
+        \def\@longdiv@text@title@content%
+        {%
+                \@tcblongdiv@title@text@fontstyle%
+                {\LDtableLongName\unskipspacing}%
+                \@LDtable@title@sep%
+        }%
+        \def\@longdiv@math@title@content{\longdivop[#2](#3){#4}{#5};#7;}%
+        \setlength\@tcb@mathbox@text@title@width{\widthof{\@longdiv@text@title@content}}%
+        \cftLDtable@bookmark!%
+        \begin{tcolorbox}[PLDStyle, title={}, width={\@env@BODY@width + 2.5cm}]%
+        \begin{tcolorbox}%
+        [
+                mathboxContentStyle, width=\@env@BODY@width,
+                title=%
+                {%
+                        \bookmarkX@hypertarget{LDtable}%
+                        \cftLDtable@contentsline{}%
+                        \cftLDtable@hyperblend*%
+                        '\@tcbPLD@text@font'%
+                        {\@LDtable@title@sep\;\@longdiv@math@title@content}%
+                }
+        ]%
+                \usebox{\@tcb@mathbox@content@box}%
+        \end{tcolorbox}%
+        \end{tcolorbox}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                      1     2  3   4            5 6 7   8   9
-\DeclareDocumentCommand{\polyDivision}{D(){} t! O{} D''{\rparen} m m d() O{} s}
+\DeclareDocumentCommand{\tcbmathbox@dimensions}{s o m m}
+{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
+        \toggletrue{@in@tcbenclosure}%
+        \@set@current@tcb@colors{tcbBlueScheme}%
+        \savebox{\@tcb@mathbox@left@content@box}{\begin{usecollectedBODY}#3\\[-2.5em]\end{usecollectedBODY}}%
+        \savebox{\@tcb@mathbox@right@content@box}{\begin{usecollectedBODY}#4\\[-2.5em]\end{usecollectedBODY}}%
+        \@tcb@mathbox@right@content@box
+        %\deflength{hlengthi}{hglue expressioni}
+        \setlength{\@env@BODY@width}{\wd\@tcb@mathbox@left@content@box + \wd\@tcb@mathbox@right@content@box + 14mm}%
+        \setlength{\@tcb@mathbox@leftcontent@width}{\wd\@tcb@mathbox@left@content@box}%
+        \setlength{\@tcb@mathbox@rightcontent@width}{\wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@length@diff}{\wd\@tcb@mathbox@left@content@box - \wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbmathbox}{s O{} m m}
+{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
+        \toggletrue{@in@tcbenclosure}%
+        \savebox{\@tcb@mathbox@left@content@box}{\begin{usecollectedBODY}#3\\[-2.5em]\end{usecollectedBODY}}%
+        \savebox{\@tcb@mathbox@right@content@box}{\begin{usecollectedBODY}#4\\[-2.5em]\end{usecollectedBODY}}%
+        \setlength{\@env@BODY@width}{\wd\@tcb@mathbox@left@content@box + \wd\@tcb@mathbox@right@content@box + 14mm}%
+        \setlength{\@tcb@mathbox@leftcontent@width}{\wd\@tcb@mathbox@left@content@box}%
+        \setlength{\@tcb@mathbox@rightcontent@width}{\wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@length@diff}{\wd\@tcb@mathbox@left@content@box - \wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
+        \@set@current@tcb@colors{tcbBlueScheme}%
+        \xp\ifstrempty\xp{#2}{\togglefalse{tcbtitle@included}}{\toggletrue{tcbtitle@included}}
+        \tcbset{title={#2}}%
+        \IfBooleanTF{#1}%
+                {\tcbsidebyside[dualIBPtable, width=\@env@BODY@width, sidebyside adapt=both, lefttitle=3mm, left skip=\@macro@shift, leftupper=4mm]}%
+                {\tcbsidebyside[dualIBPtable, leftupper=-8mm, sidebyside gap=-5mm, lefttitle=3mm]}%%
+        {\unskipspacing\centering\usebox{\@tcb@mathbox@left@content@box}}%
+        {\unskipspacing\centering\usebox{\@tcb@mathbox@right@content@box}}%
+        \togglefalse{@in@tcbenclosure}%
+        \tcbset{reset}%,empty
+        \tcbsetforeverylayer{title={},notitle}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%% Generates table for the 'tabular method' of 'integration by parts' (IBP), arrows are added on 2nd pass
+%                                   1 2  3  4   5 6 7 8
+\DeclareDocumentEnvironment{tcbIBP}{t! s t+ d() o m m G{\@default@differential@var} }
+{%\tcbIBP<!=label only title><*=newline before title text/math>(text entry)[math entry]{u term}{dv term}{wrt variable}
+        \IBPlinespacing%
+        \@set@current@tcb@colors{IBPColorset}%
+        \resetcounter{@IBP@rows@counter}%
+        \stepcounter{IBPtable}%\stepcounter{table}%
+        \SetMathVar!{#8}%
+        \global\let\@tcb@mathbox@title@newline@skip\@tcb@IBPtable@title@newline@skip%
+        \IfValueTF{#5}%
+                {\def\@tcbIBP@math@expression{#5}}%
+                {\def\@tcbIBP@math@expression{\int #6#7\@differential@op{\l@differential@var}}}%
+        \forwardBooleanList{\@set@tcb@mathbox@title}%
+                {#1/!,#2/*,#3/+}%
+                {\IBPtableName}%
+                :{\BreakableShadowText*:\cftX@tcbtitle@fontfamily:}:[#4]%
+                ;\shadowmath*!;(\@tcbIBP@math@expression)%
+        \savebox{\@tcb@mathbox@math@title@box}{\@tcb@mathbox@title@content}%
+        \savebox{\@tcb@mathbox@text@title@box}{\@tcb@mathbox@listentry@content}%
+        \setlength{\@tcb@mathbox@math@title@width}{\wd\@tcb@mathbox@math@title@box}%
+        \setlength{\@tcb@mathbox@text@title@width}{\wd\@tcb@mathbox@text@title@box}%
+        \centering%
+        \@set@conditional@tcb@settings(@conditional@tcb@settings){@in@tcbenclosure}{bottom=4.0mm}{bottom=2.0mm}%
+        \setlength{\parindent}{0em}%
+        \IBPtable{>{$}c<{$} c @{\hspace{\@tcb@mathbox@column@sep}} c  >{$}c<{$}}%
+                [\@tcb@mathbox@title@sep]%
+                (\@tcb@mathbox@title@suffix)%
+                {\@tcb@mathbox@title@content}%
+                {\@tcb@mathbox@listentry@content}({#6}{#7})%
+}{%
+        \endIBPtable%
+        \@draw@IBP@arrows\\%
+        \tcbset{reset}%,empty
+        \tcbsetforeverylayer{title={},notitle}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                                     1 2  3  4  5
+\DeclareDocumentCommand{\tcbPLD@parse@booleans}{s t! t- t+ t>}
 {%
-        %\linespread@settings[context=PLD]
-        \setlinespread{PLD}%
-        \polyDivision@parse@booleans#1%
-        \if@include@zero@coefficients@%
-                \toggletrue{@pld@print@zero@coefficients}%
-        \else%
-                \togglefalse{@pld@print@zero@coefficients}%
-        \fi%
-        \let\@pld@open@delimiter=#4%
-        \@set@current@tcb@colors{pldColorset}%
-        %\ULsettings[type=uline, depth={\@pld@ul@depth}, thickness={\@pld@ul@thickness}]
-        \setulsettings{uline}[depth={\@pld@ul@depth}, thickness={\@pld@ul@thickness}]%
-        \stepcounter{PLDtable}%
-        \stepcounter{table}%
-        \gdef\@PLD@math@color{stdblue}
-        \IfValueTF{#7}{\polyset{#7}}{}%
-        \polylongdiv{#5}{#6}%
-        %\ULsettings[type=uline, depth={2.0pt}, thickness={1.0pt}]%
-        \setulsettings{uline}[depth={2.0pt}, thickness={1.0pt}]%
-        \def\@math@title{\centering\protect\large\shadowmath*!{f(x)=\dfrac{#5}{#6}}}%
-        \def\@text@title{#3}%
-        \if@supress@title@%
-                \def\@pld@title{}%
-        \else%
-                \if@ignore@math@content@
-                        \def\@pld@title{\@tcb@pld@title@label{#3}}%
-                \else%
-                        \def\@pld@title{\@tcb@pld@title@label{#3}\\[0.6em]\centering{\centering\@math@title}}%
-                \fi
-        \fi%
+        \@parse@boolean{#1}{@include@PLD@zero@coefficients@}%\@include@PLD@zero@coefficients@TF
+        \@parse@boolean{#2}{@supress@PLD@title@}%\@supress@PLD@title@TF
+        \@parse@boolean{#3}{@ignore@PLD@math@title@}%\@ignore@PLD@math@title@TF
+        \@parse@boolean{#4}{@include@PLD@conclusion@}%\@include@PLD@conclusion@TF
+        \@parse@boolean{#5}{@PLD@sidebyside@}%\@PLD@sidebyside@title@TF
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbPLD@dimensions}{}
+{%
         \def\@maxof@savebox@widths{\maxof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}%
         \def\@minof@savebox@widths{\minof{\@pld@solution@box@width}{\@pld@conclusion@box@width}}%
         \ifx\pld@remainder\@empty%
@@ -941,83 +1220,155 @@
                 \addtolength{\@pld@tcb@width}{13mm}%
                 \setlength{\@pld@tcb@extrude@right}{6.5mm}%
         \fi%
-        \setlength{\@pld@tcb@leftrightskip}%
+        \setlength{\@tcb@mathbox@leftright@skip}%
                 {(\@pld@tcb@width + \@pld@tcb@extrude@right - \@minof@savebox@widths) / 2}%
-        \ifstrempty{\@pld@title}%
-                {\togglefalse{tcbtitle@included}}%
-                {\toggletrue{tcbtitle@included}}%
-        \ifstrempty{#3}%
-                {\def\@title@sep{}}%
-                {\def\@title@sep{\@tcb@title@sep}}%
-        \if@supress@title@%
-                \togglefalse{tcbtitle@included}%
-                \cftPLDtable@contentsline{}%
-                \bookmarkX@hypertarget{PLDtable}%
-                \tocX@hypertarget{table}%
-                \tcbset{title={}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbPLD@settings}{m}
+{%
+        \PLDlinespacing%
+        \if@include@PLD@zero@coefficients@%
+                \toggletrue{@pld@print@zero@coefficients}%
         \else%
-                \toggletrue{tcbtitle@included}%
-                \tcbset%
-                {%
-                        title=%
-                        {%
-                                \bookmarkX@hypertarget{PLDtable}%
-                                %\tocX@hypertarget{PLDtable}%
-                                \cftPLDtable@contentsline{\@title@sep#3}%
-                                \cftX@uparrow@link(dart)<0.3>{PLDtable}
-                                \@pld@title%
-                        }%
-                }%
+                \togglefalse{@pld@print@zero@coefficients}%
         \fi%
-        \cftPLDtable@bookmark!%
-        \if@include@conclusion@%
-                \begin{tcolorbox}%
-                [
-                        PLDStyle, width=\@pld@tcb@width + 2\@tcb@boxrule@linewidth,
-                        extrude left by=\@pld@tcb@leftrightskip,
-                        extrude right by=\@pld@tcb@leftrightskip,
-                        #8
-                ]%
-                        \begin{tcolorbox}[PLDcontentStyle, width=\@pld@tcb@width]%center,tcbox width=forced center,
-                                \usebox{\@pld@computation@box}%
-                                \ifx\pld@remainder\@empty%
-                                \else%
-                                        \usebox{\@pld@remainder@box}%
-                                \fi%
-                        \end{tcolorbox}%
+        \let\@pld@open@delimiter=#1%
+        \@set@current@tcb@colors{PLDColorset}%
+        \gdef\@tcbPLD@fontcolor{stdblue}
+        \setulsettings{uline}[depth={\@PLD@ul@depth}, thickness={\@PLD@ul@thickness}]%
+        \stepcounters{PLDtable}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%        1  2 3  4 5                                             6 7                  8
+\DeclareDocumentCommand{\@set@tcb@mathbox@title}%
+        {t! s t+ m D::{\BreakableShadowText*!:\@tcb@title@font:} o D;;{\shadowmath*!} d()}
+{%
+        \gdef\@tcb@mathbox@label{#4}%
+        \gdef\@tcb@mathbox@text@content{}%
+        \gdef\@tcb@mathbox@math@content{}%
+        \gdef\@tcb@mathbox@title@content{}%
+        \gdef\@tcb@mathbox@listentry@content{}%
+        \gdef\@tcb@mathbox@title@sep{}%
+        \gdef\@tcb@mathbox@title@suffix{}%
+        %\gdef\@tcb@mathbox@listentry@sep{}%
+        %\gdef\@tcb@mathbox@text@content@font{#5}%
+        \IfValueTF{#6}%
+        {%
+                \gdef\@tcb@mathbox@text@content{\protect#5{#6}}%
+                \gdef\@tcb@mathbox@listentry@content{\@tcb@title@sep#6}%
+        }%
+        {%
+                \gdef\@tcb@mathbox@text@content{}%
+                \gdef\@tcb@mathbox@listentry@content{}%
+        }%
+        \IfValueTF{#8}%
+                {\gdef\@tcb@mathbox@math@content{\protect#7{#8}}}%
+                {\gdef\@tcb@mathbox@math@content{}}%
+        \IfBooleanTF{#1}%
+        {%
+                \gdef\@tcb@mathbox@title@content{}%
+                %\togglefalse{tcbtitle@included}%
+        }%
+        {%
+                %\toggletrue{tcbtitle@included}%
+                \IfBooleanTF{#2}%
+                {%
+                        \IfBooleanTF{#3}%
+                                {\gdef\@tcb@mathbox@title@suffix{\@tcb@mathbox@title@newline}}{}%
+                        \gdef\@tcb@mathbox@title@content{\@tcb@mathbox@text@content\@tcb@mathbox@math@content}%
+                }%
+                {\gdef\@tcb@mathbox@title@content{\@tcb@mathbox@text@content}}%
+        }%
+        \ifdefempty{\@tcb@mathbox@title@content}%
+                {\gdef\@tcb@mathbox@title@sep{}}%
+                {\gdef\@tcb@mathbox@title@sep{\@tcb@title@sep}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                1     2 3            4 5 6   7
+\DeclareDocumentCommand{\tcbPLD@content}{s}
+{%
+                \begin{tcolorbox}[mathboxContentStyle, title={}, width=\@pld@tcb@width]%
+                        \usebox{\@pld@computation@box}%
+                        \ifx\pld@remainder\@empty%
+                        \else%
+                                \usebox{\@pld@remainder@box}%
+                        \fi\\%
+                \end{tcolorbox}%
+                \if@include@PLD@conclusion@%
                         \tcblower%
                         \begin{tcolorbox}%
                         [
-                                PLDcontentStyle, width=\@pld@tcb@width,
+                                mathboxContentStyle, width=\@pld@tcb@width,
                                 title={\BreakableShadowText*!:\@tcb@title@font:{PLD Result}\@tcb@title@sep}
                         ]%
-                                \usebox{\@pld@conclusion@box}%%
+                                \usebox{\@pld@conclusion@box}%
                         \end{tcolorbox}%
-                \end{tcolorbox}%
-        \else%
-                \begin{tcolorbox}%
-                [
-                        PLDStyle,
-                        width=\@pld@tcb@width + 2\@tcb@boxrule@linewidth,
-                        extrude left by=\@pld@tcb@leftrightskip,
-                        extrude right by=\@pld@tcb@leftrightskip,
-                        #8
-                ]%
-                        \begin{tcolorbox}[PLDcontentStyle, width=\@pld@tcb@width]%, width=\@pld@tcb@width
-                                \usebox{\@pld@computation@box}%
-                                \ifx\pld@remainder\@empty%
-                                \else%
-                                        \usebox{\@pld@remainder@box}%
-                                \fi\\%
-                        \end{tcolorbox}%
-                \end{tcolorbox}%
-        \fi%
-        \setulsettings[reset=true]%
-        %\ULsettings[reset=true]
+                \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%                                1     2 3            4 5 6   7
+\DeclareDocumentCommand{\tcbPLD}{D(){} o D''{\rparen} m m d() O{}}
+{%
+        \gdef\@tcbPLD@fontcolor{stdblue}
+        \tcbPLD@parse@booleans#1%
+        \tcbPLD@settings{#3}%
+        \IfValueTF{#6}{\polyset{#6}}{}%
+        \polylongdiv{#4}{#5}%
+        \setulsettings{uline}[depth={2.0pt}, thickness={1.0pt}]%
+        \global\let\@tcb@mathbox@title@newline@skip\@tcb@PLDtable@title@newline@skip%
+        \def\@tcbPLD@math@expression{f(x)=\dfrac{#4}{#5}}%
+        \forwardBooleanList{\@set@tcb@mathbox@title}%
+                {\@supress@PLD@title@TF/!,\@ignore@PLD@math@title@FT/*,\@ignore@PLD@math@title@FT/+}%
+                {\PLDtableName}%
+                :{\BreakableShadowText*:\cftX@tcbtitle@fontfamily:}:[#2]%
+                ;\large\shadowmath*!;(\@tcbPLD@math@expression)%
+        \tcbPLD@dimensions%
+        \if@PLD@sidebyside@
+                \def\@PLD@tcb@options{PLDStyle, sidebyside, title={}, #7}%
+        \else
+                \def\@PLD@tcb@options%
+                {%
+                        PLDStyle, width=\@pld@tcb@width + 2\@tcb@boxrule@linewidth, title={},
+                        extrude left by=\@tcb@mathbox@leftright@skip, extrude right by=\@tcb@mathbox@leftright@skip, #7%
+                }%
+        \fi%
+        \begin{PLDtable}%
+                [\@tcb@mathbox@title@sep]%
+                (\@tcb@mathbox@title@suffix)%
+                {\Large\@tcb@mathbox@title@content}%
+                {\@tcb@mathbox@listentry@content}%
+                [\@PLD@tcb@options]%
+                %-------------------------------------------------------------
+                \tcbPLD@content%
+        \end{PLDtable}
+        \setulsettings[reset=true]%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tcbPLDbox}{s O{} m m}
+{%\tcbIBP*<newline before text>!<no text>(text entry)[math entry]{u term}{dv term}{wrt variable}
+        \toggletrue{@in@tcbenclosure}%
+        \savebox{\@tcb@mathbox@left@content@box}{\begin{usecollectedBODY}#3\\[-2.5em]\end{usecollectedBODY}}%
+        \savebox{\@tcb@mathbox@right@content@box}{\begin{usecollectedBODY}#4\\[-2.5em]\end{usecollectedBODY}}%
+        \setlength{\@env@BODY@width}{\wd\@tcb@mathbox@left@content@box + \wd\@tcb@mathbox@right@content@box + 14mm}%
+        \setlength{\@tcb@mathbox@leftcontent@width}{\wd\@tcb@mathbox@left@content@box}%
+        \setlength{\@tcb@mathbox@rightcontent@width}{\wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@length@diff}{\wd\@tcb@mathbox@left@content@box - \wd\@tcb@mathbox@right@content@box}%
+        \setlength{\@macro@shift}{(\linewidth - \@env@BODY@width)/2}%
+        \@set@current@tcb@colors{tcbBlueScheme}%
+        \xp\ifstrempty\xp{#2}{\togglefalse{tcbtitle@included}}{\toggletrue{tcbtitle@included}}
+        \tcbset{title={#2}}%
+        \IfBooleanTF{#1}%
+                {\tcbsidebyside[dualPLDtable, leftupper=-0.5\linewidth,width=\@tcb@mathbox@leftcontent@width, sidebyside gap=-0.5\@tcb@mathbox@leftcontent@width]}%, sidebyside adapt=none, sidebyside adapt=both, left skip=\@macro@shift,width=\@env@BODY@width, width=\linewidth,
+                {\tcbsidebyside[dualPLDtable, leftupper=-0.5\linewidth, sidebyside gap=-0.5\@tcb@mathbox@leftcontent@width]}%%width=\linewidth,
+        {\unskipspacing\centering\usebox{\@tcb@mathbox@left@content@box}}%
+        {\unskipspacing\centering\usebox{\@tcb@mathbox@right@content@box}}%
+        \togglefalse{@in@tcbenclosure}%
+}
+%*******************************************************************************************************************************%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ PGF assisted math expression parsing/evaluation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%*******************************************************************************************************************************%
 \DeclareDocumentCommand{\toint}{m o}
 {%
         \tikzmath%
@@ -1045,14 +1396,55 @@
         \fi
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\moduloInt#1#2%
+%\def\moduloInt#1#2%
+%width("x")
+%\pgfmathwidth{"x"}
+%height("x")
+%\pgfmathheight{"x"}
+%depth("x")
+%\pgfmathdepth{"x"}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\moduloInt}{m m d()}
 {%
         \pgfmathparse{int(Mod(#2,#1))}%\pgfmathresult%
+        \IfValueTF{#3}{\csxdef{#3}{\pgfmathresult}}{}%
 }
-
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\pgfmathpluseq}{s m m d()}
+%{%
+%       \ifismacro
+%        \IfBooleanTF{#1}%
+%               {\pgfmathparse{int(add(#1,#2))}}%
+%               {\pgfmathparse{int(add(#1,#2))}}%
+%       \pgfmathparse{int(add(#1,#2))} \pgfmathresult
+%        \pgfmathadd{int(Mod(#2,#1))}%\pgfmathresult%
+%        \IfValueTF{#3}{\csxdef{#3}{\pgfmathresult}}{}
+%        \pgfmathsetcount{hcount register i}{hexpressioni}
+%       \pgfmathaddtocount{hcount register i}{hexpressioni}
+%}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\@plus@equals}{s m o D(){50} t+ t-}
+%{%
+%        \numdef\@temp}
+%        \IfBooleanTF{#1}%
+%                {}%
+%                {}%
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\tcboxmathtable\tcbmathbox
+\global\let\tcbmathtable\tcbmathbox
+\global\let\intbyparts\tcbIBP
+\global\let\intbypartsbox\tcbIBP
+\global\let\tcbpolylongdiv\tcbPLD
+\global\let\equationtcbox\tcbequation
+\global\let\tcboxequation\tcbequation
+\global\let\tcbeqbox\tcbequation
 %*******************************************************************************************************************************%
 %************************************************** End of 'my-math.sty' package ***********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
+\mathoff                                        % Restore '|' to standard 'other' character
 \endinput

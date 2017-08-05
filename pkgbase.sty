@@ -1,0 +1,419 @@
+%*******************************************************************************************************************************%
+%****************************************************** `pkgbase.sty' **********************************************************%
+%*******************************************************************************************************************************%
+% Establishes the most basic low-level character and control sequence definitions, those with broadest universal applicability.
+% This includes:
+%       (1) Defines packages required for (a) control sequence definitions in this package and (b) creation of additional package
+% option commands provided by 'pkgopts.sty' and provides package loading commands used to iterately load the required packages in
+% the list.
+%       (1) Character definitions creating named aliases for the #s 0,1,2,...,8,16,255, improving readability
+%       (2) Creation of control sequence shortcuts for temporarily changing and restoring character codes, funcioning as programming
+% context environments like \makeatletter/\makeatother for (1) '|' such that |x| in math mode typesets bold 'x' and (2) '\\' changed
+% to standard text character for printing control sequence name without escaping '\'.
+%       (3) a set of control sequences providing a simplified usage and/or reduced character typing burden for frequently used
+% commands and command sequences
+%       (4) Numerous argument processing commands for controlled preexpansion of specified parameter #s and/or control sequence
+% construction by name
+%       (5) Creation, appending, and processing of lists of various types, particularly extensive for the parsing of comma/space
+% separated and braced group values such that the corresponding values are stored and subsequently globally accessible through
+% a sequence of control sequences with standardized naming scheme by type and sequential numbering
+%       (6)
+%
+%
+%
+%
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
+\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesPackage{pkgbase}                       %
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareOption*{\PackageWarning{pkgbase}{Unknown \CurrentOption}}
+%*******************************************************************************************************************************%
+%************************************************ Processing of package options ************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ProcessOptions\relax
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                                           % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%************************************************ Plain TeX macro definitions **************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------ Register variable definitions ------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@pkgopts@packages{etoolbox,kvoptions,pgffor}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newtoggle{validated}
+\newif\ifvalidated\validatedfalse
+\newif\if@choicevals@validated\@choicevals@validatedfalse
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plain TeX macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------- Control sequence numbers and character code definitions -----------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\chardef\n@ne=0
+\chardef\zer@=0
+\chardef\@ne=1
+\chardef\tw@=2
+\chardef\thr@@=3
+\chardef\f@ur=4
+\chardef\e@ght=8
+\chardef\sixt@@n=16
+\chardef\@cclv=255
+%\chardef\@mxxiv=1024                                                   % Too big; \chardef: 0-255
+%-------------------------------------------------------------------------------------------------------------------------------%
+\chardef\CHARZERO=0
+\chardef\CHARONE=1
+\chardef\CHARTWO=2
+\chardef\CHARTHREE=3
+\chardef\CHARFOUR=4
+\chardef\CHAREIGHT=8
+\chardef\CHARSIXTEEN=16
+\chardef\CHARTWOFIFTYFIVE=255
+%\chardef\TENTWENTYFOUR=1024                                            % Too big; \chardef: 0-255
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\mathon{\catcode`|=\active}
+\def\mathoff{\catcode`|=12}
+\def\escapeon{\catcode`\\=0}
+\def\escapeoff{\catcode`\\=12}
+%\def\escapeon{\catcode`\\=0\escapechar=`\\}
+%\def\escapeoff{\catcode`\\=12\escapechar=`\&}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro argument parsing/storage commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\xp\expandafter
+\gdef\gxp{\xp\global\xp}
+\gdef\twoxp{\xp\xp\xp}
+\def\glet{\global\let}
+\def\@nil{}
+\def\@@empty{\@gobble\@@empty}
+\def\@nilbrackets[#1]{}
+\def\@identity#1{#1}
+\def\fullyexpand#1{\romannumeral - `0#1}
+\def\readahead#1#2{\afterassignment\@gobble\futurelet#1{#2}}
+\long\def\gobblethree#1#2#3{}
+\long\def\@gobblethree#1#2#3{}
+\long\def\firstofone#1{#1}
+\long\def\firstoftwo#1#2{#1}
+\long\def\secondoftwo#1#2{#2}
+\long\def\firstofthree#1#2#3{#1}
+\long\def\secondofthree#1#2#3{#2}
+\long\def\thirdofthree#1#2#3{#3}
+\long\def\firsttwoofthree#1#2#3{#1#2}
+\long\def\secondtwoofthree#1#2#3{#2#3}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@csname#1{\csname #1\endcsname}
+\def\thecsname#1{\xp\secondoftwo\string#1}
+\def\detok@csname#1{\xp\secondoftwo\detokenize{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macros for defining macros requiring expansion first ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\csname@cmd[1]{\xp\xp\csname#1\endcsname}
+\newcommand\csname@cmd@y[2]{\csname@cmd{#1}\csname#2\endcsname}
+\newcommand\csname@y[2]{\xp#1\csname#2\endcsname}
+\newcommand\csgname@y[2]{\gxp#1\csname#2\endcsname}
+\newcommand\csname@ny[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
+\newcommand\csname@nyN[3]{\xp#1\csname#2\endcsname{#3}}
+%\newcommand\csname@nYY[3]{\xp\csname@ny\xp#1\xp{\csname#2\endcsname}{#3}}
+\newcommand\csname@nYY[3]{\xp\xp\xp#1\xp\xp\xp{\xp\csname\xp#2\xp\endcsname\xp}\xp{\csname#3\endcsname}}
+\newcommand\csname@yn@params[4]{\xp#1\csname#2\endcsname#3{#4}}
+\newcommand\csname@ynn[4]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}}
+\newcommand\csname@nynn[5]{\xp#1\xp{\xp#2\xp}\xp{\csname#3\endcsname}{#4}{#5}}
+\newcommand\csname@ynnn[5]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
+\newcommand\csname@yynn[5]{\xp\csname@nynn\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\xp@ny[2]{\xp#1#2}
+\newcommand\xp@nY[2]{\xp#1\xp{#2}}
+\newcommand\xp@nny[3]{\xp#1\xp#2#3}
+\newcommand\xp@nnY[3]{\xp#1\xp#2\xp{#3}}
+\newcommand\xp@nNY[3]{\xp#1\xp{\xp#2\xp}\xp{#3}}
+\newcommand\xp@nyN[3]{\xp#1#2{#3}}
+\newcommand\xp@nYN[3]{\xp#1\xp{#2}{#3}}
+\newcommand\xp@nyy[3]{\xp\xp\xp#1\xp\xp\xp#2#3}
+\newcommand\xp@nyyy[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3#4}
+\newcommand\xp@nyyY[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3\xp{#4}}
+\newcommand\xp@nYNN[4]{\xp#1\xp{#2}{#3}{#4}}
+\newcommand\xp@nnny[4]{\xp#1\xp#2\xp#3#4}
+\newcommand\xp@nnyy[4]{\xp\xp\xp#1\xp\xp\xp#2\xp#3\xp#4}
+\newcommand\xp@nYNNN[5]{\xp#1\xp{#2}{#3}{#4}{#5}}
+\newcommand\xp@nNYNN[5]{\xp#1\xp{\xp#2\xp}\xp{#3}{#4}{#5}}
+\newcommand\xp@nYYNN[5]{\xp\xp\xp#1\xp\xp\xp{\xp#2\xp}\xp{#3}{#4}{#5}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\xp@nyII[2]{\xp\xp\xp#1\xp\xp\xp#2}
+\newcommand\xp@csname@ny[2]{\xp\xp\xp#1\csname#2\endcsname}
+\newcommand\xp@csname@nnY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp{\csname#3\endcsname}}
+\newcommand\xp@csargs[2]{\xp@csname@ny#1{#2}}
+\def\xp@cmd#1#2{\xp#1\xp#2}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\def\scopedef#1#2%
+\newcommand\scopedef[3][\protected@edef]%
+{%
+        \begingroup%
+        #2%
+        #1\x{\endgroup\noexpand#3}\x%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\preexpansion[3][\protected@edef]%
+{%
+        \def\preexpanded{#2}%
+        \def\postexpanded{#3}%
+        \scopedef[#1]{}{\postexpanded\preexpanded}%
+        %\begingroup%
+        %#1\x{\endgroup\noexpand\postexpanded\preexpanded}\x%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\xdef\arg@default@prefix{arg}
+\xdef\varg@default@prefix{varg}
+\xdef\ssvarg@default@prefix{ssvarg}
+\xdef\csvarg@default@prefix{csvarg}
+\xdef\bsvarg@default@prefix{bsvarg}
+\xdef\csnumname@default@prefix{arg}
+\xdef\csvargG@default@prefix{csvargG}
+\xdef\csvgroup@item@default@prefix{csvitem}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\xdef\argdef@prefix{arg}
+\xdef\varg@prefix{varg}
+\xdef\ssvarg@prefix{ssvarg}
+\xdef\csvarg@prefix{csvarg}
+\xdef\bsvarg@prefix{bsvarg}
+\xdef\csnumname@prefix{arg}
+\xdef\csvargG@prefix{csvargG}
+\xdef\csvgroup@item@prefix{csvitem}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\csvgroup@numformat{\roman}
+\xdef\ssvargsep{ }
+\xdef\csvargsep{,}
+\xdef\bsvargsep{}
+\gdef\xsvarg@name#1{\xsvarg@prefix\@xsvargs@numformat{#1}}
+\gdef\@xsvargs@numcmd#1{\romannumeral#1}
+\gdef\xsvarg@numeral#1{\xsvarg@prefix\@xsvargs@numcmd#1}
+\def\Romannumeral#1{\xp\uppercase\xp{\romannumeral#1\relax}}
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\newcommand\romanarg[2][\csvarg@prefix]{\xdef\csvarg@prefix{#1}\csname\csvarg@prefix\romannumeral#2\endcsname}
+\newcommand\Romanarg[2][\csvarg@prefix]{\xdef\csvarg@prefix{#1}\csname\csvarg@prefix\Romannumeral#2\endcsname}
+\newcommand\lastvargcmd[1][\romannumeral]{\csuse{\csvarg@prefix#1\numexpr\narg+1\relax}}
+\newcommand\lastvargcmd@def[2][\romannumeral]{\csgdef{\csvarg@prefix#1\numexpr\narg+1\relax}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\setssvargs[2][\roman]{\setxsvargs[#1]{ssv}{#2}}
+\newcommand\setbsvargs[2][\roman]{\setxsvargs[#1]{bsv}{#2}}
+\newcommand\setcsvargs[2][\roman]{\setxsvargs[#1]{csv}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\setxsvargs[3][\roman]%
+{%
+        \gdef\@xsvargs@numformat{#1}%
+        \xp\gdef\xp\@xsvargs@numcmd@name\xp{\thecsname{#1}numeral}%
+        \gdef\@xsvargs@numcmd##1{\@nameuse{\@xsvargs@numcmd@name}##1}%
+        \xdef\xsvarg@prefix{\csuse{#2arg@prefix}}%
+        \xdef\xsvargsep{\csuse{#2argsep}}%
+        \gdef\parse@xsvBlock{\csname parse@#2Block\endcsname}%
+        \if T\converttilde\def~{ }\else\catcode`~=12\fi%
+        \protected@edef\the@string{#3}%
+        \setcounter{arg@index}{0}%
+        \preexpansion{\xsvargsep}{\lowercase{\xp\parse@xsvBlock\the@string}}\string@end%
+        \let~\SaveHardspace%
+        \catcode`~=13%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\parse@@xsvBlock#1%
+{%
+        \stepcounter{arg@index}%
+        \@namedef{\xsvarg@name{arg@index}}{#1}%
+        \futurelet\tmp\parse@xsvBlock@%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\parse@ssvBlock#1 {\parse@@xsvBlock{#1}}
+\def\parse@csvBlock#1,{\parse@@xsvBlock{#1}}
+\def\parse@bsvBlock#1{\parse@@xsvBlock{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\parse@xsvBlock@%
+{%
+        \ifx\tmp\string@end\edef\narg{\thearg@index}\xp\@gobble%
+        \else\xp\parse@xsvBlock\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro definition/assignment helper command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------- Control sequence ssignment helper commands ------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\DoLongFutureLet #1#2#3#4%
+{%
+        \def\@FutureLetDecide%
+        {%
+                #1#2%
+                \@FutureLetToken%
+                        \def\@FutureLetNext{#3}%
+                \else%
+                        \def\@FutureLetNext{#4}%
+                \fi%
+                \@FutureLetNext%
+        }%
+        \futurelet\@FutureLetToken\@FutureLetDecide%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------- Macro definition helper commands -----------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\shown#1{\xp\show\csname\string#1\endcsname}
+\def\showthen#1{\xp\showthe\csname\string#1\endcsname}
+\def\don#1{\csname\string#1\endcsname}
+\def\defn#1{\xp\def\csname\string#1\endcsname}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal/helper macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%expandnext\g@addto@macro%
+\long\def\addto#1#2{\xp\def\xp#1\xp{#1#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\addtolist#1#2{\lst@lAddTo#1{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@create@tokenlist#1#2%
+{%
+        \@tfor\nextchar:=#1\do%
+        {%
+                \xp\@add@to@csvlist%
+                \xp{\xp\string\nextchar}%
+                {#2}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\isinlist#1#2#3%
+{%
+        \def\tmp##1#2##2\end%
+        {%
+                \def\tmp{##2}%
+                \ifx\tmp\empty \csname iffalse\xp\endcsname \else
+                  \csname iftrue\xp\endcsname \fi%
+        }% end of \def\tmp
+        \xp\tmp#1\endlistsep#2\end
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\ifmember[2]{%
+\def\ifmember#1#2%
+{%
+        \in@{#1}{#2}%
+        \ifin@%
+                \expandafter\@firstoftwo%
+        \else%
+                \expandafter\@secondoftwo%
+        \fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\ifmember[2]{%
+\def\ifcsvlistitem#1#2%
+{%
+        \def\csvcheckitem{#1}%
+        \xp\xp\xp\in@\xp\xp\xp{\xp\csvcheckitem\xp}\xp{#2}%
+        \ifin@%
+                \expandafter\@firstoftwo%
+        \else%
+                \expandafter\@secondoftwo%
+        \fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@add@to@argslist#1#2%
+{%
+        %\ifx#2\@empty\undef#2\fi
+        \ifundef{#2}%
+                {\gdef#2{{#1}}}%
+                {\gdef#2{#2 {#1}}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@add@to@csvlist#1#2%
+{%
+        \ifx#2\@empty\undef#2\fi%
+        \ifundef{#2}%
+                {\protected@xdef#2{#1}}%
+                {\protected@xdef#2{#2,#1}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@uniquely@add@to@csvlist#1#2%
+{%
+        \ifx#2\@empty\undef#2\fi%
+        \ifundef{#2}%
+        {\protected@xdef#2{#1}}%
+        {%
+                %\ifmember{#1}{#2}{}{\protected@xdef#2{#2,#1}}%
+                \def\csvcheckitem{#1}%
+                \xp\xp\xp\in@\xp\xp\xp{\xp\csvcheckitem\xp}\xp{#2}%
+                \ifin@\else%
+                        \protected@xdef#2{#2,#1}%
+                \fi%
+                %\protected@xdef#2{#2,#1}
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\sortbycolA#1|#2|#3|#4;%
+{%
+        \addtolist{\@sorted@list}{#1#2,}%
+        \xp\gdef\csname#1#2\endcsname{\textit{#1}&#2&#3&#4\cr\relax}%
+        \lst@BubbleSort{\@sorted@list}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\sortbycolB#1|#2|#3|#4;%
+{%
+        \addtolist{\@sorted@list}{#2#1,}%
+        \xp\gdef\csname#2#1\endcsname{\textit{#1}&#2&#3&#4\cr\relax}%
+        \lst@BubbleSort{\@sorted@list}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------- Text/list/message print commands -----------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\printlist@addsep#1#2{\ifnumcomp{#1}{<}{#2}{,\space}{}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@print@deflist#1%
+{%
+        \edef\@current@list{#1}%
+        \@for\next:=\@current@list \do{\next,}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}     %Print code executed after environment #1 closes
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\msgtext{Default message text}
+\gdef\hlptext{Default help text}
+\def\IndentedMessageBreak{\MessageBreak\space\space\space\space}
+\def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
+\xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************* Package loading commands extending '\RequirePackage' and package option handler commands ******************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\pkgname{R2Labs}%
+\def\pkgload@font{\fontfamily{cmr}\selectfont}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************** End of 'pkgbase.sty' package **************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

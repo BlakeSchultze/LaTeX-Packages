@@ -17,7 +17,7 @@
 %*******************************************************************************************************************************%
 \ProcessOptions\relax
 %-------------------------------------------------------------------------------------------------------------------------------%
-\makeatletter                           % Change @ to standard letter, \catcode'@=11 so it can be used in macro names/definition
+\makeatletter                                   % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
@@ -55,14 +55,14 @@
 \def\@xparse@T@indicator{\BooleanTrue}
 \def\@xparse@F@indicator{\BooleanFalse}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\iftogglevar#1#2#3{\ifltxtoggle{#1}{#2}{#3}}
-\def\istogglevar#1{\ifcsdef{etb@tgl@#1}{\@binary@T@indicator}{\@binary@F@indicator}}
-\def\isifvar#1{\ifltxif{#1}{\@binary@T@indicator}{\@binary@F@indicator}}
-\def\toggleval#1{\iftoggle{#1}{\@binary@T@indicator}{\@binary@F@indicator}}
+%\def\ifltxtoggle#1#2#3{\ifcsdef{etb@tgl@#1}{#2}{#3}}
+%\def\ifltxif#1#2#3{\ifcsdef{if#1}{#2}{#3}}
+\def\ifcondition#1\fi{\csname @#1\@@empty first\else second\fi oftwo\endcsname}
+\def\ifblank#1{\ifcondition\ifcat$\detokenize\expandafter{\@gobble#1.}$\fi}
 \def\ifval#1{\ifbool{#1}{\@binary@T@indicator}{\@binary@F@indicator}}
 \def\ifltxtoggle#1#2#3{\ifcsdef{etb@tgl@#1}{#2}{#3}}
 \def\ifltxif#1#2#3{\ifcsdef{if#1}{#2}{#3}}
-\def\ifcounter#1#2#3{\ifnumcomp{\value{#1}}{=}{1}{#2}{#3}}
+\def\ifcounter#1#2#3{\ifnumequal{\value{#1}}{1}{#2}{#3}}
 \def\ifxparsebool#1#2#3%
 {%
         \IfStrEqCase{#1}%
@@ -71,52 +71,121 @@
                 {\BooleanFalse}{#2}%
         }[#3]%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\ifismacro#1%
 {%
-        \scopedef{\escapechar=-1}{\def\noexpand\first{\string#1}}
-        \scopedef{\escapechar=`\\}{\def\noexpand\second{\string#1}}
-        \ifnum\pdfstrcmp{\first}{\second}=\z@
-                \expandafter\@secondoftwo % no backslash in front
-        \else
-                \expandafter\@firstoftwo  % backslash in front
+        \scopedef{\escapechar=-1}{\def\noexpand\first{\string#1}}%
+        \scopedef{\escapechar=`\\}{\def\noexpand\second{\string#1}}%
+        \ifnum\pdfstrcmp{\first}{\second}=\z@%
+                \xp\@secondoftwo % no backslash in front
+        \else%
+                \xp\@firstoftwo  % backslash in front
         \fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\if@cond#1\fi{\csname @#1\@@empty first\else second\fi oftwo\endcsname}
+\def\if@blank#1{\if@cond\ifcat$\detokenize\expandafter{\@gobble#1.}$\fi}
+\def\if@num#1#{\if@cond\ifnum#1\fi}
+\def\if@cseq#1#2{\if@cond\ifx#1#2\fi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\begingroup
+\catcode`\&=7
+\gdef\defregistertester#1#2{%
+  \begingroup
+  \def\x##1{\unexpanded\expandafter
+    {\csname\expandafter\@gobble\string#1@test@##1\endcsname}}%
+  \edef\x{\endgroup
+    \def\noexpand#2####1{%
+      \unexpanded{\if@cseq#1##1\register@test@a}{%
+        \unexpanded{\ifprimitive{##1}\register@test@b}
+        {\noexpand\expandafter\x{a}\noexpand\meaning####1:&}%
+      }%
+    }%
+    \def\x{a}####1:####2&{\x{b}####1\string#1&}%
+    \def\x{b}####1\string#1####2&{\noexpand\if@blank{####1}}%
+  }\x
+}
+\endgroup
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\register@test@a#1#2{#2}
+\def\register@test@b#1#2{is primitive}
+\def\ifprimitive#1{\expandafter\if@primitive\meaning#1\relax}
+\def\if@primitive#1#2\relax{%
+  \if@cond\if#1\@backslashchar\fi{%
+    \ifdigitfound{#2}\@secondoftwo\@firstoftwo
+  }{%
+    \@secondoftwo
+  }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\ifdigitfound#1{\if@cond\if0\if@blank{#1}{1}{\if@digitfound#1\@nnil}\fi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\if@digitfound#1{%
+  \if@cseq#1\@nnil{1}{%
+    \if@num`#1>47{%
+      \if@num`#1<58{0\remove@to@nnil}{\if@digitfound}%
+    }{%
+      \if@digitfound
+    }%
+  }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\ifboolkeyset#1#2%
 {%
-        \ifnumcomp{\commandkey{#1}}{=}{#2}%
+        \ifnumequal{\commandkey{#1}}{#2}%
                 {\boolkeyset{#1}{F}}%
                 {\boolkeyset{#1}{T}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\ifkeybool#1#2#3{\ifnumcomp{\commandkey{#1}}{=}{\binaryT}{#2}{#3}}
-\def\ifkeycase#1{\ifcase\commandkey{#1}\relax}
-\def\ifcountcase#1{\ifcase\the\value{#1}\relax}
-\def\boolkeyset#1#2{\setTFindicator[#2]{binary}{@boolkey@#1@set}}
+\long\def\ifboolkey#1#2#3{\ifnumequal{\commandkey{#1}}{\binaryT}{#2}{#3}}
+\long\def\ifnotboolkey#1#2#3{\ifnumequal{\commandkey{#1}}{\binaryT}{#3}{#2}}
+\long\def\ifkeycase#1{\ifcase\commandkey{#1}\relax}
+%\def\ifcountcase#1{\ifcase\the\value{#1}\relax}
+\long\def\ifcountcase#1#2{\ifcase\the\value{#1}\relax#2\fi}
+\def\boolkeyset#1#2{\cssetTF[#2]{binary}{@boolkey@#1@set}}
 \def\negateboolkey#1{1-\commandkey{#1}}
+%\def\setboolkeyarg#1#2#3{\ifboolkey{#1}{\xp\xdef\csname @@#1@bool\endcsname{#2}}{\xp\xdef\csname @@#1@bool\endcsname{#3}}}
+\def\setcommandkeyarg#1#2#3{\ifcommandkey{#1}{\xp\xdef\csname @@#1@bool\endcsname{#2}}{\xp\xdef\csname @@#1@bool\endcsname{#3}}}
+\def\setboolkeyargs#1%
+{%
+        \xdef\@@keys{#1}%
+        \gdef\@@boolargs{}%
+        \foreach \@@key in \@@keys{\xappto{\@@boolargs}{\csuse{@@\@@key @bool}}}%
+}
+\def\setboolkeyarg#1%
+{%
+        \xdef\@@keys{#1}%
+        \gdef\@@boolargs{}%
+        \foreach \@@key / \@@Tkey / \@@Fkey in \@@keys%
+        {%
+                \ifboolkey{\@@key}%
+                        {\xappto{\@@boolargs}{\@@Tkey}}%
+                        {\xappto{\@@boolargs}{\@@Fkey}}%
+        }%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@provideTF#1(#2){\xp@xdef{#1}{\@nameuse{#2}}}
-\def\provideTF#1{\expandafter\@provideTF#1}
-\def\countertrue#1{\setcounter{#1}{1}}                          % Decrease counter by 1
-\def\counterfalse#1{\setcounter{#1}{0}}                          % Decrease counter by 1
-\def\TFtrue#1{}
-\def\TFfalse#1{}
-\def\g@countertrue#1{\global\setcounter{#1}{1}}                          % Decrease counter by 1
-\def\g@counterfalse#1{\global\setcounter{#1}{0}}                          % Decrease counter by 1
-\def\g@booltrue#1{\global\booltrue{#1}}                          % Decrease counter by 1
-\def\g@boolfalse#1{\global\boolfalse{#1}}                          % Decrease counter by 1
-\def\g@toggletrue#1{\global\toggletrue{#1}}                          % Decrease counter by 1
-\def\g@togglefalse#1{\global\togglefalse{#1}}                          % Decrease counter by 1
-\def\g@TFtrue#1{}
-\def\g@TFfalse#1{}
+\def\@provideTF#1(#2){\csname@nyN\xdef{#1}{\@nameuse{#2}}}                              % Parse \provideTF argument and create variable
+\def\provideTF#1{\xp\@provideTF#1}                                     % Create TF text indicator variable if doesn't exist
+\def\countertrue#1{\setcounter{#1}{1}}                                          % Locally set TF indicator counter variable true
+\def\counterfalse#1{\setcounter{#1}{0}}                                         % Locally set TF indicator counter variable false
+\def\TFtrue#1{}                                                                 % Locally set TF indicator text variable true
+\def\TFfalse#1{}                                                                % Locally set TF indicator text variable false
+\def\g@countertrue#1{\global\setcounter{#1}{1}}                                 % Globally set TF indicator counter variable true
+\def\g@counterfalse#1{\global\setcounter{#1}{0}}                                % Globally set TF indicator counter variable false
+\def\g@booltrue#1{\global\booltrue{#1}}                                         % Globally set TF indicator bool(if) variable true
+\def\g@boolfalse#1{\vspace{0mm}\global\boolfalse{#1}\vspace{0mm}}               % Globally set TF indicator bool(if) variable false
+\def\g@toggletrue#1{\global\toggletrue{#1}}                                     % Globally set TF indicator toggle variable true
+\def\g@togglefalse#1{\vspace{0mm}\global\togglefalse{#1}\vspace{0mm}}           % Globally set TF indicator toggle variable false
+\def\g@TFtrue#1{}                                                               % Globally set TF indicator text variable true
+\def\g@TFfalse#1{}                                                              % Globally set TF indicator text variable false
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\ifAnd@T@action{}
-\def\ifAnd@F@action{\global\@conditional@status@false\breakforeach\returnfalse}
-\def\ifOr@T@action{\global\@conditional@status@true\breakforeach\returntrue}
-\def\ifOr@F@action{}
-\def\ifXOr@T@action%
+\def\ifAnd@T@action{}                                                           % Action performed for each true \ifAnd case
+\def\ifAnd@F@action{\global\@conditional@status@false\breakforeach\returnfalse} % Action performed for each false \ifAnd case
+\def\ifOr@T@action{\global\@conditional@status@true\breakforeach\returntrue}    % Action performed for each true \ifOr case
+\def\ifOr@F@action{}                                                            % Action performed for each true \ifOr case
+\def\ifXOr@T@action%                                                            % Action performed for each true \ifXOr case
 {%
         \if@conditional@status@%
                 \global\@conditional@status@false%
@@ -127,48 +196,64 @@
                 \returntrue%
         \fi%
 }
-\def\ifXOr@F@action{}
-%\def\conditional@comparison@T@action{\global\@conditional@status@true\return=\binaryT;}
-%\def\conditional@comparison@F@action{\global\@conditional@status@false\return=\binaryF;}
-\def\conditional@comparison@T@action{\returntrue{@conditional@status@}}
-\def\conditional@comparison@F@action{\returnfalse{@conditional@status@}}
+\def\ifXOr@F@action{}                                                           % Action performed for each true \ifXOr case
+\def\conditional@comparison@T@action{\returntrue{@conditional@status@}}         % Action performed for true comparisons
+\def\conditional@comparison@F@action{\returnfalse{@conditional@status@}}        % Action performed for false comparisons
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\theifname#1{\expandafter\@gobblethree\string#1}
+\def\theifname#1{\xp\@gobblethree\string#1}
 \def\@if@T@ifxcheck{\etb@istrue}
 \def\@if@F@ifxcheck{\etb@isfalse}
-\def\@default@indicator@vars@prefix{@TF@indicator}
-\def\@equality@status@on{\@equality@status@true\@set@TF@indicator@vars}
-\def\@reset@equality@status{\@equality@status@false\@set@TF@indicator@vars}
+\def\@default@TF@vars@prefix{@TF@indicator}
+\def\@equality@status@on{\@equality@status@true\@set@TF@vars}
+\def\@reset@equality@status{\@equality@status@false\@set@TF@vars}
 \def\the@conditional@status{\if@conditional@status@\@T@indicator\\\else\@F@indicator\\\fi}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\printnumber#1#2{\tempcounter{#2}#1{@macro@counter}}
-\def\setprint#1{\IfSubBooleanTF{#1}{\@print@on@true\@local@print@on@true}{\@print@on@false\@local@print@on@false}}
+%\def\setprint#1{\IfSubBooleanTF{#1}{\@print@on@true\@local@print@on@true}{\@print@on@false\@local@print@on@false}}
+\def\@@print@on{\global\@print@on@true\global\@local@print@on@true}
+\def\@@print@off{\global\@print@on@false\global\@local@print@on@false}
+\def\@setprint#1{\IfSubBooleanTF{#1}{\@@print@on}{\@@print@off}}
 \def\setlocalprint#1{\IfSubBooleanTF{#1}{\@local@print@on@true}{\@local@print@on@false}}
-\def\resetlocalprint{\let\if@local@print@on@\if@print@on@}
+\def\resetlocalprint{\global\let\if@local@print@on@\if@print@on@}
+\def\overridelocalprint#1{\IfSubBooleanTF{#1}{\global\@local@print@override@on@true}{\global\@local@print@override@on@false}}
 \def\localprint#1{\if@local@print@on@#1\fi}
-%\def\cprint#1{\if@print@on@#1\fi}
-\def\cprint#1{\localprint{#1}\resetlocalprint}
+\def\@tprint#1{\localprint{#1}\resetlocalprint}
 \def\@print@TF@value#1{\@@print@TF@value#1}
 \def\@@print@TF@value#1(#2){\@nameuse{#1}}
-\def\@print@if@name#1{\expandafter\@gobblethree\string#1}
+\def\@print@if@name#1{\xp\@gobblethree\string#1}
 \def\@print@if@value#1{\csuse{#1}\@T@indicator\else\@F@indicator\fi}
 \def\@print@bool@value#1{\csuse{if#1}\@T@indicator\else\@F@indicator\fi}
 \def\@print@toggle@value#1{\iftoggle{#1}{\@T@indicator}{\@F@indicator}}
 \def\@print@counter@value#1{\printcounter{\arabic}{#1}}
+\def\thetoggleval#1{\iftoggle{#1}{\@binary@T@indicator}{\@binary@F@indicator}}
+\def\errcmd#1{\string#1\space}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@single@arg@test@print#1{1=#1}
+\def\@two@arg@test@print#1#2{1=#1\\2=#2}
+\def\@three@arg@test@print#1#2#3{1=#1\\2=#2\\3=#3}
+\def\@four@arg@test@print#1#2#3#4{1=#1\\2=#2\\3=#3\\4=#4}
+\def\@five@arg@test@print#1#2#3#4#5{1=#1\\2=#2\\3=#3\\4=#4\\5=#5}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------- Counter Increment/Print Commands ----------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\thecounter#1{\the\value{#1}}
-\def\@increment@tcbfigure@counter#1{\refstepcounter{@num@tcbfigures}}  % Used to keep track of # of images in each row
-\def\incrementcounter#1{\stepcounter{#1}}                          % Decrease counter by 1
+\def\stepcount#1{\advance#1 1\relax}                                    % Increase count by 1
+\def\addtocount#1#2{\advance#1 #2\relax}                                % Add #2 to count
+\def\setcount#1#2{#1 #2\relax}                                          % Set count to #2
+\def\incrementcount#1{\stepcount{#1}}                                   % Increase count by 1
+\def\decrementcount#1{\addtocount{#1}{-1}}                              % Decrease count by 1
+\def\thecount#1{\the#1}                                                 % Generate string from count value
+\def\printcount#1{\number#1}                                            % Generate string from count value
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\incrementcounter#1{\stepcounter{#1}}                               % Increase counter by 1
 \def\decrementcounter#1{\addtocounter{#1}{-1}}                          % Decrease counter by 1
-\def\tempcounter#1{\setcounter{@macro@counter}{#1}}                                   % Generate string from counter value
-\def\@print@before@increment#1#2{#1{#2}\refstepcounter{#2}}            % Print/increment counter #2 w/ format #1 (e.g. \alph)
-\def\printcounter#1#2{#1{#2}\relax}                                   % Generate string from counter value
+\def\tempcounter#1{\setcounter{@macro@counter}{#1}}                     % Generate string from counter value
+\def\@print@before@increment#1#2{#1{#2}\stepcounter{#2}}                % Print/increment counter #2 w/ format #1 (e.g. \alph)
+\def\thecounter#1{\the\value{#1}}                                       % Generate string from counter value
+\def\printcounter#1#2{#1{#2}\relax}                                     % Generate string from counter value
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\steplinkedcounter#1#2%
 {%
@@ -208,6 +293,14 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\def\stepcounters#1{\foreach \@counter@name in {#1} {\stepcounter{\@counter@name}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\refstepcounters#1{\foreach \@counter@name in {#1} {\refstepcounter{\@counter@name}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\decrementcounters#1{\foreach \@counter@name in {#1} {\decrementcounter{\@counter@name}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\setcounters#1#2{\foreach \@counter@name in {#1} {\setcounter{\@counter@name}{#2}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@config@countinchap@counters%
 {
         \ifmylatex@countinchaps%
@@ -223,91 +316,122 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------- Generic/Universal Contexts -------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\newpar{\\[-1.5mm]}
-\def\parnoskip{\par\vspace{-\parskip}}
-\def\shrinkparskip{\@macro@length=\parskip\setlength{\parskip}{-0.33em}}
-\def\restoreparskip{\setlength{\parskip}{\@macro@length}}
-\def\@no@idx@clearpage{\let\imki@clearpage\@empty}
-\def\@override@idx@clearpage#1{\let\imki@clearpage#1}
 \def\@enforce@onecolumn{\if@twocolumn\@restonecoltrue\onecolumn\else\@restonecolfalse\fi}
 \def\@restore@twocolumn{\if@restonecol\twocolumn\fi}
+\def\newpar{\\[-1.5mm]}
+\def\indentpar{\par\indent}
+\def\tcbindentpar{\par\hskip\tcbparindent}
+\def\parnoindent{\par\noindent}
+\def\parnoskip{\par\vskip-2\parskip}
+\def\shrinkparskip{\@macro@length=\parskip\setlength{\parskip}{-0.33em}}
+\def\restoreparskip{\setlength{\parskip}{\@macro@length}}
+\def\tcbcodehline<#1>{\midrule\midrule\midrule\\[#1]}
+\def\@no@idx@clearpage{\let\imki@clearpage\@empty}
+\def\@override@idx@clearpage#1{\let\imki@clearpage#1}
+\numdef\@rule@fontsize{11}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@gls@glossary@style{alttreehypergroup}                     % Glossary style (my-glossary-tree.sty) Alternative: Indexhypergroup
 %\def\@gls@glossary@style{indexhypergroup}
 %-------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------- Front/back Matter Contexts -------------------------------------------------%
+%---------------------------------------- Default values for key/val commands by context ---------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \numgdef\@doc@baselinestretch{1.2}                              % Defines \baselinestretch for default document contexts
-\numgdef\@doc@arraystretch{1.2}                                 % Defines \arraystretch for default document contexts
-\gdef\@doc@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for default document contexts
 \numgdef\@coverpage@baselinestretch{1.0}                        % Defines \baselinestretch for coverpage context
-\numgdef\@coverpage@arraystretch{1.2}                           % Defines \arraystretch for coverpage context
-\gdef\@coverpage@arrayrulewidth{\@ul@thickness}                 % Defines \arrayrulewidth for coverpage context
 \numgdef\@toc@baselinestretch{1.2}                              % Defines \baselinestretch for default document contexts
-\numgdef\@toc@arraystretch{1.2}                                 % Defines \arraystretch for default document contexts
-\gdef\@toc@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for default document contexts
-\numgdef\@IBP@baselinestretch{1.0}                              % Defines \baselinestretch for IBP table contexts
-\numgdef\@IBP@arraystretch{1.5}                                 % Defines \arraystretch for IBP table contexts
-\dimgdef\@IBP@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for IBP table contexts
-\numgdef\@PLD@baselinestretch{0.85}                             % Defines \baselinestretch for PLD table contexts
-\numgdef\@PLD@arraystretch{1.2}                                 % Defines \arraystretch for PLD table contexts
-\gdef\@PLD@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for PLD table contexts
+\numgdef\@IBP@baselinestretch{1.1}                              % Defines \baselinestretch for IBP table contexts
 \numgdef\@problem@baselinestretch{1.2}                          % Defines \baselinestretch for math/word problem contexts
-\numgdef\@problem@arraystretch{1.5}                             % Defines \arraystretch for math/word problem contexts
-\dimgdef\@problem@arrayrulewidth{0.75pt}                        % Defines \arrayrulewidth for math/word problem contexts
+\numgdef\@PLD@baselinestretch{0.85}                             % Defines \baselinestretch for PLD table contexts
 \numgdef\@solution@baselinestretch{1.5}                         % Defines \baselinestretch for math/word problem solution contexts
-\numgdef\@solution@arraystretch{1.2}                            % Defines \arraystretch for math/word problem solution contexts
-\dimgdef\@solution@arrayrulewidth{0.75pt}                       % Defines \arrayrulewidth for math/word problem solution contexts
 \numgdef\@figbox@baselinestretch{1.5}                           % Defines \baselinestretch for boxed figure group contexts
-\numgdef\@figbox@arraystretch{1.2}                              % Defines \arraystretch for boxed figure group  contexts
-\dimgdef\@figbox@arrayrulewidth{0.75pt}                         % Defines \arrayrulewidth for boxed figure group  contexts
 \numgdef\@listing@baselinestretch{1.1}                          % Defines \baselinestretch for code listing contexts
-\numgdef\@listing@arraystretch{1.2}                             % Defines \arraystretch for code listing contexts
-\dimgdef\@listing@arrayrulewidth{0.75pt}                        % Defines \arrayrulewidth for code listing contexts
 \numgdef\@Terminal@baselinestretch{1.2}                         % Defines \baselinestretch for terminal/command prompt contexts
-\numgdef\@Terminal@arraystretch{1.2}                            % Defines \arraystretch for terminal/command prompt contexts
-\dimgdef\@Terminal@arrayrulewidth{0.75pt}                       % Defines \arrayrulewidth for terminal/command prompt contexts
 \numgdef\@Matlab@baselinestretch{1.1}                           % Defines \baselinestretch for Matlab listing contexts
-\numgdef\@Matlab@arraystretch{1.2}                              % Defines \arraystretch for Matlab listing contexts
-\dimgdef\@Matlab@arrayrulewidth{0.75pt}                         % Defines \arrayrulewidth for Matlab listing contexts
 \numgdef\@code@baselinestretch{1.05}                            % Defines \baselinestretch for program language code listing context
-\numgdef\@code@arraystretch{1.0}                                % Defines \arraystretch for program language code listing contexts
-\dimgdef\@code@arrayrulewidth{0.75pt}                           % Defines \arrayrulewidth for program language code listing contexts
 \numgdef\@FBM@baselinestretch{1.0}                              % Defines \baselinestretch for front/back matter contexts
-\numgdef\@FBM@arraystretch{1.0}                                 % Defines \arraystretch for front/back matter contexts
-\dimgdef\@FBM@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for front/back matter contexts
-\numdef\@tcb@arraystretch{1.5}                                  % Defines \baselinestretch for general tcolorbox contexts
 \numdef\@tcb@baselinestretch{1.75}                              % Defines \arraystretch for general tcolorbox contexts
-\dimgdef\@tcb@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for general tcolorbox contexts
-\def\@nomecl@baselinestretch{0.0}                               % Defines \baselinestretch for the nomenclature listing context
+\numdef\@MDFdefbox@baselinestretch{1.75}                        % Defines \arraystretch for general tcolorbox contexts
+\numgdef\@nomecl@baselinestretch{0.0}                           % Defines \baselinestretch for the nomenclature listing context
 %-------------------------------------------------------------------------------------------------------------------------------%
-\numdef\@tcb@rounded@arclength{180}
-\numdef\@tikzheading@rounded@arclength{180}
+\gdef\@doc@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for default document contexts
+\gdef\@coverpage@arrayrulewidth{\@ul@thickness}                 % Defines \arrayrulewidth for coverpage context
+\gdef\@toc@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for default document contexts
+\gdef\@PLD@arrayrulewidth{\@ul@thickness}                       % Defines \arrayrulewidth for PLD table contexts
+\dimgdef\@IBP@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for IBP table contexts
+\dimgdef\@problem@arrayrulewidth{0.75pt}                        % Defines \arrayrulewidth for math/word problem contexts
+\dimgdef\@solution@arrayrulewidth{0.75pt}                       % Defines \arrayrulewidth for math/word problem solution contexts
+\dimgdef\@figbox@arrayrulewidth{0.75pt}                         % Defines \arrayrulewidth for boxed figure group  contexts
+\dimgdef\@listing@arrayrulewidth{0.75pt}                        % Defines \arrayrulewidth for code listing contexts
+\dimgdef\@Terminal@arrayrulewidth{0.75pt}                       % Defines \arrayrulewidth for terminal/command prompt contexts
+\dimgdef\@Matlab@arrayrulewidth{0.75pt}                         % Defines \arrayrulewidth for Matlab listing contexts
+\dimgdef\@code@arrayrulewidth{0.75pt}                           % Defines \arrayrulewidth for program language code listing contexts
+\dimgdef\@FBM@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for front/back matter contexts
+\dimgdef\@tcb@arrayrulewidth{0.75pt}                            % Defines \arrayrulewidth for general tcolorbox contexts
+\dimgdef\@MDFdefbox@arrayrulewidth{0.75pt}                      % Defines \arrayrulewidth for general tcolorbox contexts
+%-------------------------------------------------------------------------------------------------------------------------------%
+\numgdef\@doc@arraystretch{1.2}                                 % Defines \arraystretch for default document contexts
+\numgdef\@coverpage@arraystretch{1.2}                           % Defines \arraystretch for coverpage context
+\numgdef\@toc@arraystretch{1.2}                                 % Defines \arraystretch for default document contexts
+\numgdef\@IBP@arraystretch{1.5}                                 % Defines \arraystretch for IBP table contexts
+\numgdef\@PLD@arraystretch{1.2}                                 % Defines \arraystretch for PLD table contexts
+\numgdef\@problem@arraystretch{1.5}                             % Defines \arraystretch for math/word problem contexts
+\numgdef\@solution@arraystretch{1.2}                            % Defines \arraystretch for math/word problem solution contexts
+\numgdef\@figbox@arraystretch{1.2}                              % Defines \arraystretch for boxed figure group  contexts
+\numgdef\@listing@arraystretch{1.2}                             % Defines \arraystretch for code listing contexts
+\numgdef\@Terminal@arraystretch{1.2}                            % Defines \arraystretch for terminal/command prompt contexts
+\numgdef\@Matlab@arraystretch{1.2}                              % Defines \arraystretch for Matlab listing contexts
+\numgdef\@code@arraystretch{1.0}                                % Defines \arraystretch for program language code listing contexts
+\numgdef\@FBM@arraystretch{1.0}                                 % Defines \arraystretch for front/back matter contexts
+\numgdef\@tcb@arraystretch{1.5}                                 % Defines \baselinestretch for general tcolorbox contexts
+\numgdef\@MDFdefbox@arraystretch{1.5}                           % Defines \baselinestretch for general tcolorbox contexts
+%-------------------------------------------------------------------------------------------------------------------------------%
+\dimdef\@ul@default@thickness{0.75pt}
+\dimdef\@tikzUL@default@thickness{0.75pt}
+\dimdef\@IBP@ul@thickness{0.75pt}
+\dimdef\@PLD@ul@thickness{0.75pt}
+\dimdef\@tcb@enumbox@default@thickness{2.0pt}
+\dimdef\@Subsection@default@thickness{2.0pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\dimdef\@ul@default@sep{0.75pt}
+\dimdef\@tikzUL@default@sep{0.75pt}
+\dimdef\@IBP@ul@sep{0.75pt}
+\dimdef\@PLD@ul@sep{0.75pt}
+\dimdef\@tcb@enumbox@default@sep{0.75pt}
+\dimdef\@Subsection@default@sep{0.75pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\dimdef\@ul@default@depth{2.0pt}
+\dimdef\@tikzUL@default@depth{1.0pt}
+\dimdef\@IBP@ul@depth{0.0pt}
+\dimdef\@PLD@ul@depth{0.0pt}
+\dimdef\@tcb@enumbox@default@depth{6.0pt}
+\dimdef\@Subsection@default@depth{6.0pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@ul@default@color{black}
+\def\@tikzUL@color{\@tikzUL@default@color}
+\def\@tikzUL@default@color{black}
+\def\@tcb@enumbox@default@color{black}
+\def\@Subsection@default@color{black}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------- Front/back Matter Contexts -------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@tikzheading@anchor{east}%
 \def\@Part@heading@anchor{west}
 \def\@Topic@heading@anchor{east}
 \def\@Chapter@heading@anchor{west}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\numdef\@rule@fontsize{11}
-\dimdef\@ul@default@thickness{0.75pt}
-\dimdef\@ul@default@sep{0.75pt}
-\dimdef\@ul@default@depth{2.0pt}
-\def\@ul@default@color{black}
-\dimdef\@tikzUL@default@thickness{0.75pt}
-\dimdef\@tikzUL@default@sep{0.75pt}
-\dimdef\@tikzUL@default@depth{1.0pt}
-\def\@tikzUL@default@color{black}
-\def\@tikzUL@color{\@tikzUL@default@color}
-\dimdef\@pld@ul@thickness{0.75pt}
-\dimdef\@pld@ul@depth{0.0pt}
-\dimdef\@tcb@enumbox@default@thickness{2.0pt}
-\dimdef\@tcb@enumbox@default@sep{0.75pt}
-\dimdef\@tcb@enumbox@default@depth{6.0pt}
-\def\@tcb@enumbox@default@color{black}
-\dimdef\@Subsection@default@thickness{2.0pt}
-\dimdef\@Subsection@default@sep{0.75pt}
-\dimdef\@Subsection@default@depth{6.0pt}
-\def\@Subsection@default@color{black}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Spacing/Skip/Separation Lengths ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@tcb@default@beforeafter{\par\smallskip}
+\gdef\@tcb@default@halign{center}
+\gdef\@tcb@default@valign{top}
+\gdef\@tcb@default@boxalign{bottom}
+\gdef\@tcb@default@sidebyside@align{top seam}
+\gdef\@tcb@default@sidebyside@adapt{both}
+\numgdef\@tcb@default@opacity{1.0}
+\numgdef\@tcb@rounded@arclength{180}
+\numgdef\@tcb@default@linesbeforebreak{2}
+\numgdef\@tikzheading@rounded@arclength{180}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Front/Back Matter List/TOC/Header/Caption Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -339,22 +463,36 @@
 \def\FigboxFigureName{Figure}
 \def\TableName{Table}
 \def\IBPtableName{IBP Table}
+\def\LDtableName{LD Table}
 \def\PLDtableName{PLD Table}
 \def\CodeListingName{Code Listing}
 \def\TerminalListingName{Terminal Listing}
 \def\MatlabListingName{Matlab Listing}
 \def\ProblemName{Problem}
 \def\FunctionDefName{Function Definition}
-\def\FunctionDetailName{Function Details}
+\def\FunctionDefBoxName{Function Definition Box}
+\def\FunctionDefBoxDefName{Function Definition}
 \def\ScriptDefName{Script Definition}
+\def\ScriptDefBoxName{Script Definition Box}
+\def\ScriptDefBoxDefName{Script Definition}
+\def\FunctionDetailName{Function Details}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\IBPtableLongName{Integration by Parts Table}
+\def\LDtableLongName{Long Division Table}
 \def\PLDtableLongName{Polynomial Long Division Table}
 \def\FunctionDefLongName{Function Definition}
 \def\FunctionDetailLongName{Function Details}
 \def\ScriptDefLongName{Script Definition}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\DefinitionName{Definition}
+\def\TheoremName{Theorem}
+\def\LemmaName{Lemma}
+\def\CorollaryName{Corollary}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\DefinitionPluralName{Definitions}
+\def\TheoremPluralName{Theorems}
+\def\LemmaPluralName{Lemmas}
+\def\CorollaryPluralName{Corollaries}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------- Front/Back Matter TOC Names ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -406,6 +544,12 @@
 \def\@terminal@caption@format{tcblisting}                                   % Caption of listing float entry (minted)
 \def\@Matlab@caption@format{tcblisting}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\def\@section@label{Section \theSection}
+\def\@legend@label{Key:}
+\def\@solution@label{Solution:}
+\def\@proof@label{Proof:}
+\def\@default@label{}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------------------- CSV Lists ---------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\gdef\@listof@list{lof/probs,lot/lof,lol/lot,funcs/lol,probs/funcs}
@@ -413,13 +557,25 @@
 \def\@countinchap@counters{figure,table,lstlisting}
 \def\cftX@sectioning@listentries{Part,Topic,Chapter,Section,Subsection}
 \def\@connect@cft@lists@vars{font,presnum,aftersnum,aftersnumb,dotsep,leader,pagefont,afterpnum,fillnum}
-\def\@setlength@operation@names{quarter,half,threequarter,oneandhalf,oneandthreequarter,twice}
-\def\@setlength@operation@nameval@pairs{quarter/0.25,half/0.5,threequarter/0.75,oneandhalf/1.5,oneandthreequarter/1.75,twice/2.0}
+\def\@setlength@operation@names{quarter,onethird,half,threequarter,oneandhalf,oneandthreequarter,twice}
+\def\@setlength@operation@nameval@pairs{quarter/0.25,onethird/0.33,half/0.5,threequarter/0.75,oneandhalf/1.5,oneandthreequarter/1.75,twice/2.0}
+\def\@fracspacing@vals{0.25,0.33,0.5,0.75,1.5,1.75,2.0}
+\def\@fracspacing@frac@pairs{{1}{2},{3}{2},{1}{3},{4}{3},{2}{3},{1}{4},{3}{4},{7}{4}}
+\gdef\linespace@contexts{doc,coverpage,toc,tcb,MDFdefbox,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM}
 \def\@tcb@X@border@shifts{border, x, y}
 \def\@PLD@math@font@cmdlist{LARGE,large,Large,normalsize}
+\xdef\@main@automake@files{makeglossaries,my-glossaries.ist,glg,gls,glo}
+\xdef\@acronym@automake@files{makeindex,my-glossaries.ist,alg,acr,acn}
+\xdef\@symbols@automake@files{makeindex,my-glossaries.ist,slg,sls,slo}
+\xdef\@nomenclature@automake@files{makeindex,my-nomencl.ist,nlg,nls,nlo}
+\xdef\@index@automake@files{makeindex,my-index.mst,ilg,idx,ind}
 \def\@FBM@print@list{symbols,acronyms,nomenclature,glossary,index}
 \def\@FBM@printcmd@list{\printsymbols,\printacronyms,\printnomenclature,\printglossary,\printindex}
+\gdef\exampleFiles{cs-examples,defbox,docsection,figures,fonts,functiondef,graphics,listbox,listings,math,misc,package-usage,problem,table}
+\gdef\testingFiles{package,tcboptions}%package-details,
 %-------------------------------------------------------------------------------------------------------------------------------%
+\def\@csv@singlearg@testlist{a}
+\def\@csv@arg@partial@testlist{a,b,c,d,e,f}
 \def\@csv@arg@testlist{a,b,c,d,e,f,g,h,i,j,k}
 \def\@braced@arg@testlist{{A}{B}{C}{D}{E}{F}{G}{H}}
 \def\@spaced@arg@testlist{A B C D EE F GGG H I JJJ K FinalArgument}
@@ -429,12 +585,14 @@
 \def\@csv@cs@arg@carat@testlistB{<\@macro@height,\@saved@length,\@macro@height,\@saved@length>}
 \def\@csv@arg@carat@testlist{<one,two,three,four>}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@AUXOUT@LIST{}
+\gdef\@preamble@print@statements{}
+\gdef\@AUXOUT@LIST{}
 \gdef\@conditional@cmd{}
-\gdef\@BKM@calling@cmd{default}
+\gdef\@BKM@context{default}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------ Front/Back Matter Separators ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@tcb@mathbox@title@newline{\hfill\\[\@tcb@mathbox@title@newline@skip]\centering}
 \def\@FBM@hypernav@sep{\onethirdspace\fontcolor{hyperlinkcolor}{\text{\LARGE\widetextbar}}\onethirdspace}
 \def\@abbreviation@entry@name@text@sep{}
 \def\@glossary@entry@name@text@sep{}
@@ -443,7 +601,13 @@
 \def\@tcb@title@sep{\space:\space}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@scaled@length#1#2{\dimexpr\numexpr#1\relax#2\relax}
-\def\space@length{\fontdimen2\font\space}
+%\setlength\@macro@length{\widthof{\tinyspace}}
+%\the\@macro@length\\
+%\setlength\@macro@length{\widthof{\minispace}}
+%\the\@macro@length\\
+%\setlength\@macro@length{\widthof{\space}}
+%\the\@macro@length\\
+\xdef\space@length{\fontdimen2\font\space}
 \def\onequarter@space@length{0.25\space@length}
 \def\onethird@space@length{0.333\space@length}
 \def\onehalf@space@length{0.5\space@length}
@@ -455,18 +619,18 @@
 \def\twothirdspace{\hskip\twothird@space@length}
 \def\threequarterspace{\hskip\threequarter@space@length}
 \def\minispace{\space\!}
-\def\tinyspace{\space\!\!}
+\def\tinyspace{\space\space\!\!\!}
 \def\unskipspacing{\unskip\ignorespaces}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@Chapter@before@skip{}                           % Vertical skip before
-\def\@Section@before@skip{\par\smallskip}
+\def\@Section@before@skip{\par\medskip}
 \def\@Subsection@before@skip{\par\bigskip}
 \def\@Topic@before@skip{}
 \def\@Part@before@skip{}
 \def\@part@before@skip{}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@Chapter@after@skip{\par\bigskip}                % Vertical skip
-\def\@Section@after@skip{\par}
+\def\@Chapter@after@skip{\par\bigskip\medskip\smallskip}                % Vertical skip
+\def\@Section@after@skip{\par\medskip}
 \def\@Subsection@after@skip{\par\medskip}
 \def\@Topic@after@skip{}
 \def\@Part@after@skip{}
@@ -481,16 +645,22 @@
 \def\@page@n@target@name{PAGE}
 \def\@page@one@target@name{FIRSTPAGE}
 \def\@abbreviations@address@prefix{@num@this@acronym@}
+\def\@tcbequation@box@prefix{@tcbequation@box}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@default@fig@ref@label{fig:fig\the\value{figure}}
+\def\@definition@ref@prefix{def}
+\def\@theorem@ref@prefix{thm}
+\def\@lemma@ref@prefix{lem}
+\def\@corollary@ref@prefix{cor}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@default@table@ref@label{tab\the\value{table}}
+\def\@default@fig@ref@label{fig:fig\the\value{figure}}
 \def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
 \def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
 \def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@numpages@in@scheme#1{\lastpageref{pagesLTS.#1.local}}
 \def\@lastpage@in@scheme#1{\lastpageref{pagesLTS.#1.local}}
-\def\@footpage@labeling%
+\def\@fancyfoot@labeling%
 {%
         \IfStrEqCase{\mylatex@footpagelabeling}%
         {%
@@ -503,12 +673,12 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document Coverpage/Header Images/Formats/Configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\def\@uni@logo{Baylor_vert.png}                                         		% Baylor University full size logo filename
-\def\@uni@rhead@logo{Baylor_IM_horz.png}                                		% Baylor University miniature logo filename
-\def\@uni@dept@logo{EngineeringLOGOweb.jpg}                             		% Baylor Engineering/CS Dept logo filename
-\def\@header@image@height{25pt}                                         		% Height of image used as right header
-\def\@header@image@width{2.55cm}                                        		% Height of image used as right header
-\def\@header@image{\includegraphics[width=\@header@image@width]{\@uni@rhead@logo}}     	% Right header graphics command
+\def\@uni@logo{Baylor_vert.png}                                                         % Baylor University full size logo filename
+\def\@uni@rhead@logo{Baylor_IM_horz.png}                                                % Baylor University miniature logo filename
+\def\@uni@dept@logo{EngineeringLOGOweb.jpg}                                             % Baylor Engineering/CS Dept logo filename
+\def\@header@image@height{25pt}                                                         % Height of image used as right header
+\def\@header@image@width{2.55cm}                                                        % Height of image used as right header
+\def\@header@image{\includegraphics[width=\@header@image@width]{\@uni@rhead@logo}}      % Right header graphics command
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Verbatim/Color/Shadow Box Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -568,10 +738,11 @@
 %*******************************************************************************************************************************%
 %********************************************* End of 'my-definitions.sty' package *********************************************%
 %*******************************************************************************************************************************%
-% Change @ character back to \catcode'@=12, i.e. a non letter character, so it can be used in macro names/definitions
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
 \endinput
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
