@@ -564,7 +564,7 @@
                         {xdef}{\gdef\@split@csv@args@cmd{\csxdef}}%
                         {numdef}{\gdef\@split@csv@args@cmd{\csnumgdef}}%
                         {dimdef}{\gdef\@split@csv@args@cmd{\csdimgdef}}%
-                }[\csname@nnY\gdef\@split@csv@args@cmd{#1}]%
+                }[\csname@ny\gdef\@split@csv@args@cmd{#1}]%
                 %}[ABC\xp\gdef\xp\@split@csv@args@cmd\xp{\csname#1\endcsname}]%
         %}%
 }
@@ -740,7 +740,7 @@
         \csname@nyN\renewcommand{the#1}%
         {%
                 %\xp@ifnum{c@#2}<1 %
-                \csname@ny\ifnum{c@#2}<1 %
+                \csname@y\ifnum{c@#2}<1 %
                         \@arabic\@nameuse{c@#1}%
                 \else%
                         \@nameuse{the#2}.\@arabic\@nameuse{c@#1}%
@@ -788,7 +788,7 @@
                 {command}{\csname@nyN\newcommand{\@saved@name}{#2}}%
                 {box}{\csname@nyN\setbox{\@saved@name}{#2}}%
                 {savebox}{\csname@nyN\savebox{\@saved@name}{\usebox{#2}}}%
-                {token}{\csgname@ny\token{\@saved@name}{#2}}%
+                {token}{\csgname@y\token{\@saved@name}{#2}}%
                 {toggle}
                 {%
                         \iftoggle{#2}%
@@ -813,7 +813,7 @@
                 {command}{\csname@nyN\newcommand{\@saved@name}{#2}}%
                 {box}{\csname@nyN\setbox{\@saved@name}{#2}}%
                 {savebox}{\csname@nyN\savebox{\@saved@name}{\usebox{#2}}}%
-                {token}{\csgname@ny\token{\@saved@name}{#2}}%
+                {token}{\csgname@y\token{\@saved@name}{#2}}%
                 {toggle}
                 {%
                         \iftoggle{#2}%
@@ -858,7 +858,7 @@
 {%
         \def\@newreg@cmd{\csname new#2\endcsname}%
         \ifcsundef{#3#4}%
-                {\csname@cmd@y{new#2}{#3#4}}{}%%{\xp\@newreg@cmd\csname#3#4\endcsname}{}%%{\csname@ny\@newreg@cmd{#3#4}}{}%
+                {\csname@cmd@y{new#2}{#3#4}}{}%%{\xp\@newreg@cmd\csname#3#4\endcsname}{}%%{\csname@y\@newreg@cmd{#3#4}}{}%
         \@regset@cmd@lut{#2}{#3#4}{#5}
         \IfBooleanTF{#1}{\@regprint@lut{#2}{#3#4}}{}
 }
@@ -1829,9 +1829,9 @@
 {%
         \IfStrEqCase{#2}
         {
-                {length}{\csname@ny\the{#3}}
-                {dimen}{\csname@ny\the{#3}}
-                {skip}{\csname@ny\the{#3}}
+                {length}{\csname@y\the{#3}}
+                {dimen}{\csname@y\the{#3}}
+                {skip}{\csname@y\the{#3}}
                 {counter}{\the\value{#3}}
         }
 }
@@ -1962,7 +1962,7 @@
 \DeclareDocumentCommand{\printcsvlists}{D(){} m D(){}}%
 {%
         \edef\@@csvlists{#2}%
-        \foreach \@@csvlist in \@@csvlists{\csname@ny\printcsvlist{#1\@@csvlist#3}\\}%
+        \foreach \@@csvlist in \@@csvlists{\csname@y\printcsvlist{#1\@@csvlist#3}\\}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                     1 2  3  4  5  6 7
@@ -2282,6 +2282,24 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \clist_new:N \l@myvararg@parameters@clist
 \tl_new:N    \l@myvararg_current@item@tl
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tl_new:N \l__sdaau_captureshell_out_tl
+\cs_new_protected:Nn \sdaau_captureshell:Nn
+{
+  	\tl_set_from_file:Nnn #1 { } { |"#2" }
+}
+\NewDocumentCommand{\captureshell}{ov}
+{
+  	\obeyspaces\obeylines\@sanitize\IfNoValueTF { #1 }
+   	{
+    		\sdaau_captureshell:Nn \l__sdaau_captureshell_out_tl { #2 }
+    		\obeyspaces\obeylines\@sanitize\tl_use:N \l__sdaau_captureshell_out_tl
+   	}
+   	{
+    		\obeyspaces\obeylines\@cssanitize\sdaau_captureshell:Nn #1 { #2 }
+   	}
+}
+%\captureshell[\TeXpath]{dir}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\printcsv}{m}%
 {%

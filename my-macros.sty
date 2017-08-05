@@ -367,6 +367,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\declaretheorem[...,postheadhook=\stepcounter{allprobs}]{Prob}
 %fuzzy halo=3mm with yellow,
 %fuzzy halo=2mm with red,
 %fuzzy halo=1mm with yellow,
@@ -376,7 +377,7 @@
 {tcbtheorem}{\TheoremName}%@tcbtheorems@counter
 {%
         enhanced,fonttitle=\bfseries,frame empty,%interior empty,
-        colback=stdLTforestgreen!30!white,colframe=stdforestgreen, coltitle=stddkforestgreen!50!black, colbacktitle=stdLTforestgreen!75!white,
+        colback=stdLTforestgreen!30!white, colframe=stdforestgreen, coltitle=stddkforestgreen!50!black, colbacktitle=stdLTforestgreen!75!white,
         borderline={0.5mm}{0mm}{stdLTforestgreen!90!black},
         borderline={0.5mm}{0mm}{stdltforestgreen!85!black, dashed},
         attach boxed title to top center={yshift=-2mm},boxed title style={boxrule=1.0pt},varwidth boxed title%
@@ -869,19 +870,25 @@
         \@tcbenumbox@font%
 }{\endtcbparbox}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentEnvironment{sidelabellist}{s m}
+\DeclareDocumentEnvironment{sidelabellist}{s o D<>{0.0pt,0.0pt} m o D<>{2.5em,1.0em}}
 {%sidelabellist[*]{label}
-	\settowidth{\@macro@width}{#2}%
-	\begin{description}[leftmargin=\@macro@width, labelwidth=0pt, labelsep=0pt]
-  		\item[#2]%
-  		\begin{itemize}[leftmargin=1.5em, labelsep=.5em]
-}{\end{itemize}\end{description}}
-%\newenvironment{example}
-% {\settowidth{\jeroenlen}{\textbf{Example:}}%
-%  \begin{description}[leftmargin=\jeroenlen,labelwidth=0pt,labelsep=0pt]
-%  \item[\textbf{Example:}]%
-%  \begin{itemize}[leftmargin=1.5em,labelsep=.5em]}
-% {\end{itemize}\end{description}}
+        \settowidth{\@macro@width}{#4}%
+%        \@parse@split@csv@args{def}%
+%                <\@SLL@labelwidth,\@SLL@labelsep,@SLLitem@leftmargin,@SLLitem@labelsep>=<#3,#6>%
+        \@parse@split@csv@args{xdef}%
+                <@SLL@labelwidth,@SLL@labelsep>=<#3>%
+        \@parse@split@csv@args{xdef}%
+                <@SLLitem@leftmargin,@SLLitem@labelsep>=<#6>%
+        \IfValueTF{#2}%
+                {\def\@SLL@description@csvarglist{#2}}%
+                {\def\@SLL@description@csvarglist{leftmargin=\@macro@width, labelwidth=\@SLL@labelwidth, labelsep=\@SLL@labelsep}}%
+        \IfValueTF{#5}%
+                {\def\@SLL@itemize@csvarglist{#5}}%
+                {\def\@SLL@itemize@csvarglist{leftmargin=\@SLLitem@leftmargin, labelsep=\@SLLitem@labelsep}}%
+        \xp\description\xp[\@SLL@description@csvarglist]%
+                \item[#4]%
+                \xp\itemize\xp[\@SLL@itemize@csvarglist]
+}{\enditemize\enddescription}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentEnvironment{tcblongtable}{O{} m D(){}}
 {%

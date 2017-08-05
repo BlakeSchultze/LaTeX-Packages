@@ -37,13 +37,13 @@ SafetyOrange,SafetyOrange-BlazeOrange,SafetyYellow,Saffron,Sage,StPatricksBlue,S
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \gdef\colortable@entry@pairs%
 {%
-	basecolors/{Base Colors},%
-	xllnames/x11names,%
-	svgcolors/svgnames,%
-	gvcolors/gvcolors,%
-	dvipsnamecolors/dvipsnames,%
-	pantonecolors/{Pantone Home Packages},%
-	crayolacolors/Crayola,%
+        basecolors/{Base Colors},%
+        xllnames/x11names,%
+        svgcolors/svgnames,%
+        gvcolors/gvcolors,%
+        dvipsnamecolors/dvipsnames,%
+        pantonecolors/{Pantone Home Packages},%
+        crayolacolors/Crayola,%
         AZcolors/{A-Z Colors}%
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -59,23 +59,23 @@ SafetyOrange,SafetyOrange-BlazeOrange,SafetyYellow,Saffron,Sage,StPatricksBlue,S
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%				      1 2  3    4 5	
+%                                     1 2  3    4 5
 \DeclareDocumentCommand{\tcbbookmark}{s t! O{1} m O{tcbmisc}}%
 {%\tcbbookmark{list entry}[alternative counter]
- 	\bookmark[keeplevel, dest=\bookmark@hyperaddress{#5}, rellevel=#3]{#4}%
+        \bookmark[keeplevel, dest=\bookmark@hyperaddress{#5}, rellevel=#3]{#4}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbnumberline}{s m O{tcbmisc}}%
 {%\cftX@numberline{list entry}[alternative numberline counter]
-	\protect\numberline%
-	{%
-		\raisebox{10pt}{\protect\hypertarget{\toc@hyperaddress{#3}}{}}%
-		\@nameuse{cft#2@numberline@prefix}%
-		\IfValueTF{#3}%
-			{\@nameuse{the#3}}%
-			{\@nameuse{the#2}}%%
-		\@nameuse{cft#2@numberline@suffix}%
-	}%
+        \protect\numberline%
+        {%
+                \raisebox{10pt}{\protect\hypertarget{\toc@hyperaddress{#3}}{}}%
+                \@nameuse{cft#2@numberline@prefix}%
+                \IfValueTF{#3}%
+                        {\@nameuse{the#3}}%
+                        {\@nameuse{the#2}}%%
+                \@nameuse{cft#2@numberline@suffix}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                           1 2 3
@@ -145,13 +145,13 @@ boxsep=0mm, TBLR={0mm}{0mm}{0mm}{0mm}, right skip=-1pt, after=\unskipspacing}%le
         \stepcounter{colortable}%
         \def\@colorset@title%
         {%
-	        title=%
-		{%
-		        \cftcolortable@contentsline{#6}%
-		        \tcbhyperlink[black]%
-		        	{\cft@hyperaddress{colortable}}%
-		        	{\shadowText{#6}}%
-	        }%
+                title=%
+                {%
+                        \cftcolortable@contentsline{#6}%
+                        \tcbhyperlink[black]%
+                                {\cft@hyperaddress{colortable}}%
+                                {\shadowText{#6}}%
+                }%
         }%
         \xp@nyyY\tcolorbox{[\@colorset@title]}\@csv@colortable@rows#5
 }{\endtcolorbox}
@@ -173,16 +173,17 @@ boxsep=0mm, TBLR={0mm}{0mm}{0mm}{0mm}, right skip=-1pt, after=\unskipspacing}%le
 %\input{colors_A-F.def}
 %\input{colors_G-M.def}
 %\input{colors_N-Z.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/colorsAZ.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/gvcolors.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/pantone.def}             % All PMS<XXX> and PMS<XXXX> named colors, mostly 100-732 and 7401-7547 but some XXX5 e.g. 584,5845,585,...
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/pantone-pack.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/crayola.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/svgcolors.def}
+%C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/
+\input{colorsAZ.def}
+\input{gvcolors.def}
+\input{pantone.def}             % All PMS<XXX>/PMS<XXXX> colors, mostly 100-732 & 7401-7547 but some XXX5 e.g. 584,5845,585,...
+\input{pantone-pack.def}
+\input{crayola.def}
+\input{svgcolors.def}
 %\input{x11colors.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/svgnam.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/x11nam.def}
-\input{C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/dvipsnames.def}
+\input{svgnam.def}
+\input{x11nam.def}
+\input{dvipsnames.def}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-colorsets.sty' package **********************************************%

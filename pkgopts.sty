@@ -1,6 +1,8 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %****************************************************** `pkgopts.sty' **********************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 % Expands upon the 'kvoptions' package to add new package option commands and corresponding processing, dissemination, and configuration procedures:
 %       (1) \DeclareChoiceOption
 %       (2) \DeclareChoiceArrayOption
@@ -9,9 +11,11 @@
 % (1) is analagous to a key defined using the 'define@choicekey' command of the 'keyval' package, thereby providing key/value package option commands equivalent to each of the primary key types defined by the 'keyval' package.  A csv list of acceptable "choices" are provided for the key and user supplied values are validated on execution, with a compilation error thrown for invalid choices.  (2) has the same functionality as (1) but valid options are passed as a csv list whose entries each have multiple values, each value separated by a '/' (e.g. X/Y/Z) to match the syntax supported by PGF's \foreach as this is used in validation.  Users simply specify which "column" number containing the valid choices for a particular key and the subsequent processing is equivalent to (1).  This is particularly useful for font related package options since it is helpful to have csv font lists containing the font name, supported encodings, preferred encoding, font family code, and potentially shape/style, etc..  With this information encapsulated, the settings associated with the various font properties can be set automatically based on the selected font name or family and one can easily ensure there are no conflicts between any font related "Choice" or "ChoiceArray" package options, such as selecting a font encoding that does not support the font selected.
 %       (3) is an extension of the \DeclareBoolOption package option command which, for a Boolean option 'X', automatically creates complimentaty Boolean options 'noX' and 'Xoff' making it possible to specify 'X'=false using a single keyword having a more immediately obvious meaning.
 %       The command used to process the original package option commands is then encapsulated with those used to validate and process the custom package option commands provided here such that the processing of all package options is done with a single command \ProcessPackageOptions.
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{pkgopts}                       %
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -20,6 +24,7 @@
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{pkgopts}{Unknown \CurrentOption}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************ Processing of package options ************************************************%
 %*******************************************************************************************************************************%
@@ -33,7 +38,7 @@
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'my-latex' package "Choice" option supported values  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package "Choice" option supported values  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\choicetestoptions{choiceone,choicetwo,choicethree}
@@ -41,6 +46,7 @@
 \gdef\@supported@page@labeling{thepage,oftotal,ofsector,rawpage}
 \gdef\@supported@chaphead@styles{Sonny,Lenny,Glenn,Conny,Rejne,Bjarne,Bjornstrup,PetersLenny}
 \gdef\@known@documentclasses{report,article,journal,proceedings}
+\gdef\@supported@pkgdir@choices{libpkg,localpkg,tdspkg}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\@known@font@families%
 {%
@@ -66,12 +72,12 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\gdef\@malfunctioning@font@families{uag}
+\gdef\@malfunctioning@font@families{uag}%<--------------------------------------------------------------------------------------|
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'my-latex' package "ChoiceArray" option supported value pairs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package "ChoiceArray" option supported value pairs ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\@known@fontname@fontcode@pairs%
@@ -167,7 +173,7 @@
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~ 'my-latex' package "Choice/ChoiceArray" option invalid input detection & console output ~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package "Choice/ChoiceArray" option invalid input detection & console output ~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\DeclareChoiceOptionMessage[2][\KVO@prefix]%
@@ -187,7 +193,7 @@
 {%\DeclareChoiceOptionError[<prefix>]{<key>}
         \DeclareChoiceOptionMessage[#1]{#2}%
         \DeclareChoiceOptionHelp[#1]{#2}%
-        \@PackageError\pkgname\msgtext\helptext%
+        \@PackageError\PKGNAME\msgtext\helptext%
 }%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\DeclareChoiceArrayOptionMessage[2][\KVO@prefix]%
@@ -207,114 +213,73 @@
 {%\DeclareChoiceArrayOptionError[<prefix>]{<key>}
         \DeclareChoiceArrayOptionMessage[#1]{#2}%
         \DeclareChoiceArrayOptionHelp[#1]{#2}%
-        \@PackageError\pkgname\msgtext\helptext%
+        \@PackageError\PKGNAME\msgtext\helptext%
 }%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define 'my-latex' package Bool aliases option command ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package option declaration commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\DeclareBoolOptionPair[2][false]%
-{%\DeclareBoolOptionPair[<init>]{<key>} --> \ifmylatex@#2, \ifmylatex@no#2, \ifmylatex@#2off
-       % \ifstrempty{#1}
-%                {\def\@current@prefix{\KVO@prefix}}%
-%                {\def\@current@prefix{#1}}%
-        \DeclareBoolOption[#1]{#2}
-        \DeclareComplementaryOption{#2off}{#2}
-        \DeclareComplementaryOption{no#2}{#2}
-        \@add@to@csvlist{#2}{\@defined@Bool@Option@Pairs}
+{%\DeclareBoolOptionPair[<init>]{<key>} --> \if#2, \ifno#2, \if#2off
+        \DeclareBoolOption[#1]{#2}%
+        \DeclareComplementaryOption{#2off}{#2}%
+        \DeclareComplementaryOption{no#2}{#2}%
+        \@add@to@csvlist{#2}{\@defined@Bool@Option@Pairs}%
 }
-%-------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~ Define 'my-latex' package "Choice" option declaration/processing commands ~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\DeclareChoiceOption{\@ifnextchar(\@DeclareChoiceOption\@DeclareChoiceOption(\KVO@prefix)}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@DeclareChoiceOption(#1)#2[#3]#4
 {%\DeclareChoiceOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
-        \ifstrempty{#1}
+        \ifstrempty{#1}%
                 {\def\@current@prefix{\KVO@prefix}}%
                 {\def\@current@prefix{#1}}%
-        \ifstrempty{#3}
+        \ifstrempty{#3}%
                 {\DeclareStringOption{#2}}%
                 {\DeclareStringOption[#3]{#2}[#3]}%
-        \@add@to@csvlist{#2}{\@defined@Choice@Options}
-        \csname@y\newif{if\@current@prefix#2}
-        %\xp@newif{if\@current@prefix#2}%->\if<prefix><key>
-        %\xp@gdef{@\@current@prefix valid@#2@choice@options}{#4}%
-        %\xp@xdef{@#2@prefix}{\@current@prefix}%
-        \csname@nyN\gdef{@\@current@prefix valid@#2@choice@options}{#4}%
-        \csname@nyN\xdef{@#2@prefix}{\@current@prefix}%
+        \@add@to@csvlist{#2}{\@defined@Choice@Options}%
+        \xp@newif{if\@current@prefix#2}%->\if<prefix><key>
+        \xp@@gdef{@\@current@prefix valid@#2@choice@options}{#4}%
+        \xp@@xdef{@#2@prefix}{\@current@prefix}%
+        %\csname@ny\newif{if\@current@prefix#2}
+        %\csname@nyN\gdef{@\@current@prefix valid@#2@choice@options}{#4}%
+        %\csname@nyN\xdef{@#2@prefix}{\@current@prefix}%
 }
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessChoiceOption[2][\KVO@prefix]%
-{%\ProcessChoiceOption[<prefix>]{<key>}
-        \validatedfalse
-        \csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
-        %\xp@ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
-        \@nameuse{if\@nameuse{@\next @prefix}\next}%
-                \ValidateChoiceCS%
-                        {\csuse{#1#2}}%
-                        {@#1valid@#2@choice@options}%
-                        {}{\DeclareChoiceOptionError[#1]{#2}}%
-        \fi%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\@csname{@\next @prefix}]{\next}}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~ Define 'my-latex' package "ChoiceArray" option declaration/processing commands ~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\DeclareChoiceArrayOption{\@ifnextchar({\@DeclareChoiceArrayOption}{\@DeclareChoiceArrayOption(\KVO@prefix)}}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@DeclareChoiceArrayOption(#1)#2#3[#4]#5%
 {%\DeclareChoiceArrayOption<*>(<prefix>){<key>}[<default>]{<valid key values>}
-        \csname@nyN\xdef{\@current@prefix#3@default@choice}{#4}
-        \csname@nyN\xdef{\@current@prefix valid@#3@choicearray@options}{#5}
-        \csname@nyN\xdef{\@current@prefix#3@choice@colnum}{#2}
-        \ifstrempty{#1}
+%        \csname@nyN\xdef{\@current@prefix#3@default@choice}{#4}
+%        \csname@nyN\xdef{\@current@prefix valid@#3@choicearray@options}{#5}
+%        \csname@nyN\xdef{\@current@prefix#3@choice@colnum}{#2}
+        \xp@@xdef{\@current@prefix#3@default@choice}{#4}%
+        \xp@@xdef{\@current@prefix valid@#3@choicearray@options}{#5}%
+        \xp@@xdef{\@current@prefix#3@choice@colnum}{#2}%
+        \ifstrempty{#1}%
                 {\def\@current@prefix{\KVO@prefix}}%
                 {\def\@current@prefix{#1}}%
-        \ifstrempty{#4}
+        \ifstrempty{#4}%
                 {\DeclareStringOption{#3}}%
                 {\DeclareStringOption[#4]{#3}[#4]}%
         \ValidateChoicePair{#2}{#4}{#5}%
         {%
-                \csname@nyN\xdef{\@current@prefix#3@default@val}{\@validated@index@value}%
-                \csname@nyN\xdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
+                \xp@@xdef{\@current@prefix#3@default@val}{\@validated@index@value}%
+                \xp@@xdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
+                %\csname@nyN\xdef{\@current@prefix#3@default@val}{\@validated@index@value}%
+                %\csname@nyN\xdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
         }{}%
-        \@add@to@csvlist{#3}{\@defined@ChoiceArray@Options}
-        %\xp@newif{if\@current@prefix#3}%->\if<prefix><key>
-        \csname@y\newif{if\@current@prefix#3}%->\if<prefix><key>
-        \csname@nyN\xdef{@#3@prefix}{\@current@prefix}%
+        \@add@to@csvlist{#3}{\@defined@ChoiceArray@Options}%
+        \xp@newif{if\@current@prefix#3}%->\if<prefix><key>
+        \xp@@xdef{@#3@prefix}{\@current@prefix}%
+        %\csname@ny\newif{if\@current@prefix#3}%->\if<prefix><key>
+        %\csname@nyN\xdef{@#3@prefix}{\@current@prefix}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessChoiceArrayOption[2][\KVO@prefix]%
-{%\ProcessChoiceArrayOption[<prefix>]{<key>}
-        \validatedfalse%
-        \csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
-        %\xp@ifdefempty{#1#2}%
-        %        {}{\@nameuse{#1#2true}}%
-        \@nameuse{if\@nameuse{@\next @prefix}\next}%
-                \xdef\@valid@choicearray@options{\@nameuse{#1valid@#2@choicearray@options}}%
-                \xdef\@current@choicearray@option{\csname mylatex@#2\endcsname}%
-                \csletcs{@choicearray@colnum}{\@current@prefix#2@choice@colnum}
-                \ValidateChoicePair%
-                        {\@choicearray@colnum}%
-                        {\@current@choicearray@option}%
-                        {\@valid@choicearray@options}%
-                        {\csname@nyN\xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
-                        {\DeclareChoiceArrayOptionError[#1]{#2}}%
-        \fi%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessChoiceArrayOptions%
-{%
-        \@for\next:=\@defined@ChoiceArray@Options%
-        \do{\ProcessChoiceArrayOption[\csname @\next @prefix\endcsname]{\next}}%
-}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package option input value validation commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\ValidateChoiceCS}[4]%
 {%
@@ -326,26 +291,24 @@
                 \ifdefequal{\@current@choice}{\@test@choice}%
                 {%
                         \global\validatedtrue\breakforeach%
-                        \csname@nyN\xdef{@validated@index}{\@count}%
+                        \xp@@xdef{@validated@index}{\@count}%
+                        %\csname@nyN\xdef{@validated@index}{\@count}%
                 }{}%
         }%
         \ifvalidated#3\else#4\fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~ Define 'my-latex' package "Choice/ChoicePair" option input validation commands ~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ValidateChoiceDef[4]%
 {%\ValidateChoiceDef{user's choice}{valid choices list}{cmd if valid}{cmd if invalid "Choice" error handler}
         \validatedfalse%
-        \xdef\@test@cs{#1}
+        \xdef\@test@cs{#1}%
         \foreach \@current@choice [count=\@count] in #2%
         {%
                 \ifdefequal{\@current@choice}{\@test@cs}%
                 {%
                         \global\validatedtrue\breakforeach%
-                        \csname@nyN\xdef{@validated@index}{\@count}%
+                        \xp@@xdef{@validated@index}{\@count}%
+                        %\csname@nyN\xdef{@validated@index}{\@count}%
                 }{}%
         }%
         \ifvalidated#3\else#4\fi%
@@ -354,7 +317,7 @@
 \newcommand{\ValidateChoicePair}[5]%
 {%\ValidateChoicePair{choice column #}{user's choice}{valid choices list}{cmd if valid}{cmd if invalid "ChoiceArray" error handler}
         \validatedfalse%
-        \xdef\@test@cs{#2}
+        \xdef\@test@cs{#2}%
         \foreach \@current@choice/\@current@choice@val [count=\@count] in #3%
         {%
                 \ifnumequal{#1}{1}%
@@ -362,9 +325,12 @@
                         \ifdefequal{\@current@choice}{\@test@cs}%
                         {%
                                 \global\validatedtrue\breakforeach%
-                                \csname@nyN\xdef{@validated@index}{\@count}%
-                                \csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
-                                \csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
+                                \xp@@xdef{@validated@index}{\@count}%
+                                \xp@@xdef{@validated@index@choice}{\@current@choice}%
+                                \xp@@xdef{@validated@index@value}{\@current@choice@val}%
+                                %\csname@nyN\xdef{@validated@index}{\@count}%
+                                %\csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
+                                %\csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
                         }{}%
                 }{}%
                 \ifnumequal{#1}{2}%
@@ -372,33 +338,104 @@
                         \ifdefequal{\@current@choice@val}{\@test@cs}%
                         {%
                                 \global\validatedtrue\breakforeach%
-                                \csname@nyN\xdef{@validated@index}{\@count}%
-                                \csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
-                                \csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
+                                \xp@@xdef{@validated@index}{\@count}%
+                                \xp@@xdef{@validated@index@choice}{\@current@choice}%
+                                \xp@@xdef{@validated@index@value}{\@current@choice@val}%
+                                %\csname@nyN\xdef{@validated@index}{\@count}%
+                                %\csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
+                                %\csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
                         }{}%
                 }{}%
-        }
+        }%
         \ifvalidated#4\else#5\fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~ Define combined 'my-latex' + kvoptions package options processing command ~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package option value access % branching commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ProcessPackageOptions[1][]%
-{%\ProcessPackageOptions[family]
-        \xdef\pkgopts@family{\KVO@family}
-        \xdef\pkgopts@prefix{\KVO@prefix}
-        \global\let\pkgopts@setkeys=\KVO@setkeys
-        \ifstrempty{#1}%
-                {\ProcessKeyvalOptions*}%
-                {\ProcessKeyvalOptions{#1}}%
-        \ProcessChoiceArrayOptions%
-        \ProcessChoiceOptions%
+\newcommand\ifpkgopt[4][\KVO@prefix]{\@nameuse{if#1#2}#3\else#4\fi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ifpkgstringopt{\@ifstar{\ifpkgstringopt@withstar}{\ifpkgstringopt@withoutstar}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ifpkgstringopt@withoutstar[4][\pkgopts@prefix]{\ifcsempty{#1#2}{#4}{#3}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ifpkgstringopt@withstar[4][\pkgopts@prefix]{\xp@ifdefempty{#1#2}{#4}{#3}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\pkgoptval[2][\pkgopts@prefix]{\@nameuse{#1#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\define@csboolkey[1]{\xp\define@boolkey\xp{#1}}
+\newcommand\define@cskey[1]{\xp\define@key\xp{#1}}
+\newcommand\define@cschoicekey[1]{\xp\define@choicekey\xp{#1}}
+\newcommand\disable@cskeys[1]{\xp\disable@keys\xp{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package option processing commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceOption[2][\KVO@prefix]%
+{%\ProcessChoiceOption[<prefix>]{<key>}
+        \validatedfalse
+        %\csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        \xp@ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        \ifpkgopt[\@nameuse{@\next @prefix}]{\next}%
+        {%
+                \ValidateChoiceCS%
+                        {\csuse{#1#2}}%
+                        {@#1valid@#2@choice@options}%
+                        {}{\DeclareChoiceOptionError[#1]{#2}}%
+        }{}%
+%        \@nameuse{if\@nameuse{@\next @prefix}\next}%
+%                \ValidateChoiceCS%
+%                        {\csuse{#1#2}}%
+%                        {@#1valid@#2@choice@options}%
+%                        {}{\DeclareChoiceOptionError[#1]{#2}}%
+%        \fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceOptions{\@for\next:=\@defined@Choice@Options\do{\ProcessChoiceOption[\@csname{@\next @prefix}]{\next}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceArrayOption[2][\KVO@prefix]%
+{%\ProcessChoiceArrayOption[<prefix>]{<key>}
+        \validatedfalse%
+        %\csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        \xp@ifdefempty{#1#2}%
+                {}{\@nameuse{#1#2true}}%
+%        \@nameuse{if\@nameuse{@\next @prefix}\next}%
+%                \xdef\@valid@choicearray@options{\@nameuse{#1valid@#2@choicearray@options}}%
+%                \xdef\@current@choicearray@option{\csname mylatex@#2\endcsname}%
+%                \csletcs{@choicearray@colnum}{\@current@prefix#2@choice@colnum}%
+%                \ValidateChoicePair%
+%                        {\@choicearray@colnum}%
+%                        {\@current@choicearray@option}%
+%                        {\@valid@choicearray@options}%
+%                        {\xp@@xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+%                        %{\csname@nyN\xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+%                        {\DeclareChoiceArrayOptionError[#1]{#2}}%
+%        \fi%
+        \ifpkgopt[\@nameuse{@\next @prefix}]{\next}%
+        {%
+                \xdef\@valid@choicearray@options{\@nameuse{#1valid@#2@choicearray@options}}%
+                \xdef\@current@choicearray@option{\csname mylatex@#2\endcsname}%
+                \csletcs{@choicearray@colnum}{\@current@prefix#2@choice@colnum}%
+                \ValidateChoicePair%
+                        {\@choicearray@colnum}%
+                        {\@current@choicearray@option}%
+                        {\@valid@choicearray@options}%
+                        {\xp@@xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+                        %{\csname@nyN\xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+                        {\DeclareChoiceArrayOptionError[#1]{#2}}%
+        }{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessChoiceArrayOptions%
+{%
+        \@for\next:=\@defined@ChoiceArray@Options%
+        \do{\ProcessChoiceArrayOption[\csname @\next @prefix\endcsname]{\next}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~ Commands for printing the "my-latex" package options info & loaded package list  ~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~ Commands for printing the 'R2Labs' package options info & loaded package list  ~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintBoolOptionPairInfo[2][]%
@@ -406,7 +443,7 @@
         %\ifstrempty{#1}
 %                {\def\@boolpairkey@prefix{\@nameuse{@#2@prefix}}}
 %                {\def\@boolpairkey@prefix{#1}}
-        \indent \underline{Bool Option Pair key (family@key)} : mylatex@#2\\
+        \indent \underline{Bool Option Pair key (family@key)} : mylatex@#2\\%
         \value{\@nameuse{ifmylatex@#2}}%
         \value{\@nameuse{ifmylatex@#2off}}%
         \value{\@nameuse{ifmylatex@no#2}}%
@@ -417,8 +454,6 @@
         %        \indent\indent \underline{Provided} = false\\%
         %\fi%
 }
-%\DeclareComplementaryOption{#2off}{#2}
-%        \DeclareComplementaryOption{no#2}{#2}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintBoolOptionPairsInfo%
 {%
@@ -432,12 +467,13 @@
         \ifstrempty{#1}%
                 {\def\@choicekey@prefix{\@nameuse{@#2@prefix}}}%
                 {\def\@choicekey@prefix{#1}}%
-        \item \@choicekey@prefix#2 (family@key)\\
+        \item \@choicekey@prefix#2 (family@key)\\%
         \indent\indent \underline{Acceptable Choices} = %
         \fullyexpand{\@nameuse{@\@choicekey@prefix valid@#2@choice@options}}\\%
         \@nameuse{if\@choicekey@prefix#2}%
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
                 \indent\indent \underline{Provided} = true\\%
-                \indent\indent \underline{Selected Choice} = \@nameuse{\@choicekey@prefix#2}
+                \indent\indent \underline{Selected Choice} = \@nameuse{\@choicekey@prefix#2}%
         \else%
                 \indent\indent \underline{Provided} = false%
         \fi%
@@ -449,158 +485,242 @@
         \begin{enumerate}%
         \@for\next:=\@defined@Choice@Options%
                 \do{\PrintChoiceInfo[\@nameuse{@\next @prefix}]{\next}}%
-        \end{enumerate}
+        \end{enumerate}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\printpkgopt[2][]%
+\newcommand\PrintPkgOpts[2][]%
 {%\ProcessChoiceArrayOption[<prefix>]{<key>}
         \ifstrempty{#1}%
                 {\edef\@choicekey@prefix{\@nameuse{@#2@prefix}}}%
                 {\edef\@choicekey@prefix{#1}}%
         \ifcsundef{\@choicekey@prefix#2}{\@choicekey@prefix#2 : UNDEFINED\\}%
         {%
-                \@nameuse{if\@choicekey@prefix#2}%
-                        \@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (user defined)\\%
-                \else%
-                        \@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (default)\\%
-                \fi%
+	        \ifpkgopt[\@choicekey@prefix]{#2}%
+	                {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (user defined)\\}
+	                {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (default)\\}
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\PrintPackageList{\noindent \underline{Loaded Packages} : \@loaded@packages}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package loading commands extending '\RequirePackage' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 'R2Labs' package file not found error/warning console output ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\gdef\LocalPkgDir{.}
-\gdef\LocalPkgPrefix{./}
-\gdef\@pkg@dir{./}
-\gdef\LocalPkgXtor#1{"./#1"}
-\gdef\PkgDirXtor#1#2{"#1/#2"}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ifpkgopt[4][\KVO@prefix]{\@nameuse{if#1#2}#3\else#4\fi}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePackageOnce[1]
-{%
-        \@ifpackageloaded{#1}{}%
-        {%
-                \RequirePackage{#1}%
-                \@add@to@csvlist{#1}{\@loaded@packages}
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePackageList[1]{\@for\next:=#1\do{\xp\RequirePackageOnce\xp{\next}}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePkgOnce[2][]
-{%
-        \@ifpackageloaded{\@pkg@dir#2}{}%
-        {%
-                \RequirePackage[#1]{\@pkg@dir#2}
-                \@add@to@csvlist{#2}{\@loaded@packages}
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePkgList[1]{\@for\next:=#1\do{\xp\RequirePkg\next}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePkgHelp[2][\KVO@prefix]%
-{%\DeclareChoiceArrayOptionHelp[<prefix>]{<key>}
-        \gdef\helptext{\string\DeclareChoiceArrayOption\space Help:%
-        \IndentedMessageBreak Valid '#1#2' Options:%
-        \MessageBreak\IndentedMessageBreak #2\space=\space{\@nameuse{#1valid@#2@choicearray@options}}}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\RequirePkgMessage[2][\KVO@prefix]%
-{%\RequirePkgMessage[<prefix>]{<key>}
-        \gdef\msgtext{\string\DeclareChoiceArrayOption\space Error%
-        \MessageBreak Invalid choice '#1#2\space=\space\@nameuse{#1#2}'}%
-        \ifdefempty{\@nameuse{#1pkgdir}}%
-        {%
-                %\ifmylatex@localpkg%
-                \@nameuse{if#1localpkg}%
-                        \xdef\@pkg@dir{\LocalPkgPrefix}%
-                \else%
-                        \xdef\@pkg@dir{}%
-                \fi%
-        }%
-        {\xdef\@pkg@dir{\@nameuse{#1pkgdir}/}}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand\RequirePkg[2][]{\RequirePackage[#1]{\@pkg@dir#2}}
-\newcommand\RequirePkg[2][]%
-{%
-        \IfFileExists{\@pkg@dir#2}%
-               %{\RequirePackage[#1]{\@pkg@dir#2}}%
-               %{\RequirePackage[#1]{#2}}%
-               {\@PackageError\pkgname\RequirePkg@warning@msgtext\RequirePkg@warning@helptext\RequirePackage[#1]{\@pkg@dir#2}}%
-               {\@PackageError\pkgname\RequirePkg@warning@msgtext\RequirePkg@warning@helptext\RequirePackage[#1]{#2}}%\@PackageWarning
-        %\RequirePackage[#1]{#2}%
-}
+\newcommand\RequirePkgError[1]{\@PackageError{\PKGNAME \@pkg@dir#1}\RequirePkg@warning@msgtext\RequirePkg@warning@helptext}
+\newcommand\RequirePkgWarning[1]{\@PackageWarning{\PKGNAME \@pkg@dir#1}\RequirePkg@warning@msgtext\RequirePkg@warning@helptext}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package option handler commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
+% Package files located in a library (libpkg=true), local (localpkg=true), or specific (pkgdir="x") directory
+% Package files within library/local/specific directory placed in TDS (tdspkgdir=true) or document's (tdspkgdir=false) directory
 \newcommand\SetPkgSource[1][\pkgopts@prefix]%
 {%\SetPkgSource[<prefix>]%
+%        \ifwindows
+%		%\getenv[\USER@HOMEDIR]{USERPROFILE}%                                                   Blake: C:/Users/Blake
+%        \else
+%        	\getenv[\USER@HOMEDIR]{HOME}%
+%        \fi
+        %\iflinux
+	%\ifmacosx
+	%\ifcygwin
+	\ifpkgopt[#1]{tdspkgdir}{\xdef\@pkg@dir@suffix{\TDS@PKG@DIR}}{\xdef\@pkg@dir@suffix{}}%
         \ifcsempty{#1pkgdir}%
         {%
                 \ifpkgopt[#1]{localpkg}%
                 {% User input: 'localpkg'/'localpkg=true' & 'pkgdir='/'pkgdir={}'/equivalent or 'pkgdir' not provided
+                        \xdef\@pkg@dir{\@pkg@dir@suffix}%
                         \gdef\RequirePkg@warning@input{'localpkg = true' }%
-                        \gdef\RequirePkg@warning@inputdir{local directory}%
-                        \xdef\@pkg@dir{\LocalPkgPrefix}%
+                        \xdef\RequirePkg@warning@inputdir{local directory \@pkg@dir}%
                 }%
                 {% User input: 'libpkg'/'libpkg=true' & 'pkgdir='/'pkgdir={}'/equivalent or 'pkgdir' not provided
-                        \gdef\RequirePkg@warning@input{'libpkg = true' }%
-                        \gdef\RequirePkg@warning@inputdir{library home}%
                         \xdef\@pkg@dir{}%
+                        \gdef\RequirePkg@warning@input{'libpkg = true' }%
+                        \xdef\RequirePkg@warning@inputdir{library home \@pkg@dir}%
                 }%
                 \xdef\RequirePkg@warning@msgtext{\RequirePkg@warning@input but package file not found in \RequirePkg@warning@inputdir. Now searching for the file in known package file directores}
                 \xdef\RequirePkg@warning@helptext{Confirm file location and verify that the appropriate package options were used and were given valid input/values; use 'pkgdir={...}' option to provide the file path explicitly}
         }%
         {% User input 'pkgdir=x', where x = nonempty path/directory w/ format x, {x}, "x", or {"x"}
-                \gdef\RequirePkg@warning@msgtext{Package file not found in 'pkgdir = \@nameuse{#1pkgdir}'}%
+                \xdef\@pkg@dir{\@nameuse{#1pkgdir}/\@pkg@dir@suffix}%
+                \gdef\RequirePkg@warning@msgtext{Package file not found in 'pkgdir = \@pkg@dir'}%
                 \gdef\RequirePkg@warning@helptext{Confirm file location and verify its path matches what was given to 'pkgdir'}
-                \xdef\@pkg@dir{\@nameuse{#1pkgdir}/}%
         }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PkgLoadFont{\fontfamily{cmr}\selectfont}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PassOptionsToX%
+{%
+        \ifpkgopt[\pkgopts@prefix]{landscape}%
+        {%
+                \PassOptionsToClass{landscape}{article}%
+                \PassOptionsToClass{landscape}{report}%
+        }{}%
+        \ifpkgopt[\pkgopts@prefix]{crop}%
+        {%
+                \PassOptionsToClass{crop}{article}%
+                \PassOptionsToClass{crop}{report}%
+        }{}%
+        \ifpkgopt[\pkgopts@prefix]{twocolumn}%
+        {%
+                \PassOptionsToClass{twocolumn}{article}%
+                \PassOptionsToClass{twocolumn}{report}%
+        }{}%
+        \ifpkgopt[\pkgopts@prefix]{FBM@clearpage}{}%
+                {\PassOptionsToClass{nonewpage}{imakeidx-patched}}%
+        \ifpkgopt[\pkgopts@prefix]{automake}%
+                {\PassOptionsToPackage{automake}{my-glossaries}}%
+                {\PassOptionsToPackage{makeindex}{imakeidx-patched}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ShowCSDefs%
+{%
+        \xdef\@control@sequences@name{\KVO@prefix showcslist}%
+        \xp@def\@control@sequences{\KVO@prefix showcslist}%
+        \ifpkgopt[\KVO@prefix]{logdefs}{\scrollmode}{}%
+        \xp@ifdefempty{\KVO@prefix showcslist}{}%
+                {\@csfor\@control@sequence{@control@sequences}{\csname@ny\show\@control@sequence}}%
+        \ifpkgopt[\KVO@prefix]{tracemacros}{\tracingmacros}{}%
+        \ifpkgopt[\KVO@prefix]{tracecmds}{\tracingcommands}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\WriteCNF[1]{\wrtolocfile\CNF@FILENAME{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QueryEnvVarList[2]%
+{%
+	\edef\envvar@OS{#1}%
+        \edef\envvar@type{#2}%
+	\edef\envvar@list{\csuse{#2envvar@#1list}}%
+        \edef\envvar@list{\csuse{#2envvar@winlist}}%
+        \def\envvar@prefix{\csuse{#2envvar@prefix}}%
+        \foreach \envvar in \envvar@list%
+	{%
+		\getenv[\stdout]{\envvar}%
+		\xp\xdef\csname\envvar@prefix @\envvar\endcsname{\stdout}%
+	}%
+}
+%\def\STDOUT@FNAME{\jobname.stdout}
+%\def\PKGOPTS@FNAME{\jobname.pkgopts}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\FWriteEnvVarList[2]%
+{%
+        \edef\envvar@OS{#1}%
+        \edef\envvar@type{#2}%
+        \edef\envvar@list{\csuse{#2envvar@#1list}}%
+        \edef\envvar@list{\csuse{#2envvar@winlist}}%
+        \def\envvar@prefix{\csuse{#2envvar@prefix}}%
+        \foreach \envvar in \envvar@list%
+        {%
+                \getenv[\stdout]{\envvar}%
+                \xp\xdef\csname\envvar@prefix @\envvar\endcsname{\stdout}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QueryWinEnvVarList{\QueryEnvVarList{win}{sys}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QueryUnixEnvVarList{\QueryEnvVarList{unix}{sys}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@pdflatex@switches}[2]%
+{%
+        shellesc\@shell@esc
+        \fname@recorder
+        \def\compile@cmd{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\CreateFWriteFiles%
+{%
+        \edef\pathtest{\USER@HOMEDIR/Documents/newtest.tex}
+        \createfile{\pathtest}
+        \createfile{\USER@HOMEDIR/Documents/newtest.tex}
+        \createlocfile{\jobname.pkgopts}
+        \createlocfile{\jobname.stdout}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QuerySystemInfo%
+{%
+        \ifwindows 
+                \QueryWinEnvVarList%
+        \else
+                %\getenv[\USER@HOMEDIR]{HOME}%
+                \QueryUnixEnvVarList%
+        \fi
+        \global\let\USER@HOMEDIR\USER@USERPROFILE%
+        \termexec[\SYSTEM@PDFLATEX]{\TeXcompiler\@shell@skip\verflag}%pdflatex --version
+        \CreateFWriteFiles
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\SetFilePaths%
+{%
+        \ifpkgstringopt{dropbox}%
+                {\def\DROPBOX@SUBDIRS{\pkgoptval{dropbox}}}%                    All: R2Labs/Blake/Reminder Walker
+                {\def\DROPBOX@SUBDIRS{R2Labs/Blake/Reminder Walker}}%           All: R2Labs/Blake/Reminder Walker
+        \edef\dropbox@fullpath{\USER@USERPROFILE/\DROPBOX@DIRNAME}%
+        \keyeqval\dropbox@fullpath={\USER@USERPROFILE/\DROPBOX@DIRNAME}
+        \ifpkgopt{fls}
+                {\getpwd\def\jobdir@fullpath{\thepwd}}%
+                {\def\jobdir@fullpath{\USER@USERPROFILE/\DROPBOX@DIRNAME/\DROPBOX@SUBDIRS/}}
+        \edef\pkgfiles@fullpath{\jobdir@fullpath\@pkg@dir@suffix}%
+        \ifdefempty{\@pkg@dir@suffix}
+        	{\edef\pkgcolordefs@fullpath{\jobdir@fullpath\colordefs@dirname}}%
+                {\edef\pkgcolordefs@fullpath{\jobdir@fullpath\@pkg@dir@suffix/\colordefs@dirname}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\SetTeXSearchTrees%
+{%
+        \keyeqval\TEXMFLOCAL@basepath={\jobdir@fullpath}%
+        \keyeqval\TEXMFLOCAL@pathtoadd={\TEXMFLOCAL@basepath\TEXMFLOCAL@dirname}%
+        \keyeqval\TEXMFLOCAL@val={\TEXMFLOCAL@default@val;\TEXMFLOCAL@pathtoadd}%
+        \keyeqval\TEXINPUTS@val={.;\TEXMFLOCAL@pathtoadd:\cnf@win@envvar{TEXINPUTS}}%
+	\WriteCNF%
+        {%
+		+%\edef\envvar@prefix{USERPROFILE,HOMEDRIVE,HOMEPATH,TEXEDIT,TERM,SHELL,ComSpec}
+ 		%\cnf@comment{\USER@USERPROFILEG}%
+		\cnf@comment{\USER@USERPROFILE}%
+                %\cnf@comment{\USER@TEXMFROOT}%
+		\cnf@comment{\USER@HOMEDRIVE}%
+		\cnf@comment{\USER@HOMEPATH}%
+		%\cnf@comment{\USER@TEXMFHOME}%
+		\cnf@comment{\USER@TEXEDIT}%
+		%\cnf@comment{\USER@TERM}%
+		\cnf@comment{\USER@SHELL}%
+		%\cnf@comment{\SYSTEM@PDFLATEX}%
+		\cnf@comment{\USER@ComSpec}%
+		%\cnf@comment{\USER@PDFLATEX}%
+  		\cnf@comment{(Public domain.)}%
+                \cnf@comment{This texmf.cnf file should contain only your personal changes from the}%
+                \cnf@comment{original texmf.cnf (for example, as chosen in the installer).}%
+                \cnf@comment{}%
+                \cnf@comment{That is, if you need to make changes to texmf.cnf, put your custom}%
+                \cnf@comment{settings in this file, which is .../texlive/YYYY/texmf.cnf, rather than}%
+                \cnf@comment{the distributed file (which is .../texlive/YYYY/texmf-dist/web2c/texmf.cnf).}%
+                \cnf@comment{And include *only* your changed values, not a copy of the whole thing!}%
+                \cnf@comment{}%
+                \cnf@comment{Local additions to the distribution trees.}%
+                \cnf@keyval{TEXMFLOCAL = \TEXMFLOCAL@val}%
+                \cnf@keyval{TEXINPUTS = \TEXINPUTS@val}%
+                \cnf@keyval{OSFONTDIR = \cnf@unix@envvar{SystemRoot}/fonts//}%
+        }%
+        %\endgroup%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\SetDocumentClass[1][\pkgopts@prefix]%
 {%\SetDocumentClass[<prefix>]
-        \ifstrempty{\@nameuse{#1documentclass}}%
+        %\ifstrempty{\@nameuse{#1documentclass}}%
+        %        {\def\thedocumentclass{report}}%
+        %        {\def\thedocumentclass{\@nameuse{#1documentclass}}}%
+        \ifpkgstringopt{documentclass}%
+                {\def\thedocumentclass{\pkgoptval{documentclass}}}%
                 {\def\thedocumentclass{report}}%
-                {\def\thedocumentclass{\@nameuse{#1documentclass}}}%
-        \ifmylatex@article
-                \def\thedocumentclass{article}
-        \fi
-        \ifmylatex@report
-                \def\thedocumentclass{report}
-        \fi
-        %\PassOptionsToClass{landscape}{article}
-        %\PassOptionsToClass{landscape}{report}
-        \ifmylatex@standalone
-                \documentclass[\the@doc@sizeX,class=\thedocumentclass, crop=false]{standalone}
-        \else
-                \documentclass{\the@doc@sizeX,\thedocumentclass}%
-        \fi
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\xp@newif{if\@current@prefix#2}%->\if<prefix><key>
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\SetFBMsettings%
-{%
-        \ifmylatex@FBM@dotfill
-                \newcommand*{\frontbackmatterhfill}{\fbm@dotfill}%
-        \else
-                \newcommand*{\frontbackmatterhfill}{\fbm@nofill}%
-        \fi
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                {\def\thedocumentclass{article}}{}
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                {\def\thedocumentclass{report}}{}
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                {\documentclass[\the@doc@sizeX,class=\thedocumentclass, crop=false]{standalone}}
+                {\documentclass{\the@doc@sizeX,\thedocumentclass}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\SetDefaultFont%
@@ -608,14 +728,14 @@
         \stripunits{\@doc@fontsize}[\@doc@fontsize@unitless]%\pgfmathresult
         \toint{\@doc@fontsize@unitless}[\@doc@fontsize@unitless@int]%
         \renewcommand{\rm}{\@doc@default@font}%
-        \def\@doc@default@font
+        \def\@doc@default@font%
         {%
                 \fontencoding{\@doc@fontencoding}%
                 \fontfamily{\@doc@fontfamily}%
                 \fontseries{\@doc@fontseries}%
                 \fontshape{\@doc@fontshape}%
                 \fontsize{\@doc@fontsize}{\baselineskip}%
-                \renewcommand{\familydefault}{\@doc@fontfamily}
+                \renewcommand{\familydefault}{\@doc@fontfamily}%
                 \selectfont%
         }
         \fontcolor{current-coltext}%
@@ -627,25 +747,60 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\SetDocFontSettings[1][\pkgopts@prefix]%
 {%
-        \xdef\@doc@fontencoding{\mylatex@fontencoding}
-        \xdef\@doc@fontname{\mylatex@fontname}
-        \ifdefempty{\mylatex@fontfamily}
-                {\xdef\@doc@fontfamily{\mylatex@fontname@choicearray@value}}
-                {\xdef\@doc@fontfamily{\mylatex@fontfamily}}
-        \xdef\@doc@fontseries{\mylatex@fontseries}
-        \xdef\@doc@fontshape{\mylatex@fontshape}
-        %\xdef\@doc@fontsize{\mylatex@fontsize}
-        \xdef\@doc@sizeX{\mylatex@sizeXclo}
+        \xdef\@doc@fontencoding{\mylatex@fontencoding}%
+        \xdef\@doc@fontname{\mylatex@fontname}%
+        \ifdefempty{\mylatex@fontfamily}%
+                {\xdef\@doc@fontfamily{\mylatex@fontname@choicearray@value}}%
+                {\xdef\@doc@fontfamily{\mylatex@fontfamily}}%
+        \xdef\@doc@fontseries{\mylatex@fontseries}%
+        \xdef\@doc@fontshape{\mylatex@fontshape}%
+        %\xdef\@doc@fontsize{\mylatex@fontsize}%
+        \xdef\@doc@sizeX{\mylatex@sizeXclo}%
         %font
         %
-        \xdef\the@doc@sizeX{\@doc@sizeX pt}
+        \xdef\the@doc@sizeX{\@doc@sizeX pt}%
         \xdef\@rmfont@fd@file{cmr\@doc@sizeX}%{qx-anttr}%{cmu10}
-        \ifmylatex@sizeXclo
-                \xdef\@doc@fontsize{\@doc@sizeX pt}
-        \else
-                \xdef\@doc@fontsize{\mylatex@fontsize}
-        \fi
-        \def\doctextsize{\dimexpr\f@size pt\relax}
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                {\xdef\@doc@fontsize{\@doc@sizeX pt}}%
+                {\xdef\@doc@fontsize{\mylatex@fontsize}}%
+        \def\doctextsize{\dimexpr\f@size pt\relax}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\SetFBMsettings%
+{%
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                {\newcommand*{\frontbackmatterhfill}{\fbm@dotfill}}%
+                {\newcommand*{\frontbackmatterhfill}{\fbm@nofill}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define combined 'R2Labs' + kvoptions package options processing commands ~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProcessPackageOptions[1][]%
+{%\ProcessPackageOptions[family]
+        \xdef\pkgopts@family{\KVO@family}%
+        \xdef\pkgopts@prefix{\KVO@prefix}%
+        \global\let\pkgopts@setkeys=\KVO@setkeys%
+        \ifstrempty{#1}%
+                {\ProcessKeyvalOptions*}%
+                {\ProcessKeyvalOptions{#1}}%
+        \ProcessChoiceArrayOptions%
+        \ProcessChoiceOptions%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ApplyPackageOptions%
+{%
+        \PkgLoadFont               	% Load default font: Computer Modern Roman (cmr)
+	\PassOptionsToX			% Process options that control passage of options to other packages/classes
+        \ShowCSDefs			% Process options on control sequence definition tracing and log/console printing
+        \SetPkgSource			% Process options setting location from which package files are to be loaded
+        \QuerySystemInfo		% Query OS/TeX system & environment variables via shell commands & file read/write operations
+        \SetFilePaths			% Process options setting full paths to package/document files
+        \SetTeXSearchTrees		% Construct and add necessary paths to compiler search trees by writing texmf.cnf file
+        \SetFBMsettings			% Process options controlling document's front/back matter content settings/appearance
+        \SetDocFontSettings		% Process options controlling document font encoding, family, style, size, etc.
+        \SetDocumentClass		% Process options controlling the desired 'documentclass'
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
@@ -660,3 +815,89 @@
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\cndcont{\ForEach{\\}{\@percentchar\space\thislevelitem\@endline}{(Public domain.)\\This texmf.cnf file\\This texmf.cnf file}}%
+%exclam code = \number\catcode`!\\
+%\char65
+
+%{
+%       \obeyspaces\obeylines
+%  %\@cssanitize
+%  \catcode`\!=0
+%  %!catcode`!\=11
+%  %!catcode`!_=11%
+%        %!@makeletter{!\}
+%    %!@makeletter{!_}
+%        !@makeletter{\\}
+%    !@makeletter{_}
+%%  !input{|"dir"}
+%\starttermout
+%    %\begingroup
+%    %\bgroup
+%        %{
+%        \obeyspaces\obeylines
+%        \catcode`\!=0
+%        !catcode`!\=11
+%        !catcode`!_=11
+%  !def!dirout{!input{|"dir"}}
+%%  !xp!gdef!xp!dirout!xp{!input{|"dir"}}
+%%  %!xp!def!xp!dirout!xp{!input{|"dir"}}
+%%  !dirout
+%%%!obeylines!obeyspaces
+%%!terminal*{dir}%
+%%  !endlinechar=-1!temp
+%%      %!xdef!diroutB{!dirout}
+%%      captureshell=!!
+%%      !captureshell[!TeXpath]{dir}
+%%      !TeXpath
+%%}
+%%!egroup
+%!endtermout
+%%\endtermout
+%%\egroup
+%%\endgroup
+%      %  \catcode`!=12
+%    %\catcode`\_=8
+%    %    \catcode`\=0
+%        %\catcode`\_=12
+%\starttermout
+%\termprint%
+%{
+%%!def!dirout{!input{|"dir"}}
+%%%  !xp!gdef!xp!dirout!xp{!input{|"dir"}}
+%%  %!xp!def!xp!dirout!xp{!input{|"dir"}}
+%%  !dirout
+%%%%!obeylines!obeyspaces
+%%%!terminal*{dir}%
+%%%  !endlinechar=-1
+%%  %!temp
+%%%    %!xdef!diroutB{!dirout}
+%%%    captureshell=!!
+%%%    !captureshell[!TeXpath]{dir}
+%%%    !TeXpath
+%}
+%!egroup
+
+
+%        {{
+%\starttermout
+{
+        \starttermout
+%    \catcode`\!\n@ne
+%    \catcode`\_=11
+%    !catcode`!\=11
+%        %!@makeletter{_}
+%        !@makeletter{\\}
+%%       !@makeletter{!\}
+%%       !@makeletter{!_}
+%!obeyspaces!obeylines
+        !def!dirout{!input{|"dir"}}
+%%  !xp!gdef!xp!dirout!xp{!input{|"dir"}}
+%  %!xp!def!xp!dirout!xp{!input{|"dir"}}
+  !dirout}
+ % }
+%\termprint
+%\stdout
+
+\fonttable{cmr10}
+\fonttable{cmtt10}

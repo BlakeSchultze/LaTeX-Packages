@@ -28,10 +28,11 @@
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
-
-
-
-
+\edef\@prepend@file@path#1{\@pkg@dir@suffix#1}
+\edef\@gls@keys@prefix{\@prepend@file@path{my-glossaries.sty}}
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
 \newif\if@gls@docloaded
 \@ifpackageloaded{doc}%
         {\@gls@docloadedtrue}%
@@ -49,18 +50,32 @@
                 \endgroup
         }
 \fi
-\define@boolkey{my-glossaries.sty}[gls]{toc}[true]{}
-\define@boolkey{my-glossaries.sty}[gls]{numberline}[true]{}
+%% \define@key[prefix]{family}{key}[default]{function}
+%\define@key{my-glossaries.sty}{fullpath}[]%
+%{%
+%        \ifthenelse{\equal{#1}{none}}%
+%        {%
+%                \renewcommand*{\@gls@sanitizedesc}{}%
+%                \renewcommand*{\@gls@sanitizename}{}%
+%                \renewcommand*{\@gls@sanitizesymbol}{}%
+%        }{\setkeys[gls]{sanitize}{#1}}%
+%}
+%\define@csboolkey{\@gls@keys@prefix}
+%\define@cschoicekey{\@gls@keys@prefix}
+%\define@cskey{\@gls@keys@prefix}
+
+\define@csboolkey{\@gls@keys@prefix}[gls]{toc}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{numberline}[true]{}
 \ifcsundef{chapter}%
   {\newcommand*{\@@glossarysec}{section}}%
   {\newcommand*{\@@glossarysec}{chapter}}
-\define@choicekey{my-glossaries.sty}{section}{part,chapter,section,%
+\define@cschoicekey{\@gls@keys@prefix}{section}{part,chapter,section,%
 subsection,subsubsection,paragraph,subparagraph}[section]{%
   \renewcommand*{\@@glossarysec}{#1}}
 \newcommand*{\@@glossarysecstar}{*}
 \newcommand*{\@@glossaryseclabel}{}
 \newcommand*{\glsautoprefix}{}
-\define@choicekey{my-glossaries.sty}{numberedsection}[\val\nr]{%
+\define@cschoicekey{\@gls@keys@prefix}{numberedsection}[\val\nr]{%
 false,nolabel,autolabel,nameref}[nolabel]{%
   \ifcase\nr\relax
     \renewcommand*{\@@glossarysecstar}{*}%
@@ -80,7 +95,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \fi
 }
 \newcommand*{\@glossary@default@style}{indexhypergroup}
-\define@key{my-glossaries.sty}{style}{%
+\define@cskey{\@gls@keys@prefix}{style}{%
   \renewcommand*{\@glossary@default@style}{#1}%
 }
 \newcommand*{\@gls@declareoption}[2]{%
@@ -91,7 +106,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \@gls@declareoption{nonumberlist}{%
   \renewcommand*{\glossaryentrynumbers}[1]{\gls@save@numberlist{#1}}%
 }
-\define@boolkey{my-glossaries.sty}[gls]{savenumberlist}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{savenumberlist}[true]{}
 \glssavenumberlistfalse
 \newcommand*\@glo@seeautonumberlist{}
 \@gls@declareoption{seeautonumberlist}{%
@@ -122,22 +137,22 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\glspostdescription}{%
   \ifglsnopostdot\else\spacefactor\sfcode`\. \fi
 }
-\define@boolkey{my-glossaries.sty}[gls]{nopostdot}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{nopostdot}[true]{}
 \glsnopostdotfalse
-\define@boolkey{my-glossaries.sty}[gls]{nogroupskip}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{nogroupskip}[true]{}
 \glsnogroupskipfalse
-\define@boolkey{my-glossaries.sty}[gls]{ucmark}[true]{}
-\define@boolkey{my-glossaries.sty}[gls]{entrycounter}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{ucmark}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{entrycounter}[true]{}
 \glsentrycounterfalse
-\define@key{my-glossaries.sty}{counterwithin}{%
+\define@cskey{\@gls@keys@prefix}{counterwithin}{%
   \renewcommand*{\@gls@counterwithin}{#1}%
   \glsentrycountertrue
 }
 \newcommand*{\@gls@counterwithin}{}
-\define@boolkey{my-glossaries.sty}[gls]{subentrycounter}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{subentrycounter}[true]{}
 \glssubentrycounterfalse
 \newcommand*{\@glo@default@sorttype}{standard}
-\define@choicekey{my-glossaries.sty}{sort}{standard,def,use}{%
+\define@cschoicekey{\@gls@keys@prefix}{sort}{standard,def,use}{%
   \renewcommand*{\@glo@default@sorttype}{#1}%
   \csname @gls@setupsort@#1\endcsname
 }
@@ -224,7 +239,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
    \let\glsdefaulttype\relax
    \renewcommand*{\glsdefmain}{}%
 }
-\define@boolkey{my-glossaries.sty}[gls]{acronym}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[gls]{acronym}[true]{%
   \ifglsacronym
     \renewcommand{\@gls@do@acronymsdef}{%
       \DeclareAcronymList{acronym}%
@@ -295,11 +310,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\SetAcronymLists}[1]{%
   \renewcommand*{\@glsacronymlists}{#1}%
 }
-\define@key{my-glossaries.sty}{acronymlists}{%
+\define@cskey{\@gls@keys@prefix}{acronymlists}{%
   \DeclareAcronymList{#1}%
 }
 \newcommand{\glscounter}{page}
-\define@key{my-glossaries.sty}{counter}{%
+\define@cskey{\@gls@keys@prefix}{counter}{%
   \renewcommand*{\glscounter}{#1}%
 }
 \newcommand*{\@gls@nohyperlist}{}
@@ -312,14 +327,14 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \appto\@gls@nohyperlist{,#1}%
   }%
 }
-\define@key{my-glossaries.sty}{nohypertypes}{%
+\define@cskey{\@gls@keys@prefix}{nohypertypes}{%
   \GlsDeclareNoHyperList{#1}%
 }
 \newcommand*{\GlossariesWarning}[1]{%
-  \PackageWarning{glossaries}{#1}%
+  \PackageWarning{my-glossaries}{#1}%
 }
 \newcommand*{\GlossariesWarningNoLine}[1]{%
-  \PackageWarningNoLine{glossaries}{#1}%
+  \PackageWarningNoLine{my-glossaries}{#1}%
 }
 \newcommand*{\@gls@warnonglossdefined}{%
   \GlossariesWarning{Overriding \string\printglossary}%
@@ -421,7 +436,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 %*******************************************************************************************************************************%
 %************************************************ Processing of package options ************************************************%
 %*******************************************************************************************************************************%
-\define@boolkey{my-glossaries.sty}[gls]{sanitizesort}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[gls]{sanitizesort}[true]{%
   \ifglssanitizesort
     \glssetnoexpandfield{sortvalue}%
     \renewcommand*{\@gls@noidx@setsanitizesort}{%
@@ -436,7 +451,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     }%
   \fi
 }
-\define@key{my-glossaries.sty}{sanitize}[description=true,symbol=true,name=true]{%
+\define@cskey{\@gls@keys@prefix}{sanitize}[description=true,symbol=true,name=true]{%
   \ifthenelse{\equal{#1}{none}}%
   {%
     \GlossariesWarning{sanitize package option deprecated}%
@@ -635,7 +650,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   {\ifcsdef{ver@glossaries-dictionary-#1.dict}{#2}{#3}}%
   {#3}%
 }
-\define@choicekey{my-glossaries.sty}{translate}[\val\nr]%
+\define@cschoicekey{\@gls@keys@prefix}{translate}[\val\nr]%
   {true,false,babel}[true]%
   {%
     \ifcase\nr\relax
@@ -686,12 +701,12 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     {}%
   }
 }
-\define@boolkey{my-glossaries.sty}[gls]{indexonlyfirst}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{indexonlyfirst}[true]{}
 \glsindexonlyfirstfalse
-\define@boolkey{my-glossaries.sty}[gls]{hyperfirst}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{hyperfirst}[true]{}
 \glshyperfirsttrue
 \newcommand*{\@gls@setacrstyle}{}
-\define@boolkey{my-glossaries.sty}[glsacr]{footnote}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{footnote}[true]{%
   \ifbool{glsacrdescription}%
   {}%
   {%
@@ -699,26 +714,26 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   }%
   \renewcommand*{\@gls@setacrstyle}{\SetAcronymStyle}%
 }
-\define@boolkey{my-glossaries.sty}[glsacr]{description}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{description}[true]{%
   \renewcommand*{\@gls@sanitizesymbol}{}%
   \renewcommand*{\@gls@setacrstyle}{\SetAcronymStyle}%
 }
-\define@boolkey{my-glossaries.sty}[glsacr]{smallcaps}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{smallcaps}[true]{%
   \renewcommand*{\@gls@sanitizesymbol}{}%
   \renewcommand*{\@gls@setacrstyle}{\SetAcronymStyle}%
 }
-\define@boolkey{my-glossaries.sty}[glsacr]{smaller}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{smaller}[true]{%
   \renewcommand*{\@gls@sanitizesymbol}{}%
   \renewcommand*{\@gls@setacrstyle}{\SetAcronymStyle}%
 }
-\define@boolkey{my-glossaries.sty}[glsacr]{dua}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{dua}[true]{%
   \renewcommand*{\@gls@sanitizesymbol}{}%
   \renewcommand*{\@gls@setacrstyle}{\SetAcronymStyle}%
 }
-\define@boolkey{my-glossaries.sty}[glsacr]{shortcuts}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[glsacr]{shortcuts}[true]{}
 \newcommand*{\glsorder}{word}
 \newcommand*{\@glsorder}[1]{}
-\define@choicekey{my-glossaries.sty}{order}{word,letter}{%
+\define@cschoicekey{\@gls@keys@prefix}{order}{word,letter}{%
   \def\glsorder{#1}}
 \define@boolkey[gls]{xindy}{glsnumbers}[true]{}
 \gls@xindy@glsnumberstrue
@@ -729,14 +744,14 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \def\gls@codepage{\inputencodingname}
 }
 \define@key[gls]{xindy}{codepage}{\def\gls@codepage{#1}}
-\define@key{my-glossaries.sty}{xindy}[]{%
+\define@cskey{\@gls@keys@prefix}{xindy}[]{%
   \glsxindytrue
   \setkeys[gls]{xindy}{#1}%
 }
-\define@boolkey{my-glossaries.sty}[gls]{automake}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[gls]{automake}[true]{%
   \ifglsautomake
     \renewcommand*{\@gls@doautomake}{%
-      \PackageError{glossaries}{You must use
+      \PackageError{my-glossaries}{You must use
       \string\makeglossaries\space with automake=true}
       {%
          Either remove the automake=true setting or
@@ -750,7 +765,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \glsautomakefalse
 \newcommand*{\@gls@doautomake}{}
 \AtEndDocument{\@gls@doautomake}
-\define@boolkey{my-glossaries.sty}[gls]{savewrites}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[gls]{savewrites}[true]{%
   \ifglssavewrites
     \renewcommand*{\glswritefiles}{\@glswritefiles}%
   \else
@@ -759,9 +774,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }
 \glssavewritesfalse
 \let\glswritefiles\@empty
-\define@boolkey{my-glossaries.sty}[gls]{compatible-3.07}[true]{}
+\define@csboolkey{\@gls@keys@prefix}[gls]{compatible-3.07}[true]{}
 \boolfalse{glscompatible-3.07}
-\define@boolkey{my-glossaries.sty}[gls]{compatible-2.07}[true]{%
+\define@csboolkey{\@gls@keys@prefix}[gls]{compatible-2.07}[true]{%
   \ifbool{glscompatible-2.07}%
   {%
     \booltrue{glscompatible-3.07}%
@@ -804,9 +819,62 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \fi
   \fi
 }
+%%\@gls@declareoption{toc}{%
+%%   \glstoctrue
+%%}
+%%%\define@boolkey[gls]{xindy}{xindygloss}[true]{}
+%%%\define@key{glossaries.sty}{xindygloss}[]{%
+%%%  \glsxindytrue
+%%%  \setkeys[gls]{xindy}{}%
+%%%}
+%\define@cskey{\@gls@keys@prefix}{xindygloss}[]{%
+%  \glsxindytrue
+%  \setkeys[gls]{xindy}{}%
+%}
+%\define@cskey{\@gls@keys@prefix}{xindynoglsnumbers}[]{%
+%  \glsxindytrue
+%  \setkeys[gls]{xindy}{}%
+%  \gls@xindy@glsnumbersfalse
+%}
+%\define@cskey{\@gls@keys@prefix}{makeindex}[]{%
+%\glsxindyfalse
+%}
+%\define@cskey{\@gls@keys@prefix}{notranslate}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
+%\define@cskey{\@gls@keys@prefix}{nolong}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
+%\define@cskey{\@gls@keys@prefix}{nosuper}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
+%\define@cskey{\@gls@keys@prefix}{notree}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
+%\define@cskey{\@gls@keys@prefix}{nostyles}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
+%\define@cskey{\@gls@keys@prefix}{nomain}[]{%
+%  \glstranslatefalse
+%  \let\@gls@usetranslator\relax
+%  \let\glsifusetranslator\@secondoftwo
+%}
 \ProcessOptionsX
-\RequirePackage{glossaries-compatible-307}
-\disable@keys{my-glossaries.sty}{compatible-2.07,%
+%\RequirePackage{texmf-local/tex/latex/R2Labs/my-glossaries-compatible-307}
+%\xp\RequirePackage\xp{\@prepend@file@path{my-glossaries-compatible-307}}
+%\disable@keys{texmf-local/tex/latex/R2Labs/my-glossaries.sty}{compatible-2.07,%
+\RequirePkg{my-glossaries-compatible-307}
+\disable@cskeys{\@gls@keys@prefix}{compatible-2.07,%
  xindy,xindygloss,xindynoglsnumbers,makeindex,%
  acronym,translate,notranslate,nolong,nosuper,notree,nostyles,nomain}
 \newcommand*{\setupglossaries}[1]{%
@@ -857,7 +925,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
    \expandafter\@disable@premakecs\@thiscs%
 }}
 \newcommand*{\@disable@premakecs}[1]{%
-  \def#1{\PackageError{glossaries}{\string#1\space may only be
+  \def#1{\PackageError{my-glossaries}{\string#1\space may only be
   used before \string\makeglossaries}{You can't use
   \string#1\space after \string\makeglossaries}}%
 }
@@ -922,7 +990,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
         \RequireGlossariesLang{\CurrentTrackedTag}%
       }%
       {%
-         \PackageWarningNoLine{glossaries}%
+         \PackageWarningNoLine{my-glossaries}%
          {No language module detected for `\this@dialect'.\MessageBreak
           Language modules need to be installed separately.\MessageBreak
           Please check on CTAN for a bundle called\MessageBreak
@@ -1160,7 +1228,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   }
 \fi
 \newcommand*\@disabled@glsaddxdycounters{%
-   \PackageError{glossaries}{\string\GlsAddXdyCounters\space
+   \PackageError{my-glossaries}{\string\GlsAddXdyCounters\space
    can't be used after \string\GlsAddXdyAttribute}{Move all
    occurrences of \string\GlsAddXdyCounters\space before the first
    instance of \string\GlsAddXdyAttribute}%
@@ -1377,7 +1445,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \ifglossaryexists{#1}{%
     \expandafter\def\csname @xdy@#1@language\endcsname{#2}%
   }{%
-    \PackageError{glossaries}{Can't set language type for
+    \PackageError{my-glossaries}{Can't set language type for
     glossary type `#1' --- no such glossary}{%
     You have specified a glossary type that doesn't exist}}}
 \else
@@ -1448,13 +1516,13 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }
 \newcommand{\glsdoifexists}[2]{%
   \ifglsentryexists{#1}{#2}{%
-    \PackageError{glossaries}{Glossary entry `\glsdetoklabel{#1}'
+    \PackageError{my-glossaries}{Glossary entry `\glsdetoklabel{#1}'
     has not been defined}{You need to define a glossary entry before you
     can use it.}}%
 }
 \newcommand{\glsdoifnoexists}[2]{%
   \ifglsentryexists{#1}{%
-    \PackageError{glossaries}{Glossary entry `\glsdetoklabel{#1}' has already
+    \PackageError{my-glossaries}{Glossary entry `\glsdetoklabel{#1}' has already
     been defined}{}}{#2}%
 }
 \newcommand{\glsdoifexistsorwarn}[2]{%
@@ -1577,7 +1645,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
           or test {\ifdefstring{#1}{TEX}}}
  {%
    \def#1{nottex}%
-   \PackageError{glossaries}%
+   \PackageError{my-glossaries}%
     {Forbidden `.tex' extension replaced with `.nottex'}%
     {I'm sorry, I can't allow you to do something so reckless.\MessageBreak
      Don't use `.tex' as an extension for a temporary file.}%
@@ -1592,7 +1660,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\ns@newglossary}[5][glg]{%
  \ifglossaryexists{#2}%
  {%
-   \PackageError{glossaries}{Glossary type `#2' already exists}{%
+   \PackageError{my-glossaries}{Glossary type `#2' already exists}{%
    You can't define a new glossary called `#2' because it already
    exists}%
  }%
@@ -1704,7 +1772,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \define@key{glossentry}{counter}{%
   \ifcsundef{c@#1}%
   {%
-    \PackageError{glossaries}%
+    \PackageError{my-glossaries}%
     {There is no counter called `#1'}%
     {%
       The counter key should have the name of a valid counter
@@ -1721,7 +1789,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \@glo@seeautonumberlist
 }
 \newcommand*{\gls@checkseeallowed}{%
-  \PackageError{glossaries}%
+  \PackageError{my-glossaries}%
   {`see' key may only be used after \string\makeglossaries\space
    or \string\makenoidxglossaries}%
   {You must use \string\makeglossaries\space
@@ -1768,11 +1836,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \def\@glo@longpl{#1}%
 }
 \newcommand*{\@glsnoname}{%
-  \PackageError{glossaries}{name key required in
+  \PackageError{my-glossaries}{name key required in
   \string\newglossaryentry\space for entry `\@glo@label'}{You
   haven't specified the entry name}}
 \newcommand*\@glsnodesc{%
-  \PackageError{glossaries}
+  \PackageError{my-glossaries}
   {%
     description key required in \string\newglossaryentry\space
     for entry `\@glo@label'%
@@ -1788,7 +1856,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \GlossariesWarning{Missing number list for entry `#1'.
      Maybe makeglossaries + rerun required.}%
   \else
-    \PackageError{glossaries}%
+    \PackageError{my-glossaries}%
     {Package option `savenumberlist=true' required.}%
     {%
       You must use the `savenumberlist' package option
@@ -2000,7 +2068,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \newcommand*{#4}[1]{\@Gls@entry@field{##1}{#1}}%
     \ifcsdef{@gls@user@#1@}%
     {%
-       \PackageError{glossaries}%
+       \PackageError{my-glossaries}%
        {Can't define `\string#5' as helper command
         `\expandafter\string\csname @gls@user@#1@\endcsname' already exists}%
        {}%
@@ -2019,7 +2087,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     }%
     \ifcsdef{@Gls@user@#1@}%
     {%
-       \PackageError{glossaries}%
+       \PackageError{my-glossaries}%
        {Can't define `\string#6' as helper command
         `\expandafter\string\csname @Gls@user@#1@\endcsname' already exists}%
        {}%
@@ -2038,7 +2106,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     }%
     \ifcsdef{@GLS@user@#1@}%
     {%
-       \PackageError{glossaries}%
+       \PackageError{my-glossaries}%
        {Can't define `\string#7' as helper command
         `\expandafter\string\csname @GLS@user@#1@\endcsname' already exists}%
        {}%
@@ -2057,7 +2125,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     }%
   }%
   {%
-    \PackageError{glossaries}{Key `#1' already exists}{}%
+    \PackageError{my-glossaries}{Key `#1' already exists}{}%
   }%
 }
 \newcommand*{\glswritedefhook}{}
@@ -2120,7 +2188,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \setkeys{glossentry}{#2}%
     \ifundef\glsdefaulttype
     {%
-       \PackageError{glossaries}%
+       \PackageError{my-glossaries}%
        {No default glossary type (have you used `nomain'?)}%
        {If you use package option `nomain' you must define
         a new glossary before you can define entries}%
@@ -2130,7 +2198,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \edef\@glo@type{\glsentrytype{\@glo@label}}%
     \ifcsundef{glolist@\@glo@type}%
     {%
-        \PackageError{glossaries}%
+        \PackageError{my-glossaries}%
         {Glossary type `\@glo@type' has not been defined}%
         {You need to define a new glossary type, before making entries
          in it}%
@@ -2154,7 +2222,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \else
       \ifdefequal\@glo@label\@glo@parent%
       {%
-        \PackageError{glossaries}{Entry `\@glo@label' can't be its own parent}{}%
+        \PackageError{my-glossaries}{Entry `\@glo@label' can't be its own parent}{}%
         \def\@glo@parent{}%
         \expandafter\gdef\csname glo@\@glo@label @parent\endcsname{}%
       }%
@@ -2175,7 +2243,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
           \fi
         }%
         {%
-          \PackageError{glossaries}%
+          \PackageError{my-glossaries}%
           {%
             Invalid parent `\@glo@parent'
             for entry `\@glo@label' - parent doesn't exist%
@@ -2446,7 +2514,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \let\@newglossaryentry@defcounters\@@newglossaryentry@defcounters
   \renewcommand*{\gls@defdocnewglossaryentry}{%
     \renewcommand*\newglossaryentry[2]{%
-      \PackageError{glossaries}{\string\newglossaryentry\space
+      \PackageError{my-glossaries}{\string\newglossaryentry\space
       may only be used in the preamble when entry counting has
       been activated}{If you use \string\glsenableentrycount\space
       you must place all entry definitions in the preamble not in
@@ -2937,7 +3005,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \define@key{glslink}{counter}{%
   \ifcsundef{c@#1}%
   {%
-    \PackageError{glossaries}%
+    \PackageError{my-glossaries}%
     {There is no counter called `#1'}%
     {%
        The counter key should have the name of a valid counter
@@ -2980,7 +3048,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \let\do@gls@link@checkfirsthyper\relax
     \@gls@link[#1]{#2}{#3}%
   }{%
-    \PackageError{glossaries}{Glossary entry `#2' has not been
+    \PackageError{my-glossaries}{Glossary entry `#2' has not been
     defined}{You need to define a glossary entry before you
     can use it.}%
     \glstextformat{#3}%
@@ -4118,7 +4186,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \xmakefirstuc{\@glo@text}%
   }%
   {%
-    \PackageError{glossaries}{Either glossary entry
+    \PackageError{my-glossaries}{Either glossary entry
      `\glsdetoklabel{#1}' doesn't exist or the field `#2'
      doesn't exist}{Check you have correctly spelt the entry
      label and the field name}%
@@ -4535,14 +4603,14 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \writeist
   }%
   {%
-    \PackageError{glossaries}%
+    \PackageError{my-glossaries}%
     {Glossary type `#1' not defined}%
     {New glossaries must be defined before using \string\makeglossary}%
   }%
 }
 \newcommand*{\@glsopenfile}[2]{%
   \immediate\openout#1=\jobname.\csname @glotype@#2@out\endcsname
-  \PackageInfo{glossaries}{Writing glossary file
+  \PackageInfo{my-glossaries}{Writing glossary file
      \jobname.\csname @glotype@#2@out\endcsname}%
 }
 \def\checkgloss{main}
@@ -4606,7 +4674,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \@makeglossary{\@glo@type}}%
   }%
   \renewcommand*\newglossary[4][]{%
-  \PackageError{glossaries}{New glossaries
+  \PackageError{my-glossaries}{New glossaries
   must be created before \string\makeglossaries}{You need
   to move \string\makeglossaries\space after all your
   \string\newglossary\space commands}}%
@@ -4685,7 +4753,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \def\@glo@sorttype{\@glo@default@sorttype}%
   }%
   \renewcommand*\new@glossaryentry[2]{%
-    \PackageError{glossaries}{Glossary entries must be
+    \PackageError{my-glossaries}{Glossary entries must be
      defined in the preamble^^Jwhen you use
      \string\makenoidxglossaries}%
     {Either move your definitions to the preamble or use
@@ -4704,7 +4772,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
           a rerun is required or you haven't referenced the entry.}%
       }%
       {%
-        \PackageError{glossaries}{Glossary entry `##1' has not been
+        \PackageError{my-glossaries}{Glossary entry `##1' has not been
          defined.}{}%
       }%
     }%
@@ -4734,7 +4802,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
           a rerun is required or you haven't referenced the entry.}%
       }%
       {%
-        \PackageError{glossaries}{Glossary entry `##1' has not been
+        \PackageError{my-glossaries}{Glossary entry `##1' has not been
          defined.}{}%
       }%
     }%
@@ -4756,7 +4824,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
           a rerun is required or you haven't referenced the entry.}%
       }%
       {%
-        \PackageError{glossaries}{Glossary entry `##1' has not been
+        \PackageError{my-glossaries}{Glossary entry `##1' has not been
          defined.}{}%
       }%
     }%
@@ -4769,14 +4837,14 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }
 \@onlypreamble{\makenoidxglossaries}
 \newcommand*{\glsnumberlistloop}[2]{%
-   \PackageError{glossaries}{\string\glsnumberlistloop\space
+   \PackageError{my-glossaries}{\string\glsnumberlistloop\space
     only works with \string\makenoidxglossaries}{}%
 }
 \newcommand*{\glsnoidxnumberlistloophandler}[1]{%
   #1%
 }
 \newcommand*{\@no@makeglossaries}{%
-  \PackageError{glossaries}{You can't use both
+  \PackageError{my-glossaries}{You can't use both
   \string\makeglossaries\space and \string\makenoidxglossaries}%
   {Either use one or other (or none) of those commands but not both
   together.}%
@@ -5098,8 +5166,8 @@ you
     \@glo@sortentries{\@glo@sorthandler@word}{#1}%
   }%
   {%
-    \PackageError{glossaries}{Conflicting sort options:^^J
-     \string\usepackage[sort=\@glo@default@sorttype]{glossaries}^^J
+    \PackageError{my-glossaries}{Conflicting sort options:^^J
+     \string\usepackage[sort=\@glo@default@sorttype]{my-glossaries}^^J
      \string\printnoidxglossary[sort=word]}{}%
   }%
 }
@@ -5109,8 +5177,8 @@ you
     \@glo@sortentries{\@glo@sorthandler@letter}{#1}%
   }%
   {%
-    \PackageError{glossaries}{Conflicting sort options:^^J
-     \string\usepackage[sort=\@glo@default@sorttype]{glossaries}^^J
+    \PackageError{my-glossaries}{Conflicting sort options:^^J
+     \string\usepackage[sort=\@glo@default@sorttype]{my-glossaries}^^J
      \string\printnoidxglossary[sort=letter]}{}%
   }%
 }
@@ -5122,12 +5190,12 @@ you
       \@glo@sortentries{\csuse{@glo@sorthandler@\glsorder}}{#1}%
     }%
     {%
-      \PackageError{glossaries}{Unknown sort handler `\glsorder'}{}%
+      \PackageError{my-glossaries}{Unknown sort handler `\glsorder'}{}%
     }%
   }%
   {%
-    \PackageError{glossaries}{Conflicting sort options:^^J
-     \string\usepackage[sort=\@glo@default@sorttype]{glossaries}^^J
+    \PackageError{my-glossaries}{Conflicting sort options:^^J
+     \string\usepackage[sort=\@glo@default@sorttype]{my-glossaries}^^J
      \string\printnoidxglossary[sort=standard]}{}%
   }%
 }
@@ -5137,8 +5205,8 @@ you
     \@glo@sortentries{\@glo@sorthandler@case}{#1}%
   }%
   {%
-    \PackageError{glossaries}{Conflicting sort options:^^J
-     \string\usepackage[sort=\@glo@default@sorttype]{glossaries}^^J
+    \PackageError{my-glossaries}{Conflicting sort options:^^J
+     \string\usepackage[sort=\@glo@default@sorttype]{my-glossaries}^^J
      \string\printnoidxglossary[sort=case]}{}%
   }%
 }
@@ -5148,8 +5216,8 @@ you
     \@glo@sortentries{\@glo@sorthandler@nocase}{#1}%
   }%
   {%
-    \PackageError{glossaries}{Conflicting sort options:^^J
-     \string\usepackage[sort=\@glo@default@sorttype]{glossaries}^^J
+    \PackageError{my-glossaries}{Conflicting sort options:^^J
+     \string\usepackage[sort=\@glo@default@sorttype]{my-glossaries}^^J
      \string\printnoidxglossary[sort=nocase]}{}%
   }%
 }
@@ -5187,7 +5255,7 @@ you
       \csuse{@glo@sortmacro@\@glo@sorttype}{\@glo@type}%
     }%
     {%
-       \PackageError{glossaries}{Unknown sort handler `\@glo@sorttype'}{}%
+       \PackageError{my-glossaries}{Unknown sort handler `\@glo@sorttype'}{}%
     }%
     \glossarysection[\glossarytoctitle]{\glossarytitle}%
     \glossarypreamble
@@ -5326,7 +5394,7 @@ you
 \define@key{printgloss}{style}{%
   \ifcsundef{@glsstyle@#1}%
   {%
-    \PackageError{glossaries}%
+    \PackageError{my-glossaries}%
     {Glossary style `#1' undefined}{}%
   }%
   {%
@@ -5424,7 +5492,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \fi}
 \define@key{printgloss}{sort}{\@glo@assign@sortkey{#1}}
 \newcommand*{\@glo@no@assign@sortkey}[1]{%
-   \PackageError{glossaries}{`sort' key not permitted with
+   \PackageError{my-glossaries}{`sort' key not permitted with
    \string\printglossary}%
    {The `sort' key may only be used with \string\printnoidxglossary}%
 }
@@ -5654,7 +5722,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\setglossarystyle}[1]{%
   \ifcsundef{@glsstyle@#1}%
   {%
-    \PackageError{glossaries}{Glossary style `#1' undefined}{}%
+    \PackageError{my-glossaries}{Glossary style `#1' undefined}{}%
   }%
   {%
     \csname @glsstyle@#1\endcsname
@@ -5663,7 +5731,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\glossarystyle}[1]{%
   \ifcsundef{@glsstyle@#1}%
   {%
-    \PackageError{glossaries}{Glossary style `#1' undefined}{}%
+    \PackageError{my-glossaries}{Glossary style `#1' undefined}{}%
   }%
   {%
     \GlossariesWarning
@@ -5683,13 +5751,13 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \expandafter\def\csname @glsstyle@#1\endcsname{#2}%
   }%
   {%
-    \PackageError{glossaries}{Glossary style `#1' is already defined}{}%
+    \PackageError{my-glossaries}{Glossary style `#1' is already defined}{}%
   }%
 }
 \newcommand{\renewglossarystyle}[2]{%
   \ifcsundef{@glsstyle@#1}%
   {%
-    \PackageError{glossaries}{Glossary style `#1' isn't already defined}{}%
+    \PackageError{my-glossaries}{Glossary style `#1' isn't already defined}{}%
   }%
   {%
     \csdef{@glsstyle@#1}{#2}%
@@ -5916,7 +5984,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\setacronymstyle}[1]{%
   \ifcsundef{@glsacr@dispstyle@#1}
   {%
-    \PackageError{glossaries}{Undefined acronym style `#1'}{}%
+    \PackageError{my-glossaries}{Undefined acronym style `#1'}{}%
   }%
   {%
     \ifdefempty{\@glsacronymlists}%
@@ -5934,7 +6002,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 \newcommand*{\newacronymstyle}[3]{%
   \ifcsdef{@glsacr@dispstyle@#1}%
   {%
-    \PackageError{glossaries}{Acronym style `#1' already exists}{}%
+    \PackageError{my-glossaries}{Acronym style `#1' already exists}{}%
   }%
   {%
     \csdef{@glsacr@dispstyle@#1}{#2}%
@@ -5948,7 +6016,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \csdef{@glsacr@styledefs@#1}{#3}%
   }%
   {%
-    \PackageError{glossaries}{Acronym style `#1' doesn't exist}{}%
+    \PackageError{my-glossaries}{Acronym style `#1' doesn't exist}{}%
   }%
 }
 \newcommand*{\GlsUseAcrEntryDispStyle}[1]{\csuse{@glsacr@dispstyle@#1}}
@@ -6487,7 +6555,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
     \fi
   \fi
   \ifglsacrdua
-    \PackageError{glossaries}{Option clash: `footnote' and `dua'
+    \PackageError{my-glossaries}{Option clash: `footnote' and `dua'
     can't both be set}{}%
   \fi
 }%
@@ -6533,11 +6601,11 @@ false,nolabel,autolabel,nameref}[nolabel]{%
 }
 \newcommand*{\SetDescriptionDUAAcronymStyle}{%
   \ifglsacrsmallcaps
-    \PackageError{glossaries}{Option clash: `smallcaps' and `dua'
+    \PackageError{my-glossaries}{Option clash: `smallcaps' and `dua'
     can't both be set}{}%
   \else
     \ifglsacrsmaller
-      \PackageError{glossaries}{Option clash: `smaller' and `dua'
+      \PackageError{my-glossaries}{Option clash: `smaller' and `dua'
       can't both be set}{}%
     \fi
   \fi
@@ -6748,7 +6816,7 @@ false,nolabel,autolabel,nameref}[nolabel]{%
      \fi
   \fi
   \ifglsacrdua
-     \PackageError{glossaries}{Option clash: `footnote' and `dua'
+     \PackageError{my-glossaries}{Option clash: `footnote' and `dua'
      can't both be set}{}%
   \fi
 }%
@@ -6866,10 +6934,10 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \fi
   \ifglsacrdua
     \ifglsacrsmallcaps
-      \PackageError{glossaries}{Option clash: `smallcaps' and `dua'
+      \PackageError{my-glossaries}{Option clash: `smallcaps' and `dua'
       can't both be set}{}%
     \else
-      \PackageError{glossaries}{Option clash: `smaller' and `dua'
+      \PackageError{my-glossaries}{Option clash: `smaller' and `dua'
       can't both be set}{}%
     \fi
   \fi
@@ -7130,7 +7198,9 @@ false,nolabel,autolabel,nameref}[nolabel]{%
   \expandafter\show\csname glolist@#1\endcsname
 }
 \csname ifglscompatible-2.07\endcsname
-  \RequirePackage{glossaries-compatible-207}
+  	\RequirePkg{my-glossaries-compatible-207}
+        %\xp\RequirePackage\xp{\@prepend@file@path{my-glossaries-compatible-207}}
+	%\RequirePackage{texmf-local/tex/latex/R2Labs/my-glossaries-compatible-207}
 \fi
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%

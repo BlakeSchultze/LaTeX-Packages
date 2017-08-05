@@ -175,8 +175,8 @@
         \begingroup\setulsettings[reset=true]\endgroup%
         \IfStrEq{\thedoctype}{documentation}%
         {%
-                \ifcommandkey{title}{}{\PackageError{\pkgname}{missing 'title' key}{Provide 'title' and recompile}}%
-                \ifcommandkey{subtitle}{}{\PackageError{\pkgname}{missing 'subtitle' key}{Provide 'subtitle' and recompile}}%
+                \ifcommandkey{title}{}{\PackageError{\PKGNAME}{missing 'title' key}{Provide 'title' and recompile}}%
+                \ifcommandkey{subtitle}{}{\PackageError{\PKGNAME}{missing 'subtitle' key}{Provide 'subtitle' and recompile}}%
                 %\protected@xdef\thetitle{\commandkey{title}}
                 \xdef\thetitle{\commandkey{title}}
                 \xdef\thesubtitle{\commandkey{subtitle}}
@@ -193,11 +193,11 @@
         }{}
         \IfStrEq{\thedoctype}{homework}
         {%
-                \ifcommandkey{course number}{}{\PackageError{\pkgname}{missing 'course number' key}{Provide 'course number' and recompile}}%
-                \ifcommandkey{course title}{}{\PackageError{\pkgname}{missing 'course title' key}{Provide 'course title' and recompile}}%
-                \ifcommandkey{instructor}{}{\PackageError{\pkgname}{missing 'instructor' key}{Provide 'instructor' and recompile}}%
-                \ifcommandkey{assignment}{}{\PackageError{\pkgname}{missing 'assignment' key}{Provide 'assignment' and recompile}}%
-                \ifcommandkey{semester}{}{\PackageError{\pkgname}{missing 'semester' key}{Provide 'semester' and recompile}}%
+                \ifcommandkey{course number}{}{\PackageError{\PKGNAME}{missing 'course number' key}{Provide 'course number' and recompile}}%
+                \ifcommandkey{course title}{}{\PackageError{\PKGNAME}{missing 'course title' key}{Provide 'course title' and recompile}}%
+                \ifcommandkey{instructor}{}{\PackageError{\PKGNAME}{missing 'instructor' key}{Provide 'instructor' and recompile}}%
+                \ifcommandkey{assignment}{}{\PackageError{\PKGNAME}{missing 'assignment' key}{Provide 'assignment' and recompile}}%
+                \ifcommandkey{semester}{}{\PackageError{\PKGNAME}{missing 'semester' key}{Provide 'semester' and recompile}}%
                 \xdef\coursenumber{\commandkey{course number}}%
                 \xdef\coursetitle{\commandkey{course title}}%
                 \xdef\instructor{\commandkey{instructor}}%
@@ -302,7 +302,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbeqnlist}
-[enum style={default, problem, solution, blue, darkblue}, enum skipsize={small, medium, big}, bool beforeskip=false, bool numbers=false, bool goldtrim=true, colorscheme=, colfill=, title=][0]%[1]%
+[enum style={default, solution, blue, darkblue}, enum skipsize={small, medium, big}, bool beforeskip=false, bool numbers=false, bool goldtrim=true, colorscheme=, colfill=, title=][0]%[1]%
 {
         \doclinespacing%
         %\solutionlinespacing%
@@ -337,7 +337,7 @@
 }{\endtcbeqnlistbox}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcblist}
-[enum style={default, problem, solution, maroon, darkred, blue, darkblue, darkgreen}, bool overwritegradient=false, bool beforeskip=false, bool numbers=false, bool goldtrim=false, width=\@default@tcb@listbox@width, colorscheme=, colfill=, title=][0]%[1]%
+[enum style={default, maroon, darkred, blue, darkblue, darkgreen}, bool overwritegradient=false,bool beforeskip=false, bool numbers=false, bool goldtrim=false, width=\@default@tcb@listbox@width, colorscheme=, colfill=, title=][0]%[1]%
 {
         %\renewcommand{\baselinestretch}{\@doc@baselinestretch}
         \doclinespacing%
@@ -439,7 +439,7 @@
 }{\endtcblongtable}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeyenvironment{tcbenclosure}
-[enum type={default, list, eqnlist, script, function, problem, solution, graph}, bool hypertitle=false, bool sidebyside=false, width=\textwidth, gradient=, colorscheme=, colfill=,title=][0]%[1]%
+[enum type={default, list, eqnlist, script, function, problem, solution, graph}, sidebyside, width=\textwidth, gradient=, colorscheme=, colfill=,title=][0]%[1]%
 {
         \toggletrue{@in@tcbenclosure}%
         \xdef\@the@envtype{\commandkey{type}}%
@@ -453,11 +453,6 @@
         \@macro@iffalse%
         \IfStrEqCase{\@the@envtype}%
         {%
-%                {script}%
-%                {%
-%                        \gdef\@@tcbcode@type{scriptdefbox}%
-%                        \@macro@iftrue%%
-%                }%
                 {script}%
                 {%
                         \gdef\@@tcbcode@type{scriptdefbox}%
@@ -485,17 +480,10 @@
         \ifcommandkey{gradient}%
                 {\constructgradient{@the@gradient}{\commandkey{gradient}}}%
                 {\edef\@the@gradient{\csuse{@\@the@envtype @env@gradient}}}
-%        \ifcommandkey{hypertitle}%
-%        {%
-%        	\def\@@emptytitle{|\@the@title|}
-%        	\cftfigbox@hypertitle*%
-%                '{\shadowText*:\Large:%
-%                'tcbfigboxColorset'[black]}'{}{#2}%%
-%        }{}%
         %\ifcommandkey{sidebyside}{\def\@@sidebyside@bool{*}}{\def\@@sidebyside@bool{}}%
-        \setcommandkeyarg{sidebyside}{*}{}% sets \@@sidebyside@bool
+        \setcommandkeyarg{sidebyside}{*}{}%
         \ifdefempty{\@the@title}{\def\@@emptytitle{}}{\def\@@emptytitle{|\@the@title|}}%
-        \def\@@constant@args{<\@the@width>'\@the@color@scheme'"\@the@gradient"}%
+        \def\@@constant@args{<\@the@width>'\@the@color@scheme'"\@the@gradient"}
         \xp@nyyy\tcbenvironment\@@sidebyside@bool\@@constant@args\@@emptytitle%
 }{\endtcbenvironment\togglefalse{@in@tcbenclosure}}
 %-------------------------------------------------------------------------------------------------------------------------------%

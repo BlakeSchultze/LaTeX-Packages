@@ -22,17 +22,21 @@
 %
 %
 %
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{pkgbase}                       %
+%\RequirePackage{trace}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareOption*{\PackageWarning{pkgbase}{Unknown \CurrentOption}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************ Processing of package options ************************************************%
 %*******************************************************************************************************************************%
@@ -49,15 +53,25 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------ Register variable definitions ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@pkgopts@packages{etoolbox,kvoptions,pgffor}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\newtoggle{validated}
+%\def\newif#1{%
+%  \ifdefined{#1}{}%
+%  {\count@\escapechar \escapechar\m@ne
+%    \let#1\iffalse
+%    \@if#1\iftrue
+%    \@if#1\iffalse
+%  \escapechar\count@}}
 \newif\ifvalidated\validatedfalse
 \newif\if@choicevals@validated\@choicevals@validatedfalse
+\newif\if@rm@termfile@\@rm@termfile@true
+%-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------- Base package constant definitions ----------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\PKGNAME{R2Labs}%
+\def\PKGOPTS@PACKAGES{etoolbox,kvoptions,pgffor,ifplatform,catchfile}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plain TeX macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %----------------------------------- Control sequence numbers and character code definitions -----------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -74,7 +88,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \chardef\CHARZERO=0
 \chardef\CHARONE=1
-\chardef\CHARTWO=2
+\chardef\CHARTWO=2                     
 \chardef\CHARTHREE=3
 \chardef\CHARFOUR=4
 \chardef\CHAREIGHT=8
@@ -124,9 +138,13 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\csname@cmd[1]{\xp\xp\csname#1\endcsname}
 \newcommand\csname@cmd@y[2]{\csname@cmd{#1}\csname#2\endcsname}
-\newcommand\csname@y[2]{\xp#1\csname#2\endcsname}
-\newcommand\csgname@y[2]{\gxp#1\csname#2\endcsname}
-\newcommand\csname@ny[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
+%\newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
+%\newcommand\csgname@y[2]{\gxp#1\csname#2\endcsname}
+%\newcommand\csname@ny[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
+%
+\newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
+\newcommand\csgname@ny[2]{\gxp#1\csname#2\endcsname}
+\newcommand\csname@nnY[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
 \newcommand\csname@nyN[3]{\xp#1\csname#2\endcsname{#3}}
 %\newcommand\csname@nYY[3]{\xp\csname@ny\xp#1\xp{\csname#2\endcsname}{#3}}
 \newcommand\csname@nYY[3]{\xp\xp\xp#1\xp\xp\xp{\xp\csname\xp#2\xp\endcsname\xp}\xp{\csname#3\endcsname}}
@@ -135,6 +153,7 @@
 \newcommand\csname@nynn[5]{\xp#1\xp{\xp#2\xp}\xp{\csname#3\endcsname}{#4}{#5}}
 \newcommand\csname@ynnn[5]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
 \newcommand\csname@yynn[5]{\xp\csname@nynn\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
+\newcommand\csname@nnnny[5]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp#3\xp\xp\xp#4\csname#5\endcsname}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\xp@ny[2]{\xp#1#2}
 \newcommand\xp@nY[2]{\xp#1\xp{#2}}
@@ -144,6 +163,7 @@
 \newcommand\xp@nyN[3]{\xp#1#2{#3}}
 \newcommand\xp@nYN[3]{\xp#1\xp{#2}{#3}}
 \newcommand\xp@nyy[3]{\xp\xp\xp#1\xp\xp\xp#2#3}
+\newcommand\xp@nyY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp{#3}}
 \newcommand\xp@nyyy[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3#4}
 \newcommand\xp@nyyY[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3\xp{#4}}
 \newcommand\xp@nYNN[4]{\xp#1\xp{#2}{#3}{#4}}
@@ -157,14 +177,38 @@
 \newcommand\xp@csname@ny[2]{\xp\xp\xp#1\csname#2\endcsname}
 \newcommand\xp@csname@nnY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp{\csname#3\endcsname}}
 \newcommand\xp@csargs[2]{\xp@csname@ny#1{#2}}
+\def\xp@def#1#2{\csname@nnY\def{#1}{#2}}
+\def\xp@gdef#1#2{\csname@nnY\gdef{#1}{#2}}
+\def\xp@edef#1#2{\csname@nnY\edef{#1}{#2}}
+\def\xp@xdef#1#2{\csname@nnY\xdef{#1}{#2}}
+\def\xp@@def#1#2{\csname@nyN\def{#1}{#2}}       % \xp\def\xp#2\xp{\csname#3\endcsname}
+\def\xp@@gdef#1#2{\csname@nyN\gdef{#1}{#2}}     % \xp\gdef\csname#2\endcsname{#3}
+\def\xp@@edef#1#2{\csname@nyN\edef{#1}{#2}}
+\def\xp@@xdef#1#2{\csname@nyN\xdef{#1}{#2}}
+\def\xp@newif#1{\csname@ny\newif{#1}}
+\def\xp@ifdefempty#1#2#3{\csname@ynn\ifdefempty{#1}{#2}{#3}}
 \def\xp@cmd#1#2{\xp#1\xp#2}
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\def\scopedef#1#2%
-\newcommand\scopedef[3][\protected@edef]%
+\def\@csfor#1#2#3{\csname@nnnny\@for#1:={#2}\do{#3}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\protected@edef\keyeqval#1=#2{\edef#1{#2}}
+%\edef\keyeqval#1=#2{\def#1{#2}}
+%\def\keyeqval#1=#2{\def#1{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\scopecmd[3][\edef]%
 {%
         \begingroup%
         #2%
-        #1\x{\endgroup\noexpand#3}\x%
+        #1\x{\endgroup#3}\x%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\edef\x{\def\noexpand\dehandout##1\detokenize{_handout}{##1}}\x
+\newcommand\scopedef[3][\protected@edef]%
+{%
+        \scopecmd[#1]{#2}{\noexpand#3}%%
+%        \begingroup%
+%        #2%
+%        #1\x{\endgroup\noexpand#3}\x%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\preexpansion[3][\protected@edef]%
@@ -177,8 +221,42 @@
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro definition/assignment helper command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------------- Control sequence ssignment helper commands ------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\DoLongFutureLet #1#2#3#4%
+{%
+        \def\@FutureLetDecide%
+        {%
+                #1#2%
+                \@FutureLetToken%
+                        \def\@FutureLetNext{#3}%
+                \else%
+                        \def\@FutureLetNext{#4}%
+                \fi%
+                \@FutureLetNext%
+        }%
+        \futurelet\@FutureLetToken\@FutureLetDecide%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------- Control Sequence Definition Console/Document Printing Commands --------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\shown#1{\xp\show\csname\string#1\endcsname}
+\def\showthen#1{\xp\showthe\csname\string#1\endcsname}
+\def\don#1{\csname\string#1\endcsname}
+\def\defn#1{\xp\def\csname\string#1\endcsname}
+\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}     %Print code executed after environment #1 closes
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ List Creation/Modification/Manipulation/Print Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------- Argument List Creation/Parsing Commands -------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \xdef\arg@default@prefix{arg}
 \xdef\varg@default@prefix{varg}
@@ -197,14 +275,14 @@
 \xdef\csnumname@prefix{arg}
 \xdef\csvargG@prefix{csvargG}
 \xdef\csvgroup@item@prefix{csvitem}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\csvgroup@numformat{\roman}
 \xdef\ssvargsep{ }
 \xdef\csvargsep{,}
 \xdef\bsvargsep{}
-\gdef\xsvarg@name#1{\xsvarg@prefix\@xsvargs@numformat{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\csvgroup@numformat{\roman}
 \gdef\@xsvargs@numcmd#1{\romannumeral#1}
 \gdef\xsvarg@numeral#1{\xsvarg@prefix\@xsvargs@numcmd#1}
+\gdef\xsvarg@name#1{\xsvarg@prefix\@xsvargs@numformat{#1}}
 \def\Romannumeral#1{\xp\uppercase\xp{\romannumeral#1\relax}}
 \newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
 \newcommand\romanarg[2][\csvarg@prefix]{\xdef\csvarg@prefix{#1}\csname\csvarg@prefix\romannumeral#2\endcsname}
@@ -252,43 +330,8 @@
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro definition/assignment helper command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal list handling definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%----------------------------------------- Control sequence ssignment helper commands ------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\long\def\DoLongFutureLet #1#2#3#4%
-{%
-        \def\@FutureLetDecide%
-        {%
-                #1#2%
-                \@FutureLetToken%
-                        \def\@FutureLetNext{#3}%
-                \else%
-                        \def\@FutureLetNext{#4}%
-                \fi%
-                \@FutureLetNext%
-        }%
-        \futurelet\@FutureLetToken\@FutureLetDecide%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\DoFutureLet #1#2#3#4{\DoLongFutureLet{#1}{#2}{#3}{#4}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------- Macro definition helper commands -----------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\shown#1{\xp\show\csname\string#1\endcsname}
-\def\showthen#1{\xp\showthe\csname\string#1\endcsname}
-\def\don#1{\csname\string#1\endcsname}
-\def\defn#1{\xp\def\csname\string#1\endcsname}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal/helper macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%expandnext\g@addto@macro%
-\long\def\addto#1#2{\xp\def\xp#1\xp{#1#2}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\addtolist#1#2{\lst@lAddTo#1{#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@create@tokenlist#1#2%
 {%
@@ -300,18 +343,19 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------- List printing commands ---------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\isinlist#1#2#3%
 {%
         \def\tmp##1#2##2\end%
         {%
                 \def\tmp{##2}%
                 \ifx\tmp\empty \csname iffalse\xp\endcsname \else
-                  \csname iftrue\xp\endcsname \fi%
+                \csname iftrue\xp\endcsname \fi%
         }% end of \def\tmp
         \xp\tmp#1\endlistsep#2\end
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand\ifmember[2]{%
 \def\ifmember#1#2%
 {%
         \in@{#1}{#2}%
@@ -322,7 +366,6 @@
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand\ifmember[2]{%
 \def\ifcsvlistitem#1#2%
 {%
         \def\csvcheckitem{#1}%
@@ -333,6 +376,12 @@
                 \expandafter\@secondoftwo%
         \fi%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------- List printing commands ---------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\addto#1#2{\xp\def\xp#1\xp{#1#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\addtolist#1#2{\lst@lAddTo#1{#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@add@to@argslist#1#2%
 {%
@@ -366,6 +415,8 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------------------------------- List ordering commands ---------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\sortbycolA#1|#2|#3|#4;%
 {%
         \addtolist{\@sorted@list}{#1#2,}%
@@ -380,7 +431,7 @@
         \lst@BubbleSort{\@sorted@list}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------- Text/list/message print commands -----------------------------------------------%
+%---------------------------------------------------- List printing commands ---------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\printlist@addsep#1#2{\ifnumcomp{#1}{<}{#2}{,\space}{}}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -390,7 +441,9 @@
         \@for\next:=\@current@list \do{\next,}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\qq#1\qq{\\\text{Trailing Code (Braced): \{}\texttt{\detokenize{#1}}\}}     %Print code executed after environment #1 closes
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Console Message Printing Helper Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\msgtext{Default message text}
 \gdef\hlptext{Default help text}
@@ -398,12 +451,249 @@
 \def\DoubleIndentedMessageBreak{\MessageBreak\space\space\space\space\space\space\space\space}
 \xdef\DoubleIndented{\space\space\space\space\space\space\space\space}
 %-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package loading commands extending '\RequirePackage' ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePackageOnce[1]
+{%
+        \@ifpackageloaded{#1}{}%
+        {%
+                \RequirePackage{#1}%
+                \@add@to@csvlist{#1}{\@loaded@packages}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePackageList[1]{\@for\next:=#1\do{\xp\RequirePackageOnce\xp{\next}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePkg[2][]%
+{%
+	%\ifstrempty{#1}{\edef\pkgpath{\@pkg@dir}}{\edef\pkgpath{#1}}
+        \IfFileExists{\@pkg@dir#2.sty}%
+               {\RequirePackage[#1]{\@pkg@dir#2}}%
+               {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePkgOnce[2][]
+{%
+        \@ifpackageloaded{\@pkg@dir#2}{}%
+        {%
+	        \IfFileExists{\@pkg@dir#2.sty}%
+	               {\RequirePackage[#1]{\@pkg@dir#2}}%
+	               {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\RequirePkgList[1]{\@for\next:=#1\do{\xp\RequirePkg\next}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Windows/Unix Shell Command Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\LOCAL@PKG@PREFIX{}% ./texmf/tex/latex/R2Labs/
+\def\colordefs@dirname{colordefs}
+\xdef\TDS@PKG@DIR{texmf-local/tex/latex/\PKGNAME/}
+\def\DROPBOX@DIRNAME{Dropbox}
+\def\CNF@FILENAME{texmf.cnf}
+\def\TEXMFLOCAL@dirname{texmf-local}
+\def\TEXMFLOCAL@default@val{\cnf@unix@envvar{SELFAUTOGRANDPARENT}/\TEXMFLOCAL@dirname}
+\def\cnf@comment#1{\@percentchar\space#1\wr@endline}
+\def\cnf@keyval#1{#1\wr@endline\wr@endline}
+\def\cnf@win@envvar#1{\@percentchar#1\@percentchar}
+\def\cnf@unix@envvar#1{\wr@dollar#1}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\edef\wr@hashmark{\string#}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@dollar{\string$}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@percent{\expandafter\string\%}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@atmark{\string @}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@lcarat{\string<}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@rcarat{\string>}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@circumflex{\string^}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\edef\wr@endline{\string^^J}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+%\def\wr@par{\string^^I}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+%\edef\wr@hashmark{\string#}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\def\totext@langle{\catcode`\<=\active\noexpand\def<{\textlangle}}
+\def\totext@rangle{\catcode`\>=\active\noexpand\def<{\textrangle}}
+\def\totext@underscore{\catcode`\_=\active\noexpand\def<{\textunderscore}}
+%\char92        '\'
+%\char94        '^'
+%\char126       '~'
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\let\<\wr@lcarat
+%\let\>\wr@rcarat
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\STDOUT@FNAME{\jobname.stdout}
+\def\PKGOPTS@FNAME{\jobname.pkgopts}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\ls@win{\immediate\write18{dir}}
+\def\ls@unix{\immediate\write18{ls -a}}
+\def\rm@win#1{\immediate\write18{erase #1}}
+\def\rm@unix#1{\immediate\write18{rm -f -- #1}}
+\def\rmdir@win#1{\immediate\write18{rmdir #1}}
+\def\rmdir@unix#1{\immediate\write18{rmdir #1}}
+\def\mkdir@win#1{\immediate\write18{mkdir #1}}
+\def\mkdir@unix#1{\immediate\write18{mkdir -p #1}}
+\def\chdir@win#1{\immediate\write18{chdir #1}}
+\def\chdir@unix#1{\immediate\write18{cd #1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\TeXcompiler{pdflatex}
+\def\verflag{--version}
+\def\compileTeX#1{#1}
+%\def\@pdflatex@switches#1{#1}
+\def\@shell@esc{--shell-escape}
+\def\@shell@skip{\space\space}
+%\CatchFileEdef{\stdoutB}{"|find -type d -maxdepth 1"}{\endlinechar=-1}%
+%\edef\x{\endgroup\def\noexpand\TeXpath{\@@input|"which tex" }}\x
+%\def\x{\endgroup\def\noexpand\TeXpath{\@@input|"dir" }}
+%\begingroup\makeatletter\endlinechar=\m@ne\everyeof{\noexpand}
+% --shell-escape -recorder WalkerProject-Documentation.tex
+%-------------------------------------------------------------------------------------------------------------------------------%
+\edef\envvar@prefix{USER}
+\edef\texenvvar@prefix{TEX}
+\edef\sysenvvar@prefix{USER}
+\edef\sysenvvar@winlist{COMPUTERNAME,ComSpec,COMSPEC,HOMEDRIVE,HOMEPATH,PDFLATEX,SHELL,SYSTEMROOT,TERM,TEXEDIT,USERPROFILE,WINDIR}
+%\gdef\envvar@winlist{USERPROFILE}
+\edef\texenvvar@winlist{TEXMFDIST,TEXEDIT,TEXMFHOME,TEXMFROOT,TEXMFVAR}
+\edef\sysenvvar@unixlist{HOME}
+%\edef\texenvvar@unixlist{\texenvvar@winlist}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\fname@recorder}[1][\jobname.tex]{-recorder #1}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\ifOScmd}[2][\OScmd]{\def\OScmd{\@csname{\ifOS{#2@win}{#2@unix}}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\ifOSdo}[1]{\ifOScmd{#1}\OScmd}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\ifOS}[2]{\ifwindows#1\else#2\fi}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      %-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Terminal Execution & File Writing Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\createfile[1]{\immediate\write18{\cr > #1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\createlocfile[1]%
+{
+        \newwrite\newfileH
+        \immediate\openout\newfileH=#1
+        \immediate\closeout\newfileH
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\wrtofile[2]{\immediate\write18{|"echo #2 > #1"}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\wrtolocfile[2]%
+{
+        \newwrite\outfileH
+        \immediate\openout\outfileH=#1
+        \immediate\write\outfileH{#2}
+        \immediate\closeout\outfileH
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\immediate\write18{/usr/local/bin/my-shell-script.sh > scriptoutput.tex}
+%\input{|"/usr/local/bin/my-shell-script.sh"}
+\newcommand{\gettexenv}[2][\stdout]%
+{%
+      \terminal[#1]{kpsewhich --var-value #2}%
+      %\terminal[#1]{set #2}%
+      %\CatchFileEdef{#1}{"|set #2"}{\catcode`\\=12\endlinechar=-1}%
+      %\CatchFileEdef{#1}{"|set #2"}{\@sanitize\endlinechar=-1}%
+      %\CatchFileEdef{\stdout}{"|kpsewhich --var-value #2"}{\endlinechar=-1}%
+      %\if\relax\detokenize{#1}\relax\stdout\else\let#1\stdout\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\getenv}[2][\stdout]%
+{%
+      %\CatchFileEdef{#1}{"|set TEXMFHOME=C:\Users\Blake\texmf"}{\catcode`\\=12\endlinechar=-1}%
+      %\terminal[#1]{kpsewhich -expand-braces -var-value #2}%
+      %\terminal[#1]{set #2}%
+      %\CatchFileEdef{#1}{"|set #2"}{\catcode`\\=12\endlinechar=-1}%
+      %\CatchFileEdef{#1}{"|set #2"}{\@sanitize\endlinechar=-1}%
+      \CatchFileEdef{#1}{"|kpsewhich -var-value #2"}{\endlinechar=-1}%-expand-var
+      %\def\stdout{\input{|"kpsewhich -var-value #2"}}
+      %  \begingroup\everyeof{\noexpand}
+      %  \def\x{\endgroup\def\USER@TEXEDIT{\@@input|"kpsewhich --var-value #2"}}\x%
+        %\edef\x{\endgroup\noexpand\zap@space\x\noexpand\@empty}\x%
+      %\if\relax\detokenize{#1}\relax\stdout\else\let#1\stdout\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\fullpath{%
+        \begingroup\everyeof{\noexpand}\@sanitize
+        \edef\x{\@@input|"find test.tex" }%
+        \edef\x{\endgroup\noexpand\zap@space\x\noexpand\@empty}\x%
+        \begingroup\makeatletter\endlinechar=\m@ne\obeylines\everyeof{\noexpand}\@sanitize%\obeyspaces
+        %\edef\x{\endgroup\def\noexpand\TeXpath{\@@input|"which tex" }}\x
+        \edef\x{\endgroup\def\noexpand\TeXpath{\@@input|"dir" }}\x
+        %\edef\termoutput{\xp\xp\xp\macroname\xp\xp\xp{\input{|"dir" }}}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\terminal}{\@ifstar{\@terminal@withstar}{\@terminal@withoutstar}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@terminal@withoutstar}[2][\stdout]%
+{%
+      \CatchFileEdef{#1}{"|#2"}{\endlinechar=-1}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\@terminal@withstar}[2][\stdout]%
+{%
+      	\begingroup%
+	      	%{\catcode`\^^M13 \gdef\obeycr{\catcode`\^^M13 \def^^M{^^J}%
+	    	%\@gobblecr}
+		%\@sanitize\everyeof{\noexpand}
+		%\catcode`\^^M=\active\let^^M\wr@endline%
+	      	%\CatchFileDef{\stdout}{"|#1"}{\endlinechar=-1}%
+                %\CatchFileDef{#1}{"|#2"}{\@sanitize\obeycr\obeylines}%\endlinechar=-1
+	      	\CatchFileDef{#1}{"|#2"}{}%
+	      	\if\relax\detokenize{#1}\relax\stdout\else\global\let#1\stdout\fi%
+      	\endgroup
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\termexec{\@ifstar{\@rm@termfile@false\@termexec}{\@rm@termfile@true\@termexec}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\@termexec[2][\stdout]%
+{
+        \newread\stdout@file
+        \immediate\write18{#2 > '\jobname.stdout'}
+        \openin\stdout@file=\jobname.stdout
+        \bgroup
+          \endlinechar=-1
+          \read\stdout@file to \localline
+          \global\let#1\localline
+        \egroup
+        \closein\stdout@file
+        \if@rm@termfile@
+        	\ifOSdo{rm}{'\jobname.stdout'}
+        \fi
+        \@rm@termfile@true
+}
+%\def\@makeletter#1{\catcode`#111\relax}
+\def\@makeletter#1{\catcode`#1=11\relax}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@cssanitize{\@makeother\\ \@makeother\$\@makeother\&\@makeother\#\@makeother\^\@makeother\_\@makeother\%\@makeother\~}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@makeactive#1{\catcode`\#1\active}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\begingroup\escapechar=-1\edef\x{\endgroup\string\power}\x
+\newcommand\csprint[1]{\scopecmd{\escapechar=-1}{\string#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\dosystem{\@ifstar{\@tempswafalse\do@system}{\@tempswatrue\do@system}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\do@system[1]{%
+  \begingroup
+  \let\%\@percentchar
+  \let\#\wr@hashmark
+  \let\$\wr@dollar
+  \let\<\wr@lcarat
+  \let\>\wr@rcarat
+  \let\{\wr@lbrace
+  \let\}\wr@rbrace
+  \if@tempswa\expandafter\immediate\fi
+  \write18{#1}%
+  \endgroup
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %******************* Package loading commands extending '\RequirePackage' and package option handler commands ******************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\pkgname{R2Labs}%
-\def\pkgload@font{\fontfamily{cmr}\selectfont}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************************************** End of 'pkgbase.sty' package **************************************************%
@@ -417,3 +707,93 @@
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\bgroup
+%\obeylines\obeyspaces
+%\catcode`\<=\active
+%\catcode`\>=\active
+%\catcode`\_=\active
+%\def<{\textlangle}
+%\def>{\textrangle}
+%\def_{\textunderscore}
+%\catcode`\!=0
+%!catcode`!\=!active
+%!def\{!textbackslash}
+%!input{|"dir"}
+%!egroup
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\nfss@catcodes{%
+     \makeatletter
+     \catcode`\ 9%
+     \catcode`\^^I9%
+     \catcode`\^^M9%
+     \catcode`\\\z@
+     \catcode`\{\@ne
+     \catcode`\}\tw@
+     \catcode`\#6%
+     \catcode`\^7%
+     \catcode`\%14%
+   \@makeother\<%
+   \@makeother\>%
+   \@makeother\*%
+   \@makeother\.%
+   \@makeother\-%
+   \@makeother\/%
+   \@makeother\[%
+   \@makeother\]%
+   \@makeother\`%
+   \@makeother\'%
+   \@makeother\"%
+}
+%\def\termchars{!\,!_}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\termprint[1]%
+%\protected@edef\termprint#1%
+\protected\def\termprint#1%
+{%
+        %\begingroup%
+        %\bgroup
+        %\noexpand{
+        %\catcode`\!=0
+        %\protect{
+        {{
+        \catcode`\!\n@ne
+        \catcode`\_=11
+        %!catcode`!\=11
+        %!@makeletter{_}
+        !@makeletter{\\}
+%       !@makeletter{!\}
+%       !@makeletter{!_}
+!obeyspaces!obeylines
+        !def!dirout{!input{|"dir"}}
+%%  !xp!gdef!xp!dirout!xp{!input{|"dir"}}
+%  %!xp!def!xp!dirout!xp{!input{|"dir"}}
+  !dirout}}
+        %#1
+        %\noexpand}
+        %\protect}
+        %!egroup
+        %!endgroup
+}
+\newcommand\starttermout%
+%\protected@edef\starttermout%
+{%
+        %\bgroup
+        \obeylines\obeyspaces%
+        \catcode`\_=11
+        \catcode`\!=0
+        !@cssanitize
+        !@makeletter{\\}
+        !catcode`!_=11
+        %!catcode`!\=11
+        %!catcode`!_=11
+}
+\def\endtermout%
+{%
+        !egroup
+        %!endgroup
+        %!endgroup
+        %\catcode`\!=12
+        %\catcode`\_=8
+        %\catcode`\\=0
+        %\catcode`\_=12
+}

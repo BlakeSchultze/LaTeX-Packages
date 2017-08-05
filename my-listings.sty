@@ -1,7 +1,7 @@
 %*******************************************************************************************************************************%
 %**************************************************** `my-listings.sty' ********************************************************%
 %*******************************************************************************************************************************%
-% This is an adaptation of the 'listings' package for incorporation into the 'R2Labs' package which provides definitions of additional programming languages and their keywords, listing styles defining the settings and appearance of code listings, code listing captions and macros/commands/environments, and other code listing settings/configurations.
+% This is an adaptation of the 'listings' package for incorporation into the 'my-latex' package which provides definitions of additional programming languages and their keywords, listing styles defining the settings and appearance of code listings, code listing captions and macros/commands/environments, and other code listing settings/configurations.
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
@@ -115,8 +115,8 @@
 \def\@Matlab@style@captionleftskip%
         {-\dimexpr\@Matlab@style@numbersep + \@Matlab@style@boxrule - \@Matlab@style@framerule - \@Matlab@style@framesep}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Caption Setup/Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Caption Setup/Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %\DeclareCaptionType{code}[Code Listing][List of Code Listings]
 %\DeclareCaptionTextFormat
 %\DeclareCaptionJustification
@@ -219,7 +219,7 @@
         {
                 \bookmarksetupnext{keeplevel}%
                 \Terminallinespacing%
-                \@set@current@tcb@colors{tcbbashboxColorset}%
+        	\@set@current@tcb@colors{tcbbashboxColorset}%
                 \renewcommand{\lstlistingname}{\@tcblisting@terminal@caption@title}%
                 \stepcounter{Terminal}
                 \ifstrempty{#4}%
@@ -585,16 +585,11 @@
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
 %*******************************************************************************************************************************%
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
-% Keys/values whose usage results in (largely undiagnosed) compilation errors
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                 % ERROR list of compiler directives
-        %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc'
+        %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc' package if true
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
-%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{lstsyntaxOffStyle}
@@ -673,16 +668,11 @@
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
 %*******************************************************************************************************************************%
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
-% Keys/values whose usage results in (largely undiagnosed) compilation errors
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                           % ERROR determines the input encoding; requires 'inputenc' if true
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
-%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{lstinlineStyle}
@@ -759,17 +749,12 @@
         upquote=true                                                    % Sets left/right quote are printed or `' ('textcomp' required if true)
         %xleftmargin=2mm,
         %xrightmargin=-0.25cm
-%*******************************************************************************************************************************%
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
-% Keys/values whose usage results in (largely undiagnosed) compilation errors
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
+        %*******************************************************************************************************************************%
         %directives={},                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                           % ERROR determines the input encoding; 'inputenc' required if true
         %texcs={},                                                      % ERROR list of control sequences
         %usekeywordsintag=true,                                         % ERROR
         %markfirstintag=false,                                          % ERROR
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
-%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{lstMatlabStyle}
@@ -861,16 +846,11 @@
         %xleftmargin=\@Matlab@style@xleftmargin,%-\@tcblistings@captionleftskip,%
         xrightmargin=\@Matlab@style@xrightmargin
 %*******************************************************************************************************************************%
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
-% Keys/values whose usage results in (largely undiagnosed) compilation errors
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                                           % ERROR determines the input encoding; requires 'inputenc' package if true
         %texcs={},                                                                              % ERROR list of control sequences
         %usekeywordsintag=true,                                                         % ERROR
         %markfirstintag=false,                                                          % ERROR
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
-%*******************************************************************************************************************************%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \lstdefinestyle{lstterminalStyle}
@@ -954,25 +934,20 @@
         %xleftmargin=-1pt,
         %xrightmargin=-0.75cm,
 %*******************************************************************************************************************************%
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
-% Keys/values whose usage results in (largely undiagnosed) compilation errors
-%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>%
         %directives={},                                                                 % ERROR list of compiler directives
         %inputencoding=t1enc,                                                           % ERROR determines the input encoding; requires 'inputenc' package if true
         %texcs={},                                                                              % ERROR list of control sequences
         %usekeywordsintag=true,                                                         % ERROR
         %markfirstintag=false,                                                          % ERROR
-%^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^%
-%*******************************************************************************************************************************%
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Other 'listings' Settings/Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Other 'listings' Settings/Commands/Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %\lstdefineformat{C}{%
 %\{=\newline\string\newline\indent,%
 %\}=\newline\noindent\string\newline,%
 %;=[\ ]\string\space}
-%\lstMakeShortInline[<options>]<character>
+%\lstMakeShortInline[[options]]hharacter
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-listings.sty' package ***********************************************%
@@ -985,4 +960,4 @@
 %*******************************************************************************************************************************%
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
-%level=\BKM@currentlevel} 
+level=\BKM@currentlevel} 
