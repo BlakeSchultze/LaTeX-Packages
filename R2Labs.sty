@@ -18,13 +18,14 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \NeedsTeXFormat{LaTeX2e}[2005/12/01]
 \ProvidesPackage{R2Labs}
-\RequirePackage{texmf-local/tex/latex/R2Labs/pkgbase}%{pkgbase}
+\RequirePackage[abspath]{currfile}                       % Adds file name and path information of current input file as LATEX macros
+\RequirePackage{pkgbase}%{texmf-local/tex/latex/R2Labs/pkgbase}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \makeatletter                                           % Change @ -> catcode'@=11 (letter) for use in macro names/definition
 %-------------------------------------------------------------------------------------------------------------------------------%
-\RequirePackageList{\PKGOPTS@PACKAGES}                 	% Load min set of packages needed to define/process package user options
+\RequirePackageList{\PKGOPTS@PACKAGES}                  % Load min set of packages needed to define/process package user options
 %-------------------------------------------------------------------------------------------------------------------------------%
-\RequirePackage{texmf-local/tex/latex/R2Labs/pkgopts}%{pkgopts}
+\RequirePackage{pkgopts}%{texmf-local/tex/latex/R2Labs/pkgopts}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %*********************** Package option definitions/initializations and corresponding Boolean variables ************************%
@@ -111,20 +112,22 @@
 %************************************** Loading 'R2Labs' component packages/subpackages **************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\RequirePkg{imakeidx-patched}                   % options: xindy
 \RequirePkg{my-packages}%
 \RequirePkg{my-colorsets}                       % Custom colorset definitions loaded
 \RequirePkg{my-colors}                          % Custom color definitions and mixed color variables
 \RequirePkg{my-color-schemes}                   % Color set defs (\colorlet{<scheme name>Scheme-<property>}) for pgf/tcb/tikz/etc.
+%-------------------------------------------------------------------------------------------------------------------------------%
 \RequirePkg{my-definitions}                     % Low-level \def,\numdef,\dimdef,key definitions
 \RequirePkg{my-regvars}                         % Register variable creation w/ initialization values typically from my-definitions
 \RequirePkg{my-commands}                        % Lower-level tools/helper cmds used directly & in composite cm construction
 \RequirePkg{my-patches}                         % Modifies/adds reg variables + control sequences/environments to existing packages
+\RequirePkg{imakeidx-patched}                   % options: xindy
 \RequirePkg{my-fonts}                           % Custom assignment of fonts and math alphabets to established and new font names
 \RequirePkg{my-symbols}                         % Custom assignment of fonts and math alphabets to established and new font names
 \RequirePkg{arrowsnew}                          % Custom color definition/naming and visual settings
 \RequirePkg{my-styles}                          % Custom color definition/naming and visual settings
 \RequirePkg[acronym,symbols,toc]{my-glossaries}% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
+%\RequirePackage[acronym,symbols,toc]{my-glossaries}% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
 \RequirePkg[intoc]{my-nomencl}                  % Nomenclature/abbreviations list similar to acronms/glossary
 \RequirePkg{mainmatter}                         %
 \RequirePkg{frontbackmatter}                    % ToC: List of Tables/Figures/Acronyms/Symbols/Abbreviations, Glossary,Index,etc.

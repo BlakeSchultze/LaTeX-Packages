@@ -239,9 +239,9 @@
                 {\DeclareStringOption{#2}}%
                 {\DeclareStringOption[#3]{#2}[#3]}%
         \@add@to@csvlist{#2}{\@defined@Choice@Options}%
-        \xp@newif{if\@current@prefix#2}%->\if<prefix><key>
-        \xp@@gdef{@\@current@prefix valid@#2@choice@options}{#4}%
-        \xp@@xdef{@#2@prefix}{\@current@prefix}%
+        \newifcs{if\@current@prefix#2}%->\if<prefix><key>
+        \csgdef{@\@current@prefix valid@#2@choice@options}{#4}%
+        \csxdef{@#2@prefix}{\@current@prefix}%
         %\csname@ny\newif{if\@current@prefix#2}
         %\csname@nyN\gdef{@\@current@prefix valid@#2@choice@options}{#4}%
         %\csname@nyN\xdef{@#2@prefix}{\@current@prefix}%
@@ -254,9 +254,9 @@
 %        \csname@nyN\xdef{\@current@prefix#3@default@choice}{#4}
 %        \csname@nyN\xdef{\@current@prefix valid@#3@choicearray@options}{#5}
 %        \csname@nyN\xdef{\@current@prefix#3@choice@colnum}{#2}
-        \xp@@xdef{\@current@prefix#3@default@choice}{#4}%
-        \xp@@xdef{\@current@prefix valid@#3@choicearray@options}{#5}%
-        \xp@@xdef{\@current@prefix#3@choice@colnum}{#2}%
+        \csxdef{\@current@prefix#3@default@choice}{#4}%
+        \csxdef{\@current@prefix valid@#3@choicearray@options}{#5}%
+        \csxdef{\@current@prefix#3@choice@colnum}{#2}%
         \ifstrempty{#1}%
                 {\def\@current@prefix{\KVO@prefix}}%
                 {\def\@current@prefix{#1}}%
@@ -265,14 +265,14 @@
                 {\DeclareStringOption[#4]{#3}[#4]}%
         \ValidateChoicePair{#2}{#4}{#5}%
         {%
-                \xp@@xdef{\@current@prefix#3@default@val}{\@validated@index@value}%
-                \xp@@xdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
+                \csxdef{\@current@prefix#3@default@val}{\@validated@index@value}%
+                \csxdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
                 %\csname@nyN\xdef{\@current@prefix#3@default@val}{\@validated@index@value}%
                 %\csname@nyN\xdef{\@current@prefix#3@choicearray@value}{\@validated@index@value}%
         }{}%
         \@add@to@csvlist{#3}{\@defined@ChoiceArray@Options}%
-        \xp@newif{if\@current@prefix#3}%->\if<prefix><key>
-        \xp@@xdef{@#3@prefix}{\@current@prefix}%
+        \newifcs{if\@current@prefix#3}%->\if<prefix><key>
+        \csxdef{@#3@prefix}{\@current@prefix}%
         %\csname@ny\newif{if\@current@prefix#3}%->\if<prefix><key>
         %\csname@nyN\xdef{@#3@prefix}{\@current@prefix}%
 }
@@ -291,7 +291,7 @@
                 \ifdefequal{\@current@choice}{\@test@choice}%
                 {%
                         \global\validatedtrue\breakforeach%
-                        \xp@@xdef{@validated@index}{\@count}%
+                        \csxdef{@validated@index}{\@count}%
                         %\csname@nyN\xdef{@validated@index}{\@count}%
                 }{}%
         }%
@@ -307,7 +307,7 @@
                 \ifdefequal{\@current@choice}{\@test@cs}%
                 {%
                         \global\validatedtrue\breakforeach%
-                        \xp@@xdef{@validated@index}{\@count}%
+                        \csxdef{@validated@index}{\@count}%
                         %\csname@nyN\xdef{@validated@index}{\@count}%
                 }{}%
         }%
@@ -325,9 +325,9 @@
                         \ifdefequal{\@current@choice}{\@test@cs}%
                         {%
                                 \global\validatedtrue\breakforeach%
-                                \xp@@xdef{@validated@index}{\@count}%
-                                \xp@@xdef{@validated@index@choice}{\@current@choice}%
-                                \xp@@xdef{@validated@index@value}{\@current@choice@val}%
+                                \csxdef{@validated@index}{\@count}%
+                                \csxdef{@validated@index@choice}{\@current@choice}%
+                                \csxdef{@validated@index@value}{\@current@choice@val}%
                                 %\csname@nyN\xdef{@validated@index}{\@count}%
                                 %\csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
                                 %\csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
@@ -338,9 +338,9 @@
                         \ifdefequal{\@current@choice@val}{\@test@cs}%
                         {%
                                 \global\validatedtrue\breakforeach%
-                                \xp@@xdef{@validated@index}{\@count}%
-                                \xp@@xdef{@validated@index@choice}{\@current@choice}%
-                                \xp@@xdef{@validated@index@value}{\@current@choice@val}%
+                                \csxdef{@validated@index}{\@count}%
+                                \csxdef{@validated@index@choice}{\@current@choice}%
+                                \csxdef{@validated@index@value}{\@current@choice@val}%
                                 %\csname@nyN\xdef{@validated@index}{\@count}%
                                 %\csname@nyN\xdef{@validated@index@choice}{\@current@choice}%
                                 %\csname@nyN\xdef{@validated@index@value}{\@current@choice@val}%
@@ -360,7 +360,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ifpkgstringopt@withoutstar[4][\pkgopts@prefix]{\ifcsempty{#1#2}{#4}{#3}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\ifpkgstringopt@withstar[4][\pkgopts@prefix]{\xp@ifdefempty{#1#2}{#4}{#3}}
+\newcommand\ifpkgstringopt@withstar[4][\pkgopts@prefix]{\ifcsdefempty{#1#2}{#4}{#3}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\pkgoptval[2][\pkgopts@prefix]{\@nameuse{#1#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -376,8 +376,8 @@
 \newcommand\ProcessChoiceOption[2][\KVO@prefix]%
 {%\ProcessChoiceOption[<prefix>]{<key>}
         \validatedfalse
-        %\csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
-        \xp@ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        %\csname@nYNN\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        \ifcsdefempty{#1#2}{}{\@nameuse{#1#2true}}%
         \ifpkgopt[\@nameuse{@\next @prefix}]{\next}%
         {%
                 \ValidateChoiceCS%
@@ -398,8 +398,8 @@
 \newcommand\ProcessChoiceArrayOption[2][\KVO@prefix]%
 {%\ProcessChoiceArrayOption[<prefix>]{<key>}
         \validatedfalse%
-        %\csname@ynn\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
-        \xp@ifdefempty{#1#2}%
+        %\csname@nYNN\ifdefempty{#1#2}{}{\@nameuse{#1#2true}}%
+        \ifcsdefempty{#1#2}%
                 {}{\@nameuse{#1#2true}}%
 %        \@nameuse{if\@nameuse{@\next @prefix}\next}%
 %                \xdef\@valid@choicearray@options{\@nameuse{#1valid@#2@choicearray@options}}%
@@ -409,7 +409,7 @@
 %                        {\@choicearray@colnum}%
 %                        {\@current@choicearray@option}%
 %                        {\@valid@choicearray@options}%
-%                        {\xp@@xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+%                        {\csxdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
 %                        %{\csname@nyN\xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
 %                        {\DeclareChoiceArrayOptionError[#1]{#2}}%
 %        \fi%
@@ -422,7 +422,7 @@
                         {\@choicearray@colnum}%
                         {\@current@choicearray@option}%
                         {\@valid@choicearray@options}%
-                        {\xp@@xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
+                        {\csxdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
                         %{\csname@nyN\xdef{\@current@prefix#2@choicearray@value}{\@validated@index@value}}%
                         {\DeclareChoiceArrayOptionError[#1]{#2}}%
         }{}%
@@ -495,9 +495,9 @@
                 {\edef\@choicekey@prefix{#1}}%
         \ifcsundef{\@choicekey@prefix#2}{\@choicekey@prefix#2 : UNDEFINED\\}%
         {%
-	        \ifpkgopt[\@choicekey@prefix]{#2}%
-	                {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (user defined)\\}
-	                {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (default)\\}
+                \ifpkgopt[\@choicekey@prefix]{#2}%
+                        {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (user defined)\\}
+                        {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (default)\\}
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -519,14 +519,14 @@
 \newcommand\SetPkgSource[1][\pkgopts@prefix]%
 {%\SetPkgSource[<prefix>]%
 %        \ifwindows
-%		%\getenv[\USER@HOMEDIR]{USERPROFILE}%                                                   Blake: C:/Users/Blake
+%               %\getenv[\USER@HOMEDIR]{USERPROFILE}%                                                   Blake: C:/Users/Blake
 %        \else
-%        	\getenv[\USER@HOMEDIR]{HOME}%
+%               \getenv[\USER@HOMEDIR]{HOME}%
 %        \fi
         %\iflinux
-	%\ifmacosx
-	%\ifcygwin
-	\ifpkgopt[#1]{tdspkgdir}{\xdef\@pkg@dir@suffix{\TDS@PKG@DIR}}{\xdef\@pkg@dir@suffix{}}%
+        %\ifmacosx
+        %\ifcygwin
+        \ifpkgopt[#1]{tdspkgdir}{\xdef\@pkg@dir@suffix{\TDS@PKG@DIR}}{\xdef\@pkg@dir@suffix{}}%
         \ifcsempty{#1pkgdir}%
         {%
                 \ifpkgopt[#1]{localpkg}%
@@ -537,6 +537,7 @@
                 }%
                 {% User input: 'libpkg'/'libpkg=true' & 'pkgdir='/'pkgdir={}'/equivalent or 'pkgdir' not provided
                         \xdef\@pkg@dir{}%
+                        \xdef\@pkg@dir@suffix{}
                         \gdef\RequirePkg@warning@input{'libpkg = true' }%
                         \xdef\RequirePkg@warning@inputdir{library home \@pkg@dir}%
                 }%
@@ -574,54 +575,47 @@
         \ifpkgopt[\pkgopts@prefix]{automake}%
                 {\PassOptionsToPackage{automake}{my-glossaries}}%
                 {\PassOptionsToPackage{makeindex}{imakeidx-patched}}%
+%       \ifmylatex@fncychap
+%               \RequirePackage[\mylatex@fncychap]{fncychap}          % Fancy chapter headings: Sonny, Lenny, Glenn, Conny,  Rejne, Bjarne, Bjornstrup, PetersLenny
+%       \fi
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ShowCSDefs%
 {%
         \xdef\@control@sequences@name{\KVO@prefix showcslist}%
-        \xp@def\@control@sequences{\KVO@prefix showcslist}%
+        \defcs\@control@sequences{\KVO@prefix showcslist}%
         \ifpkgopt[\KVO@prefix]{logdefs}{\scrollmode}{}%
-        \xp@ifdefempty{\KVO@prefix showcslist}{}%
+        \ifcsdefempty{\KVO@prefix showcslist}{}%
                 {\@csfor\@control@sequence{@control@sequences}{\csname@ny\show\@control@sequence}}%
         \ifpkgopt[\KVO@prefix]{tracemacros}{\tracingmacros}{}%
         \ifpkgopt[\KVO@prefix]{tracecmds}{\tracingcommands}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\WriteCNF[1]{\wrtolocfile\CNF@FILENAME{#1}}
+\newcommand\WriteCNF[1]{\wrlfile\CNF@FILENAME{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QueryWinEnvVarList{\QueryEnvVarList{win}{sys}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\QueryUnixEnvVarList{\QueryEnvVarList{unix}{sys}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\QueryEnvVarList[2]%
-{%
-	\edef\envvar@OS{#1}%
-        \edef\envvar@type{#2}%
-	\edef\envvar@list{\csuse{#2envvar@#1list}}%
-        \edef\envvar@list{\csuse{#2envvar@winlist}}%
-        \def\envvar@prefix{\csuse{#2envvar@prefix}}%
-        \foreach \envvar in \envvar@list%
-	{%
-		\getenv[\stdout]{\envvar}%
-		\xp\xdef\csname\envvar@prefix @\envvar\endcsname{\stdout}%
-	}%
-}
-%\def\STDOUT@FNAME{\jobname.stdout}
-%\def\PKGOPTS@FNAME{\jobname.pkgopts}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\FWriteEnvVarList[2]%
 {%
         \edef\envvar@OS{#1}%
         \edef\envvar@type{#2}%
         \edef\envvar@list{\csuse{#2envvar@#1list}}%
-        \edef\envvar@list{\csuse{#2envvar@winlist}}%
         \def\envvar@prefix{\csuse{#2envvar@prefix}}%
         \foreach \envvar in \envvar@list%
         {%
                 \getenv[\stdout]{\envvar}%
                 \xp\xdef\csname\envvar@prefix @\envvar\endcsname{\stdout}%
         }%
+        \FWriteEnvVarList{\envvar@list}{\envvar@prefix}
+%        \def\totext@langle{\catcode`\<=\active\noexpand\def<{\textlangle}}
+%       \def\totext@rangle{\catcode`\>=\active\noexpand\def<{\textrangle}}
+%       \def\totext@underscore{\catcode`\_=\active\noexpand\def<{\textunderscore}}
+        %\fcontents{\SYSNFO@FNAME}%\finput
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\QueryWinEnvVarList{\QueryEnvVarList{win}{sys}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\QueryUnixEnvVarList{\QueryEnvVarList{unix}{sys}}
+\newcommand\FWriteEnvVarList[2]{\fwrite{\SYSNFO@FNAME}{\foreach\envvar in #1{\wrline{\envvar = \csuse{#2@\envvar}}}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\@pdflatex@switches}[2]%
 {%
@@ -632,19 +626,29 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\CreateFWriteFiles%
 {%
-        \edef\pathtest{\USER@HOMEDIR/Documents/newtest.tex}
-        \createfile{\pathtest}
-        \createfile{\USER@HOMEDIR/Documents/newtest.tex}
-        \createlocfile{\jobname.pkgopts}
-        \createlocfile{\jobname.stdout}
+        %\edef\pathtest{\USER@HOMEDIR/Documents/newtest.tex}
+        %\mkfile{\pathtest}
+        %\mkfile{\USER@HOMEDIR/Documents/newtest.tex}
+        \mkfile*{\PKGOPTS@FNAME}
+        %\mklfile{\jobname.pkgopts}
+        %\mklfile{\jobname.stdout}
 }
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\fread[2]{\immediate\openin\@ifstream=#1 #2\immediate\closein\@ifstream}
+%\newcommand\fwrite[2]{\immediate\openout\@ofstream=#1 #2\immediate\closeout\@ofstream}
+%\newcommand\mklfile[1]{\fwrite{#1}{}}
+%\newcommand\wrlfile[2]{\fwrite{#1}{\immediate\write\@ofstream{#2}}}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\wrpipe[2]{\immediate\write18{|"echo #2 > #1"}}
+%\newcommand\wrfile[2]{\immediate\write18{#2 > #1}}
+%\newcommand\wrline[1]{\immediate\write\@ofstream{#1}}
+%\newcommand\mkfile[1]{\wrfile{\cr}{#1}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\QuerySystemInfo%
 {%
-        \ifwindows 
+        \ifwindows
                 \QueryWinEnvVarList%
         \else
-                %\getenv[\USER@HOMEDIR]{HOME}%
                 \QueryUnixEnvVarList%
         \fi
         \global\let\USER@HOMEDIR\USER@USERPROFILE%
@@ -664,8 +668,9 @@
                 {\def\jobdir@fullpath{\USER@USERPROFILE/\DROPBOX@DIRNAME/\DROPBOX@SUBDIRS/}}
         \edef\pkgfiles@fullpath{\jobdir@fullpath\@pkg@dir@suffix}%
         \ifdefempty{\@pkg@dir@suffix}
-        	{\edef\pkgcolordefs@fullpath{\jobdir@fullpath\colordefs@dirname}}%
-                {\edef\pkgcolordefs@fullpath{\jobdir@fullpath\@pkg@dir@suffix/\colordefs@dirname}}%
+                {\edef\pkgcolordefs@localpath{\colordefs@dirname}}%
+                {\edef\pkgcolordefs@localpath{\@pkg@dir@suffix/\colordefs@dirname}}%
+        \edef\pkgcolordefs@fullpath{\jobdir@fullpath\pkgcolordefs@localpath}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\SetTeXSearchTrees%
@@ -674,22 +679,9 @@
         \keyeqval\TEXMFLOCAL@pathtoadd={\TEXMFLOCAL@basepath\TEXMFLOCAL@dirname}%
         \keyeqval\TEXMFLOCAL@val={\TEXMFLOCAL@default@val;\TEXMFLOCAL@pathtoadd}%
         \keyeqval\TEXINPUTS@val={.;\TEXMFLOCAL@pathtoadd:\cnf@win@envvar{TEXINPUTS}}%
-	\WriteCNF%
+        \WriteCNF%
         {%
-		+%\edef\envvar@prefix{USERPROFILE,HOMEDRIVE,HOMEPATH,TEXEDIT,TERM,SHELL,ComSpec}
- 		%\cnf@comment{\USER@USERPROFILEG}%
-		\cnf@comment{\USER@USERPROFILE}%
-                %\cnf@comment{\USER@TEXMFROOT}%
-		\cnf@comment{\USER@HOMEDRIVE}%
-		\cnf@comment{\USER@HOMEPATH}%
-		%\cnf@comment{\USER@TEXMFHOME}%
-		\cnf@comment{\USER@TEXEDIT}%
-		%\cnf@comment{\USER@TERM}%
-		\cnf@comment{\USER@SHELL}%
-		%\cnf@comment{\SYSTEM@PDFLATEX}%
-		\cnf@comment{\USER@ComSpec}%
-		%\cnf@comment{\USER@PDFLATEX}%
-  		\cnf@comment{(Public domain.)}%
+                \cnf@comment{(Public domain.)}%
                 \cnf@comment{This texmf.cnf file should contain only your personal changes from the}%
                 \cnf@comment{original texmf.cnf (for example, as chosen in the installer).}%
                 \cnf@comment{}%
@@ -791,16 +783,16 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\ApplyPackageOptions%
 {%
-        \PkgLoadFont               	% Load default font: Computer Modern Roman (cmr)
-	\PassOptionsToX			% Process options that control passage of options to other packages/classes
-        \ShowCSDefs			% Process options on control sequence definition tracing and log/console printing
-        \SetPkgSource			% Process options setting location from which package files are to be loaded
-        \QuerySystemInfo		% Query OS/TeX system & environment variables via shell commands & file read/write operations
-        \SetFilePaths			% Process options setting full paths to package/document files
-        \SetTeXSearchTrees		% Construct and add necessary paths to compiler search trees by writing texmf.cnf file
-        \SetFBMsettings			% Process options controlling document's front/back matter content settings/appearance
-        \SetDocFontSettings		% Process options controlling document font encoding, family, style, size, etc.
-        \SetDocumentClass		% Process options controlling the desired 'documentclass'
+        \PkgLoadFont                    % Load default font: Computer Modern Roman (cmr)
+        \PassOptionsToX                 % Process options that control passage of options to other packages/classes
+        \ShowCSDefs                     % Process options on control sequence definition tracing and log/console printing
+        \SetPkgSource                   % Process options setting location from which package files are to be loaded
+        \QuerySystemInfo                % Query OS/TeX system & environment variables via shell commands & file read/write operations
+        \SetFilePaths                   % Process options setting full paths to package/document files
+        \SetTeXSearchTrees              % Construct and add necessary paths to compiler search trees by writing texmf.cnf file
+        \SetFBMsettings                 % Process options controlling document's front/back matter content settings/appearance
+        \SetDocFontSettings             % Process options controlling document font encoding, family, style, size, etc.
+        \SetDocumentClass               % Process options controlling the desired 'documentclass'
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%

@@ -60,9 +60,15 @@
 %    \@if#1\iftrue
 %    \@if#1\iffalse
 %  \escapechar\count@}}
-\newif\ifvalidated\validatedfalse
-\newif\if@choicevals@validated\@choicevals@validatedfalse
-\newif\if@rm@termfile@\@rm@termfile@true
+\newcount\linecnt\linecnt=0
+\newif\ifvalidated
+        \validatedfalse
+\newif\if@choicevals@validated
+        \@choicevals@validatedfalse
+\newif\if@rm@termfile@
+        \@rm@termfile@true
+\newread\@ifstream
+\newwrite\@ofstream
 %-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------- Base package constant definitions ----------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -88,7 +94,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \chardef\CHARZERO=0
 \chardef\CHARONE=1
-\chardef\CHARTWO=2                     
+\chardef\CHARTWO=2
 \chardef\CHARTHREE=3
 \chardef\CHARFOUR=4
 \chardef\CHAREIGHT=8
@@ -143,16 +149,17 @@
 %\newcommand\csname@ny[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
 %
 \newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
+\newcommand\csname@nY[2]{\xp#1\xp{\csname#2\endcsname}}
 \newcommand\csgname@ny[2]{\gxp#1\csname#2\endcsname}
 \newcommand\csname@nnY[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
 \newcommand\csname@nyN[3]{\xp#1\csname#2\endcsname{#3}}
 %\newcommand\csname@nYY[3]{\xp\csname@ny\xp#1\xp{\csname#2\endcsname}{#3}}
 \newcommand\csname@nYY[3]{\xp\xp\xp#1\xp\xp\xp{\xp\csname\xp#2\xp\endcsname\xp}\xp{\csname#3\endcsname}}
-\newcommand\csname@yn@params[4]{\xp#1\csname#2\endcsname#3{#4}}
-\newcommand\csname@ynn[4]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}}
-\newcommand\csname@nynn[5]{\xp#1\xp{\xp#2\xp}\xp{\csname#3\endcsname}{#4}{#5}}
-\newcommand\csname@ynnn[5]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
-\newcommand\csname@yynn[5]{\xp\csname@nynn\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
+\newcommand\csname@nypN[4]{\xp#1\csname#2\endcsname#3{#4}}
+\newcommand\csname@nYNN[4]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}}
+\newcommand\csname@nNYNN[5]{\xp#1\xp{\xp#2\xp}\xp{\csname#3\endcsname}{#4}{#5}}
+\newcommand\csname@nYNNN[5]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
+\newcommand\csname@nYYNN[5]{\xp\csname@nNYNN\xp#1\xp{\csname#2\endcsname}{#3}{#4}{#5}}
 \newcommand\csname@nnnny[5]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp#3\xp\xp\xp#4\csname#5\endcsname}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\xp@ny[2]{\xp#1#2}
@@ -177,16 +184,37 @@
 \newcommand\xp@csname@ny[2]{\xp\xp\xp#1\csname#2\endcsname}
 \newcommand\xp@csname@nnY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp{\csname#3\endcsname}}
 \newcommand\xp@csargs[2]{\xp@csname@ny#1{#2}}
-\def\xp@def#1#2{\csname@nnY\def{#1}{#2}}
-\def\xp@gdef#1#2{\csname@nnY\gdef{#1}{#2}}
-\def\xp@edef#1#2{\csname@nnY\edef{#1}{#2}}
-\def\xp@xdef#1#2{\csname@nnY\xdef{#1}{#2}}
-\def\xp@@def#1#2{\csname@nyN\def{#1}{#2}}       % \xp\def\xp#2\xp{\csname#3\endcsname}
-\def\xp@@gdef#1#2{\csname@nyN\gdef{#1}{#2}}     % \xp\gdef\csname#2\endcsname{#3}
-\def\xp@@edef#1#2{\csname@nyN\edef{#1}{#2}}
-\def\xp@@xdef#1#2{\csname@nyN\xdef{#1}{#2}}
-\def\xp@newif#1{\csname@ny\newif{#1}}
-\def\xp@ifdefempty#1#2#3{\csname@ynn\ifdefempty{#1}{#2}{#3}}
+%\def\xp@def#1#2{\csname@nnY\def{#1}{#2}}
+%\def\xp@gdef#1#2{\csname@nnY\gdef{#1}{#2}}
+%\def\xp@edef#1#2{\csname@nnY\edef{#1}{#2}}
+%\def\xp@xdef#1#2{\csname@nnY\xdef{#1}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\csname@nnY[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
+%\def\defcs#1#2{\xp\def\xp#1\xp{\csname#2\endcsname}}
+\def\defcs#1#2{\csname@nnY\def{#1}{#2}}
+\def\gdefcs#1#2{\csname@nnY\gdef{#1}{#2}}
+\def\edefcs#1#2{\csname@nnY\edef{#1}{#2}}
+\def\xdefcs#1#2{\csname@nnY\xdef{#1}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\xp@nyN[3]{\xp#1#2{#3}}
+%\newcommand\csname@nyN[3]{\xp#1\csname#2\endcsname{#3}}
+%\def\xp@@def#1#2{\csname@nyN\def{#1}{#2}}       % \xp\def\xp#2\xp{\csname#3\endcsname}
+%\def\xp@@gdef#1#2{\csname@nyN\gdef{#1}{#2}}     % \xp\gdef\csname#2\endcsname{#3}
+%\def\xp@@edef#1#2{\csname@nyN\edef{#1}{#2}}
+%\def\xp@@xdef#1#2{\csname@nyN\xdef{#1}{#2}}
+%\def\xpdef#1#2{\xp\def#1{#2}}       % \xp\def\xp#2\xp{\csname#3\endcsname}
+%\def\xpgdef#1#2{\xp\gdef#1{#2}}     % \xp\gdef\csname#2\endcsname{#3}
+%\def\xpedef#1#2{\xp\edef#1{#2}}
+%\def\xpxdef#1#2{\xp\xdef#1{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
+%\def\xp@newif#1{\xp\newif\csname#1\endcsname}
+\def\newifcs#1{\csname@ny\newif{#1}}
+%\def\xp@newif#1{\csname@ny\newif{#1}}
+%\newcommand\csname@nYNN[4]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}}
+%\def\ifcsdefempty#1#2#3{\xp\ifdefempty\xp{\csname#1\endcsname}{#2}{#3}}
+\def\ifcsdefempty#1#2#3{\csname@nYNN\ifdefempty{#1}{#2}{#3}}
+%\def\xp@ifdefempty#1#2#3{\csname@nYNN\ifdefempty{#1}{#2}{#3}}
 \def\xp@cmd#1#2{\xp#1\xp#2}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@csfor#1#2#3{\csname@nnnny\@for#1:={#2}\do{#3}}
@@ -379,7 +407,19 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------------- List printing commands ---------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\long\def\addto#1#2{\xp\def\xp#1\xp{#1#2}}
+\long\def\@addto#1#2#3%
+{%
+        \ifundef{#2}%
+                {#1#2{#3}}%
+                {\xp#1\xp#2\xp{#2#3}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\long\def\addto#1#2{\xp\def\xp#1\xp{#1#2}}
+\long\def\addto#1#2{\@addto\def{#1}{#2}}
+\long\def\eaddto#1#2{\@addto\edef{#1}{#2}}
+\long\def\gaddto#1#2{\@addto\gdef{#1}{#2}}
+\long\def\xaddto#1#2{\@addto\xdef{#1}{#2}}
+%\long\def\xaddto#1#2{\xdef#1{#1#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\addtolist#1#2{\lst@lAddTo#1{#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -468,7 +508,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePkg[2][]%
 {%
-	%\ifstrempty{#1}{\edef\pkgpath{\@pkg@dir}}{\edef\pkgpath{#1}}
+        %\ifstrempty{#1}{\edef\pkgpath{\@pkg@dir}}{\edef\pkgpath{#1}}
         \IfFileExists{\@pkg@dir#2.sty}%
                {\RequirePackage[#1]{\@pkg@dir#2}}%
                {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
@@ -478,19 +518,28 @@
 {%
         \@ifpackageloaded{\@pkg@dir#2}{}%
         {%
-	        \IfFileExists{\@pkg@dir#2.sty}%
-	               {\RequirePackage[#1]{\@pkg@dir#2}}%
-	               {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
+                \IfFileExists{\@pkg@dir#2.sty}%
+                       {\RequirePackage[#1]{\@pkg@dir#2}}%
+                       {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\RequirePkgList[1]{\@for\next:=#1\do{\xp\RequirePkg\next}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\ProvidesPkg[2][]%
+{%
+        %\ifstrempty{#1}{\edef\pkgpath{\@pkg@dir}}{\edef\pkgpath{#1}}
+        \IfFileExists{\@pkg@dir#2.sty}%
+               {\RequirePackage[#1]{\@pkg@dir#2}}%
+               {\RequirePkgWarning{#2}\RequirePackage[#1]{#2}}%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Windows/Unix Shell Command Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\LOCAL@PKG@PREFIX{}% ./texmf/tex/latex/R2Labs/
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\colordefs@dirname{colordefs}
 \xdef\TDS@PKG@DIR{texmf-local/tex/latex/\PKGNAME/}
 \def\DROPBOX@DIRNAME{Dropbox}
@@ -510,8 +559,7 @@
 \edef\wr@rcarat{\string>}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
 \edef\wr@circumflex{\string^}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
 \edef\wr@endline{\string^^J}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
-%\def\wr@par{\string^^I}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
-%\edef\wr@hashmark{\string#}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
+\def\wr@par{\string^^I}\edef\wr@lbrace{\string{}\edef\wr@rbrace{\string}}
 \def\totext@langle{\catcode`\<=\active\noexpand\def<{\textlangle}}
 \def\totext@rangle{\catcode`\>=\active\noexpand\def<{\textrangle}}
 \def\totext@underscore{\catcode`\_=\active\noexpand\def<{\textunderscore}}
@@ -519,10 +567,9 @@
 %\char94        '^'
 %\char126       '~'
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\let\<\wr@lcarat
-%\let\>\wr@rcarat
-%-------------------------------------------------------------------------------------------------------------------------------%
+\def\MAINDOC@FNAME{\jobname.tex}
 \def\STDOUT@FNAME{\jobname.stdout}
+\def\SYSNFO@FNAME{\jobname.nfo}
 \def\PKGOPTS@FNAME{\jobname.pkgopts}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\ls@win{\immediate\write18{dir}}
@@ -548,7 +595,7 @@
 %\begingroup\makeatletter\endlinechar=\m@ne\everyeof{\noexpand}
 % --shell-escape -recorder WalkerProject-Documentation.tex
 %-------------------------------------------------------------------------------------------------------------------------------%
-\edef\envvar@prefix{USER}
+\edef\envvar@prefix{COMPUTERNAME,ComSpec,COMSPEC,HOMEDRIVE,HOMEPATH,PDFLATEX,SHELL,SYSTEMROOT,TERM,TEXEDIT,USERPROFILE,WINDIR}
 \edef\texenvvar@prefix{TEX}
 \edef\sysenvvar@prefix{USER}
 \edef\sysenvvar@winlist{COMPUTERNAME,ComSpec,COMSPEC,HOMEDRIVE,HOMEPATH,PDFLATEX,SHELL,SYSTEMROOT,TERM,TEXEDIT,USERPROFILE,WINDIR}
@@ -560,32 +607,78 @@
 \newcommand{\fname@recorder}[1][\jobname.tex]{-recorder #1}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\ifOScmd}[2][\OScmd]{\def\OScmd{\@csname{\ifOS{#2@win}{#2@unix}}}}
-%-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\ifOSdo}[1]{\ifOScmd{#1}\OScmd}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand{\ifOS}[2]{\ifwindows#1\else#2\fi}
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      %-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand{\ifOS}[2]{\ifwindows#1\else#2\fi}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Terminal Execution & File Writing Commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\createfile[1]{\immediate\write18{\cr > #1}}
+%cp -lRr * /drives/c/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/%\DeleteFile
+%\ProvideDirectory
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\createlocfile[1]%
+\newcommand\fread[2]{\immediate\openin\@ifstream=#1 #2\immediate\closein\@ifstream}
+\newcommand\fwrite[2]{\immediate\openout\@ofstream=#1 #2\immediate\closeout\@ofstream}
+\newcommand\mklfile[1]{\IfFileExists{#1}{}{\fwrite{#1}}}
+\newcommand\wrlfile[2]{\fwrite{#1}{\immediate\write\@ofstream{#2}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\wrpipe[2]{\immediate\write18{|"echo #2 > '#1'"}}
+\newcommand\wrfile[2]{\immediate\write18{#2 > '#1'}}
+\newcommand\wrline[1]{\immediate\write\@ofstream{#1}}
+\newcommand\mkfile{\@ifstar{\mkfile@withstar}{\mkfile@withoutstar}}
+\newcommand\mkfile@withstar[1]{\wrfile{#1}{\cr}}
+\newcommand\mkfile@withoutstar[1]{\IfFileExists{#1}{}{\wrfile{#1}{\cr}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\fcontents[2][\finput]%
 {
-        \newwrite\newfileH
-        \immediate\openout\newfileH=#1
-        \immediate\closeout\newfileH
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\wrtofile[2]{\immediate\write18{|"echo #2 > #1"}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\wrtolocfile[2]%
-{
-        \newwrite\outfileH
-        \immediate\openout\outfileH=#1
-        \immediate\write\outfileH{#2}
-        \immediate\closeout\outfileH
+        \immediate\openin\@ifstream=\jobname.nfo
+        \begingroup
+        %\endlinechar=\m@ne
+        %\bgroup
+        %\endlinechar=-1
+        \obeylines\obeyspaces
+        %\catcode13=5 % ^^M
+%        \catcode10=5 % lf
+%        \catcode10=13 % lf
+%        \catcode13=13 % lf
+        %\endlinechar=10 %
+        %\endlinechar=13 %
+        %\catcode13=5 % ^^M
+        %\catcode35=6 % #
+        \catcode37=11 % %
+        %\catcode64=11 % @
+        %\catcode123=1 % {
+        %\catcode125=2 % }
+        %\obeylines\obeyspaces%
+        %\def\char10{abc}
+        %\def\char13{abc}
+        %\def\char10{abc}
+        %\catcode13=\active % ^^M
+        %\def^^M{^^J}
+        \loop\unless\ifeof\@ifstream
+%       \@whilesw\unless\ifeof\@ifstream\fi%
+%       {%
+                %\obeylines\obeyspaces
+                \advance\linecnt by \@ne%
+                %\immediate\readline\@ifstream to \finputline
+%               \ifx\@ifstream\@empty\else
+%               {(\number\linecnt) \@ifstream\testtext}%
+%                       \par %\newpage
+%               \fi
+                \immediate\read\@ifstream to \finputline
+                \ifundef{\finput}
+                        {\xp\gdef\xp\finput\xp{\finputline}}
+                        {\xaddto\finput\finputline}
+                %#1
+                %\finput
+                %\readline\@ifstream to \csuse{aline}
+%                \read\@ifstream to #1
+%                       \read\@ifstream to\expandafter\csname line\number\linecnt\endcsname
+%               #1
+%       }
+                %\unless\ifeof\@ifstream
+        \repeat
+        \finput
+        \endgroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\immediate\write18{/usr/local/bin/my-shell-script.sh > scriptoutput.tex}
@@ -607,7 +700,7 @@
       %\terminal[#1]{set #2}%
       %\CatchFileEdef{#1}{"|set #2"}{\catcode`\\=12\endlinechar=-1}%
       %\CatchFileEdef{#1}{"|set #2"}{\@sanitize\endlinechar=-1}%
-      \CatchFileEdef{#1}{"|kpsewhich -var-value #2"}{\endlinechar=-1}%-expand-var
+      \CatchFileEdef{#1}{"|kpsewhich -var-value #2"}{\catcode37=11\endlinechar=-1}%-expand-var
       %\def\stdout{\input{|"kpsewhich -var-value #2"}}
       %  \begingroup\everyeof{\noexpand}
       %  \def\x{\endgroup\def\USER@TEXEDIT{\@@input|"kpsewhich --var-value #2"}}\x%
@@ -634,33 +727,34 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand{\@terminal@withstar}[2][\stdout]%
 {%
-      	\begingroup%
-	      	%{\catcode`\^^M13 \gdef\obeycr{\catcode`\^^M13 \def^^M{^^J}%
-	    	%\@gobblecr}
-		%\@sanitize\everyeof{\noexpand}
-		%\catcode`\^^M=\active\let^^M\wr@endline%
-	      	%\CatchFileDef{\stdout}{"|#1"}{\endlinechar=-1}%
+        \begingroup%
+                %{\catcode`\^^M13 \gdef\obeycr{\catcode`\^^M13 \def^^M{^^J}%
+                %\@gobblecr}
+                %\@sanitize\everyeof{\noexpand}
+                %\catcode`\^^M=\active\let^^M\wr@endline%
+                %\CatchFileDef{\stdout}{"|#1"}{\endlinechar=-1}%
                 %\CatchFileDef{#1}{"|#2"}{\@sanitize\obeycr\obeylines}%\endlinechar=-1
-	      	\CatchFileDef{#1}{"|#2"}{}%
-	      	\if\relax\detokenize{#1}\relax\stdout\else\global\let#1\stdout\fi%
-      	\endgroup
+                \CatchFileDef{#1}{"|#2"}{}%
+                \if\relax\detokenize{#1}\relax\stdout\else\global\let#1\stdout\fi%
+        \endgroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\termexec{\@ifstar{\@rm@termfile@false\@termexec}{\@rm@termfile@true\@termexec}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\@termexec[2][\stdout]%
 {
-        \newread\stdout@file
-        \immediate\write18{#2 > '\jobname.stdout'}
-        \openin\stdout@file=\jobname.stdout
+        %\newread\@ifstream
+        %\immediate\write18{#2 > '\STDOUT@FNAME'}
+        \wrfile{\STDOUT@FNAME}{#2}%
+        \immediate\openin\@ifstream=\jobname.stdout
         \bgroup
           \endlinechar=-1
-          \read\stdout@file to \localline
+          \read\@ifstream to \localline
           \global\let#1\localline
         \egroup
-        \closein\stdout@file
+        \closein\@ifstream
         \if@rm@termfile@
-        	\ifOSdo{rm}{'\jobname.stdout'}
+                \ifOSdo{rm}{'\jobname.stdout'}
         \fi
         \@rm@termfile@true
 }
