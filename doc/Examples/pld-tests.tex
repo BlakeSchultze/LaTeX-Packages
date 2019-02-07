@@ -1,0 +1,271 @@
+\documentclass[class=report, crop=false]{standalone}
+%------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{fixltx2e}                       % Fixes issues and provides general changes to the LaTeX2î kernel
+%------------------------------------------------------------------------------------------------------------------------------%
+% provides access to color tables allowing usage of named colors
+\RequirePackage[svgnames, table, dvipsnames, usenames, x11names, fixpdftex,hyperref]{xcolor}
+\RequirePackage{amsmath}                        % AMS matrix commands
+\RequirePackage{polynom}                     % Adapted 'polynom' package for polynomial long division, factoring, %------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{accents}                        % fixes dddots, ddddots, ... and other accent issues
+\RequirePackage{algorithmicx}                   % Provides many algorithm writing styles and provides utilities for user definined styles
+\RequirePackage{algpseudocode}                  % Algorithmic typesetting environment
+\RequirePackage{aliascnt}                       % Create aliases for counters
+\RequirePackage{alltt}                          % Create aliases for counters
+\RequirePackage{amsgen}                         % Internal package storing common functions shared by >1 packages in the AMS-LaTeX distribution
+\RequirePackage{amssymb}                        %
+\RequirePackage{amsthm}                         % AMS theorem/lemma/etc structures
+%\RequirePackage{arara}                         % options: xindy
+\RequirePackage{array}                          % Extended array/tabular environments w/ extended column & programmable formatting
+%\RequirePackage{arydshln}                      % Provides dash line version of \hrule/\hline
+%\RequirePackage{atbegshi}                       % Modern reimplementation of 'everyshi' w/o compatibility burden, using î-TEX if available
+\RequirePackage{atveryend}                      % Provides hooks for after last \clearpage and after closing and final reading of the .aux file.
+\RequirePackage{bigintcalc}[2007/09/27]         % Provides expandable arithmetic operations with big integers exceeding TeX's number limits.
+\RequirePackage{booktabs}                       % professional table style
+\RequirePackage{breakurl}                       % Redefines \url so links are breakable across lines/pages
+\RequirePackage{calc}                           % extends types of calculations possible with LaTeXCalc
+\RequirePackage{cancel}                         % line through math
+\RequirePackage{capt-of}                        % Stripped down version of caption usable outside float environments
+\RequirePackage{changepage}                     % local margin change environment
+\RequirePackage{cite}                           % Improves numerical citation handling
+\RequirePackage{colortbl}                       % Allows table rows/columns to be colored
+\RequirePackage{cool}                           % COntent Oriented LaTeX (LATEX2î) : standardized mathematical macros/operators/symbols/etc.
+\RequirePackage{coollist}                       % 'cool' subpackage: Provides access to specific list elements as if it were an array
+\RequirePackage{coolstr}                        % 'cool' subpackage: Provides string manipulation/parsing tools
+%\RequirePackage{dashrule}                       % Provides improved dash/dot horizontal rule commands
+\RequirePackage{embedfile}                      % Embed files in PDF document, recorded in a sorted list of embedded files
+\RequirePackage{empheq}                         % multiline boxes
+\RequirePackage{enumitem}                       % provides more options and greater control of numering/lettering in enumerate environment
+\RequirePackage{environ}                        % Provides \NewEnviron
+\RequirePackage{eqparbox}                       % Eases defining group of boxes (\parbox,\makebox,etc) w/ all set to width of group's widest box
+\RequirePackage{etex}                           % Intermediate package for transition from TeX3 to NTS ('New Typesetting System')
+\RequirePackage{etexcmds}[2007/09/09]           % Resolves î-TeX/existing primitive command name clashes by adding prefix to î-TeX's commands.
+\RequirePackage{etoolbox}                       % Package tools especially for use with î-tex
+\RequirePackage{everypage}                      % Provides \AddEverypageHook and \AddThispageHook hooks to execute code at beginning of pages
+\RequirePackage{everyshi}                       % Provides hooks analogous to \AtBeginDocument into \sshipout: \EveryShipout and \AtNextShipout
+\RequirePackage{fancyvrb}                       % Verbatim read/write tools (font commands, line #s, framing code, conditional text processing)
+\RequirePackage{fancyhdr}                       % Provides footer/header and page style commands for controlling their usage
+\RequirePackage{filecontents}                   % Provides filecontents environment to write its contents to file
+\RequirePackage{filehook}                       % Provides \AddEverypageHook & \AddThispageHook hooks to execute code at beginning of pages
+\RequirePackage{fix-cm}                         % Improves the definitions of the Computer Modern font families
+\RequirePackage{float}                          % Provides \newfloat environment creation command
+\RequirePackage{forarray}                       % Provides functionality for processing lists and array structures in LATEX
+\RequirePackage{forloop}                        % Add \forLoop and \forloop macros
+\RequirePackage{graphicx}                       % new way of doing eps files
+\RequirePackage{graphpap}                       % create graph paper in figures.
+\RequirePackage[customcolors,shade]{hf-tikz}
+%------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage{incgraph}                       % Provides tool box w/ basic macros and convenient user interface wrapping includegraphics
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Packages that must be loaded BEFORE hyperref ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+% url links, hyperlinks to labels with \autoref{}, also loads \nameref (similar to \autoref{})
+%\RequirePackage[pdfpagelabels, pdfstartview={FitH}, pdffitwindow=false, linktocpage=true,pdftex ]{hyperref}
+\RequirePackage[pdfpagelabels, pdfstartview={FitH}, pdffitwindow=false, linktocpage=true]{hyperref}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Packages that must be loaded AFTER hyperref ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage{incgraph}                       % Provides tool box w/ basic macros and convenient user interface wrapping includegraphics
+%------------------------------------------------------------------------------------------------------------------------------%
+% Provides PDF bookmark commands opts: depth,dest,color,gotor,level,named,openlevel,page,rawaction,uri,view
+\RequirePackage[atend]{bookmark}                % Modernized bookmark management w/ appearance/link options. Package Options: atend
+\RequirePackage{cmap}                           % provides character map tables => makes pdfLaTeX PDFs search/copy-able in compliant PDF viewers
+\RequirePackage{ellipsis}
+\RequirePackage{footnotebackref}                % hyperlinks from footnotes number to document occurence [symbol=..., numberlinked=true/false]
+%------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage[all]{hypcap}                    % Redefine float environments so links point to beginning of the float, not below the caption
+\RequirePackage{hypernat}                       % provides capability
+\RequirePackage{ifdraft}                        % Interface for selecting code depending on the class options 'draft' and 'final'
+\RequirePackage{ifluatex}                       % modifications for usage of luatex
+\RequirePackage{ifoddpage}                      % Provides current page value in the code, used by 'tikzpagenodes' for "twoside" document issues
+\RequirePackage{ifthen}                         % Provides \ifthenelse command for LaTeX2î, compatible w/ LaTeX 2.09 'ifthen' style option
+\RequirePackage{ifpdf}                          % Defines Boolean \ifpdf which is true for pdfTeX and LuaTeX in PDF mode, and false otherwise
+\RequirePackage{ifxetex}[2006/08/21]            % modifications for usage of XeTeX
+\RequirePackage{intcalc}[2007/09/27]            % This package provides expandable arithmetic operations with integers.
+\RequirePackage{keycommand-patched}             % Patched version of 'keycommand', encapsulating loading of keycommand' and keycommand-patch'
+\RequirePackage{keyval}[1997/11/10]             % Implements system allowing setting of parameters/'named arguments' with key = value syntax
+\RequirePackage{layouts}                        % show document layout configurations, e.g.,
+\RequirePackage{letltxmacro}[2008/06/13]        % Defines \LetLtxMacro to \let robust (e.g. \DeclareRobustCommand) and optional argument macros
+\RequirePackage{linegoal}                       % Provides single \linegoal macro which expands to the dimension of the remainder of the line
+\RequirePackage{lipsum}                         % Random text for MWEs
+\RequirePackage{listings}                       % nice code layout options=procnames(*)
+\RequirePackage{longtable}                      % Provides longtable environment to generate tables that span multiple pages
+\RequirePackage{lscape}                         % Provides landscape environment, rotate pages 90 degrees, spans 1+ pages (works w/ longtable)
+%\RequirePackage{ltablex}                        %  Modifies tabularx environment, combining tabularx/longtable features
+\RequirePackage{ltxdockit}
+\RequirePackage{ltxkeys}                        % Provides facilities for creating/managing keys like keyval/xkeyval, but more robust/faster
+%\RequirePackage{ltxtable}
+\RequirePackage{makecell}
+%\RequirePackage{makeidx}
+%\RequirePackage{mathabx}
+\RequirePackage{mathcomp}
+\RequirePackage[framemethod=tikz]{mdframed}     % Enclose contents in framed box, similar to tcolorbox but w/ much less flexibility/capability
+\RequirePackage{mfirstuc}
+\RequirePackage{minibox}                        % Enclose content in box, similar to mbox
+%\RequirePackage[newfloat]{minted}              % options: newfloat
+\RequirePackage{mleftright}\AtEndOfPackage{\mleftright} %
+\RequirePackage{moredefs}
+\RequirePackage{morefloats}                     % Increases the maximum # of floats a document can contain
+\RequirePackage[12pt]{moresize}
+%\RequirePackage{moreverb}                      % verbatim tab environment --> clashes with minted:new float
+\RequirePackage{morewrites}                     % Increases maximum # of writes
+\RequirePackage{multirow}                       % for \multirow
+\RequirePackage{mwe}                            % Useful for creating "Minimal Working Examples" (MWEs) including sample images
+\RequirePackage{newenviron}                     % \nicefrac fraction command
+%\RequirePackage{newfloat}                      % \DeclareFloatingEnvironment
+\RequirePackage{newunicodechar}
+%\usepackage{newunicodechar}
+\RequirePackage{nicefrac}                       % \nicefrac fraction command
+\RequirePackage{pageslts}                       % Writes first/last/verylast page labels to .aux and provides many labels/commands for page refs
+%\RequirePackage{parskip}                       % Sets \parskip,\parindent,\parskip,\partopsep,\parfillskip) adjusts list seps; options=parfill,
+\RequirePackage{pdfrender}                      % Provides interface for setting PDF graphics parameters like line width or text rendering mode
+\RequirePackage{pdfpages}                       % Simplifies external/multipage PDF/PS doc insertions; supports pdfTeX/VTeX/XeTeX/LuaTeX/pTeX
+\RequirePackage{pdftexcmds}                     % Adds some missing pdfTEX 1.40 primitives not provided/removed from LuaTEX implementation
+\RequirePackage{pgf}                            % Implementation of "portable graphics format" unerlying "Tikz", forming its "basic layer"
+\RequirePackage{pgffor}                         % Defines two new "for" loop commands: \foreach and \breakforeach
+\RequirePackage{pifont}                         % access to dingbat symbols
+\RequirePackage{printlen}                       % Provides ability to print the value of a length register in the desired units
+%\RequirePackage{pstricks,pst-node}\let\clipbox\relax
+%\RequirePackage[]{pst-grad}
+\RequirePackage{ragged2e}                       % \Centering \RaggedRight \RaggedLeft
+\RequirePackage{refcount}
+\RequirePackage{relsize}
+%\RequirePackage{robustindex}                   % maintains index page numbers automatically
+\RequirePackage{scalerel}                       % relative scale/stretch delimiters
+\RequirePackage{scrbase}                        % Provides conditional execution commands and document hooks
+\RequirePackage{scrlfile}                       % Provides class, package, file, aux, etc. hooks
+\RequirePackage{scrwfile}                       % Creates .wrt file for all toc/list of content reducing simultaneous open files/write18 handles
+\RequirePackage{setspace}                       % Change line spacing locally
+\RequirePackage{shadowtext}                     % Provides register variables and macro/command for creating shadowed text
+%\RequirePackage{showidx}                       % mark index entries in text in the right margin
+\RequirePackage{siunitx}                        % SI units (\si/Si), number output(\num),
+\RequirePackage{snapshot}                       % options: log
+\RequirePackage{soul}                           % Provides hyphenatable letterspacing, underlining, overstriking, highlighting, etc.
+%\RequirePackage{spath3}                        % manipulating PGF soft paths, includes 'Calligraphy' pen and 'knot' drawing packages
+%\RequirePackage[makeindex]{splitidx}           % maintains index page numbers automatically
+\RequirePackage{stackengine}                    % Provides ability to stack text, math, symbols/glyphs, images, etc
+\RequirePackage[subpreambles=true]{standalone}  % Provides ability to separately compile/pdftexify a document's '\input' .tex files
+\RequirePackage[hypcap]{subcaption}
+%\RequirePackage{subfigure}
+\RequirePackage{subfiles}
+\RequirePackage{suffix}
+\RequirePackage{tablefootnote}                  % Provides footnote commands for table/sidewaystable environments
+\RequirePackage{tabu}                           % Provides alternative table/tabular environment
+\RequirePackage{tabularx}                       % Provides expanded/improved table/tabular environment
+\RequirePackage[most,skins]{tcolorbox}          % Provides extensive support for enclosing figures/tables/code/theorems/etc in colored boxes
+\RequirePackage{textcase}
+\RequirePackage{textcomp}
+\RequirePackage{textgreek}                      % Provides set of Greek text symbols/commands
+\RequirePackage{tikz}                           % Provides extensive set of graphics/drawing commands
+\RequirePackage{tikz-cd}
+\RequirePackage{tikzpagenodes}                  % Creates/defines Tikz nodes for various page positions in the same way as Tikz' "current page"
+\RequirePackage[explicit]{titlesec}             % Options: tiny(old),
+\RequirePackage{titletoc}                       %
+\RequirePackage{tocloft}                        % Provides Table of Contents content and appearance customizations
+\RequirePackage[figure,table,lstlisting,xspace]{totalcount}% Maintains total values of counters and provides commands to typeset them
+\RequirePackage{trimspaces}                     % Provides tools to remove preceding and/or trailing spaces from token list or macro contents
+\RequirePackage[normalem]{ulem}                 % Provides text underlining commands and customizations
+\RequirePackage{uri}                            % automatic uri links (e.g. arXiv) citeurl, mailto, ukoeln, and uref
+%hypdestopt, hypcap, hypbmsec doi, doipubmed, robustindex
+\RequirePackage{url}                            % Insert functional web links
+\RequirePackage{varioref}                       % Provides \ref variations for instances where \ref and \label fall on different pages
+\RequirePackage{verbatim}                       % multiline comments
+\RequirePackage{xargs}                          % Provides \<cmd>x replacements for \<cmd> w/ optional argument flexibility (e.g. \newcommandx)
+\RequirePackage{xfor}                           % AMS theorem/lemma/etc structures
+\RequirePackage{xfrac}                          % sfrac fraction command
+\RequirePackage{xifthen}                        % Patches 1st \ifthenelse arg: string/command void/equivalence & complex 'calc' expresion tests
+\RequirePackage{xkeyval}[2006/11/18]            % Extension of 'keyval' w/ more flexible macros for defining/setting keys of the form key=value
+\RequirePackage{xparse}                         % Provides command/envinroment creation commands and extensive argument
+\RequirePackage{xpatch}                         % Improves 'etoolbox' \patchcmd, \pretocmd, \apptocmd -> \xpatchcmd, \xpretocmd, \xapptocmd
+\RequirePackage{xspace}                         % Adds space at end of macros used mainly in text, unless followed by some punctuation chars
+\RequirePackage{xstring}                        % Provides macros to manipulate/parse strings of characters/tokens (requires î-TEX)
+\RequirePackage{wrapfig}                        % Provides wrapfigure/wraptable environments for wrapping text around float
+%\RequirePackage[abspage,counter,dotfill,hyperref,lastpage,marks,nextpage,pageattr,pagelayout,perpage,runs,savepos,thepage,titleref,totpages,user,xr]
+%       {zref}
+\RequirePackage{zref-abspos}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define External Library Usage ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%\usepgflibrary{shadows}
+\usetikzlibrary{arrows, arrows.meta, backgrounds, bending, calc, decorations.markings, graphs, positioning, scopes, shadings, shadows, shapes.gates.logic.US, shapes.misc, svg.path, trees}
+\tcbuselibrary{breakable, hooks, fitting, listings, listingsutf8, magazine, raster, skins, theorems, xparse}
+%\tcbset{external/PassOptionsToPackage={newFloat}{minted}}
+%------------------------------------------------------------------------------------------------------------------------------%
+%---------------------------- Newly added packages which have not been fiully vetted as of 07/01/2016 ------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage{datatool-base}
+%\RequirePackage{unicode-math}                  % XeLaTeX/LuaLaTeX engines only
+%\RequirePackage{nomentbl}
+\RequirePackage{pst-xkey}                       % Provides 'xkeyval' options system for PSTriks, redefining \psset to set multiple family keys
+\RequirePackage{xkvltxp}                        % Allow users to be able to specify expandable macros in class/package options
+\RequirePackage{l3keys2e}
+\RequirePackage{xtemplate}                      % Provides a means of defining generic functions using a key-value syntax.
+\RequirePackage{bitset}                         % Provides bit set data type, dynamic size vector of bits w/ individual bit manipulation
+\RequirePackage{infwarerr}[2007/09/09]          % Provides complete set of macros for informations/warnings/error messages supporting plain TEX.
+\RequirePackage{pdfescape}[2007/11/11]          % Implements pdfTeX's escape feat. \pdfescapehex,\pdfunescapehex,\pdfescapename,\pdfescapestring
+\RequirePackage{ifvtex}
+\RequirePackage{colortbl}
+\RequirePackage{hycolor}                        % Implements the color option stuff that is used by packages hyperref and bookmark
+\RequirePackage{pgfopts}                        % Adds key/value class/package options ability to pgfkeys, like kvoptions extends 'keyval'
+\RequirePackage{currfile}                       % Provides the file name and path information of the current input file as LATEX macros
+\RequirePackage{tagging}                        % Generate multiple docs w/ single source, tagging pieces & specifying which to include/exclude
+%\RequirePackage{incgraph}                      % Provides tool box w/ basic macros and convenient user interface wrapping includegraphics
+%\RequirePackage{letltxmacro}[2008/06/13]
+\RequirePackage{auxhook}[2009/12/14]            % Provides hooks for adding stuff at the begin of .aux files
+\RequirePackage[toc,page]{appendix}     % Provides macros/commands relevant to appendices
+\RequirePackage[noactivechars]{mathstyle}          %
+\RequirePackage{upgreek}                        % Provides set of Greek text symbols/commands
+\RequirePackage{chngcntr}                       %Provides counterwithin/without to add/remove chap/section #s from \the<counter>
+%%\RequirePackage{mathptmx}
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Option Passing to Packages ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%------------------------------------------------------------------------------------------------------------------------------%
+%\ifmylatex@fncychap
+%        \RequirePackage[\mylatex@fncychap]{fncychap}          % Fancy chapter headings: Sonny, Lenny, Glenn, Conny,  Rejne, Bjarne, Bjornstrup, PetersLenny
+%\fi
+%\PassOptionsToPackage{hypcap}{caption}          % Floating environment caption customizations (figure/table/etc); cooperates w/ other packages
+%\PassOptionsToPackage{disallowspaces,fixamsmath}{mathtools}     % Extends amsmath, fixing bugs/deficiences and providing useful math tools
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------- Font Packages -------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage[scaled=0.85]{beramono}
+%\RequirePackage{bold-extra}
+%\RequirePackage[T1]{fontenc}                           % numerous issues, e.g. |/\textbar horizontal, ...
+%\RequirePackage{fontmfizz}
+%\RequirePackage{fontspec}
+%\RequirePackage{gensymb}
+%\RequirePackage[Upomega, upmu]{gensymb}
+%\RequirePackage[utf8]{inputenc}
+%\RequirePackage{kpfonts}
+%\RequirePackage[mla]{lips}
+%\RequirePackage[urw-garamond]{mathdesign}
+%\RequirePackage{mbboard}
+%\RequirePackage[pantyk]{ofs}
+%\RequirePackage{tipa}
+%\RequirePackage{unicode-math}                          % XeLaTeX/LuaLaTeX engines only
+%\usepackage{unixode}
+%\RequirePackage{yfonts}
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+% Packages causing clashes/conflicts
+%\RequirePackage{amssymb}                       % AMS fonts for reals, complex numbers, etc
+%\RequirePackage{arydshln}                      % Provides dash line version of \hrule/\hline
+%\RequirePackage{etextools}                             % *csvloop* clash
+%\RequirePackage{fancybox}                              % Box/verbatim macros: \fbox: \shadowbox, \doublebox, \ovalbox, \Ovalbox
+%\RequirePackage{fancyref}
+%\RequirePackage{floatrow}                      % \DeclareNewFloatType
+%\RequirePackage{l3keys}                        % Obsolete, replaced by 'expl3'
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+%------------------------------------------------------------------------------------------------------------------------------%
+% Packages already loaded by another package, typically those belonging to a bundle and only used by the constituent packages
+%\RequirePackage{xkvview}
+%\RequirePackage{kvoptions}                     % Provides ability to define key=value package options
+%\@ifpackageloaded{xkvview}{}{\RequirePackage{xkvview}}
+%\@ifpackageloaded{kvoptions}{}{\RequirePackage{kvoptions}}
+\begin{document}
+\polylongdiv[vars=xXz]{x^2-2x+1}{x-1}
+\end{document}

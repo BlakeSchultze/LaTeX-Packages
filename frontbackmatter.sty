@@ -5,8 +5,8 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{frontbackmatter}
+\ProvidesPackage{frontbackmatter}[\pkginfo]
+\input{R2Labs-fncychaps.def}
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -21,6 +21,15 @@
 %*******************************************************************************************************************************%
 %******************************************************** Package Body *********************************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\edef\@nomenclature@style@fname{my-nomencl.ist}
+\edef\@gls@style@fname{my-glossaries.ist}
+\edef\@index@style@fname{my-index.mst}
+\let\glsDefsFile\mylatex@glsdefsfile%
+\xdef\theglsdefsfile{\mylatex@glsdefsfile.def}%
+\edef\@nomenclature@style@fpath{\FBMstylesPath\@nomenclature@style@fname}
+\edef\@gls@style@fpath{\FBMstylesPath\@gls@style@fname}
+\edef\@index@style@fpath{\FBMstylesPath\@index@style@fname}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \setcounter{tocdepth}{4}
 \setcounter{lofdepth}{4}
@@ -40,7 +49,8 @@
 \renewcommand{\lstlistlistingname}{\@doc@hypertargets{LOL}\LOLName}                     % The header name for the list of listings.
 \newcommand{\listproblemsname}{\@doc@hypertargets{LOPROBS}\LOPROBSName}                 % List of homework problems/solutions
 \newcommand{\listfunctionsname}{\@doc@hypertargets{LOFUNCS}\LOFUNCSName}                % List of homework problems/solutions
-\@re@newcommand{listoflistingscaption}{\LOLName}
+\@re@newcscommand{listoflistingscaption}{\LOLName}
+\@re@newcommand\listoflistingscaption{\LOLName}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand\partname{\PartName}                               % Part toc title
 \renewcommand\chaptername{\ChapterName}                         % Chapter toc title
@@ -63,7 +73,8 @@
 \newcommand{\funcdefsboxname}{\FunctionDefBoxName}                    % The caption label for listings.
 %\newcommand{\funcdefsname}{\FunctionDefName}                    % The caption label for listings.
 \newcommand{\funcdetailssname}{\FunctionDetailName}             % The caption label for listings.
-\@re@newcommand{listingscaption}{\CodeListingName}
+\@re@newcscommand{listingscaption}{\CodeListingName}
+\@re@newcommand\listingscaption{\CodeListingName}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \renewcommand{\indexname}{\IndexName}
 \renewcommand{\nomname}{\AbbreviationsName}                     % was \large%\begingroup\ULsettings[init=true]\endgroup%
@@ -73,7 +84,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand*{\fbm@dotfill}{\nobreak\,\dotfill\space\nobreak}%
 \newcommand*{\fbm@nofill}{,\space}%
-\newcommand \Dotfill {\leavevmode \cleaders \hb@xt@ .33em{\hss .\hss }\hfill \kern \z@}
+\newcommand \Dotfill {\leavevmode\cleaders\hb@xt@ .33em{\hss .\hss }\hfill\kern\z@}
 \newcommand*{\IndexDotfill}{\nobreak\dotfill\ \nobreak}
 \renewcommand*{\indexspace}{\par\vspace{0pt plus 0pt minus 0pt}}        % \par\vspace{20pt plus 6pt minus 4pt}
 \newcommand*{\idxhypernavsep}{\@FBM@hypernav@sep}
@@ -245,6 +256,14 @@
         \@gls@dothiswrite%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\FBMcontent@makescript}{s}%
+{%
+        \terminal[\stdout]{makeindex -s \@nomenclature@style@fpath -t \jobname.nlg  -o \jobname.nls  \jobname.nlo}%
+        \terminal[\stdout]{makeglossaries -s \@gls@style@fpath -t \jobname.glg  -o \jobname.gls  \jobname.glo}%
+        \terminal[\stdout]{makeindex -s \@gls@style@fpath -t \jobname.alg  -o \jobname.acr  \jobname.acn}%
+        \terminal[\stdout]{makeindex -s \@index@style@fpath -t \jobname.ilg  -o \jobname.ind  \jobname.idx}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@configure@FBM@settings%
 {%
         \ifmylatex@fncychap\remove@fncychap\fi%
@@ -272,15 +291,16 @@
         \else
                 \gdef\FBM@separator{}%
         \fi%
-        \IfBooleanTF{#2}%
+        \IfBooleanT{#2}%
         {%
                 \IfBooleanTF{#3}%
                         {\gdef\FBM@separator{\@clearpage@option}}%
                         {\gdef\FBM@separator{}}%
                 \@override@idx@clearpage{\FBM@separator}%
-        }{}%
-        \IfValueTF{#4}{#4}{}%
+        }%
+        \IfValueT{#4}{#4}%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Configure/make/add/print front/backmatter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -302,7 +322,8 @@
         \makenomenclature%
         \FBMcontent@automake{nomenclature}%
         \makeglossaries\glsaddall%
-        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s my-index.mst]%
+        \makeindex[title={\@index@toctitle}, columns=2, columnseprule=true, intoc, options=-s \@index@style@fpath]%
+        %\FBMcontent@makescript
         \addtocontents{toc}{~\hfill\textbf{Page}\par\medskip}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -317,6 +338,7 @@
 \DeclareDocumentCommand{\printFrontbackMatter}{}
 {%
         \@configure@FBM@settings%
+        %\FBMcontent@makescript
         \printsymbols[title={\@listof@symbols@toctitle}, toctitle={\@listof@symbols@toctitle}]%
         \printacronyms[title={\@listof@acronyms@toctitle}, toctitle={\@listof@acronyms@toctitle}]%
         \printnomenclature%
@@ -332,11 +354,100 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Bibliography configurations/settings/printing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\edef\@bibfiles@dir{C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/}
+%\edef\@bibstring@fnames{authors,pct}
+%\edef\@bibpubs@full@fnames{journal-names,IEEEfull}
+%\edef\@bibpubs@abrv@fnames{journal-abrvs,IEEEabrv}
+%\edef\@bibdata@fnames{pct}
+%\edef\@bibstyle@fnames{IEEEtran}
+\def\backcite#1#2{%
+  	\@for\x:=#1\do{%
+    		\begingroup\csuse{@safe@activestrue}
+      		\edef\x{\endgroup
+        		\def\noexpand\x{\xp\@firstofone\x\@empty}%
+      		}\x
+		\csifx{br@\x}
+      			\protected@csxdef{br@\x}{\dotfill\space\protect\backrefxxx#2}%\nobreak\space\nobreak\Dotfill
+      			\ifBR@BackrefAlt
+        			\global\csletcs{brl@\x}{br@\x}
+                                \global\csletcs{brld@\x}{br@\x}
+                                \csgdef{brc@\x}{1}%
+        			\csgdef{brcd@\x}{1}%
+      			\fi
+    		\else
+      			\begingroup
+        		\@ifundefined{backrefxxxdupe}{}{\let\backrefxxx\backrefxxxdupe}%
+        		\xp\def\xp\reserved@a\xp{\backrefxxx#2}%
+        		\let\BRorg@backrefxxx\backrefxxx
+        		\global\let\BR@found=N%
+        		\long\def\backrefxxx##1##2##3{%
+          			\xp\def\xp\reserved@b\xp{\BRorg@backrefxxx{##1}{##2}{##3}}%
+          			\ifx\reserved@a\reserved@b\global\let\BR@found=Y\fi
+        		}%
+        		\setbox\@tempboxa\hbox{\csuse{br@\x}}%
+      			\endgroup
+      			\let\backrefsep\relax
+      			\def\backreftwosep{\backrefsep}%
+      			\def\backreflastsep{\backrefsep}%
+      			\if N\BR@found
+        			\protected@csxdef{br@\x}{\csuse{br@\x}\backrefsep\protect\backrefxxx#2}%
+        			\ifBR@BackrefAlt
+	          			\protected@csxdef{brl@\x}{%
+		            			\csuse{brl@\x}
+		            			\ifnum\@nameuse{brc@\x}=1\noexpand\backreftwosep\else\noexpand\backreflastsep\fi
+		            			\protect\backrefxxx#2%
+	          			}%
+	          			\count@=\@nameuse{brc@\x}\relax\advance\count@ by 1 %
+	          			\csxdef{brc@\x}{\the\count@}%
+        			\fi
+      			\fi
+      			\ifBR@BackrefAlt
+        			\protected@csxdef{brld@\x}{%
+          				\csuse{brld@\x}
+          				\ifnum\@nameuse{brcd@\x}=1 \noexpand\backreftwosep\else\noexpand\backreflastsep\fi
+          				\protect\backrefxxx#2%
+        			}%
+        			\count@=\@nameuse{brcd@\x}\relax\advance\count@ by 1 %
+        			\protected@csxdef{brcd@\x}{\the\count@}%
+      			\fi
+    		\fi
+  	}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\cfgBibliography}{t/}
+{%
+	\IfBooleanTF{#1}%
+	        {\bibliographystyle{\@bibdir\@bibstyle@fname}}%                    % Alternative styles: ieeetr, agsm, dcu, jphysicsB
+	        {\bibliographystyle{\@bibstyle@fname}}%                    % Alternative styles: ieeetr, agsm, dcu, jphysicsB
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\printBibliography}{t+}
+{%
+	\IfBooleanT{#1}{\nocite{*}}
+	%\xp\bibliography\xp{\@bibfile@paths}%
+	\bibliography{\@bibfile@paths}%
+	%\foreach\@@bibfile in \@bibfile@paths{\bibliography{\@@bibfile}}
+	%\bibliography{%
+	%IEEEfull,%
+	%%IEEEabrv,%
+	%%C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/pctstrings,%
+	%%C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/abrvnames,%fullnames
+	%C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/authors,%journal-names, journal-abrvs, pubnames, pubabrvs
+	%C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/journal-names,%journal-names, journal-abrvs, pubnames, pubabrvs
+	%C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/pct%
+	%}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************* Index/Glossary/Acronyms/Nomenclature style file generation **********************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\begin{filecontents*}{my-index.mst}
+\begin{filecontents*}{\@index@style@fpath}
+%\begin{filecontents*}{texmf-local/tex/latex/\PKGNAME/\@index@style@fname}
         preamble "\\begin{tcolorbox}%
                 [
                         indexStyle,
@@ -359,7 +470,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\begin{filecontents*}{my-glossaries.ist}
+\begin{filecontents*}{\@gls@style@fpath}
         actual '?'
         encap '|'
         level '!'
@@ -403,7 +514,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\begin{filecontents*}{my-nomencl.ist}
+\begin{filecontents*}{\@nomenclature@style@fpath}
         keyword    "\\nomenclatureentry"
         preamble   "\\begin{tcolorbox}%
                 [%

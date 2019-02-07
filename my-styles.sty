@@ -5,7 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\ProvidesPackage{my-styles}
+\ProvidesPackage{my-styles}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -1492,14 +1492,16 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
         definitionStyle/.style =
         {
-                reset, enhanced, fonttitle=\bfseries\upshape, fontupper=\slshape, arc=0mm, colback=stdltyellow,colframe=NavyBlue,%colframe=stdblue,
+                reset, enhanced, fonttitle=\bfseries\upshape, fontupper=\slshape, arc=0mm, colback=definitionColorset-colback,colframe=definitionColorset-colframe,%colframe=stdblue,
+                %colback=stdltyellow,colframe=NavyBlue,%colframe=stdblue,
                 arc=\@tcb@frame@corner@radius, arc=2pt, boxrule=2pt, boxsep=1mm,
                 @tcb@outline@frame,%tcbdoubleoutline
         },
 %-------------------------------------------------------------------------------------------------------------------------------%
         theoremStyle/.style=%
         {%
-                enhanced, fonttitle=\bfseries\upshape, fontupper=\slshape, colback=stdltred,colframe=stdred,
+                enhanced, fonttitle=\bfseries\upshape, fontupper=\slshape, %colback=stdltred,colframe=stdred,
+                colback=theoremColorset-colback,colframe=theoremColorset-colframe,
                 boxrule=2pt,
                 @tcb@outline@frame,
                 %tcbdoubleoutline
@@ -1719,10 +1721,10 @@
         tcbenumeratedStyle/.style n args={4}%=
         {
                 empty, enhanced, breakable=unlimited, enforce breakable, @set@tcb@property@colors, arc=\@tcb@frame@corner@radius,
-                drop fuzzy shadow=current-colboxshadow, left skip=0mm, before skip=2mm, after skip=0.5mm,
+                drop fuzzy shadow=current-colboxshadow, left skip=0mm, before skip=0mm, after skip=0.5mm,
                 tcbborders={#1}{#2}{#3}{#4},
                 interiorStyle={\@interior@border@linewidth}{#4}{},
-                TBLR={-1.0pt}{2.0mm}{0mm}{2.5mm},
+                TBLR={4.0pt}{2.0mm}{1mm}{2.0mm},
                 TBLRtitle={-1.5mm}{-3.995mm}{}{},
                 @tcbox@font={\Large\bfmseries\normalfont}{\normalsize\normalfont}{},
                 %fontupper=\normalsize*\normalfont,
@@ -1733,7 +1735,7 @@
                         interiorStyle={\@interior@border@linewidth}{#4}{}
                 },
                 %@tcb@breakable@enforced@code={outlineframefillbox={current}{#1}},
-                break at=0.95\@tcb@enumbox@startpos/0.95\textheight
+                break at=0.95\@tcbox@startpos/0.95\textheight
         },
         tcbenumeratedStyle/.default={\@tcb@default@boxrule@linewidth}{single}{current-colframeborder}{current-colinteriorborder},
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -1808,7 +1810,7 @@
         tcblistboxStyle/.style n args={3}%=
         {
                 @BASIC@STYLE, @set@tcb@property@colors, @FBHV@align, code={\colorlet{current-colfill}{#3}}, boxsep=2pt, boxrule=1mm,
-                @tcbox@font={\large\bfmseries}{\normalsize\bfmseries}{}, TBLR={-1.5mm}{-4mm}{1.5mm}{}, TBLRtitle={1.5mm}{1mm}{2mm}{},
+                @tcbox@font={\large\bfmseries}{\normalsize\bfmseries}{}, TBLR={-1.5mm}{-3mm}{1.5mm}{}, TBLRtitle={1.5mm}{1mm}{2mm}{},
                 titlerule=1mm, titlefilloutline={#1}{#2}{#3}, subtitle style={}, before skip=-2mm, after skip=4mm
         },
         tcblistboxStyle/.default={0pt}{current-colinteriorborder}{current-colbacktitle},
@@ -1846,7 +1848,14 @@
                 TBLR={-0.5mm}{-0.5mm}{}{}, TBLRtitle={-2.5mm}{-2.5mm}{1mm}{},
                 before skip=-0.0mm, after skip=2.0mm,
                 @tcb@breakable@enforced@code={outlineframefillbox={current}{#1}},
-                break at=0.95\@tcb@enumbox@startpos/0.95\textheight
+                height fixed for=first and middle,
+                enlarge top at break by=-2.5mm, enlarge bottom at break by=0.5mm, pad before break*=3mm,
+%                extras broken=
+%                {
+%                        tcbborders={#1}{#2}{#3}{#4},
+%                        interiorStyle={\@interior@border@linewidth}{#4}{}
+%                },
+                break at=0.95\@tcbox@startpos/0.95\textheight
         },
         tcbparboxStyle/.default={\@frame@border@linewidth}{single}{current-colframeborder}{current-colinteriorborder},
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -1885,7 +1894,33 @@
                         \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0.5cm,0pt);%
                         \draw[line width=3pt,current-colframeborder,line cap=rect] (interior.south west) -- +(0pt,0.75cm);%
                 }
-        }
+        },
+%-------------------------------------------------------------------------------------------------------------------------------%
+        tcbhyperboxStyle/.style n args={4}%=
+        {
+                blend before title code=
+                {%
+                        \bookmarkX@hypertarget{#1}%
+                        \csuse{cft#1@hyperblend}*#2%*{#1}#2%
+                },
+                title={\csuse{cft#1@hyperblend@title}#3}%!{}{#3}
+                list entry={\csuse{cft#1@listentry}{#4}},
+                after={\csuse{cft#1@bookmark}!}%,
+        },
+        %tcbhyperboxStyle/.default={\@frame@border@linewidth}{single}{current-colframeborder}{current-colinteriorborder}
+%-------------------------------------------------------------------------------------------------------------------------------%
+        tcbfullhyperboxStyle/.style n args={6}%=
+        {
+                blend before title code=
+                {%
+                        \bookmarkX@hypertarget{#1}%
+                        \csuse{cft#1@hyperblend}*{#2}#3%#2%*
+                },
+                title={\csuse{cft#1@hyperblend@title}!{#4}{#5}}%#3}%
+                list entry={\csuse{cft#1@listentry}{#6}},
+                after={\csuse{cft#1@bookmark}!}%,
+        }%,
+        %tcbhyperboxStyle/.default={\@frame@border@linewidth}{single}{current-colframeborder}{current-colinteriorborder}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

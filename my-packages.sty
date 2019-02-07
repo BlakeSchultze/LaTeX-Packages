@@ -2,11 +2,12 @@
 %****************************************************** `my-packages.sty' ******************************************************%
 %*******************************************************************************************************************************%
 % Encapsulates all of the package requirements into a single package, including optional packages conditionally loaded based on the package options given to the 'my-latex' package.  Common LaTeX packages, potentially useful packages, and packages that were but are not currently being used are still loaded to ensure these packages do not clash with any of the packages currently in use or any of the macros/commands/environments defined during development.  The current assumption is that the LaTeX engine is used, but this package will eventually include conditional package loading and other dependencies to support other TeX engines (e.g. XeLaTeX/LuaLaTeX)
+%
+% NOTE: Run `mktexlsr' to "Update filename database" to include any additions to the R2Labs package (e.g. new .sty files)
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-packages}
+\ProvidesPackage{my-packages}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -68,15 +69,19 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \PassOptionsToPackage{toc,page}{appendix}               % Provides macros/commands relevant to appendices
 \PassOptionsToPackage{atend}{bookmark}                  % Modernized bookmark management w/ appearance/link options. Options:atend
-\PassOptionsToPackage{random=true}{blindtext}           % Create dummy text/doc w/ \<b/B>lind>text/\<b/B>linddocument (B=long)
+%\PassOptionsToPackage{random=true}{blindtext}           % Create dummy text/doc w/ \<b/B>lind>text/\<b/B>linddocument (B=long)
 \PassOptionsToPackage{abspath}{currfile}                % Adds file name and path information of current input file as LATEX macros
 %\PassOptionsToPackage{math=pgfmath}{datatool-base}
 \PassOptionsToPackage{customcolors,shade}{hf-tikz}
 \PassOptionsToPackage%
 {
         %pdftex,
+        %backref=true,
+        %implicit=true,
+        hypertexnames=true,%DEFAULT:true
+        pagebackref=true,%DEFAULT:true
         pdfpagelabels=true,
-        plainpages=false,
+        plainpages=false,%DEFAULT:false
         pdfstartview={FitH},
         pdffitwindow=false,
         linktocpage=true
@@ -109,7 +114,7 @@
 \RequirePackage{alltt}                          % Create aliases for counters
 \RequirePackage{alphalph}                       % Provides methods to represent numbers with a limited set of symbols
 \RequirePackage{amsgen}                         % Internal package; stores functions shared by >1 package in AMS-LaTeX dist.
-\RequirePackage{amssymb}                        %
+%\RequirePackage{amssymb}                        %
 \RequirePackage{amsthm}                         % AMS theorem/lemma/etc structures
 \RequirePackage{appendix}                       % Provides macros/commands relevant to appendices
 %\RequirePackage{arara}                         % options: xindy
@@ -128,7 +133,7 @@
 \RequirePackage{changepage}                     % local margin change environment
 \RequirePackage{chngcntr}                       % Adds counterwithin/without to add/remove chap/section #s from \the<counter>
 \RequirePackage{cite}                           % Improves numerical citation handling
-\RequirePackage{cleveref}                       % Enhance cross-ref feat:auto fmt by type/context,sort,compress consec labels
+%\RequirePackage{cleveref}                       % Enhance cross-ref feat:auto fmt by type/context,sort,compress consec labels
 \RequirePackage{colortbl}                       % Allows table rows/columns to be colored
 \RequirePackage{cool}                           % COntent Oriented LaTeX (LATEX2î): std-ized math macros/operators/symbols...
 \RequirePackage{coollist}                       % 'cool' subpackage: Adds access specific list elements as if it was an array
@@ -180,7 +185,7 @@
 \RequirePackage{cmap}                           % Adds char map tables=>pdfLaTeX PDF search/copy-able in compliant viewers
 \RequirePackage{ellipsis}
 \RequirePackage{footnotebackref}                % hyperlinks from footnotes # to doc occurence [symbol=,numberlinked=TF]
-\RequirePackage{geometry}
+\RequirePackage[pdftex]{geometry}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \RequirePackage{hycolor}                        % Implements color option stuff used by packages hyperref/bookmark
 %\RequirePackage{hypcap}                        % Redef float environments to move link target from below to beginning float
@@ -282,9 +287,10 @@
 \RequirePackage{type1cm}                        % Override usage of .fd files for standard Computer Modern font
 \RequirePackage{ulem}                           % Provides text underlining commands and customizations
 \RequirePackage{upgreek}                        % Provides set of Greek text symbols/commands
-\RequirePackage{uri}                            % Provides automatic uri links (e.g. arXiv) citeurl, mailto, ukoeln, and uref
+%\RequirePackage{uri}                            % Provides automatic uri links (e.g. arXiv) citeurl, mailto, ukoeln, and uref
 \RequirePackage{url}                            % Insert functional web links
-\RequirePackage{varioref}                       % Add \ref variations for cases where \ref and \label fall on different pages
+\RequirePackage{uri}                            % Provides automatic uri links (e.g. arXiv) citeurl, mailto, ukoeln, and uref
+%\RequirePackage{varioref}                       % Add \ref variations for cases where \ref and \label fall on different pages
 \RequirePackage{verbatim}                       % multiline comments
 \RequirePackage{xargs}                          % Add \<cmd>x for various \<cmd> (e.g. \newcommandx); supports opt. arguments
 \RequirePackage{xfor}                           % AMS theorem/lemma/etc structures
@@ -317,7 +323,7 @@
 %\RequirePackage{nomentbl}
 %\RequirePackage{pst-xkey}                      % Gives PSTriks xkeyval option system; redefines \psset to set >1 family keys
 %\RequirePackage{contour}
-%\RequirePackage{pst-text}
+%\RequirePackage{pst-text}vario
 \RequirePackage{l3keys2e}
 \RequirePackage{xtemplate}                      % Provides a means of defining generic functions using a key-value syntax.
 \RequirePackage{pdfescape}[2007/11/11]          % Implements pdfTeX's \pdf<escapehex,unescapehex,escapename,escapestring>
@@ -335,7 +341,7 @@
 %\RequirePackage{storebox}
 \RequirePackage{collectbox}
 \RequirePackage{adjustbox}
-\RequirePackage{blindtext}                      % Create dummy text/doc w/ \<b/B>lind>text/\<b/B>linddocument (B=long)
+%\RequirePackage{blindtext}                      % Create dummy text/doc w/ \<b/B>lind>text/\<b/B>linddocument (B=long)
 \RequirePackage{collcell}
 \RequirePackage{collect}
 %\usepackage{xinttools},math=true
@@ -352,7 +358,19 @@
 \RequirePackage{import}
 \RequirePackage{shellesc}
 %\RequirePackage{fonttable}
+%\RequirePackage{isodate}
+%\RequirePackage{datetime2}
+\RequirePackage{pdflscape}
+\RequirePackage{parselines}
+\RequirePackage{extract}
+%\RequirePackage[none]{hyphenat}		% Add \nohyphen cmd: create 'babel'-like language to prevent hyphens
+\RequirePackage{underscore}
+%\RequirePackage{backref}%
+\RequirePackage[nottoc,notlot,notlof]{tocbibind}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\RequirePackage[T1,T2A,X2,T2B,T2C,T3,T5,QX,LGR,OT2,OML,OMS,TS1,OT1]{fontenc}%U,OMX
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\RequirePackage{titleref}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\RequirePackage{etoolbox}                       % Package tools especially for use with î-tex
@@ -376,11 +394,10 @@
 %-------------------------------- Packages causing clashes/conflicts or requiring special usage -------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Packages causing clashes/conflicts
-%\RequirePackage{amssymb}                       % AMS fonts for reals, complex numbers, etc
 %\RequirePackage{arydshln}                      % Provides dash line version of \hrule/\hline
 %\RequirePackage{etextools}                     % Extends 'etoolbox' || *csvloop* clash: package modified with cmds commented out
 %\RequirePackage{fancybox}                      % Box/verbatim macros: \fbox: \shadowbox, \doublebox, \ovalbox, \Ovalbox
-%\RequirePackage{fancyref}
+\RequirePackage{fancyref}
 %\RequirePackage{floatrow}                      % \DeclareNewFloatType
 %\RequirePackage{forarray}                      % (algorithm2e)Adds functionality for processing lists & array structures in LATEX
 %\RequirePackage{incgraph}                      % Provides tool box w/ basic macros and convenient user interface wrapping includegraphics
@@ -389,12 +406,12 @@
 \RequirePackage{mathstyle}                      % Only works with 'noactivechars' package option (passed above)
 \RequirePackage{papermas}                       % Computes # print sheets of paper needed and resulting mass of printed paper
 %\RequirePackage{csvsimple}                      % Provides simple LATEX interface for CSV file processing || *ifuppercase" clash...
-%\RequirePackage{wasysym}
-%\RequirePackage{bm}
 %\RequirePackage{nccfancyhdr}
 %\RequirePackage{subfig}
 %\RequirePackage{subfigure}
 %\RequirePackage{tabstackengine}                %
+%\RequirePackage{varioref}                       % Add \ref variations for cases where \ref and \label fall on different pages
+\RequirePackage{cleveref}                       % Enhance cross-ref feat:auto fmt by type/context,sort,compress consec labels
 %------------------------------------------ Packages which do not function as claimed ------------------------------------------%
 %\RequirePackage[subpreambles=true]{standalone}  % Add ability to separately compile/pdftexify document's '\input' .tex files
 %\RequirePackage[makeindex]{splitidx}           % maintains index page numbers automatically

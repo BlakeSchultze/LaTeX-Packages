@@ -1,0 +1,47 @@
+%\clearpage%
+\Section{GitHub Accounts/Repositories}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenvironment}|GitHub|
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbparbox}|https:\dirsep\dirsep github.com\dirsep\caratenclosed*{GitHub account}\dirsep\caratenclosed*{GitHub repository}|
+\bfdash below is a description of the GitHub accounts/repositories containing the tools/programs relevant to pCT and documentation for pCT software/hardware, code/data storage and management, collaborator projects and contact information, phantom naming/properties, and other useful pCT information.  These have been cloned to Kodiak/Tardis and organized according to the scheme described in \autohyperlink[type=Section]{Code Organization} and shown in the \autohyperlink[type=Section, label=pCT\_code Hierarchy Diagram]{pCT code Hierarchy Diagram}, thereby providing users with easy/immediate access to the source code in these repositories.
+\end{tcbparbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\currentparsep{3.0pt}
+\begin{tcbparbox}{tcbenumeratedStyle}
+\begin{ThinEnum}[parsep=\currentparsep]
+    \item \docentry[gitaccount]{pCT-collaboration} : contains repositories for pCT data acquisition, simulation, preprocessing, and reconstruction software and documentation describing the software/hardware, management of code/data, and other information relevant to pCT (e.g. collaborator list, hardware descriptions, phantom properties, etc.).
+    \begin{ThinEnum}[parsep=\currentparsep]
+        \item \docentry[gitrepo]{pCT\_Tools} : contains bash functions/scripts and other tools useful for navigating data/code and configuring/running programs on Kodiak and Tardis compute nodes (along with documentation describing them and their purpose/usage) including a default \docentry[script]{\texttt{.bash\_profile}} which sources \docentry[script]{\texttt{pct\_user\_script.sh}} to configure user sessions for the current host/node and \docentry[script]{\texttt{load\_pct\_functions.sh}} to automatically load the aforementioned bash functions useful during a user terminal session (see \docentry[file]{documentation.pdf} for
+        \item \docentry[gitrepo]{pCT-docs} : contains documentation on the pCT data/code naming and organizational scheme, collaborator's project involvement and contact info, and phantom properties/manuals/naming (including relevant subcategory tags).  The importance and naming of additional documentation from the original \docentry[gitrepo]{BlakeSchultze\dirsep pCT\_Documentation} repository are currently being evaluated for migration.
+        \item \docentry[gitrepo]{pypct} : Python helpers for proton CT
+        \item \docentry[gitrepo]{pct-acquire} : Proton CT data acquisition software for the Phase 2 pCT scanner system
+        \item \docentry[gitrepo]{pct-sim} : GEANT4 program for simulating scans with the Phase 2 pCT scanner system
+        \item \docentry[gitrepo]{Preprocessing} : program for preprocessing raw data to calculate tracker plane coordinates from tracker chip/channel/strip values and generate calibrated WEPL values from energy detector measurements.
+        \item \docentry[gitrepo]{pct-recon-copy} : original Penfold/Hurley pCT reconstruction program now with a \docentry[gitbranch]{Baylor} branch configuring the \docentry[script]{Makefile} for Tardis execution and input/output directory execution parameters required for batch script submission of reconstruction job(s) to the GPU execution queue.
+        \item \docentry[gitrepo]{Reconstruction\_BU} : contains only the current and previous release versions of Baylor's reconstruction program as developed in \docentry[gitaccount]{BaylorICTHUS\dirsep pCT\_Reconstruction} (no code development is performed here).
+    \end{ThinEnum}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item \docentry[gitaccount]{BaylorICTHUS} : Baylor's pCT programs, tools, and documentation.
+    \begin{ThinEnum}[parsep=\currentparsep]
+        \item \docentry[gitrepo]{pCT\_Reconstruction} : used in developing the release version of Baylor's pCT reconstruction program and containing branches for each of Baylor's pCT developers (Blake, Paniz, Sarah, ...) for independent development relevant to their work.  Developments made in a developer branch and proposed for integration in the next release version go through a review and testing process to verify the code and its impact on the full program.  Developments passing this verification process are then merged into the \docentry[gitbranch]{release\_development} branch.  When critical developments are merged into the \docentry[gitbranch]{release\_development} branch, this branch is then merged into the \docentry[gitbranch]{release} branch and the resulting code is then pushed to the \docentry[gitrepo]{pCT-collaboration\dirsep Reconstruction\_BU} repository, as this is the source for pCT users to acquire the current and previous release versions of the program.
+    \end{ThinEnum}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \item \docentry[gitaccount]{BlakeSchultze} : parent directory for all pCT code/data on Kodiak and the Tardis compute nodes
+    \begin{ThinEnum}[parsep=\currentparsep]
+        \item \docentry[gitrepo]{LaTeX-Packages} : provides the package \docentry![file]{my-latex.sty} which is included in TeX documents to provide access to the definitions of new commands/macros/environments, load the external/3rd-party package dependencies, and configure the typesetting of LaTeX documents as well as providing the collection of LaTeX style (.sty) and other files included in this repository upon which these definitions/configurations are dependent.
+        \item \docentry[gitrepo]{pCT\_Documentation} : contains an expanded set of pCT documentation files with additional resources not included in the \docentry[gitrepo]{pCT-collaboration\dirsep pCT-docs} repository, such as pCT publications and theses/dissertations.
+        \item \docentry[gitrepo]{pCT\_Reconstruction} : the original repository in which Baylor's pCT reconstruction program was developed, which also contains the experimental development of an alternative program configuration with several automated routines, and is currently being merged into the release version of Baylor's reconstruction program as provided in \docentry[gitrepo]{BaylorICTHUS\dirsep pCT\_Reconstruction}.
+        \item \docentry[gitrepo]{WED\_Analysis} : provides tool for determining the water-equivalent depth (WED) for a set of beam-aim point (BAP) coordinates based on reconstructed image RSP values, using the voxel walk algorithm developed as part of the pCT reconstruction program.  This algorithm steps from voxel edge to voxel edge along a trajectory to determine exact voxel intersection coordinates and prevent the missing of small voxel intersections which can occur when taking constant length steps along a path as was done in the original reconstruction program.
+    \end{ThinEnum}
+\end{ThinEnum}
+\end{tcbparbox}
+%\par\bigskip\bigskip\bigskip\bigskip\bigskip\smallskip
+\end{tcbenvironment}
+\endinput
+%\clearpage 

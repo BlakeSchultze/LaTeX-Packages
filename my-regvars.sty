@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-regvars}
+\ProvidesPackage{my-regvars}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -79,6 +78,17 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\@init@length}{m E{=}{{0pt}} o }%
+%{%
+%        \ifismacro{#1}%
+%                {\def\length@cs{#1}}%
+%                {\defcs\length@cs{#1}}%
+%        \xp\newlength\length@cs%
+%        \IfValueTF{#3}%
+%                {\setlength\length@cs{#3}}%
+%                {\setlength\length@cs{#2}}%
+%        \ifcsundef{the\thecsname{\length@cs}}{\csgdef{the\thecsname{\length@cs}}{\the\length@cs}}{}%
+%}
 \DeclareDocumentCommand{\@init@length}{m O{0pt}}%
 {%
         \ifismacro{#1}%
@@ -88,8 +98,8 @@
                 \ifcsundef{the\thecsname{#1}}{\csgdef{the\thecsname{#1}}{\the#1}}{}%
         }%
         {%
-                \xp\newlength\csname #1\endcsname\xp%
-                \setlength\csname #1\endcsname{#2}%
+                \xp\newlength\csname#1\endcsname\xp%
+                \setlength\csname#1\endcsname{#2}%
                 \ifcsundef{the#1}{\csgdef{the#1}{\xp\the\csname#1\endcsname}}{}%
         }%
 }
@@ -164,9 +174,64 @@
         \IfValueTF{#3}{\csname @tcb@set@#2@linewidths\endcsname{#3}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@toks}{s O{} m O{}}%
+{%*<unused>[<init val>]{<token name>}[<default (reset) val>]
+%        \IfBooleanTF{#1}{\toggletrue{#2}}{\togglefalse{#2}}%
+        \ifismacro{#3}%
+        {%
+                \newtoks#3%
+                \global#3{#2}%
+                \xdef\@the@toks@name{\thecsname{#3}}%
+                \ifcsundef{the\@the@toks@name}{\csgdef{the\@the@toks@name}{\the#3}}{}%
+                \ifcsundef{print\@the@toks@name}{\csgdef{print\@the@toks@name}{\the#3}}{}%
+                \ifcsundef{reset\@the@toks@name}{\csgdef{reset\@the@toks@name}{\global#3{#4}}}{}%
+                \ifcsundef{appto\@the@toks@name}{\csgdef{appto\@the@toks@name}##1{\global#3\xp{\the#3##1}}}{}%
+        }%
+        {%
+                \xp\newtoks\csname#3\endcsname
+                \xp\global\csname#3\endcsname{#2}
+                \ifcsundef{print#3}{\csgdef{print#3}{\xp\the\csname#3\endcsname}}{}%
+                \ifcsundef{the#3}{\csgdef{the#3}{\xp\the\csname#3\endcsname}}{}%
+                \ifcsundef{reset#3}{\csgdef{reset#3}{\xp\global\csname#3\endcsname{#4}}}{}%\@swaparg
+                \ifcsundef{appto#3}{\csgdef{appto#3}##1{\xp\global\csname#3\endcsname\xp\xp\xp{\xp\the\csname#3\endcsname##1}}}{}%
+        }%
+}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\apptotoks[2]{\xp\global\csname#2\endcsname\xp\xp\xp{\xp\the\csname#2\endcsname#1}}
+%\newcommand*\resettoks[1]{\xp\global\csname#1\endcsname{}}
+%\newcommand*\printtoks[1]{\xp\the\csname#1\endcsname}
+%\newcommand*\cmdprinttoks[2]{\xp#1\xp{\xp\the\csname#2\endcsname}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************** Define/initialize/set internal register variables **************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ latex.ltx defined register variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcount\@tempcnta
+%\newcount\@tempcntb
+%\newif\if@tempswa
+%\newdimen\@tempdima
+%\newdimen\@tempdimb
+%\newdimen\@tempdimc
+%\newbox\@tempboxa
+%\newskip\@tempskipa
+%\newskip\@tempskipb
+%\newtoks\@temptokena
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newskip\smallskipamount \smallskipamount=3pt plus 1pt minus 1pt
+%\newskip\medskipamount   \medskipamount  =6pt plus 2pt minus 2pt
+%\newskip\bigskipamount   \bigskipamount =12pt plus 4pt minus 4pt
+%\newskip\fill
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newread\@inputcheck
+%\newwrite\@unused
+%\newwrite\@mainaux
+%\newwrite\@partaux
+%\newif\if@filesw \@fileswtrue
+%\newif\if@partsw \@partswfalse
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Constant value register variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -499,17 +564,13 @@
 \@init@length{@tcb@functiondefdetail@first@column}[4.0cm]
 \@init@length{@tcb@functiondefdetail@second@column}[15.5cm]%
 \@init@length{@tcb@functiondefdetail@column@sep}[0.75cm]
-\@init@length{@tcb@enum@label@indent}[-6.0pt]
-\@init@length{@tcb@enum@topsep}[2.0pt]
-\@init@length{@tcb@enum@leftmargin}[0.25in]
-\@init@length{@tcb@enum@itemsep}[1pt]
-\@init@length{@tcb@enum@parsep}[0pt]
+\@init@length{@tcbox@startpos}                                                          %
 \@init@length{@tcb@enumbox@startpos}                                                          %
 \@init@length{@tcb@parbox@startpos}                                                          %
 \@init@length{@tcb@enclosure@startpos}                                                          %
 %\@init@length{@tcb@enumbox@remaining@page@height}                                                          %
 %\@init@length{@tcb@enumbox@used@page@height}                                                          %
-\@init@length{@tcb@code@newusageline@vkip}[0.5em]
+\@init@length{@tcb@code@newusageline@vskip}[0.5em]
 \@init@length{@tcb@code@first@column}[3.0cm]
 \@init@length{@tcb@code@second@column}[16.5cm]%
 \@init@length{@tcb@code@column@sep}[16.5cm]%
@@ -621,7 +682,15 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \ifmylatex@landscape
-        \@init@length{@tikzheading@width}[\dimexpr\paperwidth + 1.25in - 2pt\relax]
+        \@init@length{@landscape@page@yshift}[\dimexpr\paperheight - \paperwidth\relax]%(\textheight - \textwidth)
+        \@init@length{@landscape@margin@yshift}[\dimexpr\rightmargin-\topmargin\relax]%[0mm]%
+        \@init@length{@landscape@line@shift}[\dimexpr\@tikzheading@linewidth/2\relax]
+        \@init@length{@landscape@Chapter@yshift}[\dimexpr -\@landscape@page@yshift - \@tikzheading@linewidth\relax]
+        \@init@length{@landscape@Part@top@yshift}[\dimexpr-\@landscape@page@yshift - \@landscape@margin@yshift + \@tikzheading@linewidth/2\relax]
+        \@init@length{@landscape@Part@bottom@yshift}[\dimexpr\@tikzheading@linewidth-\@landscape@margin@yshift/2\relax]
+        \@init@length{@landscape@pgnum@xshift}[\dimexpr(\paperheight - \paperwidth)/2\relax]
+        \@init@length{@landscape@pgnum@yshift}[\dimexpr 2\@tikzheading@linewidth\relax]
+        \@init@length{@tikzheading@width}[\dimexpr\paperwidth - \@landscape@line@shift\relax]%[\dimexpr\paperwidth + 1.25in - 2pt]
         \@init@length{@tikzheading@title@margin}[\dimexpr 0.1\paperwidth\relax]
         \@init@length{@tikzheading@east@title@xshift}[\dimexpr \paperwidth - 1.0in\relax]
         \@init@length{@tikzheading@west@title@xshift}[\dimexpr 1.0in\relax]
@@ -634,9 +703,26 @@
         %\setlength{\headheight}{30pt}
         %\setlength{\parfillskip}{6em}
         %\setlength{\partopsep}{6em}
+        \setlength{\parindent}{4mm}                                                      %\parindent=\z@
         %\setlength{\parsep}{6em}
+        %\setlength\pdfpagewidth{20in}%
+        %\setlength\pdfpageheight{5in}}%
 \else
-        \@init@length{@tikzheading@width}[\paperwidth]
+        % Top Part Works - <\dimexpr -\@landscape@page@yshift - \@landscape@margin@yshift + \@landscape@line@shift\relax>%
+        %\@init@length{@landscape@page@yshift}[-\dimexpr\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax]%
+        %\@init@length{@landscape@margin@yshift}[-\dimexpr\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax]%[-\@tikzheading@node@yshift]%[-\dimexpr\@tikzheading@baseheight/2\relax]%
+        % Ch. Works - <-\dimexpr\@landscape@page@yshift+\@tikzheading@linewidth>: switch node@yshift->margin + @page->@margin here?
+        %\@init@length{@landscape@page@yshift}[-\@tikzheading@node@yshift]%[\@tikzheading@baseheight]%
+        % Both work with Part/Chapter tikz dim. args as above
+        \@init@length{@landscape@page@yshift}[-\@tikzheading@node@yshift]%[\@tikzheading@baseheight]%
+        \@init@length{@landscape@margin@yshift}[-\dimexpr-\@tikzheading@node@yshift+\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax]%[-\@tikzheading@node@yshift]%[-\dimexpr\@tikzheading@baseheight/2\relax]%
+        \@init@length{@landscape@line@shift}[0.4in]%[\dimexpr\@tikzheading@linewidth/2\relax]
+        \@init@length{@landscape@Chapter@yshift}[\dimexpr -\@landscape@page@yshift - \@tikzheading@linewidth/2\relax]
+        \@init@length{@landscape@Part@top@yshift}[\dimexpr-\@landscape@page@yshift - \@landscape@margin@yshift - \@tikzheading@linewidth/2\relax]
+        \@init@length{@landscape@Part@bottom@yshift}[\dimexpr-\@tikzheading@linewidth/2+\@landscape@line@shift/2-\@landscape@margin@yshift/2\relax]
+        \@init@length{@landscape@pgnum@xshift}[0mm]%[\dimexpr\f@size\p@ / 2\relax]
+        \@init@length{@landscape@pgnum@yshift}[\dimexpr 2\@tikzheading@linewidth\relax]
+        \@init@length{@tikzheading@width}[\paperwidth-\@tikzheading@linewidth/2]%[\dimexpr\paperwidth + 1.25in + 2pt\relax]
         \@init@length{@tikzheading@title@margin}[\dimexpr 0.1\paperwidth\relax]
         \@init@length{@tikzheading@east@title@xshift}[0.9\paperwidth]
         \@init@length{@tikzheading@west@title@xshift}[\dimexpr 0.1\paperwidth\relax]
@@ -679,7 +765,7 @@
 \newsavebox\@tcb@mathbox@right@content@box
 \newsavebox\@tcb@mathbox@text@title@box
 \newsavebox\@tcb@mathbox@math@title@box
-\newsavebox{\@slant@savebox}
+\newsavebox\@slant@savebox
 \newsavebox\@premeasured@savebox
 \newsavebox\@titlenode@savebox
 \newsavebox\@saved@savebox
@@ -690,6 +776,14 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 \newtoks\do@VerbBox
 \newtoks\@saved@token
+%\newtoks\tabtoks
+%\@init@toks\tabletoks
+\@init@toks{tabletoks}
+\@init@toks{fonttabletoks}
+\@init@toks{cmdtoks}
+%\apptotoks{}{cmdtoks}
+%\resettoks{cmdtoks}
+%\printtoks{cmdtoks}
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Booleans/Toggles ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -707,6 +801,29 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Itemize/enumerate/custom list settings/configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+\gdef\@tcb@itemize@labeli{\textbullet}%{\blacklozenge}
+\gdef\@tcb@itemize@labelii{\textbullet}%{$\triangleleft$}%
+\gdef\@tcb@itemize@label{\ensuremath{\triangleright}}%{\textbullet}
+% \blackpointerright stix \medblacktriangleright fdsymbol \filledmedtriangleright Mnsymbol \medbullet txfont/pxfont \bigvarstar mathabx
+% \blacktriangleright \bigstar \blacklozenge $\bullet$
+%
+%\smwhitestar
+%\star
+%\medstar
+%\blacktriangleright
+%\smblkcircle
+%\mdlgblkcircle
+%\blacksquare
+%\smblksquare
+%\mdblksquare
+%\mdlgblksquare
+%\blackdiamond
+%\smblkdiamond
+%\mdblkdiamond
+%\mdlgblkdiamond
+%\blacklozenge
+%\mdlgblklozenge
+%[label=\protect\fcolorbox{blue}{yellow}{\protect\ding{\value*}},start=172
 %-------------------------------------------------------------------------------------------------------------------------------%
 \setlistdepth{12}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -720,13 +837,50 @@
 \newlist{fileList}{enumerate}{1}
 \setlist[fileList,1]{label=\bfarabic@fmt{}., itemsep=3.5pt, topsep=4pt, parsep=4pt, partopsep=2pt, labelindent=10pt, leftmargin=*}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@tcb@parboxList@label@indent}[0.0pt]
+\@init@length{@tcb@parboxList@topsep}[-3.0pt]
+\@init@length{@tcb@parboxList@leftmargin}[-3.0pt]
+\@init@length{@tcb@parboxList@itemsep}[0pt]
+\@init@length{@tcb@parboxList@partopsep}[3pt]
+\@init@length{@tcb@parboxList@parsep}[0pt]
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newlist{parboxList}{itemize}{2}
+\setlist[parboxList]%
+{%
+        label=\@tcb@itemize@labeli, labelindent=\@tcb@parboxList@label@indent, itemsep=\@tcb@parboxList@itemsep, topsep=\@tcb@parboxList@topsep,
+        parsep=\@tcb@parboxList@parsep, leftmargin=\@tcb@parboxList@leftmargin%
+}
+\setlist[parboxList, 1]{label=\@tcb@itemize@labeli, labelindent=\@tcb@enumList@label@indent, partopsep=\@tcb@enumList@partopsep, topsep=\@tcb@enumList@topsep, parsep=\@tcb@enumList@parsep, leftmargin=\@tcb@parboxList@leftmargin}
+\setlist[parboxList, 2]{label=\@tcb@itemize@labelii, labelindent=\@tcb@enumList@label@indent, partopsep=\@tcb@enumList@partopsep, topsep=\@tcb@enumList@topsep, parsep=\@tcb@enumList@parsep, leftmargin=\@tcb@parboxList@leftmargin}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@tcb@enumList@label@indent}[2\parindent]
+\@init@length{@tcb@enumList@topsep}[-3.0pt]
+\@init@length{@tcb@enumList@leftmargin}[3\parindent]
+\@init@length{@tcb@enumList@itemsep}[0pt]
+\@init@length{@tcb@enumList@partopsep}[3pt]
+\@init@length{@tcb@enumList@parsep}[3pt]%[0pt]\@tcb@enumbox@default@parsep
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newlist{enumList}{enumerate}{2}
+\setlist[enumList]%
+{%
+        labelindent=\@tcb@enumList@label@indent, itemsep=\@tcb@enumList@itemsep, topsep=\@tcb@enumList@topsep,
+        parsep=\@tcb@enumList@parsep, leftmargin=\@tcb@enumList@leftmargin%
+}
+\setlist[enumList, 1,2]{label=\bfarabic@fmt(), labelindent=\@tcb@enumList@label@indent, partopsep=\@tcb@enumList@partopsep, topsep=\@tcb@enumList@topsep, parsep=\@tcb@enumList@parsep, leftmargin=\@tcb@enumList@leftmargin}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@init@length{@tcb@enum@label@indent}[-6.0pt]
+\@init@length{@tcb@enum@topsep}[2.0pt]
+\@init@length{@tcb@enum@leftmargin}[0.25in]
+\@init@length{@tcb@enum@itemsep}[1pt]
+\@init@length{@tcb@enum@parsep}[3pt]%[0pt]
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newlist{ThinEnum}{enumerate}{12}
 \setlist[ThinEnum]%
 {%
         labelindent=\@tcb@enum@label@indent, itemsep=\@tcb@enum@itemsep, topsep=\@tcb@enum@topsep,
         parsep=\@tcb@enum@parsep, leftmargin=\@tcb@enum@leftmargin%
 }
-\setlist[ThinEnum, 1]{label=\bfarabic@fmt(), labelindent=2pt, partopsep=6pt, topsep=6pt, parsep=4pt, leftmargin=*}
+\setlist[ThinEnum, 1]{label=\bfarabic@fmt(), labelindent=2pt, partopsep=6pt, topsep=6pt, parsep=\@tcb@enum@parsep, leftmargin=*}%4pt,\@tcb@enum@parsep
 \setlist[ThinEnum, 2]{label=\bfalph@fmt}
 \setlist[ThinEnum, 3]{label=\bfroman@fmt,leftmargin=0.2in}
 \setlist[ThinEnum, 4]{label=\bfarabic@fmt()}

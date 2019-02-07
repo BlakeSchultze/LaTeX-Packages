@@ -1,0 +1,387 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%**************************************************** `R2Labs-printnfo.def' ****************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Provides definitions of commands used to print package, compilation, settings/configurations, and other information to the generated PDF and/or to the TeX editor console window, typically named w/ a '\print' or '\@print' prefix. These are often used during package development as 1 components of the debugging process, either during the development of new package components, expansion of the package to include/support additional 3rd party packages, or simple maintenance of the current package. As the size of the R2Labs package has grown, such 'printing' commands have become numerous and sizeable enough to warrant separating these into their own file, permitting this and other such development task specific files to be conditionally excluded from the compilation process for normal document generation compilations where these are unused and extraneous compilation content.
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************** Define provided file name/version/date and dependencies ***********************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ProvidesFile{R2Labs-printnfo.def}[\pkginfo]
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~ Commands for printing the 'R2Labs' package options info & loaded package list  ~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintBoolOptionInfo[2][]%
+{%\PrintBoolOptionInfo[<prefix>]{<key>}
+        \indent \underline{Bool Option key (family@key)} : mylatex@#2\\%
+        \value{\@nameuse{ifmylatex@#2}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintBoolOptionPairInfo[2][]%
+{%\PrintBoolOptionPairInfo[<prefix>]{<key>}
+        %\ifstrempty{#1}
+%                {\def\@boolpairkey@prefix{\@nameuse{@#2@prefix}}}
+%                {\def\@boolpairkey@prefix{#1}}
+        \indent \underline{Bool Option Pair key (family@key)} : mylatex@#2\\%
+        \value{\@nameuse{ifmylatex@#2}}%
+        \value{\@nameuse{ifmylatex@#2off}}%
+        \value{\@nameuse{ifmylatex@no#2}}%
+         %       \indent\indent \underline{Provided} = true\\%
+         %       \indent\indent \underline{Acceptable Choices} = %
+          %      \indent\indent \underline{Selected Choice} = \@nameuse{\KVO@prefix#2}\\
+        %\else%
+        %        \indent\indent \underline{Provided} = false\\%
+        %\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintBoolOptionPairsInfo%
+{%
+        \noindent \underline{Defined Bool Pair Keys} : \@defined@Bool@Option@Pairs\\%
+        \@for\next:=\@defined@Bool@Option@Pairs%
+                \do{\PrintBoolOptionPairInfo{\next}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintChoiceInfo[2][]%
+{%\ProcessChoiceOption[<prefix>]{<key>}
+        \ifstrempty{#1}%
+                {\def\@choicekey@prefix{\@nameuse{@#2@prefix}}}%
+                {\def\@choicekey@prefix{#1}}%
+        \item \@choicekey@prefix#2 (family@key)\\%
+        \indent\indent \underline{Acceptable Choices} = %
+        \fullyexpand{\@nameuse{@\@choicekey@prefix valid@#2@choice@options}}\\%
+        \@nameuse{if\@choicekey@prefix#2}%
+        \ifpkgopt[\pkgopts@prefix]{FBM@dotfill}
+                \indent\indent \underline{Provided} = true\\%
+                \indent\indent \underline{Selected Choice} = \@nameuse{\@choicekey@prefix#2}%
+        \else%
+                \indent\indent \underline{Provided} = false%
+        \fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintChoicesInfo%
+{%
+        \noindent \underline{Defined Choice Keys} : \@defined@Choice@Options%
+        \begin{enumerate}%
+        \@for\next:=\@defined@Choice@Options%
+                \do{\PrintChoiceInfo[\@nameuse{@\next @prefix}]{\next}}%
+        \end{enumerate}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintPkgOpts[2][]%
+{%\ProcessChoiceArrayOption[<prefix>]{<key>}
+        \ifstrempty{#1}%
+                {\edef\@choicekey@prefix{\@nameuse{@#2@prefix}}}%
+                {\edef\@choicekey@prefix{#1}}%
+        \ifcsundef{\@choicekey@prefix#2}{\@choicekey@prefix#2 : UNDEFINED\\}%
+        {%
+                \ifpkgopt[\@choicekey@prefix]{#2}%
+                        {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (user defined)\\}
+                        {\@choicekey@prefix#2=\@nameuse{\@choicekey@prefix#2} (default)\\}
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\PrintPackageList{\noindent \underline{Loaded Packages} : \@loaded@packages}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************************** Font definitions/configurations: ***********************************************%
+%*************************************** encodings, families, shapes, sizes, & versions ****************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define font scaling macros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\printfontinfo%
+{
+        \encodingdefault\\
+        \f@encoding\\
+        \cf@encoding\\
+        \f@family\\
+        \f@shape\\
+        \f@series\\
+        \f@size\\
+        \f@halfsize\\
+        \tf@size\\
+        \sf@size\\
+        \ssf@size\\
+        \f@baselineskip
+        \f@linespread\\
+        \the\font\\
+        \the\doctextsize\\
+        \cf@color\\
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@font@content}{O{OT1} m m m m}%
+{%*
+        \usefont{#1}{#2}{m}{n}\selectfont%
+        \par\smallskip%
+        (#3) Font Name: #4 (#1/#2)\\
+        #5%\blindtext%\lipsum[2]
+}%\print@font@content[OT1]{\@font@family@code}{\@font@index}{\@font@name}{\@the@font@print@content}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@fonts}{s t+ O{OT1}}%
+{%*
+        \def\@the@encoding{#3}%
+        \IfBooleanTF{#2}%\@text@punct@etc@symbols
+                {\def\@the@font@print@content{\myblindtext}}%\blindtext}\lipsum[1]}}
+                {\def\@the@font@print@content{\@lcase@alphabet--\@ucase@alphabet--\@digit@alphabet\@text@punct@etc@symbols}}%
+        \par\textbf{Named Fonts:}\\%
+        \foreach \@font@name / \@font@family@code [count=\@font@index from 1] in \@known@fontname@fontcode@pairs
+        {%
+                \print@font@content[#3]{\@font@family@code}{\@font@index}{\@font@name}{\@the@font@print@content}
+        }%
+        \par\textbf{Unnamed Fonts:}\\%
+        \foreach \@font@family@code [count=\@font@index from 1] in \@unnamed@font@families
+        {%
+                \print@font@content[#3]{\@font@family@code}{\@font@index}{\@font@family@code}{\@the@font@print@content}
+        }%
+
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@charToText@examples}{s}%
+{%
+%       %\fontencoding{T1}\selectfont
+%        \punctuationToText*{ };%{space}}%%
+%       \punctuationToText*{\ };%{space}}%%
+%       \punctuationToText*{,};%{comma}%
+%       \punctuationToText*{~};%{tilde}%
+%       \punctuationToText*{^};%{circumflex}%
+%       \punctuationToText*{_};%{underscore}%\punctuationToText*{\_};%{underscore}%
+%       \punctuationToText*{&};%{ampersand}%\punctuationToText*{\&};%{ampersand}%
+%       \punctuationToText*{$};%{dollar}%\punctuationToText*{\$};%{dollar}%
+%       \punctuationToText*{@};%{atsign}%\punctuationToText*{\@};%{atsign}%
+%       \punctuationToText*{>};%{rcarat}%\punctuationToText*{\>};%{rcarat}%
+%       \punctuationToText*{]};%{rbrack}%
+%       \punctuationToText*{\{};%{lbrace}%
+%       \punctuationToText*{\lparen};%{lparen}%
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%       \punctuationTextLUT*{ };%{space}}%%
+%       \punctuationTextLUT*{\ };%{space}}%%
+%       \punctuationTextLUT*{,};%{comma}%
+%       \punctuationTextLUT*{~};%{tilde}%
+%       \punctuationTextLUT*{^};%{circumflex}%
+%       \punctuationTextLUT*{_};%{underscore}%\punctuationTextLUT*{\_};%{underscore}%
+%       \punctuationTextLUT*{&};%{ampersand}%\punctuationTextLUT*{\&};%{ampersand}%
+%       \punctuationTextLUT*{$};%{dollar}%\punctuationTextLUT*{\$};%{dollar}%
+%       \punctuationTextLUT*{@};%{atsign}%\punctuationTextLUT*{\@};%{atsign}%
+%       \punctuationTextLUT*{>};%{rcarat}%\punctuationTextLUT*{\>};%{rcarat}%
+%       \punctuationTextLUT*{]};%{rbrack}%
+%       \punctuationTextLUT*{\{};%{lbrace}%
+%       \punctuationTextLUT*{\lparen};%{lparen}%
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%       \charTextLUT*{ };%{space}}%%
+%       \charTextLUT*{\ };%{space}}%%
+%       \charTextLUT*{A};%{A}%
+%       \charTextLUT*{Z};%{D}%
+%       \charTextLUT*{a};%{a}%
+%       \charTextLUT*{z};%{z}%
+%       \charTextLUT*{0};%{zero}%
+%       \charTextLUT*{1};%{one}%
+%       \charTextLUT*{9};%{nine}%
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%       \charToText*{ };%
+%       \charToText*{\ };%
+%       \charToText*{,};%{comma}%
+%       \charToText*{;};%{semicolon}%
+%       \charToText*{0};%{zero}%
+%       \charToText*{7};%{seven}%
+%       \charToText*{A};%{A}%
+%       \charToText*{Z};%{Z}%
+%       \charToText*{a};%{a}%
+%       \charToText*{z};%{z}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+        %\catcode`\ \active%
+        \doctext{charsToText\space=\space\{.,;0129 ABZ abz \}}\\%
+        %\def\@@@cmd{\catcode`\ \active\relax \charsToText{.,;0129 ABZ abz }}
+        %\catcode`\ \active%
+        %\gdef\@@@cmd{\catcode`\ \active\charsToText{.,;0129 ABZ abz }}
+        %\@@@cmd
+%       \catcode`\ \active \charsToText{.,;0129 ABZ abz }%
+        %\charsToText{.,;0129 ABZ abz }%
+%       \charsToText*{.,;0129 ABZ abz }%
+        \resettoks{cmdtoks}%
+        %\activesp%
+        %\catcode`\ \active%
+        \charsToText{.,;0129 ABZ abz }%
+        \charsToText*{.,;0129 ABZ abz }%
+        \apptotoks{\activesp\charsToText{.,;0129 ABZ abz }}{cmdtoks}%
+        \apptotoks{\activesp\charsToText*{.,;0129 ABZ abz }}{cmdtoks}%
+        \apptotoks{\catcode`\ \active\charsToText{.,;0129 ABZ abz }}{cmdtoks}%
+        \apptotoks{\catcode`\ \active\charsToText*{.,;0129 ABZ abz }}{cmdtoks}%
+        \apptotoks{\charsToText{.,;0129 ABZ abz }}{cmdtoks}%
+        \apptotoks{\charsToText*{.,;0129 ABZ abz }}{cmdtoks}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+        %\SetDefaultFont%
+        \printtoks{cmdtoks}%
+}
+\gdef\activesp{\catcode`\ \active\relax}
+\gdef\inactivesp{\catcode`\ =10\relax}
+%%\gdef\activesp#1{#1}
+%\newcommand\activesp[1]{#1}
+%\preto\activesp{\catcode`\ \active\relax}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@explicit@chgfonts}{s}%
+{%
+        %\@doc@font@default%
+        % Double Struck / Blackboard Bold
+        \tcbsubheading{Double Struck / Blackboard Bold}%
+        \fontencoding{U}\fontfamily{txsyb}\selectfont--\doctext{txsyb}\@all@characters\\
+        \fontencoding{U}\fontfamily{tx-math-of}\selectfont--\doctext{tx-math-of}\@all@characters\\
+        \fontencoding{U}\fontfamily{msb}\selectfont--\doctext{msb}\@all@characters\\
+        \fontencoding{U}\fontfamily{fplmbb}\selectfont--\doctext{fplmbb}\@all@characters\\
+        \fontencoding{U}\fontfamily{pxsyb}\selectfont--\doctext{pxsyb}\@all@characters\\
+        \fontencoding{U}\fontfamily{px-math-ds}\selectfont--\doctext{px-math-ds}\@all@characters\\%*
+        \fontencoding{U}\fontfamily{bbmss}\selectfont--\doctext{bbmss}\@all@characters\\
+        \fontencoding{U}\fontfamily{bbmtt}\selectfont--\doctext{bbmtt}\@all@characters\\
+        \fontencoding{U}\fontfamily{esstixbb}\selectfont--\doctext{esstixbb}\@all@characters\\
+        \fontencoding{U}\fontfamily{\BOONDOXds}\selectfont--\doctext{BOONDOX-ds}\@all@characters\\
+        \fontencoding{LS1}\fontfamily{stixbb}\selectfont--\doctext{stixbb}\@all@characters\\
+        \fontencoding{U}\fontfamily{dsrom}\selectfont--\doctext{dsrom}\@all@characters\\
+        \fontencoding{OT1}\fontfamily{mbb}\selectfont--\doctext{mbb}\@all@characters\\
+        \fontencoding{U}\fontfamily{bbold}\selectfont--\doctext{bbold}\@all@characters\\
+
+        % Calligraphic
+        \tcbsubheading{Calligraphic}%
+        \fontencoding{U}\fontfamily{cmsy}\selectfont--\doctext{cmsy}\@all@characters\\
+        \fontencoding{OT1}\fontfamily{pzc}\selectfont--\doctext{pzc}\@all@characters\\
+        \fontencoding{8r}\fontfamily{uzc}\selectfont--\doctext{uzc}\@all@characters\\
+        \fontencoding{U}\fontfamily{urwchancal}\selectfont--\doctext{urwchancal}\@all@characters\\
+        \fontencoding{U}\fontfamily{txcal}\selectfont--\doctext{txcal}\@all@characters\\
+        \fontencoding{OMS}\fontfamily{txsy}\selectfont--\doctext{txsy}\@all@characters\\
+        \fontencoding{U}\fontfamily{eus}\selectfont--\doctext{eus}\@all@characters\\
+        \fontencoding{OT1}\fontfamily{fmm}\selectfont--\doctext{fmm}\@all@characters\\
+
+        % Script
+        \tcbsubheading{Script}%
+        \fontencoding{U}\fontfamily{BOONDOX-cal}\selectfont--\doctext{BOONDOX-cal}\@all@characters\\
+        \fontencoding{U}\fontfamily{BOONDOX-calo}\selectfont--\doctext{BOONDOX-calo}\@all@characters\\
+        \fontencoding{U}\fontfamily{rsfs}\selectfont--\doctext{rsfs}\@all@characters\\
+        \fontencoding{U}\fontfamily{rsfso}\selectfont--\doctext{rsfso}\@all@characters\\
+        \fontencoding{U}\fontfamily{bickhamcal}\selectfont--\doctext{bickhamcal}\@all@characters\\
+        \fontencoding{U}\fontfamily{esstixcal}\selectfont--\doctext{esstixcal}\@all@characters\\
+        \fontencoding{U}\fontfamily{dutchcal}\selectfont--\doctext{dutchcal}\@all@characters\\
+
+        % Fraktur
+        \tcbsubheading{Fraktur}%
+        \fontencoding{U}\fontfamily{esstixfrak}\selectfont--\doctext{esstixfrak}\@all@characters\\
+        \fontencoding{U}\fontfamily{BOONDOX-frak}\selectfont--\doctext{BOONDOX-frak}\@all@characters\\
+        \fontencoding{U}\fontfamily{txfrak}\selectfont--\doctext{txfrak}\@all@characters\\
+        \fontencoding{LY}\fontfamily{yfrak}\selectfont--\doctext{yfrak}\@all@characters\\
+        \fontencoding{LYG}\fontfamily{ygoth}\selectfont--\doctext{ygoth}\@all@characters\\
+        \fontencoding{LY}\fontfamily{yswab}\selectfont--\doctext{yswab}\@all@characters\\
+        \fontencoding{LY}\fontfamily{ysmfrak}\selectfont--\doctext{ysmfrak}\@all@characters\\
+        \fontencoding{U}\fontfamily{euf}\selectfont--\doctext{euf}\@all@characters\\
+
+        % tt
+        \tcbsubheading{tt Fonts}%
+        \fontencoding{LS2}\fontfamily{stixtt}\selectfont--\doctext{stixtt}\@all@characters\\
+        \fontencoding{OML}\fontfamily{antt}\selectfont--\doctext{antt}\@all@characters\\
+
+        % Symbols
+        \tcbsubheading{Symbols}%
+        \fontencoding{U}\fontfamily{mathb}\selectfont--\doctext{mathb}\@all@characters\\
+        \fontencoding{U}\fontfamily{msa}\selectfont--\doctext{msa}\@all@characters\\
+        \fontencoding{U}\fontfamily{txsya}\selectfont--\doctext{txsya}\@all@characters\\
+        \fontencoding{U}\fontfamily{txsyc}\selectfont--\doctext{txsyc}\@all@characters\\
+        \fontencoding{LS2}\fontfamily{stixex}\selectfont--\doctext{stixex}\@all@characters\\
+
+        %% Mixed Symbols
+        %\SetDefaultFont\tcbsubheading{Mixed Symbols}%
+        %\fontencoding{U}\fontfamily{cmsy}\selectfont--\doctext{cmsy}\@all@characters\\
+        %\fontencoding{OMS}\fontfamily{txsy}\selectfont--\doctext{txsy}\@all@characters\\
+        %\fontencoding{U}\fontfamily{txsyb}\selectfont--\doctext{txsyb}\@all@characters\\
+        %
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@fontfamily@char}{s m m}{\text{#2\char#3}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@fontfamily@chars}{s m O{255}}%
+{%
+    \foreach \@@char@code in {0,...,#3}%
+        {\text{#2\char\@@char@code}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@font@family@macro@names}{s}%
+{%
+        \foreach \@@font@family@macro in \@font@familyenc@macros{\@@font@family@macro,\space}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@font@family@cmd@names}{o}%
+{%
+        \foreach \@@font@family@cmd in \@font@familyenc@cmds{\@@font@family@cmd,\space}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@font@family@macros}{s}%
+{%
+        \foreach \@@font@family@macro in \@font@familyenc@macros{\csuse{\@@font@family@macro}\@alphanumeric@characters\\}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@font@family@cmds}{o}%
+{%
+        \foreach \@@font@family@cmd in \@font@familyenc@cmds{\csuse{\@@font@family@cmd}\@alphanumeric@characters\\}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@labeled@font@family@macros}{s}%
+{%
+        \foreach \@@font@family@macro in \@font@familyenc@macros{\@doc@font@default\@@font@family@macro:\csuse{\@@font@family@macro}\@alphanumeric@characters\\}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\print@labeled@font@family@cmds}{o}%
+{%
+        \foreach \@@font@family@cmd in \@font@familyenc@cmds{\@doc@font@default\@@font@family@cmd:\csuse{\@@font@family@cmd}\@alphanumeric@characters\\}%
+}
+\gdef\print@labeled@font@families%
+{%
+        \tcbsubheading{Available font family+encoding macros}%
+        \print@labeled@font@family@macros%
+        \tcbsubheading{Available font family commands}%
+        \print@font@family@cmds%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\printFontMacroNames\print@font@family@macro@names
+\global\let\printFontCmdNames\print@font@family@cmd@names
+\global\let\printFontMacros\print@font@family@macros
+\global\let\printFontCmds\print@font@family@cmds
+\global\let\printLabelFontMacros\print@labeled@font@family@macros
+\global\let\printLabelFonts\print@labeled@font@families
+\global\let\printChgFonts\print@explicit@chgfonts
+\global\let\printCharToTextExamples\print@charToText@examples
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************************** End of 'R2Labs-printnfo.def' file **********************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
+\makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\fmmfamily--ABCabc;\\
+\fmmfamily@OTone--ABCabc;\\
+\fmmfamily[OT1]--ABCabc;\\
+\uzcfamily--ABCabc; Is this Zapf Chancery?\fontencoding{T1}\fontfamily{uzc}\selectfont Is this Zapf Chancery?\\
+\uzcfamily@eightr--ABCabc; Is this Zapf Chancery?\fontencoding{T1}\fontfamily{uzc}\selectfont Is this Zapf Chancery?\\
+\BOONDOXdsfamily--ABCabc;\\
+\anttfamily--ABCabc;\\
+\yfrakfamily--ABCabc;\\
+\ygothfamily--ABCabc;\\
+\yswabfamily--ABCabc;\\
+\ysmfrakfamily--ABCabc;\\
+%\yinitasfamily--ABCabc;\\
+%\hlcffamily--ABCabc;\\
+%\mmamfrakfamily--ABCabc;\\
+\msbfamily--ABCabc;\\
+\euffamily--ABCabc;\\
+\mbbfamily--ABCabc;\\

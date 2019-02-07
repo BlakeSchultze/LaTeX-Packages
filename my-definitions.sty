@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-definitions}
+\ProvidesPackage{my-definitions}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -35,6 +34,26 @@
                 \noindent%
         \fi%
 }
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mylatex@fontfamily
+%\define@cmdkey[my]{mathfonts}{letters}[\mylatex@fontfamily]{}
+%\define@cmdkey{fam}{key}[none]{value: \cmdKV@fam@key}
+%\define@key{fam}{key}[none]{\def\cmdKV@fam@key{#1}value: \cmdKV@fam@key}
+%\define@cmdkey{fam}{key}[none]{value: \cmdKV@fam@key}
+%\define@key{fam}{key}[none]{\def\cmdKV@fam@key{#1}value: \cmdKV@fam@key}
+%\define@cmdkey{fam}[my@]{key}[none]{value: \my@key}
+%\define@key{fam}{key}[none]{\def\my@key{#1}value: \my@key}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\define@key[my]{mathfonts}{letters}[\mylatex@fontfamily]{\def\my@mathfonts@letters{#1}}
+%\define@key[my]{mathfonts}{operators}[\mylatex@fontfamily]{\def\my@mathfonts@operators{#1}}
+%\define@key[my]{mathfonts}{symbols}[cmsy]{\def\my@mathfonts@symbols{#1}}
+%\define@key[my]{mathfonts}{largesymbols}[cmex]{\def\my@mathfonts@largesymbols{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\define@key{mathfonts}{letters}[\mylatex@fontfamily]{\def\mathfonts@letters{#1}}
+\define@key{mathfonts}{operators}[\mylatex@fontfamily]{\def\mathfonts@operators{#1}}
+\define@key{mathfonts}{symbols}[cmsy]{\def\mathfonts@symbols{#1}}
+\define@key{mathfonts}{largesymbols}[cmex]{\def\mathfonts@largesymbols{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plain TeX macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -54,6 +73,32 @@
 \def\@binary@F@indicator{0}
 \def\@xparse@T@indicator{\BooleanTrue}
 \def\@xparse@F@indicator{\BooleanFalse}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\glet\xparse@star\BooleanFalse
+\glet\xparse@exclam\BooleanFalse
+\glet\xparse@plus\BooleanFalse
+\glet\xparse@minus\BooleanFalse
+\glet\xparse@rcarat\BooleanFalse
+\glet\xparse@lcarat\BooleanFalse
+\glet\xparse@fslash\BooleanFalse
+\glet\xparse@comma\BooleanFalse
+\glet\xparse@colon\BooleanFalse
+\glet\xparse@semicolon\BooleanFalse
+\glet\xparse@quote\BooleanFalse
+\glet\xparse@apost\BooleanFalse
+\glet\xparse@grave\BooleanFalse
+\glet\xparse@qmark\BooleanFalse
+\glet\xparse@tilde\BooleanFalse
+\glet\xparse@ampersand\BooleanFalse
+\glet\xparse@equals\BooleanFalse
+\glet\xparse@dot\BooleanFalse
+\glet\xparse@vert\BooleanFalse
+\glet\xparse@circumflex\BooleanFalse
+\glet\xparse@underscore\BooleanFalse
+\glet\xparse@dollar\BooleanFalse
+\glet\xparse@percent\BooleanFalse
+\glet\xparse@hash\BooleanFalse
+\glet\xparse@atsign\BooleanFalse
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\def\ifltxtoggle#1#2#3{\ifcsdef{etb@tgl@#1}{#2}{#3}}
 %\def\ifltxif#1#2#3{\ifcsdef{if#1}{#2}{#3}}
@@ -87,6 +132,10 @@
 \def\if@blank#1{\if@cond\ifcat$\detokenize\expandafter{\@gobble#1.}$\fi}
 \def\if@num#1#{\if@cond\ifnum#1\fi}
 \def\if@cseq#1#2{\if@cond\ifx#1#2\fi}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@ifnextstar{\@ifnextchar*}
+\def\if@robustchar#1#2#3{\xp\def\xp\@@gobble@char##1{}\xp\@ifnextchar#1{#2\@@gobble@char}{#3}}
+\def\if@robustar#1#2{\@ifnextchar*{#1\@gobble@star}{#2}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \begingroup
 \catcode`\&=7
@@ -238,6 +287,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------- Counter Increment/Print Commands ----------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\stepcount#1{\advance#1 1\relax}                                    % Increase count by 1
@@ -318,10 +368,27 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@enforce@onecolumn{\if@twocolumn\@restonecoltrue\onecolumn\else\@restonecolfalse\fi}
 \def\@restore@twocolumn{\if@restonecol\twocolumn\fi}
-\def\newpar{\\[-1.5mm]}
-\def\indentpar{\par\hskip\parindent}
-\def\tcbindentpar{\par\hskip\tcbparindent}
-\def\parnoindent{\par\noindent}
+\long\def\newpar{\\[-1.5mm]}
+\long\def\tcbindent{\hskip\tcbparindent}%\parindent
+\long\def\pari{\par\tcbindent}
+\long\def\parnoindent{\par\noindent}
+\long\def\parcr{\@ifnextchar[{\parcr@withopt}{\parcr@withoutopt}}
+\long\def\parcr@withopt[#1]{\par\addvspace{\dimexpr #1 - \parskip\relax}}
+\long\def\parcr@withoutopt{\par\addvspace{-\parskip}}
+\long\def\parcrindent{\@ifnextchar[{\parcrindent@withopt}{\parcrindent@withoutopt}}
+\long\def\parcrindent@withopt[#1]{\parcr[#1]\tcbindent}
+\long\def\parcrindent@withoutopt{\parcr\tcbindent}
+\long\def\parcriindent{\@ifnextchar[{\parcriindent@withopt}{\parcriindent@withoutopt}}
+\long\def\parcriindent@withopt[#1]{\parcr[#1]\tcbindent\tcbindent}
+\long\def\parcriindent@withoutopt{\parcr\tcbindent\tcbindent}
+\long\def\@@bibentry@cr{,\parcriindent}
+\long\def\@@TeXentry@cr{\parcriindent}
+\def\letcrs#1{%
+        \let\cr#1\relax
+        \let\newline#1\relax
+        \let\\=#1\relax
+}
+\def\par@nbskip#1{\par\nobreak\addvspace{\dimexpr #1\relax}}
 \def\parnoskip{\par\vskip-2\parskip}
 \def\shrinkparskip{\@macro@length=\parskip\setlength{\parskip}{-0.33em}}
 \def\restoreparskip{\setlength{\parskip}{\@macro@length}}
@@ -405,9 +472,12 @@
 \dimdef\@tcb@enumbox@default@depth{6.0pt}
 \dimdef\@Subsection@default@depth{6.0pt}
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\gdef\currentparsep{3.0pt}%
+\dimdef\@tcb@enumbox@default@parsep{3.0pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\@ul@default@color{black}
-\def\@tikzUL@color{\@tikzUL@default@color}
 \def\@tikzUL@default@color{black}
+\def\@tikzUL@color{\@tikzUL@default@color}
 \def\@tcb@enumbox@default@color{black}
 \def\@Subsection@default@color{black}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -450,6 +520,8 @@
 \def\GlossaryName{Glossary}
 \def\IndexName{Index}
 \def\BibName{Bibliography}
+%\def\BibName{\hypertarget{bibtarget}{}Bibliography}
+\def\RefsName{References}
 \def\AppendixName{Appendix}
 \def\AbstractName{Abstract}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -465,6 +537,7 @@
 \def\IBPtableName{IBP Table}
 \def\LDtableName{LD Table}
 \def\PLDtableName{PLD Table}
+\def\EqnListBoxName{Equation Table}
 \def\CodeListingName{Code Listing}
 \def\TerminalListingName{Terminal Listing}
 \def\MatlabListingName{Matlab Listing}
@@ -562,11 +635,11 @@
 \def\@fracspacing@vals{0.25,0.33,0.5,0.75,1.5,1.75,2.0}
 \def\@fracspacing@frac@pairs{{1}{2},{3}{2},{1}{3},{4}{3},{2}{3},{1}{4},{3}{4},{7}{4}}
 \gdef\linespace@contexts{doc,coverpage,toc,tcb,MDFdefbox,IBP,PLD,problem,solution,figbox,listing,Terminal,Matlab,code,FBM}
-\def\@tcb@X@border@shifts{border, x, y}
-\def\@PLD@math@font@cmdlist{LARGE,large,Large,normalsize}
+%\def\@tcb@X@border@shifts{border, x, y}
+%\def\@PLD@math@font@cmdlist{LARGE,large,Large,normalsize}
 \xdef\@main@automake@files{makeglossaries,my-glossaries.ist,glg,gls,glo}
-\xdef\@acronym@automake@files{makeindex,my-glossaries.ist,alg,acr,acn}
-\xdef\@symbols@automake@files{makeindex,my-glossaries.ist,slg,sls,slo}
+\xdef\@acronym@automake@files{makeglossaries,my-glossaries.ist,alg,acr,acn}
+\xdef\@symbols@automake@files{makeglossaries,my-glossaries.ist,slg,sls,slo}
 \xdef\@nomenclature@automake@files{makeindex,my-nomencl.ist,nlg,nls,nlo}
 \xdef\@index@automake@files{makeindex,my-index.mst,ilg,idx,ind}
 \def\@FBM@print@list{symbols,acronyms,nomenclature,glossary,index}
@@ -629,9 +702,9 @@
 \def\@Part@before@skip{}
 \def\@part@before@skip{}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@Chapter@after@skip{\par\bigskip\medskip\smallskip}                % Vertical skip
-\def\@Section@after@skip{\par\medskip}
-\def\@Subsection@after@skip{\par\medskip}
+\def\@Chapter@after@skip{\par\medskip}                	% Vertical skip \par\bigskip\medskip\smallskip
+\def\@Section@after@skip{\par\smallskip}		% Vertical skip \par\medskip
+\def\@Subsection@after@skip{\par\smallskip}		% Vertical skip \par\medskip
 \def\@Topic@after@skip{}
 \def\@Part@after@skip{}
 \def\@part@after@skip{}
@@ -651,12 +724,40 @@
 \def\@theorem@ref@prefix{thm}
 \def\@lemma@ref@prefix{lem}
 \def\@corollary@ref@prefix{cor}
+\def\@tab@ref@prefix{tab}
+\def\@fig@ref@prefix{fig}
+\def\@eq@ref@prefix{eq}
+\def\@lst@ref@prefix{lst}
+\def\@lstlist@ref@prefix{lstlist}
+%\def\@default@tab@ref@label{\@tab@ref@prefix\the\value{table}}
+%\def\@default@fig@ref@label{\@fig@ref@prefix\the\value{figure}}
+%\def\@defaudlt@eq@ref@label{\@eq@ref@prefix\the\value{equation}}
+%\def\@default@lst@ref@label{\@lst@ref@prefix\the\value{listing}}
+%\def\reftab#1{\@tab@ref@prefix\the\numexpr\value{figure}+#1\relax}
+%\def\reffig#1{\@fig@ref@prefix\the\numexpr\value{figure}+#1\relax}
+%%\def\refeq#1{\@eq@ref@prefix\the\numexpr\value{equation}+#1\relax}
+%\def\reflst#1{\@lst@ref@prefix\the\numexpr\value{listing}+#1\relax}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@default@table@ref@label{tab\the\value{table}}
-\def\@default@fig@ref@label{fig:fig\the\value{figure}}
-\def\reffig#1{fig:fig\the\numexpr\value{figure}+#1\relax}
-\def\refeq#1{eq:eq\the\numexpr\value{equation}+#1\relax}
-\def\reflst#1{lst:lst\the\numexpr\value{listing}+#1\relax}
+\def\IOPscience{\href{https://iopscience.iop.org/}{IOPscience}}
+\def\ResearchGate{\href{https://www.researchgate.net/}{ResearchGate}}
+\def\ScienceDirect{\href{https://www.sciencedirect.com/}{ScienceDirect}}
+\def\CiteSeerX{\href{http://citeseerx.ist.psu.edu/index}{CiteSeerX}}
+\def\PubMed{\href{https://www.ncbi.nlm.nih.gov/pubmed}{PubMed}}
+\def\IEEEXplore{\href{https://ieeexplore.ieee.org/Xplore/home.jsp}{IEEEXplore}}
+\def\BibTeXurl{\href{https://en.wikipedia.org/wiki/BibTeX}{\BibTeX}}
+%\url{https://en.wikipedia.org/wiki/BibTeX}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\enumlabelprefix{r@}
+\def\enumlabeltag{enum:}
+\def\enumlabel#1{\label{\enumlabeltag#1}}
+\def\@enumref#1#2#3#4#5{#1}
+\def\enumref#1{\xp\xp\xp\@enumref\csname\enumlabelprefix\enumlabeltag#1\endcsname}
+\def\hyperenumtarget#1{\hypertarget{#1}{\enumlabel{#1}}}
+\def\hyperenumlink#1{\hyperlink{#1}{\enumref{#1}}}
+%\def\hyperenumlink#1{\hypertarget{#1}{\enumlabel{enum:#1}}}
+%\def\hyperenumtarget#1{\hyperlink{#1}{\enumref{enum:#1}}}emaillinkcolor
+\def\hypermail#1{\href{mailto:#1}{\textcolor{emaillinkcolor}{\textttup{#1}}}}
+%\DeclareUrlCommand\url{}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@numpages@in@scheme#1{\lastpageref{pagesLTS.#1.local}}
 \def\@lastpage@in@scheme#1{\lastpageref{pagesLTS.#1.local}}
@@ -696,23 +797,12 @@
 \def\endSbox
 {%
         \@testtrue
-        \ifhmode
-                \ifinner\@testfalse\fi
-        \fi
-        \if@test\@latexerr
-                {Misplaced \string\endSbox! Should be in LR mode}\@ehd
-        \fi
+        \ifhmode\ifinner\@testfalse\fi\fi
+        \if@test\@latexerr{Misplaced \string\endSbox! Should be in LR mode}\@ehd\fi
         \egroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\TheSbox
-{%
-        \ifvoid\@Sbox
-                \@latexerr{\string\TheSbox\space is empty!}\@ehd
-        \else
-                \box\@Sbox
-        \fi
-}
+\def\TheSbox{\ifvoid\@Sbox\@latexerr{\string\TheSbox\space is empty!}\@ehd\else\box\@Sbox\fi}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@cshadowbox#1%
 {

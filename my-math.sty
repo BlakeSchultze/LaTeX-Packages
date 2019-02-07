@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-math}
+\ProvidesPackage{my-math}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -26,7 +25,6 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define Math Operators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@math@super@script#1{\kern-2.0pt\raisemath{1pt}{\@ss@style\mathsf{\mathop{#1}}}}
 \def\@default@differential@var{x}
@@ -71,6 +69,8 @@
 \newlength\@top@binom@height                                                            % Height of 'n' in "n choose k" environment \nchoosek
 \newlength\@bottom@binom@height                                                         % Height of 'k' in "n choose k" environment \nchoosek
 \newlength\@height@of@x\settoheight\@height@of@x{$\displaystyle X$}                     % Height of math character 'X' in current font
+%\@init@length\@height@of@xB[\heightof{$\displaystyle X$}]\relax
+%\@init@length\@height@of@xC={12pt}%{$\displaystyle X$}
 \newlength\@height@math@symbols\settoheight{\@height@math@symbols}{$\displaystyle X$}
 \newlength\@height@math@comma\settoheight{\@height@math@comma}{$\displaystyle ,$}
 \newlength\@paren@height\settoheight\@paren@height{$\displaystyle \rparen$}             % Height of math character 'X' in current font
@@ -101,11 +101,13 @@
 \DeclareMathOperator{\ihat}{\boldsymbol{\hat{\textbf{\i}}}}                             % Directional vector for 1st dimension e1 (i.e. x-axis)
 \DeclareMathOperator{\jhat}{\boldsymbol{\hat{\textbf{\j}}}}                             % Directional vector for 1st dimension e1 (i.e. y-axis)
 \DeclareMathOperator{\khat}{\,\,\raisebox{2.5pt}{$\boldsymbol{\hat{\!\!}}$}\textbf{k}}  % Directional vector for 1st dimension e1 (i.e. z-axis)
-\ifundef{\degrees}{\DeclareMathOperator{\degrees}{\si{\degree} \mathsf{F}}}{}                                 % Degrees symbol
+\ifundef{\degrees}{\DeclareMathOperator{\degrees}{\si{\degree}}}{}                                 % Degrees symbol
 \DeclareMathOperator{\dB}{\mathrm{dB}}                                                  % decibels, dB
 \DeclareMathOperator{\degF}{\si{\degree} \mathsf{F}}                                    % Degrees Fahrenheit
+\DeclareMathOperator{\degC}{\si{\degree} \mathsf{C}}                                    % Degrees Fahrenheit
 \DeclareMathOperator{\convolutionSym}{\ast}                                             % Convolution symbol
 \DeclareMathOperator{\correlationSym}{\star}                                            % Correlation symbol
+\DeclareMathOperator{\prodwise}{\circ}                                                  % Elementwise/entrywise product symbol
 \DeclareMathOperator{\hence}{\raisebox{-1.5pt}{\hstretch{1.25}{\scaleobj{1.5}{\Rightarrow}}}\;\;}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareMathOperator{\superscriptPlus}{\raisebox{0.55pt}{\scaleobj{0.55}{\boldsymbol{+}}}}
@@ -114,9 +116,11 @@
 \DeclareMathOperator{\inverseSym}{\negSign\scriptscriptstyle 1}
 \DeclareMathOperator{\eqdefas}{\overset{\underset{\mathsfs{def}}{}}{=}}                 % "defined as" symbol written w/ 'def' above equal sign
 \DeclareMathOperator{\setor}{\mathop{\lvert}}
+%\DeclareMathOperator{\setwhere}{\mathop{\middle\vert}}
 \DeclareMathOperator{\rectSym}{\sqcap}                                                  % Rectangular function symbol
 \DeclareMathOperator{\triSym}{\wedge}                                                   % Rectangular function symbol
-\DeclareMathOperator{\combSym}{\mathrmst{III}}                                           % Rectangular function symbol
+\DeclareMathOperator{\combSym}{\mathrmst{III}}                                          % Rectangular function symbol
+\DeclareMathOperator{\expv}{\mathord{\mathbb{E}}}                                        % Expectation of, expected value
 \DeclareMathOperator{\meanSym}{\mu}                                                     % exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\meanSymUp}{\muup}                                                 % exponential function, exp(x): \e{<arg>}
 \DeclareMathOperator{\stddevSym}{\sigma}                                                % exponential function, exp(x): \e{<arg>}
@@ -126,6 +130,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
 \DeclareMathOperator{\AlgnumSet}{\numset{A}}                                            % Set of Algebraic #s
+\DeclareMathOperator{\BooleanDom}{\numset{B}}                                           % Boolean domain
 \DeclareMathOperator{\NaturalSet}{\numset{N}}                                           % Set of natural #s
 \DeclareMathOperator{\PosNaturalSet}{\numset{N}[\kern-0.5pt\superscriptPlus]}           % Set of positive natural #s
 \DeclareMathOperator{\NegNaturalSet}{\numset{N}[\superscriptMinus]}                     % Set of negative natural #s
@@ -140,11 +145,15 @@
 \DeclareMathOperator{\RationalSet}{\numset{Q}}                                          % Set of Rational #s
 \DeclareMathOperator{\PosRationalSet}{\numset{Q}[\kern-0.5pt\superscriptPlus]}          % Set of positive Rational #s
 \DeclareMathOperator{\NegRationalSet}{\numset{Q}[\superscriptMinus]}                    % Set of negative Rational #s
+\DeclareMathOperator{\UniversalSet}{\numset{U}}                                         % Universal set = (C,R) (set of all under consideration)
+\DeclareMathOperator{\PrimeSet}{\mathord{\numset{P}}}                                   % Set of prime numbers
+\DeclareMathOperator{\QuaternionSet}{\numset{H}}                                        % Set of Quaternions
 \DeclareMathOperator{\PowerSet}{\@numset@surrounding{\wp}}                              % Set of all S subsets, including empty/S; Weirstrass
 \DeclareMathOperator{\AlphabetSet}{\@numset@surrounding{\bbSigma}}                      % Alphabet used to construct (formal) language words
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Sets and spaces
 \DeclareMathOperator{\Algnums}{\numset{A}}                                              % Set of Algebraic #s
+\DeclareMathOperator{\Booleans}{\mathord{\numset{B}}}                                   % Boolean domain values = {0,1}
 \DeclareMathOperator{\Naturals}{\numset{N}}                                             % Set of natural #s
 \DeclareMathOperator{\PosNaturals}{\numset{N}[\kern-0.5pt\superscriptPlus]}             % Set of positive natural #s
 \DeclareMathOperator{\NegNaturals}{\numset{N}[\superscriptMinus]}                       % Set of negative natural #s
@@ -152,20 +161,22 @@
 \DeclareMathOperator{\PosIntegers}{\mathord{\numset{Z}[\kern-0.5pt\superscriptPlus]}}   % Set of positive integer #s
 \DeclareMathOperator{\NegIntegers}{\mathord{\numset{Z}[\superscriptMinus]}}             % Set of negative integer #s
 \DeclareMathOperator{\ModIntegers}{\mathord{\numset*{Z}[\scriptstyle\kern-0.5pt\mathrm{n}]}}% Set of integer #s (mod) n: {[0],[1],[2], ...}
-\DeclareMathOperator{\Complexs}{\mathord{\numset{C}}}                                   % Set of rational #s
+\DeclareMathOperator{\Complexes}{\mathord{\numset{C}}}                                   % Set of rational #s
 \DeclareMathOperator{\Reals}{\mathord{\numset{R}}}                                      % Set of Real #s
 \DeclareMathOperator{\PosReals}{\mathord{\numset{R}[\kern-0.5pt\superscriptPlus]}}      % Set of positive Real #s
 \DeclareMathOperator{\NegReals}{\mathord{\numset{R}[\superscriptMinus]}}                % Set of negative Real #s
 \DeclareMathOperator{\Rationals}{\mathord{\numset{Q}}}                                  % Set of Rational #s
 \DeclareMathOperator{\PosRationals}{\mathord{\numset{Q}[\kern-0.5pt\superscriptPlus]}}  % Set of positive Rational #s
 \DeclareMathOperator{\NegRationals}{\mathord{\numset{Q}[\superscriptMinus]}}            % Set of negative Rational #s
+\DeclareMathOperator{\Universals}{\numset{U}}                                           % Universal set = (C,R) (set of all under consideration)
+\DeclareMathOperator{\Primes}{\mathord{\numset{P}}}                                     % Set of prime numbers
+\DeclareMathOperator{\Quaternions}{\mathord{\numset{H}}}                                % Set of Quaternions
 \DeclareMathOperator{\Alphabet}{\mathord{\bbSigma}}                                     % Alphabet used to construct (formal) language words
 \DeclareMathOperator{\Language}                                                         % (Formal) Language, built from alphabet (Sigma)
 {%
         \mathord{\numset{\bbSigma}[\kern1.25pt\@math@super@script{\ast}]}%
 }
 \DeclareMathOperator{\ProjSpace}{\mathord{\numset{P}}}                                  % Projective space
-\DeclareMathOperator{\Quaternions}{{\mathbb{H}}}                                        % Quaternions
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Define math operators given as text
 \DeclareMathOperator{\exponentialText}{exp}                                             % exponential function written as text symbol: exp(x)
@@ -215,7 +226,8 @@
 \DeclarePairedDelimiterX\nodelim[1]{.}{.}{\mathord{#1}}                                 % No delimiters, passed to macros expecting delimiters
 \DeclarePairedDelimiterX\parenthesized[1]{\lparen}{\rparen}{\mathord{#1}\mathopen{}}    % Enclose argument in parentheses
 \DeclarePairedDelimiterX\bracketed[1]{\lbrack}{\rbrack}{\mathop{#1}\mathopen{}}         % Enclose argument in square brackets
-\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathop{#1}\mathopen{}}            % Enclose argument in curly braces
+\DeclarePairedDelimiterX\braced[1]{\lbrace}{\rbrace}{\mathopen{}\mathord{#1}\mathclose{}}            % Enclose argument in curly braces
+\DeclarePairedDelimiterX\braceinterval[3]{\lbrace}{\rbrace}{\mathop{{#1}}\mathpunct{#2}\mathop{{#3}}\mathopen{}}            % Enclose argument in curly braces
 \DeclarePairedDelimiterX\verted[1]{\lvert}{\rvert}{\mathop{#1}\mathopen{}}              % Enclose argument in vertical bars
 \DeclarePairedDelimiterX\angled[1]{\langle}{\rangle}{\mathop{{#1}}\mathopen{}}          % Enclose argument in angle brackets
 \DeclarePairedDelimiterX\Bra[1]{\langle}{\rvert}{\@delimiter@surrounding{\mathop{#1}}}  % 'Bra'' indicating (typically prior) quantum mechanical state
@@ -225,12 +237,24 @@
 \reDeclarePairedDelimiterInnerWrapper\nodelim{star}{\mathinner{#1\mathord{#2}#3}}       % Automatically scale parentheses to match argument
 \reDeclarePairedDelimiterInnerWrapper\parenthesized{star}{\mathinner{#1\mathord{#2}#3}} % Automatically scale parentheses to match argument
 \reDeclarePairedDelimiterInnerWrapper\bracketed{star}{\mathinner{#1#2#3}}               % Automatically scale square brackets to match argument
-\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1#2#3}}                  % Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\braced{star}{\mathinner{#1\mathord{#2}#3}}                  % Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\braceinterval{star}{\mathinner{#1#2#3}}                  % Automatically scale curly braces to match argument
 \reDeclarePairedDelimiterInnerWrapper\verted{star}{\mathinner{#1#2#3}}                  % Automatically scale vertical bars to match argument
 \reDeclarePairedDelimiterInnerWrapper\angled{star}{\mathinner{#1#2#3}}                  % Automatically scale angle brackets to match argument
 \reDeclarePairedDelimiterInnerWrapper\Bra{star}{\mathinner{#1#2#3}}                     % Automatically scale bra to match argument
 \reDeclarePairedDelimiterInnerWrapper\Ket{star}{\mathinner{#1#2#3}}                     % Automatically scale ket to match argument
 \reDeclarePairedDelimiterInnerWrapper\BraKet{star}{\mathinner{#1#2#3}}                  % Automatically scale braket to match argument
+%-------------------------------------------------------------------------------------------------------------------------------%
+\reDeclarePairedDelimiterInnerWrapper\nodelim{nostarnonscaled}{\mathinner{#1\mathord{#2}#3}}       % Automatically scale parentheses to match argument
+\reDeclarePairedDelimiterInnerWrapper\parenthesized{nostarnonscaled}{\mathinner{#1\mathord{#2}#3}} % Automatically scale parentheses to match argument
+\reDeclarePairedDelimiterInnerWrapper\bracketed{nostarnonscaled}{\mathinner{#1#2#3}}               % Automatically scale square brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\braced{nostarnonscaled}{\mathinner{#1#2#3}}                  % Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\braceinterval{nostarnonscaled}{\mathinner{#1#2#3}}                  % Automatically scale curly braces to match argument
+\reDeclarePairedDelimiterInnerWrapper\verted{nostarnonscaled}{\mathinner{#1#2#3}}                  % Automatically scale vertical bars to match argument
+\reDeclarePairedDelimiterInnerWrapper\angled{nostarnonscaled}{\mathinner{#1#2#3}}                  % Automatically scale angle brackets to match argument
+\reDeclarePairedDelimiterInnerWrapper\Bra{nostarnonscaled}{\mathinner{#1#2#3}}                     % Automatically scale bra to match argument
+\reDeclarePairedDelimiterInnerWrapper\Ket{nostarnonscaled}{\mathinner{#1#2#3}}                     % Automatically scale ket to match argument
+\reDeclarePairedDelimiterInnerWrapper\BraKet{nostarnonscaled}{\mathinner{#1#2#3}}                  % Automatically scale braket to match argument
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Generate p-norm delimiters with 2 closely spaced 'vert' symbols.  Automatic delimiter scaling of the standard double vert symbol (\Vert) for large arguments
 % unfortunately results in an increase in the separation between the 2 vertical bars.  Hence, the double vert is constructed from 2 individual vert symbols with
@@ -287,13 +311,27 @@
 %\newcommand{\bmath}[1]{$\boldsymbol{#1}$}                                              % Insertion of bold math symbol/expression inside text mode
 \newcommand{\bmath}[1]{\ensuremath{\boldsymbol{#1}}}                                    % Insertion of bold math \newcommand{\abs}[1]{\verted*{#1}}                                                                             % Absolute value operator
 \newcommand{\timeavg}[1]{\angled*{#1}}                                                  % Time average of random variable
+%\newcommand{\avg}[1]{\angled*{#1}}                                                  % Time average of random variable
 \newcommand{\xoutto}[2]{\cancelto{\scriptstyle #1}{#2}}                                 % Diagonal strikethrough cancelling of terms to value (e.g. 0/1)
 \newcommand{\identitymn}[2]{\identity^{\@ss@style#1\times#2}}                           % Identity matrix with dimensions included
 \newcommand{\ink}[1]{\in^{#1}}                                                          % k-th order set membership symbol
 \newcommand{\notink}[1]{\ni^{#1}\notin^{#1}}                                            % NOT IN k-th order set membership symbol
 \newcommand{\setdef}[2]{\left\{\,#1\setor #2\,\right\}}                                 % Defines set { #1 | #2 }
+\newcommand{\setpad}{\;}                                                                % Defines set definition open/close/mid padding space
+\newcommand{\seqopen}{\left\lbrace}                                                     % Defines sequence definition open (left) bracing
+\newcommand{\seqclose}{\right\rbrace}                                                   % Defines sequence definition close (right) bracing
+\newcommand{\setopen}{\left\lbrace\setpad}                                              % Defines set definition open (left) bracing + padding
+\newcommand{\setclose}{\right\rbrace\setpad}                                            % Defines set definition close (right) bracing + padding
+\newcommand{\setwhere}{\setpad\middle\vert\setpad}                                      % Defines set definition where/such that vert separator + padding
 \newcommand{\setmaxwd}[1]{\eqmakebox[BM-\theBMatrix][\BMalign]{$#1$}}                   % Query and set array/table column width to max argument
 \newcommand\inline@dfrac[2]{\frac{\displaystyle#1}{\displaystyle#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%%\def\[#1\]{\begin{align*}#1\end{align*}}
+%\def\bal#1\eal{\begin{align*}#1\end{align*}}
+%\newcommand{\bal}[1]{\begin{align}}                               % Removes following token from input stream
+%\WithSuffix\newcommand\bal*[1]{\begin{align*}}                     % Removes following token from input stream
+%\newcommand{\bal}[1]{\end{align}}                               % Removes following token from input stream
+%\WithSuffix\newcommand\bal*[1]{\end{align*}}                     % Removes following token from input stream
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\query@num@newlines}{O{\newlinecounts} m}
 {%
@@ -427,6 +465,20 @@
         }
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\avg}[1]{\angled*{#1}}                                                  % Time average of random variable
+%\newcommand{\overrarrow}[1]{{\buildrel{#1}\over\longrightarrow\;}}
+\DeclareDocumentCommand{\avg}{s o m}
+{%
+        \IfValueTF{#2}
+                {#2{#3}}
+                {%
+                        \IfBooleanTF{#1}
+                                {\angled*{#3}}
+                                {\overline{#3}}
+                }%
+%       \bar{#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\mean}{s o m}
 {
         \IfBooleanTF{#1}
@@ -471,6 +523,7 @@
                 {\mathop{\exponentialSym}^{\scriptstyle#2}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareMathOperator*{\E}{\mathbb{E}}
 \DeclareDocumentCommand{\E}{s O{\bracketed} m}
         {\mathord{\mathbbm{E}\mathopen{}#2*{#3}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -1406,7 +1459,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\moduloInt}{m m d()}
 {%
-        \pgfmathparse{int(Mod(#2,#1))}%\pgfmathresult%
+        \pgfmathparse{int(Mod( #2,#1))}%\pgfmathresult%
         \IfValueTF{#3}{\csxdef{#3}{\pgfmathresult}}{}%
 }
 %%-------------------------------------------------------------------------------------------------------------------------------%
@@ -1433,6 +1486,37 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\DeclareFormattedText}{O{\texttt} m}
+{%                                                    1  2  3  4  5  6  7  8  9
+        \xp\DeclareDocumentCommand\csname#2\endcsname{t. t, t; t! t: t- t+ t' t"}
+        {%
+                \def\@@ending{\space}%
+                \IfBooleanTF{##1}{\def\@@ending{.}}{}%
+                \IfBooleanTF{##2}{\def\@@ending{,}}{}%
+                \IfBooleanTF{##3}{\def\@@ending{;}}{}%
+                \IfBooleanTF{##4}{\def\@@ending{!}}{}%
+                \IfBooleanTF{##5}{\def\@@ending{:}}{}%
+                \IfBooleanTF{##6}{\def\@@ending{-}}{}%
+                \IfBooleanTF{##7}{\def\@@ending{+}}{}%
+                \IfBooleanTF{##8}{\def\@@ending{'}}{}%
+                \IfBooleanTF{##9}{\def\@@ending{"}}{}%
+                #1{#2}\@@ending\relax%
+        }%
+}
+\global\let\DeclareMathText\DeclareFormattedText
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareFormattedText{RSP}
+\DeclareMathText{WEPL}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\expected\expv
+\global\let\expectation\expv
+\global\let\expn\expv
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 \global\let\tcboxmathtable\tcbmathbox
 \global\let\tcbmathtable\tcbmathbox
 \global\let\intbyparts\tcbIBP
@@ -1441,6 +1525,7 @@
 \global\let\equationtcbox\tcbequation
 \global\let\tcboxequation\tcbequation
 \global\let\tcbeqbox\tcbequation
+\global\let\biconditional\Leftrightarrow
 %*******************************************************************************************************************************%
 %************************************************** End of 'my-math.sty' package ***********************************************%
 %*******************************************************************************************************************************%

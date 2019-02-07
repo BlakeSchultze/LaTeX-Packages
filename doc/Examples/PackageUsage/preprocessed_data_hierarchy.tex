@@ -1,0 +1,29 @@
+%\clearpage%
+\Subsection*(Preprocessed Data Hierarchy){\texttt{preprocessed\_data} Hierarchy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenvironment}|preprocessed\_data|
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbparbox}|\dirsep ion\dirsep pCT\_data\dirsep preprocessed\_data|%
+\bfdash directory containing the preprocessed experimental data organized by scan and processed dates
+\end{tcbparbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{tcbparbox}{tcbenumeratedStyle}
+\begin{tcbenumbox}
+    \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+        \item \docentry[dir]{YY-MM-DD} : Folder containing all processed experimental data corresponding to the raw experimental data acquired on \docentry![subcategory]{YY-MM-DD}
+        \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+            \item \docentry[dir]{YY-MM-DD} : Folder containing all processed experimental data generated on \docentry![subcategory]{YY-MM-DD} from the raw data
+            \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+                \item \docentry[file]{TVcorr.txt} : contains TV corrected WEPL calibration curve coefficients.
+            \item \docentry[file]{WcalibTemp.txt} : temporary file containing WEPL calibration curve coefficients.
+            \item \docentry[file]{Wcalib.txt} : contains final WEPL calibration curve coefficients.
+            \item \docentry[fileset]{$<$Phantom$>$\_XXXX[\_AAA]\_xxx.dat.root.reco.root.bin} : preprocessed experimental data with tracker coordinates, recovery of missing hits when possible, and calibrated WEPL measurements for the object named \docentry![subcategory]{$<$Phantom$>$}, from run \# \docentry![subcategory]{XXXX[\_AAA]}, where \docentry![subcategory]{XXXX} is a 4 digit \# with leading zeros, \docentry![subcategory]{\_AAA} are optional ``\emph{subcategory tag(s)}'' indicating, e.g., a continuous scan (\docentry![subcategory]{\_Cont}), phantom position/section (inferior (\docentry![subcategory]{\_Inf}) or superior (\docentry![subcategory]{\_Sup}), top (\docentry![subcategory]{\_Top}) or bottom (\docentry![subcategory]{\_Bot}), etc.), and \docentry![subcategory]{xxx} is the gantry angle at which the data was acquired.
+            \end{ThinEnum}
+        \end{ThinEnum}
+    \end{ThinEnum}
+\end{tcbenumbox}
+%\end{tcbparbox}
+\end{tcbenvironment}
+\endinput

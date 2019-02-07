@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-latex-development}
+\ProvidesPackage{my-latex-development}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -39,19 +38,20 @@
 }%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@PKGTESTING@HEADING}{O{fontupper=\Large\bfmseries} D(){stdltbackground} D||{Cerulean} m O{}}%
-        {\tcbhruleText[#1,#5](#2)|#3|{\BreakableShadowText{#4\space:}}}%\unskipspacing%}
+        {\SetDefaultFont\tcbhruleText[#1,#5](#2)|#3|{\BreakableShadowText{#4\space:}}}%\unskipspacing%}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@PKGTESTING@SUBHEADING}{O{fontupper=\large\bfmseries} D(){stdltbackground} D||{NavyBlue} m O{}}%
-        {\tcbhruleText[#1,#5](#2)|#3|{\unskipspacing#4\space:\space\unskipspacing}}
+        {\SetDefaultFont\tcbhruleText[#1,#5](#2)|#3|{\unskipspacing#4\space:\space\unskipspacing}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@PKGTESTING@SUBSUBHEADING}{O{fontupper=\bfmseries} D(){stdLTorangered} D||{stdorangered} m O{}}%
-        {\tcbhruleText[#1,#5](#2)|#3|{\unskipspacing#4\space:\space\unskipspacing}}
+        {\SetDefaultFont\tcbhruleText[#1,#5](#2)|#3|{\unskipspacing#4\space:\space\unskipspacing}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@define@test@context{docsection}%
 {%
         \ifdocsectiontest%
                 \part{Document Section Examples}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/docsection-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/docsection-examples.tex}
+                \inputExampleFile{docsection-examples.tex}
         \fi%
 }
 \let\docsectionTestContent\@docsection@test@content
@@ -63,7 +63,8 @@
                 \Topic{Package Level Content}
                 \Chapter*{Package Development}
                 \Section{Package Comments}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/package-testing.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/package-testing.tex}
+                \inputExampleFile{package-testing.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -73,8 +74,8 @@
                \Chapter{Misc. Package Usage Content}
                 \Section{Misc. Examples}
                 First line section content
-                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/misc-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/misc-examples.tex}
+                \inputExampleFile{misc-examples.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -82,14 +83,16 @@
 {%
         \iftcboptionstest%
                 \Chapter{'tcolorbox' Options Testing}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/tcboptions-testing.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/tcboptions-testing.tex}
+                \inputExampleFile{tcboptions-testing.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \@define@test@context{fonts}%
 {%
         \iffontstest%
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
+                \inputExampleFile{fonts-examples.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -99,9 +102,12 @@
                 \Part{Custom Package Environments}
                 \Topic{Float Environments}
                 \Chapter*{Float/Graphics Examples}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/figures-examples.tex}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/table-examples.tex}
-                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/graphics-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/figures-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/table-examples.tex}
+                %%\input{C:/Users/Blake/Documents/LaTeX/Documentation/graphics-examples.tex}
+                \inputExampleFile{figures-examples.tex}
+                \inputExampleFile{table-examples.tex}
+                %\inputExampleFile{graphics-examples.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -110,8 +116,10 @@
         \ifmathtest%
                 \Chapter{Math Examples}
                 %\mathon%
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/math-examples.tex}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/symbol-list.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/math-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/symbol-list.tex}
+                \inputExampleFile{math-examples.tex}
+                \inputExampleFile{symbol-list.tex}
                 %\mathoff
         \fi%
 }
@@ -121,7 +129,8 @@
         \ifprobtest%
                 \Chapter{Problem Examples}
                 \mathon%
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/problem-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/problem-examples.tex}}
+                \inputExampleFile{problem-examples.tex}
                 \mathoff
         \fi%
 }
@@ -131,7 +140,8 @@
         \iflistboxtest%
                 \Chapter{List and Equation List Box Examples}
                 \mathon%
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/listbox-examples.tex}%
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/listbox-examples.tex}%}
+                \inputExampleFile{listbox-examples.tex}
                 \mathoff
         \fi%
 }
@@ -140,7 +150,8 @@
 {%
         \ifdefboxtest%
                 \Chapter{Definition/Statement Box Examples}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/defbox-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/defbox-examples.tex}}
+                \inputExampleFile{defbox-examples.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -149,8 +160,10 @@
         \ifcodetest%
                 \Topic{Documenting Code/Programming}
                 \Chapter*{Code Listing and Function/Script Definition Examples}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/listings-examples.tex}
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/functiondef-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/listings-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/functiondef-examples.tex}
+                \inputExampleFile{listings-examples.tex}
+                \inputExampleFile{functiondef-examples.tex}
         \fi%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -251,7 +264,8 @@
 \@define@test@context{pkgusage}%
 {%
         \ifpkgusagetest
-                \input{C:/Users/Blake/Documents/LaTeX/Documentation/package-usage-examples.tex}
+                %\input{C:/Users/Blake/Documents/LaTeX/Documentation/package-usage-examples.tex}
+                \inputExampleFile{package-usage-examples.tex}
         \fi% END \ifpkgtest
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -292,7 +306,8 @@
                         {\gxp\csuse\xp{\@test@context testtrue}}%
                         {\gxp\csuse\xp{\@test@context testfalse}}%
         }%
-        \ifOr{\ifmacrotest/if, \ifmisctest/if}{\input{C:/Users/Blake/Documents/LaTeX/Documentation/cs-examples.tex}}{}%
+%        \ifOr{\ifmacrotest/if, \ifmisctest/if}{\input{C:/Users/Blake/Documents/LaTeX/Documentation/cs-examples.tex}}{}%
+        \ifOr{\ifmacrotest/if, \ifmisctest/if}{ \inputExampleFile{cs-examples.tex}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -443,13 +458,600 @@
 \par
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\processPaperOpts}{O{\pkgopts@prefix}}%
+{%
+        \@parse@docclass@opts{\docclass@args}{landscape}{\@docclass@pgkopt@true}
+        \@parse@docclass@optlist{\docclass@args}{\@supported@papersizes}{\@docclass@paperopt@true}
+        \xdef\current@paper{\csuse{#1paper}}%
+        \xdef\current@geometry@opt{\csuse{\current@paper paper@geometry@opt}}%%{\csuse{#1paper}paper@geometry@opt}%
+        \xdef\current@geometry{\current@geometry@opt @geometry}%\csuse{\csuse{#1paper}paper@geometry@opt}@geometry}%
+        \ifpkgopt[#1]{landscape}%
+        {%
+                \xdef\geometry@args{landscape}%
+                \xdef\dimvar@height@arg{@paperwidth}%
+                \xdef\dimvar@width@arg{@paperheight}%
+        }%
+        {%
+                \xdef\geometry@args{}%
+                \xdef\dimvar@height@arg{@paperheight}%
+                \xdef\dimvar@width@arg{@paperwidth}%
+        }
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setPaper@dim}{m o m}%
+        {\IfValueTF{#2}{\csxdef{#1}{\csuse{#2#3}}}{\csxdef{#1}{\csuse{\current@geometry@opt#3}}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\paper@dim}{m o m}{\IfValueTF{#2}{\csuse{#1#2}}{\csuse{\current@geometry@opt#2}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setPaper@orientation}{s m}
+{%
+        \ifOr{\ifmylatex@landscape/if,#1/xparse}%
+        {%      set landscape orientation\\
+                \setPaper@dim{current@paperheight}[#2]{@paperwidth}%
+                \setPaper@dim{current@paperwidth}[#2]{@paperheight}%
+                \setPaper@dim{current@textheight}[#2]{@textwidth}%
+                \setPaper@dim{current@textwidth}[#2]{@textheight}%%
+                \xdef\geometry@args{landscape}%
+                \setlength\paperheight{\current@paperheight}%
+                \setlength\paperwidth{\current@paperwidth}%
+                \setlength\textheight{\current@textheight}%
+                \setlength\textwidth{\paperwidth-\current@left-\current@right}%
+                \setlength\linewidth{\paperwidth-\current@left-\current@right}%
+                \setlength\headwidth{\the\textwidth}%
+                \setlength\@landscape@page@yshift{\dimexpr\current@paperwidth - \current@paperheight\relax}%+15pt
+                \setlength\@landscape@margin@yshift{\dimexpr\current@right - \current@top\relax}%
+                \setlength\@landscape@line@shift{\dimexpr\@tikzheading@linewidth/2\relax}%
+                \setlength\@landscape@pgnum@xshift%
+                {\dimexpr(\current@textwidth-\current@textheight)/2-\@landscape@margin@yshift/2 + 3\@landscape@line@shift\relax}%
+                \setlength\@landscape@pgnum@yshift{\dimexpr\@landscape@margin@yshift/2 -2\@tikzheading@linewidth\relax}%
+                \setlength\@landscape@Chapter@yshift{\dimexpr -\@landscape@page@yshift  - \@tikzheading@linewidth\relax}%
+                \setlength\@landscape@Part@top@yshift
+                        {\dimexpr-\@landscape@page@yshift - \@landscape@margin@yshift + \@tikzheading@linewidth/2\relax}%
+                \setlength\@landscape@Part@bottom@yshift{\dimexpr\@landscape@line@shift/2\relax}%
+                \setlength\@tikzheading@width{\dimexpr\paperwidth - \@landscape@line@shift\relax}
+                \setlength\@tikzheading@title@margin{\dimexpr 0.1\paperwidth\relax}%%%%(-) > (+)?
+                \setlength\@tikzheading@east@title@xshift{\dimexpr \paperwidth - 1.0in\relax}%
+                \setlength\@tikzheading@west@title@xshift{\dimexpr 1.0in\relax}
+                %\setlength\voffset{1.5in}%
+                %\loadgeometry{\current@geometry}%
+                \newgeometry
+                {
+                        textwidth=\current@textwidth, textheight=\current@textheight, top=\current@top,
+                        bottom=\dimexpr\@landscape@page@yshift + \@tikzheading@linewidth\relax,%\current@bottom
+                        footskip=\dimexpr\current@footskip- \@landscape@margin@yshift-\@tikzheading@linewidth\relax,
+                        left=\current@left, right=\dimexpr -\@landscape@page@yshift + 1.25in\relax,
+                        headheight=\dimexpr \current@headheight\relax,
+                        headsep=\dimexpr \current@headsep\relax,
+                        %headsep=\dimexpr 20pt\relax,
+                        %voffset=15pt
+                }%,\geometry@args}%\current@headsep
+        \eject \pdfpagewidth=\current@paperwidth \pdfpageheight=\current@paperheight %
+        }%
+        {%      set portrait (Default) orientation\\
+                \setPaper@dim{current@paperheight}[#2]{@paperheight}%
+                \setPaper@dim{current@paperwidth}[#2]{@paperwidth}%
+                \setPaper@dim{current@textheight}[#2]{@textheight}%
+                \setPaper@dim{current@textwidth}[#2]{@textwidth}%%
+                \xdef\geometry@args{}%
+                \setlength\paperheight{\current@paperheight}%
+                \setlength\paperwidth{\current@paperwidth}%
+                \setlength\textheight{\current@textheight}%
+                %\xp\setlength\xp\textwidth\xp{\current@textwidth}%
+                %\setlength\linewidth{\current@textwidth}%
+                \setlength\textwidth{\paperwidth-\current@left-\current@right}%
+                \setlength\linewidth{\paperwidth-\current@left-\current@right}%
+                \setlength\headwidth{\the\textwidth}%
+                \setlength\@landscape@page@yshift{\dimexpr-\@tikzheading@node@yshift\relax}%
+                \setlength\@landscape@margin@yshift{-\dimexpr-\@tikzheading@node@yshift+\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax}%[-\@tikzheading@node@yshift]%[-\dimexpr\@tikzheading@baseheight/2\relax}%
+                \setlength\@landscape@line@shift{\dimexpr\@tikzheading@linewidth/2\relax}%
+                \setlength\@landscape@pgnum@xshift{0.0in}%
+                \setlength\@landscape@pgnum@yshift{\dimexpr 2\@tikzheading@linewidth\relax}%
+                \setlength\@landscape@Chapter@yshift{\dimexpr -\@landscape@page@yshift - \@landscape@line@shift\relax}%
+                \setlength\@landscape@Part@top@yshift%
+                        {\dimexpr-\@landscape@page@yshift - \@landscape@margin@yshift - \@tikzheading@linewidth/2\relax}
+                \setlength\@landscape@Part@bottom@yshift{\dimexpr\@landscape@line@shift\relax}%{\dimexpr-\@tikzheading@linewidth+\@landscape@page@yshift+\@landscape@margin@yshift\relax}%
+                \setlength\@tikzheading@width{\dimexpr\paperwidth-\@tikzheading@linewidth/2\relax}
+                \setlength\@tikzheading@title@margin{\dimexpr 0.1\paperwidth\relax}%%%%(-) > (+)?
+                \setlength\@tikzheading@east@title@xshift{\dimexpr0.9\paperwidth\relax}%\paperwidth
+                \setlength\@tikzheading@west@title@xshift{\dimexpr 0.1\paperwidth\relax}
+                %\setlength\voffset{1.5in}%
+        \eject \pdfpagewidth=\current@paperwidth \pdfpageheight=\current@paperheight %
+                \newgeometry
+                {
+                        textwidth=\current@textwidth, textheight=\current@textheight, top=\current@top, bottom=\current@bottom,
+                        footskip=\current@footskip, left=\current@left, right=\current@right,
+                        headheight=\current@headheight, headsep= \current@headsep,%voffset=15pt
+                }%
+%                \loadgeometry{\current@geometry}%
+        }%
+%        \current@paperwidth\\
+%        \current@paperheight\\
+%        \current@textwidth\\
+%        \the\textwidth\\
+%        \current@textheight\\
+%        \current@top\\
+%        \current@bottom\\
+%        \current@left\\
+%        \current@right\\
+%        \geometry@args\\
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\chgPaper@setdimvars}{s m}
+{%
+        \xdef\previous@geometry{\current@geometry}
+        \xdef\current@geometry@name{\csuse{#2@geometry@name}}%
+        \xdef\current@geometry@opt{\csuse{#2@geometry@opt}}%
+        \xdef\current@geometry{\csuse{#2@geometry@name}@geometry}%
+%        \setPaper@dim{current@top}{@top}
+%        \setPaper@dim{current@bottom}{@bottom}
+%        \setPaper@dim{current@left}{@left}
+%        \setPaper@dim{current@right}{@right}
+%        \setPaper@dim{current@headheight}{@headheight}
+%        \setPaper@dim{current@headsep}{@headsep}
+%        \setPaper@dim{current@footskip}{@footskip}
+        \xdef\current@top{\csuse{\csuse{#2@geometry@opt}@top}}%
+        \xdef\current@bottom{\csuse{\current@geometry@opt @bottom}}%
+        \xdef\current@left{\csuse{\current@geometry@opt @left}}%
+        \xdef\current@right{\csuse{\current@geometry@opt @right}}%
+        \xdef\current@headheight{\csuse{\current@geometry@opt @headheight}}%
+        \xdef\current@headsep{\csuse{\current@geometry@opt @headsep}}%
+        \xdef\current@footskip{\csuse{\current@geometry@opt @footskip}}%
+        \forwardBoolean#1\setPaper@orientation{#2}%
+%        \eject \pdfpagewidth=\current@paperwidth \pdfpageheight=\current@paperheight %
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\chgPaper}{s m}
+{%
+        \IfStrEqCase{#2}%
+        {%
+                {reset}{\def\@geometry@opt{default}}%
+                {default}{\def\@geometry@opt{default}}%
+                {doc}{\def\@geometry@opt{doc}}%
+                {toc}{\def\@geometry@opt{toc}}%
+                {coverpage}{\def\@geometry@opt{coverpage}}%
+                %{a0}{\def\@geometry@opt{aZpaper}}%
+                {a4}{\def\@geometry@opt{aIVpaper}}%
+                {a5}{\def\@geometry@opt{aVpaper}}%
+                {b5}{\def\@geometry@opt{bVpaper}}%
+                {letter}{\def\@geometry@opt{letterpaper}}%
+                {legal}{\def\@geometry@opt{legalpaper}}%
+                {executive}{\def\@geometry@opt{executivepaper}}%
+        }[\def\@geometry@opt{doc}]%
+        \forwardBoolean#1\chgPaper@setdimvars{\@geometry@opt}%
 
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\initPaper}{s m}
+{%
+        \processPaperOpts\relax
+        %\chgPaper
+        \loadgeometry{#2}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\bbGreek{\bbGamma
+\bbDelta
+\bbTheta
+\bbLambda
+\bbXi
+\bbPi
+\bbSigma
+\bbUpsilon
+\bbPhi
+\bbPsi
+\bbOmega
+\bbalpha
+\bbbeta
+\bbgamma
+\bbdelta
+\bbespilon
+\bbzeta
+\bbeta
+\bbtheta
+\bbiota
+\bbkappa
+\bblambda
+\bbmu
+\bbnu
+\bbxi
+\bbpi
+\bbrho
+\bbsigma
+\bbtau
+\bbupsilon
+\bbphi
+\bbchi
+\bbpsi
+\bbomega%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\GreekB{\GammaBB
+\DeltaBB%
+\GammaB
+\DeltaB
+\ThetaB
+\LambdaB
+\XiB
+\PiB
+\SigmaB
+\UpsilonB
+\PhiB
+\PsiB
+\OmegaB
+\alphaB
+\betaB
+\gammaB
+\deltaB
+\epsilonB
+\zetaB
+\etaB
+\thetaB
+\iotaB
+\kappaB
+\lambdaB
+\muB
+\nuB
+\xiB
+\piB
+\rhoB
+\sigmaB
+\tauB
+\upsilonB
+\phiB
+\chiB
+\psiB
+\omegaB
+\varepsilonB
+\varthetaB
+\varpiB
+\varrhoB
+\varsigmaB
+\varphiB%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\GreekUp{\alphaup
+\betaup
+\gammaup
+\deltaup
+\epsilonup
+\zetaup
+\etaup
+\thetaup
+\iotaup
+\kappaup
+\lambdaup
+\muup
+\nuup
+\xiup
+\piup
+\rhoup
+\sigmaup
+\tauup
+\upsilonup
+\phiup
+\chiup
+\psiup
+\omegaup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\varGreek{\varepsilonup
+\varthetaup
+\varpiup
+\varrhoup
+\varsigmaup
+\varphiup
+\varg
+\vary
+\varv
+\varw%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\GreekBBOps{\Bbbsum
+\Bbbsumop
+\lBBBrace
+\rBBBrace
+\lBBBrack
+\rBBBrack%
+%\varBbbk
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\bbGreek
+%\GreekBBOps
+%\GreekB
+%\GreekUp
+%\alphaup
+%\varGreek
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareDocumentCommand{\xplast@twoarg}{m m m}{\xp\xp\xp#1\xp\@swaptwo\xp{#3}{#2}}
+\gdef\xplast@twoarg#1#2#3{\xp\xp\xp#1\xp\@swaptwo\xp{#3}{#2}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\docsvmod@list@col#1{#1,\space}%{#1 &}
+\def\docsvmod@list@lastcol#1{#1\\}
+\def\csvmodtable@numcols{4}
+\def\csvmodtable@numpaircols{4}
+\def\csvmodtable@colspec@one{c}
+\def\csvmodtable@colspec@two{l}
+\def\csvmodtable@prefix{\textbackslash}
+\def\csvmodfonttable@itemcmd{}
+\def\csvmodtable@suffix{}
+\def\csvmodtable@nonzero{&}
+\def\csvmodtable@zero{\\\hline}
+\def\csvmodfonttable@numcols{21}
+\def\csvmodfonttable@numpaircols{11}
+\def\csvmodfonttable@colspec@one{c}
+\def\csvmodfonttable@colspec@two{c}
+\def\csvmodfonttable@prefix{}
+\def\csvmodfonttable@itemcmd{}
+\def\csvmodfonttable@suffix{}
+\def\csvmodfonttable@nonzero{&}
+\def\csvmodfonttable@zero{\\\hline}
+
+\def\csvmodfontlist@numcols{26}
+\def\csvmodfontlist@numpaircols{13}
+\def\csvmodfontlist@colspec@one{c}
+\def\csvmodfontlist@colspec@two{l}
+\def\csvmodfontlist@prefix{}
+\def\csvmodfontlist@itemcmd{\@@fonttable@fcmd}
+\def\csvmodfontlist@suffix{}
+\def\csvmodfontlist@nonzero{,\space}
+\def\csvmodfontlist@zero{\\}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\csvtableTest{bbGamma,bbDelta,bbTheta,bbLambda,bbXi,bbPi,bbSigma,bbUpsilon,bbPhi,bbPsi,bbOmega,bbalpha,bbbeta,bbgamma,bbdelta,bbespilon,bbzeta,bbeta,bbtheta,bbiota,bbkappa,bblambda,bbmu,bbnu,bbxi,bbpi,bbrho,bbsigma,bbtau,bbupsilon,bbphi,bbchi,bbpsi,bbomega}
+\def\csvtableCSTest{\GammaB
+\DeltaB
+\ThetaB
+\LambdaB
+\XiB
+\PiB
+\SigmaB
+\UpsilonB
+\PhiB
+\PsiB
+\OmegaB
+\alphaB
+\betaB
+\gammaB%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Fix tables w/ partially filled last row: add missing hline below & remove '|' from right edge of empty last column
+\DeclareDocumentCommand{\csvmodtable@finish}{t+ r|| r()}%
+{% +<tok pair>|#/row|(<toks reg name>)
+        \moduloInt{#2}{\@csvmod@element@num}(@@filled@cols)%
+        \IfBooleanTF{#1}%
+                {\pgfmathsetmacro\@@last@col{int(2 * \@@filled@cols)}}%
+                {\pgfmathsetmacro\@@last@col{int(\@@filled@cols)}}%
+        \ifnumcompF{\@@filled@cols}{=}{0}% i mod(#2) =0 ? table on full row (R) OR ends mid row (F)
+                {\apptotoks{\multicolumn{1}{c}{}\\\cline{1-\@@last@col}}{#3}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\csvmodtable@colspecs}{t+ r||}%
+{% +<tok pair>|#/row|
+        \gdef\@@tabcolspecs{|}%
+        \forLoop{1}{#2}{@macro@counter}%
+        {%
+                \xappto\@@tabcolspecs{\csvmodtable@colspec@one|}%
+                \IfBooleanT{#1}{\xappto\@@tabcolspecs{\csvmodtable@colspec@two|}}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\csvmod@if}{s t$ r<> r|| r()}%
+{% *<apply as cs>$<place in math env><csvmod type>|#/row|(toks reg name)
+%
+        \xp@csname@nnY\gdef\@@csvmod@prefix{csvmod#3@prefix}%
+        \moduloInt{#4}{\@csvmod@element@num}%
+        \ifnumequal{\pgfmathresult}{0}%
+        {\passbools\csvmod@toks{#1/*,#2/$}(#5)<\xp\@@csvmod@prefix||\csuse{csvmod#3@zero}>}%i mod(#2)=0 => proceed to next row (\\)
+        {\passbools\csvmod@toks{#1/*,#2/$}(#5)<\xp\@@csvmod@prefix||\csuse{csvmod#3@nonzero}>}%i mod(#2)!=0 => continue on curr row
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                           1  2 3  4  5 6  7  8
+\DeclareDocumentCommand{\csvmod@parsebools}{t! s t$ t+ s t$ t/ r()}%
+{% !<tok reset off>*<cs tok on>$<math tok on>+<add 2nd tok>*<cs 2nd tok on>$<math 2nd tok on>(toks reg name)/<unused here>
+        \gdef\@@csvmod@mathone{\BooleanFalse}%
+        \gdef\@@csvmod@csone{\BooleanFalse}%
+        \gdef\@@csvmod@pair{\BooleanFalse}%
+        \gdef\@@csvmod@cstwo{\BooleanFalse}%
+        \gdef\@@csvmod@mathtwo{\BooleanFalse}%
+        \IfBooleanF{#1}{\resettoks{#8}}%
+        \IfBooleanT{#2}{\gdef\@@csvmod@csone{\BooleanTrue}}%
+        \IfBooleanT{#3}{\gdef\@@csvmod@mathone{\BooleanTrue}}%
+        \IfBooleanT{#4}{\gdef\@@csvmod@pair{\BooleanTrue}}%
+        \IfBooleanT{#5}{\gdef\@@csvmod@cstwo{\BooleanTrue}}%
+        \IfBooleanT{#6}{\gdef\@@csvmod@mathtwo{\BooleanTrue}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                     1 2  3   4     5              6
+\DeclareDocumentCommand{\csvmod@toks}{s t$ r() D<|{} G{\@firstofone} D|>{}}%
+{% *<cs tok on>$<math tok on>(toks reg name)<preprended tok sep||appended tok sep>
+        \IfBooleanTF{#1}%
+        {%
+                \IfBooleanTF{#2}%
+                        {\xp\gdef\xp\apptotoks@arg\xp{\xp\ensuremath\xp{\xp#5\xp{\xp\csname\@csvmod@element\endcsname}}}}%
+                        {\xp\gdef\xp\apptotoks@arg\xp{\xp#5\xp{\xp\csname\@csvmod@element\endcsname}}}%
+        }%
+        {%
+                \IfBooleanTF{#2}%
+                        {\xp\gdef\xp\apptotoks@arg\xp{\xp\ensuremath\xp{\xp#5\xp{\@csvmod@element}}}}%
+                        {\xp\gdef\xp\apptotoks@arg\xp{\xp#5\xp{\@csvmod@element}}}%
+        }%
+        \xp@nY\apptotoks{#4\apptotoks@arg #6 }{#3}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                        1     2   3   4   5
+\DeclareDocumentCommand{\csvmod@toklist}{D(){} r|| r<> r() m }%
+{% (Bool list)|#/row|<csvmod type>(toks reg name){csv list}
+        \csvmod@parsebools#1(#4)%
+        \xp\gdef\xp\@@csvmod@list\xp{#5}%
+        \foreach \@csvmod@element [count=\@csvmod@element@num from 1] in \@@csvmod@list%
+        {%
+                \xp\IfBooleanT\xp{\@@csvmod@pair}{\passbools\csvmod@toks{\@@csvmod@csone/*,\@@csvmod@mathone/$}(#4)|\csuse{csvmod#3@nonzero}>}%
+                \passbools\csvmod@if{\@@csvmod@cstwo/*,\@@csvmod@mathtwo/$}<#3>|#2|(#4)%
+        }%%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                                1  2 3  4  5 6  7  8 9
+\DeclareDocumentCommand{\csvmodtable@parsebools}{t! s t$ t+ s t$ t/}%
+{% !<tok reset off>*<cs tok on>$<math tok on>+<add 2nd tok>*<cs 2nd tok on>$<math 2nd tok on>/<strip '\' from CS list items>
+        \IfBooleanTF{#4}{\gdef\@@csvmodtable@pair{\BooleanTrue}}{\gdef\@@csvmodtable@pair{\BooleanFalse}}%
+        \IfBooleanTF{#7}{\gdef\@@csvmodtable@cslistsym{*}}{\gdef\@@csvmodtable@cslistsym{}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                     1   2 3     4              5     6 7    8              9
+\DeclareDocumentCommand{\csvmodtable}{G{} o d|| D(){tabletoks} D[>{} m D<>{,}}%
+{% (Boolean arg symbols)[#cols](toks reg name){csv list}<input list sep token>
+        \csvmodtable@parsebools#1%
+        \gdefValueOrBoolTF\@@mod@divisor{#2}{\csvmodtable@numpaircols}{\csvmodtable@numcols}%
+        \xp\tocsvlist\@@csvmodtable@cslistsym<#7>(@@the@csvmodlist){#6}%
+        \csvmod@toklist(#1)|\@@mod@divisor|<table>(#4){\@@the@csvmodlist}%#9
+        \xp\passbool\@@csvmodtable@pair(+)\csvmodtable@finish|\@@mod@divisor|(#4)%
+        \xp\passbool\@@csvmodtable@pair(+)\csvmodtable@colspecs|\@@mod@divisor|%
+        \IfValueTF{#3}%
+                {\protected@xdef\@@csvmodtable@caption{#3}}%
+                {\protected@xdef\@@csvmodtable@caption{\textbackslash\thecsname{#6} Symbols}}%
+        \xdef\@@csvmodtable@label{tab:\thecsname{#6}}%
+        \begin{table}[h!]
+            \centering
+                \xp@nY%
+                \tabular{\@@tabcolspecs}%
+                        \hline
+                        \printtoks{#4}
+                \endtabular
+            \caption{\@@csvmodtable@caption}
+            \label{\@@csvmodtable@label}
+        \end{table}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                       1  2 3  4  5             6                  7                8
+\DeclareDocumentCommand{\csvop@toklist}{t! s t$ t+ D<>{fontlist} D(){fonttabletoks} D[>{\@firstofone} m}
+{%      !<append to list named #4>*<strip '\' off CS list items><list sep token>(target list CS name){list}
+        \IfBooleanF{#1}{\resettoks{#6}}%
+        \global\let\@@csvop@list#8%
+        \xp\IfBooleanTF\xp{\@@csvoptable@testing}%
+        {%
+                \def\csvmodfonttable@nonzero{}%
+                \def\csvmodfonttable@zero{\\}%
+                \def\csvmodfontlist@nonzero{}%
+                \def\csvmodfontlist@zero{\\}%
+        }%
+        {%
+                \def\csvmodfonttable@nonzero{&}%
+                \def\csvmodfonttable@zero{\\\hline}%
+                \def\csvmodfontlist@nonzero{}%
+                \def\csvmodfontlist@zero{\\}%
+        }%
+        \foreach \@csvop@element [count=\@csvop@element@num from 1] in \@@csvop@list%
+        {%
+                \global\let\@csvmod@element\@csvop@element%
+                \global\let\@csvmod@element@num\@csvop@element@num%
+                %\xp\gdef\xp\@csvmod@element@num\xp{\@csvop@element@num}%
+                \xp@csname@nnY\gdef\@@csvmod@prefix{csvmod#5@prefix}%
+                \IfBooleanTF{#4}%
+                {%
+                        \moduloInt{\csuse{csvmod#5@numpaircols}}{\@csvop@element@num}%
+                        \ifnumequal{\pgfmathresult}{0}%
+                        {%
+                                \csvmod@toks(#6)<\xp\@@csvmod@prefix|{\@firstofone}|\csuse{csvmod#5@nonzero}>%
+                                \passbools\csvmod@toks{\@@csvop@math/$}(#6)<\xp\@@csvmod@prefix|{#7}|\csuse{csvmod#5@zero}>%
+                        }%
+                        {%
+                                \csvmod@toks(#6)<\xp\@@csvmod@prefix|{\@firstofone}|\csuse{csvmod#5@nonzero}>%
+                                \passbools\csvmod@toks{\@@csvop@math/$}(#6)<\xp\@@csvmod@prefix|{#7}|\csuse{csvmod#5@nonzero}>%
+                        }%
+                }%
+                {%
+                        \moduloInt{\csuse{csvmod#5@numcols}}{\@csvop@element@num}%
+                        \ifnumequal{\pgfmathresult}{0}%
+                                {\passbools\csvmod@toks{#3/$}(#6){#7}|\csuse{csvmod#5@zero}>}%
+                                {\passbools\csvmod@toks{#3/$}(#6){#7}|\csuse{csvmod#5@nonzero}>}%
+                }%
+        }%%
+        %\printtoks{#6}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                               1  2  3 4  5  6  7  8
+\DeclareDocumentCommand{\csvmodfont@parsebools}{t! t+ s t- t$ r()}%
+{% !<tok reset off>*<cs tok on>$<math tok on>+<add 2nd tok>*<cs 2nd tok on>$<math 2nd tok on>(toks reg name)/<unused here>
+        \gdef\@@appto@csvlist{\BooleanFalse}%
+        \gdef\@@csvlist@stripcs{\BooleanFalse}%
+        \gdef\@@csvop@math{\BooleanFalse}%
+        \gdef\@@csvop@mathone{\BooleanFalse}%
+        \gdef\@@csvop@csone{\BooleanFalse}%
+        \gdef\@@csvop@pair{\BooleanFalse}%
+        \gdef\@@csvop@cstwo{\BooleanFalse}%
+        \gdef\@@csvop@mathtwo{\BooleanTrue}%
+        \IfBooleanF{#1}{\resettoks{#6}}%
+        \IfBooleanT{#2}{\gdef\@@appto@csvlist{\BooleanTrue}}%
+        \IfBooleanT{#3}{\gdef\@@csvop@pair{\BooleanTrue}}%
+        \IfBooleanT{#4}{\gdef\@@csvlist@stripcs{\BooleanTrue}}%
+        \IfBooleanT{#5}{\gdef\@@csvop@math{\BooleanTrue}}%
+}
+%\gdef\@@csvoptable@testing{\BooleanTrue}
+\gdef\@@csvoptable@testing{\BooleanFalse}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                         1     2 3   4     5                  6                7 8
+\DeclareDocumentCommand{\csvmodfonttable}{D(){} o d|| D<>{} D(){fonttabletoks} D[>{\@firstofone} m}%
+{% (Boolean arg symbols)[#cols](toks reg name){csv list}<input list sep token>
+        \csvmodfont@parsebools#1(#5)%
+        \xp\IfBooleanTF\xp{\@@csvop@pair}%
+                {\gdefValueOrBoolTF\@@mod@divisor*{#2}{\csvmodfonttable@numpaircols}{\csvmodfonttable@numcols}}%
+                {\gdefValueOrBoolTF\@@mod@divisor{#2}{\csvmodfonttable@numpaircols}{\csvmodfonttable@numcols}}%
+        \passbools\tocsvlist{\@@appto@csvlist/!,\@@csvlist@stripcs/*}<#4>(@@csvop@fontlist){#7}%
+        \passbools\csvop@toklist{\@@csvop@math/$,\@@csvop@pair/+}<fonttable>(#5)[#6>{\@@csvop@fontlist}%
+        \xp\passbool\@@csvop@pair(+)\csvmodtable@finish|\@@mod@divisor|(#5)%
+        \xp\passbool\@@csvop@pair(+)\csvmodtable@colspecs|\@@mod@divisor|%
+        \IfValueTF{#3}%
+                {\protected@xdef\@@csvmodtable@caption{#3}}%
+                {\protected@xdef\@@csvmodtable@caption{\textbackslash\thecsname{#6} Symbols}}%
+        \xdef\@@csvmodtable@label{tab:\thecsname{#5}}%
+        \begin{table}[h!]
+            \centering
+                \xp@nY%
+                \tabular{\@@tabcolspecs}%
+                        \hline
+                        \printtoks{#5}
+                \endtabular
+            \caption{\@@csvmodtable@caption}
+            \label{\@@csvmodtable@label}
+        \end{table}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\tocsvlist}{t! s d<> D(){@@csvlist} m}
+{%      !<append to list named #3>*<strip '\' off CS list items><list sep token>(target list CS name){list}
+        \IfBooleanF{#1}{\csundef{#4}}%
+        \IfValueTF{#3}%
+        {%
+                \xpifx\nosep#3\gdef\@@type{toks}\fi%
+                \xpifx\csvargsep#3\gdef\@@type{csv}\fi%
+                \xpifx\fslash@sep#3\gdef\@@type{fslash}\fi%
+                \xpifx\semicolon@sep#3\gdef\@@type{semicolon}\fi%
+                \xpifx\cr@sep#3\gdef\@@type{cr}\fi%
+                \xpifx\lf@sep#3\gdef\@@type{ssv}\fi%
+                \xpifx\whitespace@sep#3\gdef\@@type{ssv}\fi%
+                \xpifx\space@sep#3\gdef\@@type{ssv}\fi%
+        }{\gdef\@@type{ssv}}%
+        \IfBooleanTF{#2}%
+        {%      cs list -> csname csv list
+                \xp\letcs\xp\@@tocsvlist@cmd\xp{\@@type tocsvcslist}%
+                \@@tocsvlist@cmd{#4}{#5}%
+        }%
+        {%      cs list -> csv list
+                \xp\letcs\xp\@@tocsvlist@cmd\xp{\@@type tocsvlist}%
+                \xplast@twoarg\@@tocsvlist@cmd{#4}{#5}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\foreach \@split@csv@args@cmd@type [count=\@csv@arg@index from 1] in {1,...,6}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\tcbheading\@PKGTESTING@HEADING
+\global\let\tcbsubheading\@PKGTESTING@SUBHEADING
+\global\let\tcbsubsubheading\@PKGTESTING@SUBSUBHEADING
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************ tcolorbox Tikz-Based Styles/Configurations/Commands **************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
+\input{R2Labs-printnfo.def}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************************* End of 'my-latex-development.sty' ***********************************************%
@@ -461,7 +1063,7 @@
 %*******************************************************************************************************************************%
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
-%-------------------------------------------------------------------------------------------------------------------------------%
+%%-------------------------------------------------------------------------------------------------------------------------------%
 %%\llap{\textcolor{white}{\the\SOUL@token}\hspace{\fp_to_decimal:N \l_tmpa_fp em}}
 %        %\llap{\textcolor{white}{\the\SOUL@token}\hspace{-\fp_to_decimal:N \l_tmpa_fp em}}
 %        %\llap{\textcolor{white}{q}\hspace{\fp_to_decimal:N \l_tmpa_fp em}}%
@@ -475,116 +1077,20 @@
 %        %\llap{\textcolor{white}{\raisebox{\upshift0pt}[0pt]{\the\SOUL@syllable}}\hspace{-\fp_to_decimal:N \l_tmpa_fp em}}
 %   % }%
 %  %}%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\@backslashchar\unexpanded\expandonce\@firstoftwo\@secondoftwo
-%\ifcsname#1\endcsname
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathCommand{\mathcmdtest}{s o}%
-{
-        mathcmdtest=ON\\
-        |ax=b|
-}
-        %
-%        \coordinate(d) at (intersection 1 of V20--V25 and a--k);
-%        %\coordinate(ce) at (intersection 1 of H03--H53 and a--k);
-%        %\coordinate(e) at (intersection 1 of H03--H53 and a--k);
-%        %\coordinate(g) at (intersection 1 of H02--H52 and a--k);
-%        \coordinate(h) at (intersection 1 of V30--V35 and a--k);
-%        %\coordinate(i) at (intersection 1 of H01--H51 and a--k);
-\newkeycommand\@@tcb@centering%
-[enum bounds={center,flush left,flush right},floats=\centering,box=center,halign=center,valign=center,htitle=flush left,hupper=,hlower=][0]%
-{%
-%        \ifcommandkey{hupper}%
-%        every float=center,box align=center,halign=center,valign=center
-%        halign upper=flush center,
-%        halign lower=flush center,
-%        halign title=flush left,
-%        \ifcommandkey{saveas}%
-%                {\@premeasure@savebox*{\@measuring@this}[\commandkey{saveas}]}%
-%                {\@premeasure@savebox*{\@measuring@this}}%
-}
 %%-------------------------------------------------------------------------------------------------------------------------------%
-%        @tcb@centering/.style n args={4}%
-%        {
-%                every float=#1,
-%                box align=#2,
-%                halign=#3,
-%                valign=#4,
-%                %halign upper=flush center,
-%                %halign lower=flush center,
-%                %halign title=flush left,
-%        },
-%        @tcb@centering/.default={\centering}{center}{center}{top},
-\tcbset
-{%
-%-------------------------------------------------------------------------------------------------------------------------------%
-        tcbmathbox/.style=% 2 args=
-        {%
-                %hbox, halign=center, valign=center, every float=\centering, leftright skip=3mm,
-                before upper=
-                {%
-                        %\def\@save@arraystretch{\arraystretch}
-                        %\renewcommand{\arraystretch}{\@tcb@arraystretch}
-                        %\centering\tcb@hack@currenvir\tabular{#2}%
-                        %#1%
-                        \csoptions{tcolorbox}{\@PLD@tcb@options}%
-                        %\linespread@settings[context=IBP]
-                },
-                after upper={\endcsoptions}
-        },
-%-------------------------------------------------------------------------------------------------------------------------------%
-        tcbfunctionenvStyle/.style=
-        {
-                enhanced, breakable=unlimited, fonttitle=\bfseries, @set@tcb@property@colors, before skip=0mm,
-                top=-1.0mm, bottom=-1.0mm, boxrule=5pt, boxsep=3mm,
-                title=\shadowText{Functions:}, colframe=black, after=\par\bigskip\smallskip,
-                attachBoxedTitleTopCenter, topCenterBoxedTitleStyle, biColorMultilineInteriorStyle,
-                enlarge top at break by=0.0mm, enlarge bottom at break by=2.0mm
-        },
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/cs-examples.tex}%
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/defbox-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/docsection-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/figures-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
-        %\input{C:/Users/Blake/Documents/LaTeX/Documentation/fonts-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/functiondef-examples.tex}
-        %\input{C:/Users/Blake/Documents/LaTeX/Documentation/graphics-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/listbox-examples.tex}%
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/listings-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/math-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/misc-examples.tex}
-        %\input{C:/Users/Blake/Documents/LaTeX/Documentation/package-details.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/package-testing.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/package-usage-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/problem-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/table-examples.tex}
-        \input{C:/Users/Blake/Documents/LaTeX/Documentation/tcboptions-testing.tex}
-%%-------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareDocumentCommand{\@tikzgrid@hline@intersections}{m m }
+%\DeclareDocumentCommand{\@grid@crossline@namedef}{s m m O{@grid@crossline@namedef@} d()}
 %{%
-%        \def\@first@point{H04}%
-%        \def\@second@point{H54}%
-%        \edef\@first@line{\@first@point--\@second@point\space}%
-%        \def\@second@line{a--k}%
-%        \edef\@intersection@def{\@first@line and \@second@line}%
+%        \IfBooleanTF{#1}%
+%                {\csgdef{#4ydir}{\@tikzgrid@vline@coordinate@prefix#2#3}}%
+%                {\csgdef{#4xdir}{\@tikzgrid@hline@coordinate@prefix#3#2}}%
 %}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@grid@crossline@namedef}{s m m O{@grid@crossline@namedef@} d()}
-{%
-        \IfBooleanTF{#1}%
-                {\csgdef{#4ydir}{\@tikzgrid@vline@coordinate@prefix#2#3}}%
-                {\csgdef{#4xdir}{\@tikzgrid@hline@coordinate@prefix#3#2}}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                   1                   2           3         4 5
-\DeclareDocumentCommand{\getcsnumname}{D(){\csvarg@prefix} D||{csvarg} O{\roman} m o}%
-{%
-        %\setcounter{argindex}{#4}%
-        %\csvargdef(\csvarg@prefix)[#3]{#4}{argidef}%
-        %\csdefnumname{#4}|#2|{\csname #1\romannumeral\theargindex\endcsname}%
-        \thecsnumname{#4}|#2|%
-        %\csname #1\romannumeral\theargindex\endcsname%
-}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%%                                   1                   2           3         4 5
+%\DeclareDocumentCommand{\getcsnumname}{D(){\csvarg@prefix} D||{csvarg} O{\roman} m o}%
+%{%
+%        %\setcounter{argindex}{#4}%
+%        %\csvargdef(\csvarg@prefix)[#3]{#4}{argidef}%
+%        %\csdefnumname{#4}|#2|{\csname #1\romannumeral\theargindex\endcsname}%
+%        \thecsnumname{#4}|#2|%
+%        %\csname #1\romannumeral\theargindex\endcsname%
+%}

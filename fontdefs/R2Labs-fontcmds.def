@@ -1,0 +1,105 @@
+%*******************************************************************************************************************************%
+%**************************************************** `R2Labs-fontcmds.def' ****************************************************%
+%*******************************************************************************************************************************%
+% Provides font encoding, family, and shape definitions, loads/configures font/symbol alphabets, defines text/math symbols, and provides text/math definitions, macros, and commands including shortcut commands used to perform local font/style changes.
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
+\ProvidesFile{R2Labs-fontcmds.def}[\pkginfo]%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\colormixdef{descriptorcolor}{clOlive}%
+%\colormixdef{citecscolor}{clBlueViolet}%clBlueViolet
+%\colormixdef{texcscolor}{clSienna}%clBlueViolet
+%\colormixdef{texcsargcolor}{clOlive}%
+%\colormixdef{texanglecolor}{blue}%
+%\colormixdef{bibesccolor}{clMaroon}%
+%\colormixdef{bibcscolor}{clLightSlateBlue}%
+%\colormixdef{bibkeycolor}{clDarkCyan}
+%\colormixdef{bibanglecolor}{black}
+\NewDocumentCommand{\TeXfile}{s G{}}{\textttup{#2.tex}\xspace}
+\NewDocumentCommand{\bibfile}{s G{}}{\textttup{#2.bib}\xspace}
+\NewDocumentCommand{\bstfile}{s G{}}{\textttup{#2.bst}\xspace}
+\DeclarePairedDelimiterX\@descriptor[2]{\color{#1}\langle}{\color{#1}\rangle}{\mathop{{#2}}\mathopen{}}% Enclose argument in colored angle brackets
+\DeclareDocumentCommand{\descriptor}{s t! d<> O{descriptorcolor} m}{%
+        \IfBooleanTF{#1}%
+        {%
+        	\def\@@angle@color{bibanglecolor}%
+        	\IfBooleanTF{#2}{\def\@@arg@color{bibkeycolor}}{\def\@@arg@color{bibcscolor}}%
+        }{%
+        	\def\@@angle@color{texanglecolor}%
+        	\IfBooleanTF{#2}{\def\@@arg@color{texcsargcolor}}{\def\@@arg@color{texcscolor}}%
+        }%
+        \IfValueT{#3}{\def\@@arg@color{#3}}%
+        \ensuremath{\@descriptor{\@@angle@color}{\textcolor{\@@arg@color}{\textttup{#5}}}}%
+}
+\def\TeXesc@str#1{\textcolor{Sienna}{\textttup{\textbackslash#1}}}
+\def\Bibkey@str#1{\textcolor{bibkeycolor}{\textttup{@#1}}}
+\def\csgroupstr{\@@TeXgroupstr[black]}
+\NewDocumentCommand{\Bibesc@str}{s m}{%
+        \IfBooleanTF{#1}%
+                {\def\@@Bibesc@char@color{bibesccolor}}%
+                {\def\@@Bibesc@char@color{bibcscolor}}%
+        %\IfBooleanTFDef#1\def\@@Bibesc@char@color{bibesccolor}{bibcscolor}
+        \textttup{\textcolor{\@@Bibesc@char@color}{@}\textcolor{bibcscolor}{#2}}%\xspace%
+}
+\glet\Bibescstr\Bibesc@str
+\DeclareDocumentCommand{\@@TeXgroupstr}{s t! O{texcsargcolor} G{\csgroupdots}}{\csgroupopen#4\csgroupclose}
+\DeclareDocumentCommand{\TeXgroupstr}{s t! O{texcsargcolor} m O{\textttup} G{\csgroupdots}}{%
+        \TeXesc@str{#4}%
+        \IfBooleanTF{#1}%
+        	{\@@TeXgroupstr{\ensuremath{\@descriptor{blue}{\textcolor{#3}{#5{#6}}}}}}%
+        	{\@@TeXgroupstr{\textcolor{#3}{#5{#6}}}}%
+}
+\DeclareDocumentCommand{\Bibkeystr}{s m G{\csgroupdots}}{\IfBooleanT{#1}{\textttup\bgroup}\textcolor{bibkeycolor}{#2}\IfBooleanT{#1}{\egroup}}
+\DeclareDocumentCommand{\Bibkeyeqstr}{s t! O{texcsargcolor} m G{\csgroupstr}}{\mbox{\forwardBoolean#1\Bibkeystr{#4} = #5}\xspace}
+\DeclareDocumentCommand{\Bibgroupstr}{s t! O{clOlive} m O{\textttup} G{\csgroupdots}}{%
+                \IfBooleanTF{#1}%
+                	{\Bibesc@str{}\ensuremath{\@descriptor{black}{\textcolor{bibcscolor}{#5{#4}}}}}%
+                	{\Bibesc@str{#4}}%
+                \IfBooleanTF{#2}%
+	                {\@@TeXgroupstr{\ensuremath{\@descriptor{blue}{\textcolor{#3}{#5{#6}}}}}}%
+	                {\@@TeXgroupstr{\textcolor{#3}{#5{#6}}}}%
+}
+\DeclareDocumentCommand{\Bibcsstr}{s t! O{clOlive} m O{\textttup} G{\csgroupdots}}{%
+                \IfBooleanTF{#1}%
+                	{\Bibesc@str{}\ensuremath{\@descriptor{black}{\textcolor{bibcscolor}{#5{#4}}}}}%
+                	{\Bibesc@str{#4}}%
+}
+\DeclareDocumentCommand{\Xrefentry}{s t! t+ t> m m m}{%\ignorespaces%\afterassignment\aftergroup\RaggedRight
+        \begingroup
+                \pari\raggedright
+                \letcrs\Xrefentrycr\relax
+                \forwardBoolean#1\Xcsstr{#5}\textlbrace%
+                \IfBooleanT{#4}{\cr}%
+                \forwardBoolean#2(!){\descriptor*}{#6}\cr
+                #7\unskip
+                \IfBooleanT{#3}{\cr\tcbindent\vdots}
+                \Xrefentrylastcr[-.05em]\textrbrace%\parnoindent%\justifying
+        \endgroup
+}
+\def\Xrefentry@cfg#1#2#3{%
+        \global\let\Xrefentrycr#1\relax
+        \global\let\Xrefentrylastcr#2\relax
+        \global\let\Xcsstr#3\relax%
+%	\glet\xparse@star\BooleanFalse
+%	\glet\xparse@exclam\BooleanFalse
+%	\glet\xparse@plus\BooleanFalse
+%	\glet\xparse@rcarat\BooleanFalse
+}
+\NewDocumentCommand{\Bibrefentry}{s t! t+ m m m}{%
+	\Xrefentry@cfg{\@@bibentry@cr}{\parcrindent}{\Bibcsstr}%
+	\forwardBooleanList\Xrefentry{#1/*,#2/!,#3/+,\BooleanFalse/>}{#4}{#5}{#6}%
+}
+%*******************************************************************************************************************************%
+%********************************************** End of 'R2Labs-fontcmds' package ***********************************************%
+%*******************************************************************************************************************************%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

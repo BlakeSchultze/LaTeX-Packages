@@ -1,0 +1,203 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%***************************************************** `R2Labs-fonts.def' ******************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Provides definitions/configurations of font encodings, families, and shapes, declares math versions and sizes, and loads/configures the desired font/symbol alphabets (restricted in # by the 16 math/symbol font alphabet slots).
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************** Define provided file name/version/date and dependencies ***********************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ProvidesFile{R2Labs-fonts.def}[\pkginfo]%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************************** Font definitions/configurations: ***********************************************%
+%*************************************** encodings, families, shapes, sizes, & versions ****************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define font scaling macros ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\textbbold}[1]{{\bboldfamily#1}}
+\DeclareTextFontCommand{\textbfm}{\bfmseries}
+\DeclareTextFontCommand{\doctext}{\@doc@font@default}
+\DeclareTextFontCommand{\textbbold}{\bboldfamily}                                            %\RequirePackage{mbboard}
+%\DeclareTextFontCommand{\textbboard}{\bboardfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textantt}{\anttfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textmathb}{\mathbfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textmbb}{\mbbfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textbbmss}{\bbmssfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textbbmtt}{\bbmttfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textpxsyb}{\pxsybfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textstixex}{\stixexfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textstixbb}{\stixbbfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textstixtt}{\stixttfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\texttxmia}{\txmiafamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\texttxsy}{\txsyfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textdsrom}{\dsromfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textfmm}{\fmmfamily}                                            %\RequirePackage{mbboard}
+\DeclareTextFontCommand{\textuzc}{\uzcfamily}                                            %\RequirePackage{mbboard}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareTextFontCommand{\textwasy}{\wasyfamily}
+\DeclareTextFontCommand{\textgoth}{\gothfamily}
+\DeclareTextFontCommand{\textswab}{\swabfamily}
+\DeclareTextFontCommand{\textfrak}{\frakfamily}
+\DeclareTextFontCommand{\textinit}{\initfamily}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTextFontCommand{\textttup}{\ttfamily\upshape}%\upshape\fontseries{\f@series}\selectfont
+%\def\textttup#1{\ttfamily\upshape#1}%\ttfamily\upshape\fontseries{\f@series}\selectfont
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\declarefont#1#2%
+{% #1: TeX name; #2: TFM file name
+        %\@xp@def\csname #1\endcsname% \xp#1\csname#2\endcsname
+        \csname@nyN\def{#1}
+        {%
+                \xp\afterassignment\csname #1_\endcsname%
+                \sizeoffont=%
+        }%
+        %\xp\def\csname #1_\endcsname{\font\currfont #2 at \sizeoffont\relax \currfont}%
+        \csname@nyN\def{#1_}{\font\currfont #2 at \sizeoffont\relax \currfont}%
+        \baselineskip=\sizeoffont%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Standard encodings: ec, cs, t5, qx or texnansi
+% Cyrillic encodings: wncy, t2a, t2b or t2c
+% Greek encodings: wncy, t2a, t2b or t2c
+\def\antt@encoding{cs}
+\declarefont{anttr}{\antt@encoding-anttr}
+\declarefont{anttb}{\antt@encoding-anttb}
+\declarefont{anttri}{\antt@encoding-anttri}
+\declarefont{anttc}{\antt@encoding-anttc}
+\declarefont{anttrcap}{\antt@encoding-anttrcap}
+\declarefont{anttmcap}{\antt@encoding-anttmcap}
+\declarefont{anttbcap}{\antt@encoding-anttbcap}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\def\@rmfont@fd@file{cmtt10}%{qx-anttr}%{cmu10}
+%\xdef\@rmfont@fd@file{\csname mylatex@fontfamily\endcsname\csname mylatex@fontsize\endcsname}
+%\font\rm \@rmfont@fd@file \rm \baselineskip 10pt
+%\let\rm\sfdefault
+\let\rm\rmfamily
+\font\rmsm qx-anttr at 9.5pt
+\font\rmc qx-anttcr at9pt
+\font\bf qx-anttm
+\font\it qx-anttri
+\font\kat qx-anttm at 12pt
+\font\titlefont qx-anttr at 24pt
+\font\exp exp-anttr
+\font\atnsmall qx-anttr at 7.5pt
+\font\its qx-anttri at 7.5pt
+\font\bfs qx-anttb at 7pt
+\font\scs qx-anttrcap at 7pt
+\font\scbs qx-anttbcap at 7pt
+\font\ttv qx-lmtt10 at7pt
+\font\oryrm qx-lmr10 at 11pt
+\font\sc qx-anttrcap
+\font\ttsmall qx-lmtt8
+\font\ttn qx-lmvtt10 at 10.5pt
+\font\ttb qx-lmvtt10 at 11pt
+\font\sec qx-anttm at 12pt
+%-------------------------------------------------------------------------------------------------------------------------------%
+\font\navhyperlinkfont qx-anttmcap at 13pt
+\font\coverpagemedfont qx-anttmcap at 13pt
+\font\coverpagebigfont qx-anttmcap at 17pt
+%-------------------------------------------------------------------------------------------------------------------------------%
+\font\cftnormalfont qx-anttmcap at 10pt
+\font\cftmidfont qx-anttmcap at 2pt
+\font\cftmedfont qx-anttmcap at \cftmedfont@size
+\font\cftlgfont qx-anttmcap at 18pt
+\font\cftbigfont qx-anttmcap at 20pt
+\font\cfthugefont qx-anttmcap at 24pt
+%-------------------------------------------------------------------------------------------------------------------------------%
+\font\tcbsectionheaderfont qx-anttmcap at 14pt
+\font\tcbsectiontitlefont qx-anttmcap at 16pt
+\font\tcbsectiontextfont qx-anttmcap at 12pt
+\font\tcblistboxlabel qx-anttb at 14pt
+\font\tcblistboxtext qx-anttb at 12pt
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\czc{\apbi}{\xapbi}{antpbi}
+%        \def\apbi{\afterassignment\xapbi\rozmiar=}
+%        \def\xapbi{\font\currfont antpbi at \rozmiar\relax \currfont}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\czc#1#2#3%
+{
+        \def#1{\afterassignment#2\rozmiar=}
+        \def#2{\font\currfont #3 at \rozmiar\relax \currfont}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\czc{\atl}{\xatl}{qx-anttl}
+\czc{\atn}{\xatn}{qx-anttr}
+\czc{\atm}{\xatm}{qx-anttm}
+\czc{\atb}{\xatb}{qx-anttb}
+\czc{\ati}{\xati}{qx-anttri}
+\czc{\atbi}{\xatbi}{qx-anttbi}
+\czc{\atli}{\xatli}{qx-anttli}
+\czc{\atmi}{\xatmi}{qx-anttmi}
+\czc{\atlc}{\xatlc}{qx-anttcl}
+\czc{\atlci}{\xatlci}{qx-anttcli}
+\czc{\atnc}{\xatc}{qx-anttcr}
+\czc{\atnci}{\xatci}{qx-anttcri}
+\czc{\atmc}{\xatmc}{qx-anttcm}
+\czc{\atmci}{\xatmci}{qx-anttcmi}
+\czc{\atbc}{\xatbc}{qx-anttcb}
+\czc{\atbci}{\xatbci}{qx-anttcbi}
+\czc{\atncapl}{\xatncapl}{qx-anttlcap}
+\czc{\atncapm}{\xatncapm}{qx-anttmcap}
+\czc{\atncapr}{\xatncapr}{qx-anttrcap}
+\czc{\atncapb}{\xatncapb}{qx-anttbcap}
+\czc{\atncapli}{\xatncapli}{qx-anttlicap}
+\czc{\atncapmi}{\xatncapmi}{qx-anttmicap}
+\czc{\atncapri}{\xatncapri}{qx-anttricap}
+\czc{\atncapbi}{\xatncapbi}{qx-anttbicap}
+\czc{\atnccapl}{\xatnccapl}{qx-anttclcap}
+\czc{\atnccapm}{\xatnccapm}{qx-anttcmcap}
+\czc{\atnccapr}{\xatnccapr}{qx-anttcrcap}
+\czc{\atnccapb}{\xatnccapb}{qx-anttcbcap}
+\czc{\atntexnansi}{\xatntexnansi}{texnansi-anttr}
+\czc{\atnexpcap}{\xatnexpcap}{expcap-anttr}
+\czc{\atnexp}{\xatnexp}{exp-anttr}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\czc{\atncyrl}{\xatncyrl}{wncy-anttl}
+\czc{\atncyrn}{\xatncyrn}{wncy-anttr}
+\czc{\atncyrm}{\xatncyrm}{wncy-anttm}
+\czc{\atncyrb}{\xatncyrb}{wncy-anttb}
+\czc{\atncyrli}{\xatncyrli}{wncy-anttli}
+\czc{\atncyrni}{\xatncyrni}{wncy-anttri}
+\czc{\atncyrmi}{\xatncyrmi}{wncy-anttmi}
+\czc{\atncyrbi}{\xatncyrbi}{wncy-anttbi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\czc{\atngrel}{\xatngrel}{greek-anttl}
+\czc{\atngrer}{\xatngrer}{greek-anttr}
+\czc{\atngrem}{\xatngrem}{greek-anttm}
+\czc{\atngreb}{\xatngreb}{greek-anttb}
+\czc{\atngreli}{\xatngreli}{greek-anttli}
+\czc{\atngreri}{\xatngreri}{greek-anttri}
+\czc{\atngremi}{\xatngremi}{greek-anttmi}
+\czc{\atngrebi}{\xatngrebi}{greek-anttbi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\czc{\apn}{\xapn}{antpr}
+\czc{\api}{\xapi}{antpri}
+\czc{\apb}{\xapb}{antpb}
+\czc{\apbi}{\xapbi}{antpbi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************** End of 'R2Labs-fonts.def' file ************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
+%\makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

@@ -1,0 +1,288 @@
+\Section{Script/Function Definition Examples}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bash scripts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenclosure}[type=script, title=bash scripts,]
+\begin{tcbContentsBox}
+\tcbsectionheaderfont Description of bash scripts supplied in pCT\_Tools repository and their usage
+\end{tcbContentsBox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bash scripts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbcode}[type=script, title=.bash\_profile]%
+    \tcbfunctiondesc
+    {Generic bash profile pCT users can use for shell sessions on Kodiak/Tardis.  This sources the \texttt{load\_pct\_functions.sh} script and loads its bash functions, variables, and aliases/shortcuts so (1) these can be used to perform the host dependent and session setup tasks during user login and (2) they are made available to the pCT user during their shell session}\\[-3.0em]
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% load\_pct\_functions.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbcode}[type=script, title=load\_pct\_functions.sh]%
+    \tcbfunctiondesc
+    {Loads the bash functions, variables, and aliases/shortcuts useful to pCT users on Kodiak/Tardis.  This is then sourced by the \texttt{.bash\_profile} (provided separately) so (1) these can be used to perform the host dependent and session setup tasks during user login and (2) they are made available to the pCT user during their shell session}\\[-3.0em]
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% link\_raw\_data.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbcode}[type=script, usagenewline=false,title=link\_raw\_data.sh,usagelist={h,p[data path],i[angle interval]}]%
+    \tcbfunctiondesc
+    {Generates soft data links to raw data files (\texttt{/ion/pCT\_data/raw\_data/$<$run\_date$>$)} for a particular run date and organizes these in the \texttt{/ion/pCT\_data/organized\_data} directory by phantom name according to the standardized naming/organizational scheme}
+    \tcbfunctionsep%
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{-p}{path to source raw data (DEFAULT: current working directory}
+    \functionargdef{-i}{set angle interval [$\si{\degree}$] between data files (DEFAULT: $4\si{\degree}$)}
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% link\_projection\_data.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbcode}[type=script, usagenewline=false,title=link\_projection\_data.sh,usagelist={h,p[data path],i[angle interval],{EGT}[data type]}]%
+    \tcbfunctiondesc
+    {Generates soft data links to preprocessed data files (\texttt{/ion/pCT\_data/preprocessed\_data/$<$run\_date$>$}) for a particular run date and organizes these in the \texttt{/ion/pCT\_data/organized\_data} directory by phantom name according to the standardized naming/organizational scheme}
+    \tcbfunctionsep%
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{-p}{path to source preprocessed data (DEFAULT: current working directory}
+    \functionargdef{-i}{set angle interval [$\si{\degree}$] between data files (DEFAULT: 4 [$\si{\degree}]$)}
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% stage\_preprocessed\_data.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbcode}[type=script, usagenewline=true,title=stage\_preprocessed\_data.sh,usagelist={{hv},O,d[preprocess data], p[\ProTexted*{texttt}{readme}/data path],f[\ProTexted*{texttt}{readme.txt} filename]}]%
+    \tcbfunctiondesc
+    {Used to stage preprocessed data with naming/organization appropriate for immediate sharing by specifying the location of the \texttt{preprocessed\_data} and corresponding \texttt{readme.txt} file from which the phantom name, run \#/tag(s), and projection angle can be parsed}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{-v}{verbose flag: terminal output 'on' (DEFAULT: \$verbose\_flag)}
+    \functionargdef{-d}{date of preprocessing (DEFAULT: \$preprocessed\_date (today))}
+    \functionargdef{-p}{path to data and \texttt{readme.txt} text file (DEFAULT: \$preprocessed\_path)}
+    \functionargdef{-f}{filename of \texttt{readme.txt} text file (DEFAULT: \$filename)}
+    \functionargdef{-O}{specifies old date format MMDDYYYY is used (DEFAULT: 'YY-MM-DD' format)}
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% rename-files.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbcode}[type=script, usagenewline=false,title={rename-files.sh},usagelist={h,! 1[angle interval]}]%
+    \tcbfunctiondesc
+    {Rename preprocessed data files in current folder, changing each file with \texttt{.dat.root.reco.root.bin} extension to ``\coloredtext*{documentation-fileset}{\textit{projection\_xxx.bin}}'' for each angle \texttt{xxx}}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{{\$1}}{angle interval between preprocessed data files (DEFAULT: 4 [$\protect\protect\si{\degree}$])}
+\end{tcbcode}
+\end{tcbenclosure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% info box %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenclosure}[type=function, title=bash functions]
+\begin{tcbContentsBox}
+\tcbsectionheaderfont Description of bash functions supplied in pCT\_Tools repository and their\\ optional/required parameters and usage
+\end{tcbContentsBox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% add\_rcode\_repo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbcode}[type=function, title=add\_rcode\_repo,usagelist={h,u[username],a[git account],r[git repo]}]
+    \tcbfunctiondesc{add GitHub repository to a user's code directory on Tardis}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{-u}{username (DEFAULT: \${username})}
+    \functionargdef{-a}{git account (DEFAULT: \${account})}
+    \functionargdef{-r}{git repository (DEFAULT: \${repo})}
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% set_rcode %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbfunction}[type=function, title=set\_rcode,usagelist={h,G,g,a[git account],r[git repo],b[git branch],u[username]}]
+    \tcbfunctiondesc
+    {select the GitHub repository corresponding to the code that the user currently wishes to work with and compile/run, if a user copy should be cloned or the code is to be taken directly from the primary clone to a user's code directory on Tardis}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{-G}{reconstruction group username flag (DEFAULT: \${username})}
+    \functionargdef{-g}{global git code repositories flag (DEFAULT: user git code directories)}
+    \functionargdef{-a}{git account (DEFAULT: \${account})}
+    \functionargdef{-r}{git repository (DEFAULT: \${repo})}
+    \functionargdef{-b}{git branch (DEFAULT: \$branch)}
+    \functionargdef{-u}{username, if applicable (DEFAULT: \$username)}
+\end{tcbfunction}
+%\end{tcbcode}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% nvccgen %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, title=nvccgen,usagelist={h,! 1[arch],! 2[code]}]
+    \tcbfunctiondesc{compile pCT\_Reconstruction code with argument \#1/\#2 used to set architecture/code}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{\$1}{NVCC architecture specification \# (\ProTexted*{texttt}{35} used in \ProTexted*{texttt}{compute\_35}}
+    \functionargdef{\$2}{NVCC code specification \# (i.e. \ProTexted*{texttt}{35} used in \ProTexted*{texttt}{sm\_35})}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% runrecon %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, title=runrecon,usagelist={h,! 1[arch],! 2[code]}]
+    \tcbfunctiondesc{compile and run pCT\_Reconstruction code with argument \#1/\#2 used to set architecture/code}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{\$1}{NVCC architecture specification \# (\ProTexted*{texttt}{35} used in \ProTexted*{texttt}{compute\_35}}
+    \functionargdef{\$2}{NVCC code specification \# (i.e. \ProTexted*{texttt}{35} used in \ProTexted*{texttt}{sm\_35})}
+%    \\\tcbcodehline<-3.2em>
+%	\tcbfunctioncomments{compile and run pCT\_Reconstruction code with argument \#1/\#2 used to set architecture/code}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct\_recon\_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, usagenewline=true, title=construct\_recon\_path, usagelist={{{hv}}, {{EGT}}, {{IO}}, {{o \ProTexted*{texttt}{x}}}, {{r \ProTexted*{texttt}{x}}}, {{n \ProTexted*{texttt}{x}}}, {{d \ProTexted*{texttt}{x}}}, {{D \ProTexted*{texttt}{x}}}}]
+    \tcbfunctiondesc{construct input or output data path for appropriately organized reconstruction data}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{-v}{verbose console output on (DEFAULT: 'off')}
+    \functionargdef{-o}{object name (REQUIRED)}
+    \functionargdef{-r}{run date (REQUIRED)}
+    \functionargdef{-n}{run \# + tag(s) (REQUIRED)}
+    \functionargdef{-d}{preprocessed date (DEFAULT: today)}
+    \functionargdef{-D}{reconstruction date, if applicable (DEFAULT: today) }
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+    \functionargdef{-I}{input data flag}
+    \functionargdef{-O}{output data flag}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct_preprocessing_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, title=construct\_preprocessing\_path, usagenewline=true, usagelist={{{hv}}, {{EGT}}, {{IO}}, {{o \ProTexted*{texttt}{x}}}, {{r \ProTexted*{texttt}{x}}}, {{n \ProTexted*{texttt}{x}}}, {{d \ProTexted*{texttt}{x}}}, {{D \ProTexted*{texttt}{x}}}}]
+    \tcbfunctiondesc{construct input or output data path for appropriately organized preprocessing data}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{-v}{verbose console output on (DEFAULT: 'off')}
+    \functionargdef{-o}{object name (REQUIRED)}
+    \functionargdef{-r}{run date (REQUIRED)}
+    \functionargdef{-n}{run \# + tag(s) (REQUIRED)}
+    \functionargdef{-d}{preprocessed date (DEFAULT: today)}
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+    \functionargdef{-I}{input data flag}
+    \functionargdef{-O}{output data flag}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct_pct_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, title=construct\_pct\_path, usagenewline=true, usagelist={{{hv}}, {{PR}}, {{EGT}}, {{IO}}, {{o \ProTexted*{texttt}{x}}}, {{r \ProTexted*{texttt}{x}}}, {{n \ProTexted*{texttt}{x}}}, {{d \ProTexted*{texttt}{x}}}, {{D \ProTexted*{texttt}{x}}}}]
+    \tcbfunctiondesc{construct input or output data path for appropriately organized preprocessing or reconstruction data}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal }
+    \functionargdef{-v}{verbose console output on (DEFAULT: 'off')}
+    \functionargdef{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+    \functionargdef{-R}{reconstruction data flag (DEFAULT)}
+    \functionargdef{-o}{object name (REQUIRED)}
+    \functionargdef{-r}{run date (REQUIRED)}
+    \functionargdef{-n}{run \# + tag(s) (REQUIRED)}
+    \functionargdef{-d}{preprocessed date (DEFAULT: today)}
+    \functionargdef{-D}{reconstruction date, if applicable (DEFAULT: today) }
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+    \functionargdef{-I}{input data flag}
+    \functionargdef{-O}{output data flag}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% organize\_data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\vspace{6mm}
+\begin{tcbfunction}[type=function, title=organize\_data, usagenewline=true, usagelist={{{hv}}, {{PR}}, {{MC}}, {{EGT}}, {{IO}}, {{p \ProTexted*{texttt}{x}}}, {{t \ProTexted*{texttt}{x}}}, {{o \ProTexted*{texttt}{x}}}, {{r \ProTexted*{texttt}{x}}}, {{n \ProTexted*{texttt}{x}}}, {{d \ProTexted*{texttt}{x}}}, {{D \ProTexted*{texttt}{x}}}}]
+	\tcbfunctiondesc{move or copy input/output preprocessing or reconstruction data into an appropriately named/organized hierarchy of directories, with the root of the hierarchy written to the specified/default output data path.}
+    \tcbfunctionsep
+    \functionargdef{-h}{print help to terminal}
+    \functionargdef{-v}{verbose console output on (DEFAULT: 'off')}
+    \functionargdef{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+    \functionargdef{-R}{reconstruction data flag (DEFAULT: preprocessing)}
+    \functionargdef{-M}{move data (DEFAULT: copy)}
+    %\pagebreak
+    \functionargdef{-C}{copy data (DEFAULT: copy)}
+    \functionargdef{-p}{path to data (DEFAULT: current working directory)}
+    \functionargdef{-t}{write output hierarchy to (DEFAULT: current working directory)}
+    \functionargdef{-o}{object name (REQUIRED)}\pagebreak
+    \functionargdef{-r}{run date (REQUIRED)}
+    \functionargdef{-n}{run \# + tag(s) (REQUIRED)}
+    \functionargdef{-d}{preprocessed date (DEFAULT: today)}
+    \functionargdef{-D}{reconstruction date, if applicable (DEFAULT: today) }
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}\pagebreak
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+    \functionargdef{-I}{input data flag}
+    \functionargdef{-O}{output data flag}
+\end{tcbfunction}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{tcbenclosure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% info box %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\begin{tcbcode}[type=details, title=add\_tardis\_data]
+    \tcbfunctiondesc(Ubiquitous Usage:)
+    {
+    	Use these options to specify the path to the data to be copied to Tardis, the destination Tardis node, and if its 	organized/unorganized.%
+    }%
+    \tcbfunctionsep%%
+    \functionargdef{-h}{print help to terminal}%
+    \functionargdef{-v}{verbose console output on (DEFAULT: 'off')}%
+    \functionargdef{-p}{path to data (DEFAULT: current working directory)}%
+    \functionargdef{-U}{unorganized data flag (DEFAULT: organized)}%
+    \functionargdef{-H}{organized data heirarchy flag (DEFAULT)}%
+    \functionargdef{-N}{destination Tardis node number (3-5) (DEFAULT: '3')}\\[-0.25em]%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbcodehline<-3.2em>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbfunctiondesc(Organized Data:)
+    {%
+        The default option values are set such that when organized data is specified, this organized data is automatically copied to the corresponding organized data directory on Tardis without additional user input
+    }\\[-1.0em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbcodehline<-3.2em>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbfunctiondesc(Unorganized Data:)
+        {Specify if the unorganized data should be organized first or copied to a user's unorganized data directory on Tardis}%
+    \tcbfunctionsep%
+    \functionargdef{-F}{organize data before transfer (DEFAULT: false)}\\[-0.8em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbfunctiondesc($\boldsymbol{(i)}$ Organize First:)
+        {Organize data first and copy to organized data directory on Tardis (requires path to data and specification of information needed to organize the data)}%
+    \tcbfunctionsep%(4.0cm)(15.5cm)%
+    \functionargdef{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+    \functionargdef{-R}{reconstruction data flag (DEFAULT)}%
+    \functionargdef{-M}{move data (DEFAULT: copy)}
+    \functionargdef{-C}{copy data (DEFAULT: copy)}
+    \functionargdef{-t}{destination Kodiak path for pre-organized data (DEFAULT: \$PWD)}
+    \functionargdef{-o}{object name (REQUIRED)}
+    \functionargdef{-r}{run date (REQUIRED)}
+    \functionargdef{-n}{run \# + tag(s) (REQUIRED)}
+    \functionargdef{-d}{preprocessed date (DEFAULT: today)}
+    \functionargdef{-D}{reconstruction date, if applicable (DEFAULT: today)}
+    \functionargdef{-E}{Experimental data flag (DEFAULT)}
+    \functionargdef{-G}{GEANT4 data flag}
+    \functionargdef{-T}{TOPAS data flag}
+    \functionargdef{-I}{input data flag}
+    \functionargdef{-O}{output data flag}\\[-1.5em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    \tcbfunctiondesc($\boldsymbol{(ii)}$ Copy Direct:)
+    {%
+        Copy unorganized data to user's unorganized data directory on Tardis in a subdirectory specified by the user (requires path to data, specify desired subdirectory of user\_data on Tardis)
+    }%
+    \tcbfunctionsep%
+    \functionargdef{-t}{subdirectory of unorganized data on Tardis (DEFAULT: \$PWD)}%
+\end{tcbcode}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\endinput
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NOTES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+

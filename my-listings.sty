@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-listings}
+\ProvidesPackage{my-listings}[\pkginfo]
 %\usepackage[procnames]{listingsutf8}
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
@@ -219,7 +218,7 @@
         {
                 \bookmarksetupnext{keeplevel}%
                 \Terminallinespacing%
-        	\@set@current@tcb@colors{tcbbashboxColorset}%
+                \@set@current@tcb@colors{tcbbashboxColorset}%
                 \renewcommand{\lstlistingname}{\@tcblisting@terminal@caption@title}%
                 \stepcounter{Terminal}
                 \ifstrempty{#4}%
@@ -286,8 +285,9 @@
         list entry={\cftMatlab@listentry{\@title@sep#1}},
         after=
         {%
+                \filename{#7}%
                 \par\medskip\smallskip%
-                \cftMatlab@bookmark!%
+                \cftMatlab@bookmark!(\@tcb@title@sep\thefilename)%
         }
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

@@ -27,8 +27,7 @@
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{pkgbase}                       %
+\ProvidesPackage{pkgbase}[\pkginfo]                       %
 %\RequirePackage{trace}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
@@ -53,33 +52,51 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------ Register variable definitions ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\def\newif#1{%
-%  \ifdefined{#1}{}%
-%  {\count@\escapechar \escapechar\m@ne
-%    \let#1\iffalse
-%    \@if#1\iftrue
-%    \@if#1\iffalse
-%  \escapechar\count@}}
 \newcount\linecnt\linecnt=0
-\newif\ifvalidated
-        \validatedfalse
-\newif\if@choicevals@validated
-        \@choicevals@validatedfalse
-\newif\if@rm@termfile@
-        \@rm@termfile@true
-\newread\@ifstream
-\newwrite\@ofstream
+\newif\if@cmttb\@cmttbfalse
+\newif\if@cmbtt\@cmbttfalse
+%\newif\if@cmttb\@cmttbtrue
+%\newif\if@cmbtt\@cmbtttrue
+\newif\ifvalidated\validatedfalse
+\newif\if@choicevals@validated\@choicevals@validatedfalse
+\newif\if@rm@termfile@\@rm@termfile@true
+\newread\@ifstream                              % Declare register storing input file stream pointer
+\newwrite\@ofstream                             % Declare register storing output file stream pointer
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcount\IEEEcount                             % Declare \count register for internal IEEEtrans-tools package usage
+\newif\ifIEEEbool\IEEEboolfalse                 % Declare \if<x> register token for internal IEEEtrans-tools package usage
+\newtoks\filetoks                               % Declare token register for \read storage target
+\newtoks\IEEEtoks                               % Declare token register for internal IEEEtrans-tools package usage
+\newtoks\IEEEconfigs                            % Declare token register for storing configurations to apply after preamble
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcount\pkgcount                             % Declare \count register for internal IEEEtrans-tools package usage
+\newif\ifpkgbool\pkgboolfalse                 % Declare \if<x> register token for internal IEEEtrans-tools package usage
+\newtoks\pkgtoks                               % Declare token register for \read storage target
 %-------------------------------------------------------------------------------------------------------------------------------%
 %---------------------------------------------- Base package constant definitions ----------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\PKGNAME{R2Labs}%
-\def\PKGOPTS@PACKAGES{etoolbox,kvoptions,pgffor,ifplatform,catchfile}
+\def\PKGOPTS@PACKAGES{etoolbox,kvoptions,pgffor,ifplatform,catchfile}%,xstring,xparse
+\gdef\myblindtext{{Hello, here is some text without a meaning.This text should show what a printed text will look like at this place.If you read this text, you will get no  information. Really? Is there no information?Is there a difference between this text and some nonsense like ''Huardest gefburn''? Kjift -- not at all!}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Plain TeX macro definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %----------------------------------- Control sequence numbers and character code definitions -----------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\catcode`\{=1 % left brace is begin-group character
+%\catcode`\}=2 % right brace is end-group character
+%\catcode`\$=3 % dollar sign is math shift
+%\catcode`\&=4 % ampersand is alignment tab
+%\catcode`\#=6 % hash mark is macro parameter character
+%\catcode`\^=7 % circumflex and uparrow are for superscripts
+%\catcode`\_=8 % underline and downarrow are for subscripts
+%\catcode`\^^I=10 % ascii tab is a blank space
+%\catcode`\^^J=10 %
+%\catcode`\^^M=10 % 5 9 13 \active
+%\catcode`\^^L=\active \outer\def^^L{\par}% ascii form-feed is \outer\par
+%\catcode`@=11
 %-------------------------------------------------------------------------------------------------------------------------------%
 \chardef\n@ne=0
 \chardef\zer@=0
@@ -102,6 +119,15 @@
 \chardef\CHARTWOFIFTYFIVE=255
 %\chardef\TENTWENTYFOUR=1024                                            % Too big; \chardef: 0-255
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\mathchardef\@cclvi=256
+%\mathchardef\@m=1000
+%\mathchardef\@M=10000
+%\mathchardef\@MM=20000
+%\mathchardef\@Mi=10001
+%\mathchardef\@Mii=10002
+%\mathchardef\@Miii=10003
+%\mathchardef\@Miv=10004
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\mathon{\catcode`|=\active}
 \def\mathoff{\catcode`|=12}
 \def\escapeon{\catcode`\\=0}
@@ -109,34 +135,171 @@
 %\def\escapeon{\catcode`\\=0\escapechar=`\\}
 %\def\escapeoff{\catcode`\\=12\escapechar=`\&}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\def\uchyphenoff{\uchyph=0}
+\def\hyphenoff{\tolerance=1\emergencystretch=\maxdimen\hyphenpenalty=10000\hbadness=10000}
+\def\exhyphenoff{\exhyphenpenalty=10000}   
+\def\lhyphenoff{\lefthyphenmin=63}
+\def\rhyphenoff{\righthyphenmin=63}
+\def\hyphencharoff{\hyphenchar\font=-1}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro argument parsing/storage commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Documentclass Paper Size/Geometry Definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\letterpaper@paperheight{11in}%279.4 mm
+\gdef\letterpaper@paperwidth{8.5in}%215.9 mm
+\gdef\letterpaper@textheight{550pt}%
+\gdef\letterpaper@textwidth{345pt}%
+\gdef\letterpaper@geometry@name{doc}%
+\gdef\letterpaper@geometry@opt{doc}%
+\gdef\legalpaper@paperheight{14in}%355.6 mm
+\gdef\legalpaper@paperwidth{8.5in}%215.9 mm
+\gdef\legalpaper@textheight{766pt}%
+\gdef\legalpaper@textwidth{345pt}%
+\gdef\legalpaper@geometry@name{doc}%
+\gdef\legalpaper@geometry@opt{doc}%
+\gdef\executivepaper@paperheight{10.5in}%
+\gdef\executivepaper@paperwidth{7.25in}%
+\gdef\executivepaper@textheight{514pt}%
+\gdef\executivepaper@textwidth{345pt}%
+\gdef\executivepaper@geometry@name{doc}%
+\gdef\executivepaper@geometry@opt{doc}%
+\gdef\aIVpaper@paperheight{297mm}%845pt
+\gdef\aIVpaper@paperwidth{210mm}%597pt
+\gdef\aIVpaper@textheight{598pt}%
+\gdef\aIVpaper@textwidth{345pt}%
+\gdef\aIVpaper@geometry@name{a4paper}%
+\gdef\aIVpaper@geometry@opt{doc}%
+\gdef\aVpaper@paperheight{210mm}%
+\gdef\aVpaper@paperwidth{148mm}%
+\gdef\aVpaper@textheight{346pt}%
+\gdef\aVpaper@textwidth{276pt}%
+\gdef\aVpaper@geometry@name{a5paper}%
+\gdef\aVpaper@geometry@opt{doc}%
+\gdef\bVpaper@paperheight{250mm}%
+\gdef\bVpaper@paperwidth{176mm}%
+\gdef\bVpaper@textheight{466pt}%
+\gdef\bVpaper@textwidth{345pt}%
+\gdef\bVpaper@geometry@name{b5paper}%
+\gdef\bVpaper@geometry@opt{doc}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\xdef\default@geometry@name{\letterpaper@geometry@opt}%
+\xdef\default@geometry@opt{\letterpaper@geometry@opt}%
+\xdef\default@paperheight{\letterpaper@paperheight}%
+\xdef\default@paperwidth{\letterpaper@paperwidth}%
+\xdef\default@textheight{\letterpaper@textheight}%550pt
+\xdef\default@textwidth{\letterpaper@textwidth}%345pt
+\gdef\default@top{20pt}%
+\gdef\default@bottom{0.25in}%
+\gdef\default@left{1.0in}%
+\gdef\default@right{1.0in}%
+\gdef\default@headheight{12pt}%0.42168cm
+\gdef\default@headsep{25pt}%0.8785cm
+\gdef\default@footskip{30pt}%1.0542cm
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\toc@geometry@name{toc}%
+\gdef\toc@geometry@opt{toc}%
+\xdef\toc@paperheight{\letterpaper@paperheight}%
+\xdef\toc@paperwidth{\letterpaper@paperwidth}%
+\xdef\toc@textheight{\letterpaper@textheight}%550pt
+\xdef\toc@textwidth{\letterpaper@textwidth}%345pt
+\gdef\toc@top{0.5in}%
+\gdef\toc@bottom{0.5in}%
+\gdef\toc@left{1.0in}%
+\gdef\toc@right{1.0in}%
+\gdef\toc@headheight{0.5in}%
+\gdef\toc@headsep{2pt}%
+\gdef\toc@footskip{0.5cm}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\doc@geometry@name{doc}%
+\gdef\doc@geometry@opt{doc}%
+\xdef\doc@paperheight{\letterpaper@paperheight}%
+\xdef\doc@paperwidth{\letterpaper@paperwidth}%
+\xdef\doc@textheight{\letterpaper@textheight}%550pt
+\xdef\doc@textwidth{\letterpaper@textwidth}%345pt
+\gdef\doc@top{0.6in}%
+\gdef\doc@bottom{0.5in}%
+\gdef\doc@left{1.0in}%
+\gdef\doc@right{1.0in}%
+\gdef\doc@headheight{0.5in}%
+\gdef\doc@headsep{8pt}%
+\gdef\doc@footskip{0.5cm}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\coverpage@geometry@name{coverpage}%
+\gdef\coverpage@geometry@opt{coverpage}%
+\xdef\coverpage@paperheight{\letterpaper@paperheight}%
+\xdef\coverpage@paperwidth{\letterpaper@paperwidth}%
+\gdef\coverpage@textheight{758.835pt}%
+\gdef\coverpage@textwidth{469.75502pt}%
+\gdef\coverpage@top{0.25in}%
+\gdef\coverpage@bottom{0.25in}%
+\gdef\coverpage@left{1.0in}%
+\gdef\coverpage@right{1.0in}%
+\gdef\coverpage@headheight{12pt}%0.42168cm
+\gdef\coverpage@headsep{25pt}%0.8785cm
+\gdef\coverpage@footskip{30pt}%1.0542cm
+%-------------------------------------------------------------------------------------------------------------------------------%
+\xdef\current@geometry{doc@geometry}
+\xdef\previous@geometry{toc@geometry}
+\xdef\geometry@args{}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macro argument parsing/storage commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \global\let\xp\expandafter
+\global\let\@par@arg\par
 \gdef\gxp{\xp\global\xp}
 \gdef\twoxp{\xp\xp\xp}
+\gdef\trixp{\xp\xp\xp}
 \def\glet{\global\let}
-\def\@nil{}
+%\def\@nil{}
+\def\@@nil{}
 \def\@@empty{\@gobble\@@empty}
 \def\@nilbrackets[#1]{}
 \def\@identity#1{#1}
 \def\fullyexpand#1{\romannumeral - `0#1}
 \def\readahead#1#2{\afterassignment\@gobble\futurelet#1{#2}}
-\long\def\gobblethree#1#2#3{}
-\long\def\@gobblethree#1#2#3{}
-\long\def\firstofone#1{#1}
-\long\def\firstoftwo#1#2{#1}
-\long\def\secondoftwo#1#2{#2}
-\long\def\firstofthree#1#2#3{#1}
-\long\def\secondofthree#1#2#3{#2}
-\long\def\thirdofthree#1#2#3{#3}
-\long\def\firsttwoofthree#1#2#3{#1#2}
-\long\def\secondtwoofthree#1#2#3{#2#3}
+\long\def \@gobble@star* {}
+\long\def \@gobblethree #1#2#3{}
+\long\def\@firstofthree#1#2#3{#1}
+\long\def\@secondofthree#1#2#3{#2}
+\long\def\@firsttwoofthree#1#2#3{#1#2}
+\long\def\@secondtwoofthree#1#2#3{#2#3}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\nxpfirstofone#1{{#1}}
+\long\def\nxpfirstoftwo#1#2{{#1}}
+\long\def\nxpsecondoftwo#1#2{{#2}}
+\long\def\nxpfirstofthree#1#2#3{{#1}}
+\long\def\nxpsecondofthree#1#2#3{{#2}}
+\long\def\nxpthirdofthree#1#2#3{{#3}}
+\long\def\nxpfirsttwoofthree#1#2#3{{#1}{#2}}
+\long\def\nxpsecondtwoofthree#1#2#3{{#2}{#3}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@csname#1{\csname #1\endcsname}
-\def\thecsname#1{\xp\secondoftwo\string#1}
-\def\detok@csname#1{\xp\secondoftwo\detokenize{#1}}
+\def\thecsname#1{\xp\@secondoftwo\string#1}
+\def\detok@csname#1{\xp\@secondoftwo\detokenize{#1}}
+\def\csnamestr#1{\textbackslash\xp\@secondoftwo\string#1}
+\def\csparam#1=#2;{\xp\global\xp\let\xp#1\csname#2\endcsname}
+\def\savecs#1=#2;{\xp\xp\xp\global\xp\xp\xp\let\xp\xp\xp#1\xp\csname#2\endcsname}
+%\def\foreachfirst#1in #2#3{\foreach#1 in#2{#3\breakforeach}}%
+%\global\let\csstring\csnamestr
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@csvstring@append#1#2{\xappto#2{\@csvstring@sep#1}}%
+\def\@csvstring@suffixed#1,\space;{#1}%
+\def\@csvstring@prefixed,\space#1{#1}%
+\def\@csvstring@sep{,\space}%
+\def\@csvxstring@suffixed#1, ;{#1}%
+\def\@csvxstring@prefixed, #1{#1}%
+\def\@csvxstring@sep{, }%
+\def\csvtostring#1{\xp\@tfor\xp\@csv@item\xp:\xp=#1\do{\@csv@item\xp\ifx\@csv@item,\space\fi}}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\csvlistring#1%
+{%
+        \undef\@@the@csvstring%
+        \@for\@csv@item:=#1\do{\@add@to@csvlist{\space\@csv@item}{\@@the@csvstring}}%
+        \ignorespaces\@@the@csvstring%
+}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Macros for defining macros requiring expansion first ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -147,7 +310,6 @@
 %\newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
 %\newcommand\csgname@y[2]{\gxp#1\csname#2\endcsname}
 %\newcommand\csname@ny[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
-%
 \newcommand\csname@ny[2]{\xp#1\csname#2\endcsname}
 \newcommand\csname@nY[2]{\xp#1\xp{\csname#2\endcsname}}
 \newcommand\csgname@ny[2]{\gxp#1\csname#2\endcsname}
@@ -171,6 +333,7 @@
 \newcommand\xp@nYN[3]{\xp#1\xp{#2}{#3}}
 \newcommand\xp@nyy[3]{\xp\xp\xp#1\xp\xp\xp#2#3}
 \newcommand\xp@nyY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp{#3}}
+\newcommand\xp@nYY[3]{\xp\xp\xp#1\xp\xp\xp{\xp#2\xp}\xp{#3}}
 \newcommand\xp@nyyy[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3#4}
 \newcommand\xp@nyyY[4]{\xp\xp\xp\xp\xp\xp\xp#1\xp\xp\xp#2\xp#3\xp{#4}}
 \newcommand\xp@nYNN[4]{\xp#1\xp{#2}{#3}{#4}}
@@ -183,11 +346,14 @@
 \newcommand\xp@nyII[2]{\xp\xp\xp#1\xp\xp\xp#2}
 \newcommand\xp@csname@ny[2]{\xp\xp\xp#1\csname#2\endcsname}
 \newcommand\xp@csname@nnY[3]{\xp\xp\xp#1\xp\xp\xp#2\xp\xp\xp{\csname#3\endcsname}}
+\newcommand\xp@csname@nNY[3]{\xp\xp\xp#1\xp\xp\xp{\xp\xp\xp#2\xp}\xp{\csname#3\endcsname}}
 \newcommand\xp@csargs[2]{\xp@csname@ny#1{#2}}
 %\def\xp@def#1#2{\csname@nnY\def{#1}{#2}}
 %\def\xp@gdef#1#2{\csname@nnY\gdef{#1}{#2}}
 %\def\xp@edef#1#2{\csname@nnY\edef{#1}{#2}}
 %\def\xp@xdef#1#2{\csname@nnY\xdef{#1}{#2}}
+\gdef\xpifx{\xp\ifx}
+\gdef\xp@tfor#1#2{\xp\@tfor\xp\nextchar\xp:\xp=#1\do{#2}}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\newcommand\csname@nnY[3]{\xp#1\xp#2\xp{\csname#3\endcsname}}
 %\def\defcs#1#2{\xp\def\xp#1\xp{\csname#2\endcsname}}
@@ -213,6 +379,7 @@
 %\def\xp@newif#1{\csname@ny\newif{#1}}
 %\newcommand\csname@nYNN[4]{\xp#1\xp{\csname#2\endcsname}{#3}{#4}}
 %\def\ifcsdefempty#1#2#3{\xp\ifdefempty\xp{\csname#1\endcsname}{#2}{#3}}
+\def\csifx#1{\xp\ifx\csname#1\endcsname\relax}
 \def\ifcsdefempty#1#2#3{\csname@nYNN\ifdefempty{#1}{#2}{#3}}
 %\def\xp@ifdefempty#1#2#3{\csname@nYNN\ifdefempty{#1}{#2}{#3}}
 \def\xp@cmd#1#2{\xp#1\xp#2}
@@ -222,6 +389,8 @@
 \protected@edef\keyeqval#1=#2{\edef#1{#2}}
 %\edef\keyeqval#1=#2{\def#1{#2}}
 %\def\keyeqval#1=#2{\def#1{#2}}
+\def\unprotected#1#2{\let\protect\string\afterassignment\restore@protect\xdef#1{#2}}%
+\def\unprotexted#1\protexted#2#3;{#1#3}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\scopecmd[3][\edef]%
 {%
@@ -307,6 +476,26 @@
 \xdef\csvargsep{,}
 \xdef\bsvargsep{}
 %-------------------------------------------------------------------------------------------------------------------------------%
+%\gdef\csv@sep{,}
+\gdef\no@sep{}
+\gdef\fslash@sep{/}
+\gdef\semicolon@sep{;}
+\gdef\cr@sep{\\}
+\gdef\whitespace@sep{ }
+\gdef\space@sep{\space}
+\gdef\lf@sep{
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\global\let\nosep\no@sep
+\global\let\csv@sep\csvargsep
+\global\let\csvsep\csvargsep
+\global\let\fslashsep\fslash@sep
+\global\let\semicolonsep\semicolon@sep
+\global\let\crsep\cr@sep
+\global\let\whitespacesep\whitespace@sep
+\global\let\spacesep\space@sep
+\global\let\lfsep\lf@sep
+%-------------------------------------------------------------------------------------------------------------------------------%
 \def\csvgroup@numformat{\roman}
 \gdef\@xsvargs@numcmd#1{\romannumeral#1}
 \gdef\xsvarg@numeral#1{\xsvarg@prefix\@xsvargs@numcmd#1}
@@ -371,7 +560,25 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%---------------------------------------------------- List printing commands ---------------------------------------------------%
+%---------------------------------------------- List processing/printing commands ----------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand{\iffontfam}[3]{\ifthenelse{\equal{\f@family}{#1}}{#2}{#3}}
+\newcommand\ifcsvmatchT[2]{\ifcsvmatch{#1}{#2}{\@firstofone}{\@gobble}}%{#3} {\@secondofthree}{\@gobbletwo}
+\newcommand\ifcsvmatchF[2]{\ifcsvmatch{#1}{#2}{\@gobble}{\@firstofone}}%{#3}
+\newcommand\ifcsvmatch[2]{%
+        \validatedfalse%
+        \xdef\@test@cs{#1}%
+        \foreach \@current@choice [count=\@count] in #2%
+        {%
+                \ifdefequal{\@current@choice}{\@test@cs}%
+                {%
+                        \global\validatedtrue\breakforeach%
+                        \csxdef{@validated@index}{\@count}%
+                        %\csname@nyN\xdef{@validated@index}{\@count}%
+                }{}%
+        }%
+        \ifvalidated\xp\@firstoftwo\else\xp\@secondoftwo\fi%
+}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\isinlist#1#2#3%
 {%
@@ -431,7 +638,7 @@
                 {\gdef#2{#2 {#1}}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@add@to@csvlist#1#2%
+\gdef\@add@to@csvlist#1#2%
 {%
         \ifx#2\@empty\undef#2\fi%
         \ifundef{#2}%
@@ -439,7 +646,25 @@
                 {\protected@xdef#2{#2,#1}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\@uniquely@add@to@csvlist#1#2%
+\gdef\@add@to@csvlistcs#1#2%
+{%
+        \xp\xp\xp\ifx\xp\csname\xp#2\xp\endcsname\xp\@empty\xp\undef\csname#2\endcsname\fi%
+        \xp\ifundef\xp{\csname#2\endcsname}%
+                {\xp\protected@xdef\csname#2\endcsname{#1}}%
+                {\xp\protected@xdef\csname#2\endcsname{\@nameuse{#2},#1}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@addcs@to@csvlist#1#2%
+{%
+        \ifx#2\@empty\undef#2\fi%
+        \ifundef{#2}%
+                {\gdef#2{#1}}%
+                {\xp\gdef\xp#2\xp{#2,#1}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@add@to@ssv@to@csvlist#1#2{\@add@to@csvlist{#2}{#1}}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@unique@add@to@csvlist#1#2%
 {%
         \ifx#2\@empty\undef#2\fi%
         \ifundef{#2}%
@@ -540,6 +765,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \gdef\LOCAL@PKG@PREFIX{}% ./texmf/tex/latex/R2Labs/
 %-------------------------------------------------------------------------------------------------------------------------------%
+\gdef\@default@glsdefs@file{glsentries}
 \def\colordefs@dirname{colordefs}
 \xdef\TDS@PKG@DIR{texmf-local/tex/latex/\PKGNAME/}
 \def\DROPBOX@DIRNAME{Dropbox}
@@ -586,14 +812,13 @@
 \def\TeXcompiler{pdflatex}
 \def\verflag{--version}
 \def\compileTeX#1{#1}
-%\def\@pdflatex@switches#1{#1}
 \def\@shell@esc{--shell-escape}
+\def\@recorder@esc{-recorder}
 \def\@shell@skip{\space\space}
 %\CatchFileEdef{\stdoutB}{"|find -type d -maxdepth 1"}{\endlinechar=-1}%
 %\edef\x{\endgroup\def\noexpand\TeXpath{\@@input|"which tex" }}\x
 %\def\x{\endgroup\def\noexpand\TeXpath{\@@input|"dir" }}
 %\begingroup\makeatletter\endlinechar=\m@ne\everyeof{\noexpand}
-% --shell-escape -recorder WalkerProject-Documentation.tex
 %-------------------------------------------------------------------------------------------------------------------------------%
 \edef\envvar@prefix{COMPUTERNAME,ComSpec,COMSPEC,HOMEDRIVE,HOMEPATH,PDFLATEX,SHELL,SYSTEMROOT,TERM,TEXEDIT,USERPROFILE,WINDIR}
 \edef\texenvvar@prefix{TEX}
@@ -616,69 +841,139 @@
 %cp -lRr * /drives/c/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/%\DeleteFile
 %\ProvideDirectory
 %-------------------------------------------------------------------------------------------------------------------------------%
+\def\nloop#1{%
+        \def\nl@@p##1##2\repeat#1{%
+                \def##1{##2\relax\xp##1\fi}%
+                ##1\let##1\relax%
+        }%
+        \xp\nl@@p\csname nl@@p-\string#1\endcsname%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\noendline{\endlinechar=\m@ne\relax}
+\def\makeallother{%
+        \pkgcount=0\relax%
+        \nloop\A\ifnum\pkgcount<256\relax%
+                \catcode\pkgcount=12\relax%
+                \advance\pkgcount by 1\relax%
+        \repeat\A%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\ifinvalidIEEEoption#1{\ifIEEEbool\else#1\fi}
+\def\ifinvalidpkgoption#1{\ifpkgbool\else#1\fi}
+\def\ifboolkey#1#2#3{\ifnumequal{\commandkey{#1}}{1}{#2}{#3}}
+%\long\def\ifboolkey#1#2#3{\ifnumequal{\commandkey{#1}}{\binaryT}{#2}{#3}}
+\def\ifTFval#1{\@csname{if#1}true\else false\fi}
+\def\ifTF@parse#1{#1\xp\@firstoftwo\else\xp\@secondoftwo\fi}
+\def\ifT@parse#1{#1\xp\@firstofone\else\xp\@gobble\fi}
+\def\ifF@parse#1{#1\xp\@gobble\else\xp\@firstofone\fi}
+\def\if@empty#1{\ifTF@parse{\ifx#1\@empty\relax}}
+\def\if@emptyT#1{\ifT@parse{\ifx#1\@empty\relax}}
+\def\if@emptyF#1{\ifF@parse{\ifx#1\@empty\relax}}
+\def\ifTF#1{\ifTF@parse{\@csname{if#1}}}
+\def\ifT#1{\ifT@parse{\@csname{if#1}}}
+\def\ifF#1{\ifF@parse{\@csname{if#1}}}
+\def\ifTF@onearg#1#2{#1{#2}{\@firstoftwo}{\@secondoftwo}}
+\def\ifT@onearg#1#2{#1{#2}{\@firstofone}{\@gobble}}
+\def\ifF@onearg#1#2{#1{#2}{\@gobble}{\@firstofone}}
+\def\ifTF@twoarg#1#2#3{#1{#2}{#3}{\@firstoftwo}{\@secondoftwo}}
+\def\ifT@twoarg#1#2#3{#1{#2}{#3}{\@firstofone}{\@gobble}}
+\def\ifF@twoarg#1#2#3{#1{#2}{#3}{\@gobble}{\@firstofone}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@ifOr#1{\pkgboolfalse\@for\next:=#1\do{\@nameuse{if\next}\global\pkgbooltrue\fi}}
+\def\ifOr#1{\@ifOr{#1}\ifTF{pkgbool}}
+\def\iffOr#1{\@ifOr{#1}\ifT{pkgbool}}
+\def\ifNOr#1{\@ifOr{#1}\ifF{pkgbool}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@ifxOr#1#2{\pkgboolfalse\@for\next:=#2\do{\xp\ifx\xp#1\next\global\pkgbooltrue\fi}}
+\def\ifxOr#1#2{\@ifxOr{#1}{#2}\ifTF{pkgbool}}
+\def\iffxOr#1#2{\@ifxOr{#1}{#2}\ifT{pkgbool}}
+\def\ifxNOr#1#2{\@ifxOr{#1}{#2}\ifF{pkgbool}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@ifxAnd#1#2{\pkgbooltrue\@for\next:=#2\do{\xp\ifx\xp#1\next\else\global\pkgboolfalse\fi}}
+\def\ifxAnd#1#2{\@ifxAnd{#1}{#2}\ifTF{pkgbool}}
+\def\iffxAnd#1#2{\@ifxAnd{#1}{#2}\ifT{pkgbool}}
+\def\ifxNAnd#1#2{\@ifxAnd{#1}{#2}\ifF{pkgbool}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\apptotoks[2]{\xp\global\csname#2\endcsname\xp\xp\xp{\xp\the\csname#2\endcsname#1}}
+\newcommand\appendtoks[2]{\global\pkgtoks\xp\xp\xp\xp\xp{\xp\xp\xp\the\xp\csname\xp#2\xp\endcsname#1}}
+\newcommand\csvapptoks[3]{\@for\next:=#1\do{\xp\appendtoks\xp{#2\next}{#3}}}
+\newcommand*\resettoks[1]{\xp\global\@csname{#1}{}}
+%\newcommand*\resettoks[1]{\xp\global\csname#1\endcsname{}}
+\newcommand*\printtoks[1]{\xp\the\@csname{#1}}
+%\newcommand*\printtoks[1]{\xp\the\csname#1\endcsname}
+\newcommand*\cmdprinttoks[2]{\xp#1\xp{\xp\the\@csname{#2}}}
+%\newcommand*\cmdprinttoks[2]{\xp#1\xp{\xp\the\csname#2\endcsname}}
+%\newcommand*\addIEEEconfig[1]{\global\IEEEconfigs\xp{\the\IEEEconfigs#1}}
+%\newcommand*\setIEEEconfigs[0]{\the\IEEEconfigs}
+%\newcommand*\resetIEEEtoks[0]{\global\IEEEtoks{}}
+%\newcommand*\printIEEEtoks[0]{\the\IEEEtoks}
+%\newcommand*\printIEEEcsvtoks[0]{\xp\@gobble\the\IEEEtoks}
+%\newcommand\apptoIEEEtoks[1]{\global\IEEEtoks\xp\xp\xp{\xp\the\xp\IEEEtoks#1}}
+%\newcommand\csvappIEEEtoks[2]{\@for\next:=#1\do{\xp\apptoIEEEtoks\xp{#2\next}}}
+\newcommand*\resetpkgtoks[0]{\global\pkgtoks{}}
+\newcommand*\printpkgtoks[0]{\the\pkgtoks}
+\newcommand*\printpkgcsvtoks[0]{\xp\@gobble\the\pkgtoks}
+\newcommand\apptopkgtoks[1]{\global\pkgtoks\xp\xp\xp{\xp\the\xp\pkgtoks#1}}
+\newcommand\csvapppkgtoks[2]{\@for\next:=#1\do{\xp\apptopkgtoks\xp{#2\next}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\clean@filetoks#1^^J;{#1}
+\def\fopenout@writetoks#1{\fopenout{#1}\xp\xp\xp\fwriteout\xp\xp\xp{\xp\clean@filetoks\the\pkgtoks;}}%
+\def\fopenout@apptoks#1#2{\fopenout@writetoks{#1}\xp\xp\xp\fwriteout\xp\xp\xp{\xp\clean@filetoks#2;}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\fopenin[1]{\immediate\openin\@ifstream=#1\relax}
+\newcommand\fclosein{\immediate\closein\@ifstream}
+\newcommand\fopenout[1]{\immediate\openout\@ofstream=#1\relax}
+\newcommand\fcloseout{\immediate\closeout\@ofstream}
+\newcommand\freadin[1][\filetoks]{\immediate\read\@ifstream to#1}
+\newcommand\freadlinein[1][\filetoks]{\immediate\readline\@ifstream to#1}
+\newcommand\fwriteout[1]{\immediate\write\@ofstream{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\freadtoks[3][\filetoks]{%
+        \begingroup\makeallother\noendline\resetpkgtoks\fopenin{#2}%
+        \loop\unless\ifeof\@ifstream\freadin[#1]%
+                \ifx#1\@empty\else\apptopkgtoks{#1#3}\fi%
+        \repeat\fclosein\endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\freadlist[2][\filetoks]{\freadtoks[#1]{#2}{,}}
+\newcommand\fcopytoks[2][\filetoks]{\freadtoks[#1]{#2}{^^J}}
+\newcommand\finout[3][\filetoks]{\begingroup\fcopytoks[#1]{#2}#3\fcloseout\endgroup}
+\newcommand\fcopy[2][\filetoks]{\finout[#1]{#2}{\fopenout@writetoks{#2}}}
+\newcommand\fappend[3][\filetoks]{\finout[#1]{#2}{\fopenout@apptoks{#2}{#3}}}
+%\newcommand\bibdefs[1][\filetoks]{\freadlist[#1]{../pct-bib-list.txt}\xdef\thebibdefs{\printpkgtoks}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\fdefs[2][\filetoks]%
+{%
+        \resetpkgtoks\fopenin{#2}\begingroup%
+        \loop\unless\ifeof\@ifstream\freadin[#1]%\filetoks\fdata
+                \ifxNAnd{#1}{\@par@arg,\@empty}{\apptopkgtoks{#1}}
+        \repeat\fclosein\endgroup\printpkgtoks%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\fread[2]{\immediate\openin\@ifstream=#1 #2\immediate\closein\@ifstream}
 \newcommand\fwrite[2]{\immediate\openout\@ofstream=#1 #2\immediate\closeout\@ofstream}
 \newcommand\mklfile[1]{\IfFileExists{#1}{}{\fwrite{#1}}}
 \newcommand\wrlfile[2]{\fwrite{#1}{\immediate\write\@ofstream{#2}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newcommand\wrpipe[2]{\immediate\write18{|"echo #2 > '#1'"}}
-\newcommand\wrfile[2]{\immediate\write18{#2 > '#1'}}
+\newcommand\wrpipe[2]{\immediate\write18{|"echo #2 > '#1'"}}%#1->'#1'
+\newcommand\wrfile[2]{\immediate\write18{#2 > '#1'}}%#1->'#1'
 \newcommand\wrline[1]{\immediate\write\@ofstream{#1}}
-\newcommand\mkfile{\@ifstar{\mkfile@withstar}{\mkfile@withoutstar}}
+\newcommand\mkfile{\@ifstar{\mkfile@withstar}{\mkfile@withoutstar}}%\mkfile[1]{\wrfile{\cr}{#1}}
 \newcommand\mkfile@withstar[1]{\wrfile{#1}{\cr}}
 \newcommand\mkfile@withoutstar[1]{\IfFileExists{#1}{}{\wrfile{#1}{\cr}}}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newcommand\fcontents[2][\finput]%
 {
         \immediate\openin\@ifstream=\jobname.nfo
-        \begingroup
-        %\endlinechar=\m@ne
-        %\bgroup
-        %\endlinechar=-1
-        \obeylines\obeyspaces
-        %\catcode13=5 % ^^M
-%        \catcode10=5 % lf
-%        \catcode10=13 % lf
-%        \catcode13=13 % lf
-        %\endlinechar=10 %
-        %\endlinechar=13 %
-        %\catcode13=5 % ^^M
-        %\catcode35=6 % #
-        \catcode37=11 % %
-        %\catcode64=11 % @
-        %\catcode123=1 % {
-        %\catcode125=2 % }
-        %\obeylines\obeyspaces%
-        %\def\char10{abc}
-        %\def\char13{abc}
-        %\def\char10{abc}
-        %\catcode13=\active % ^^M
-        %\def^^M{^^J}
+        \begingroup\obeylines\obeyspaces\catcode37=11 % %
         \loop\unless\ifeof\@ifstream
-%       \@whilesw\unless\ifeof\@ifstream\fi%
-%       {%
-                %\obeylines\obeyspaces
                 \advance\linecnt by \@ne%
-                %\immediate\readline\@ifstream to \finputline
-%               \ifx\@ifstream\@empty\else
-%               {(\number\linecnt) \@ifstream\testtext}%
-%                       \par %\newpage
-%               \fi
                 \immediate\read\@ifstream to \finputline
                 \ifundef{\finput}
                         {\xp\gdef\xp\finput\xp{\finputline}}
                         {\xaddto\finput\finputline}
-                %#1
-                %\finput
-                %\readline\@ifstream to \csuse{aline}
-%                \read\@ifstream to #1
-%                       \read\@ifstream to\expandafter\csname line\number\linecnt\endcsname
-%               #1
-%       }
-                %\unless\ifeof\@ifstream
-        \repeat
-        \finput
-        \endgroup
+        \repeat\finput\endgroup
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\immediate\write18{/usr/local/bin/my-shell-script.sh > scriptoutput.tex}
@@ -749,8 +1044,8 @@
         \immediate\openin\@ifstream=\jobname.stdout
         \bgroup
           \endlinechar=-1
-          \read\@ifstream to \localline
-          \global\let#1\localline
+          \read\@ifstream to \finputline
+          \global\let#1\finputline
         \egroup
         \closein\@ifstream
         \if@rm@termfile@
@@ -801,19 +1096,6 @@
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\bgroup
-%\obeylines\obeyspaces
-%\catcode`\<=\active
-%\catcode`\>=\active
-%\catcode`\_=\active
-%\def<{\textlangle}
-%\def>{\textrangle}
-%\def_{\textunderscore}
-%\catcode`\!=0
-%!catcode`!\=!active
-%!def\{!textbackslash}
-%!input{|"dir"}
-%!egroup
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\nfss@catcodes{%
      \makeatletter
@@ -837,57 +1119,4 @@
    \@makeother\`%
    \@makeother\'%
    \@makeother\"%
-}
-%\def\termchars{!\,!_}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\newcommand\termprint[1]%
-%\protected@edef\termprint#1%
-\protected\def\termprint#1%
-{%
-        %\begingroup%
-        %\bgroup
-        %\noexpand{
-        %\catcode`\!=0
-        %\protect{
-        {{
-        \catcode`\!\n@ne
-        \catcode`\_=11
-        %!catcode`!\=11
-        %!@makeletter{_}
-        !@makeletter{\\}
-%       !@makeletter{!\}
-%       !@makeletter{!_}
-!obeyspaces!obeylines
-        !def!dirout{!input{|"dir"}}
-%%  !xp!gdef!xp!dirout!xp{!input{|"dir"}}
-%  %!xp!def!xp!dirout!xp{!input{|"dir"}}
-  !dirout}}
-        %#1
-        %\noexpand}
-        %\protect}
-        %!egroup
-        %!endgroup
-}
-\newcommand\starttermout%
-%\protected@edef\starttermout%
-{%
-        %\bgroup
-        \obeylines\obeyspaces%
-        \catcode`\_=11
-        \catcode`\!=0
-        !@cssanitize
-        !@makeletter{\\}
-        !catcode`!_=11
-        %!catcode`!\=11
-        %!catcode`!_=11
-}
-\def\endtermout%
-{%
-        !egroup
-        %!endgroup
-        %!endgroup
-        %\catcode`\!=12
-        %\catcode`\_=8
-        %\catcode`\\=0
-        %\catcode`\_=12
 }

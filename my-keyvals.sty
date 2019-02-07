@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-keyvals}
+\ProvidesPackage{my-keyvals}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -30,16 +29,89 @@
 {%
         \ifboolkey{sepunits}%
                 {\edef\@the@numname@unit@sep{\commandkey{unitsep}}}%
-                {\edef\@the@numname@unit@sep{\@nil}}%
+                {\edef\@the@numname@unit@sep{\@@nil}}%
         \ifboolkey{sepitems}%
                 {\edef\@the@numname@item@sep{\commandkey{itemsep}\ignorespaces}}%
-                {\edef\@the@numname@item@sep{\@nil}}%
+                {\edef\@the@numname@item@sep{\@@nil}}%
         \ifboolkey{sepgroups}%
                 {\edef\@the@numname@group@sep{\commandkey{groupsep}}}%
-                {\edef\@the@numname@group@sep{\@nil}}%
+                {\edef\@the@numname@group@sep{\@@nil}}%
         \ifboolkey{sepfracs}%
                 {\edef\@the@numname@frac@sep{\commandkey{fracsep}}}%
-                {\edef\@the@numname@frac@sep{\@nil}}%
+                {\edef\@the@numname@frac@sep{\@@nil}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\numtextword[enum type={text,ordinal,roman,Roman}, bool csvpair = true, bool uppercase=false, bool print=true][1]%
+{%
+        \xdef\@@type@name{\commandkey{type}}%
+        \xdef\@@print@name{\commandkey{print}}%
+        \xdef\@@csvpair{\commandkey{csvpair}}%
+        \ifboolkey{uppercase}%
+                {\global\let\@@@numtext@cmd\uppercase}%
+                {\global\let\@@@numtext@cmd\@firstofone}%
+        \gdef\@@@word{}%
+        \xp\@tfor\xp\nextchar\xp:\xp=#1%
+        \do%
+        {%
+                \IfStrEq{\nextchar}{-}{}%
+                {%
+                \IfStrEqCase{\@@type@name}%
+                {%
+                        {text}%
+                        {%
+                                \IsInteger{\nextchar}%
+                                {%
+                                        \numToText!{\nextchar}(@@tempstr)%
+                                        \xappto{\@@@word}{\xp\@@@numtext@cmd\xp{\@@tempstr}}%
+                                }{\xappto\@@@word{\nextchar}}%
+                        }%
+                        {ordinal}%
+                        {%
+                                \IsInteger{\nextchar}%
+                                {%
+                                        \numToText!+{\nextchar}(@@tempstr)%
+                                        \xappto{\@@@word}{\xp\@@@numtext@cmd\xp{\@@tempstr}}%
+                                }{\xappto\@@@word{\nextchar}}%
+                        }%
+                        {roman}%
+                        {%
+                                \IsInteger{\nextchar}%
+                                        {\xappto\@@@word{\xp\@@@numtext@cmd\xp{\xp\romannumeral\nextchar}}}%
+                                        {\xappto\@@@word{\nextchar}}%
+                        }%
+                        {Roman}
+                        {%
+                                \IsInteger{\nextchar}%
+                                        {\xappto\@@@word{\xp\Romannumeral\nextchar}}%
+                                        {\xappto\@@@word{\nextchar}}%
+                        }%
+                }%
+                }%
+        }%
+        \ifnumequal{\@@csvpair}{\binaryT}{\xpreto\@@@word{#1/}}{}%{}{}
+        \ifnumequal{\@@print@name}{\binaryT}{\@@@word}{}%{}{}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newkeycommand\numtextwords[enum type={text,ordinal,roman,Roman}, bool csvpair = true, bool uppercase=false, bool print=true][1]%
+{%
+        \xdef\@type@name{\commandkey{type}}%
+        \xdef\@print@name{\commandkey{print}}%
+        \cssetTF[\commandkey{csvpair}]{0}{@csvpair}(@thecsvpair)%-\@csvpair-\@thecsvpair@word;
+        \xdef\@@encodings{\csuse{#1}}%
+        \ifismacro{#1}%
+                {\xdef\@@encodings{#1}}%
+                {\xdef\@@encodings{\csuse{#1}}}%
+       \global\let\@@thecsvlist\@empty%
+        %\xdef\@@thecsvlist{}%
+        \ifboolkey{uppercase}%
+                {\xdef\@@keycmd@args{type=\@type@name,csvpair=\@thecsvpair@word,uppercase=true,print=false}}%
+                {\xdef\@@keycmd@args{type=\@type@name,csvpair=\@thecsvpair@word,uppercase=false,print=false}}%
+        \foreach \@@encoding [count=\@@count] in \@@encodings%
+        {%
+                \xp\numtextword\xp[\@@keycmd@args]{\@@encoding}%
+                \@add@to@csvlist{\@@@word}{\@@thecsvlist}%%\@@@word,%\space
+        }%
+        \ifnumequal{\@print@name}{\binaryT}{\@@thecsvlist}{}%{}{}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newkeycommand\@@measure@text%
@@ -331,7 +403,7 @@
         \ifboolkey{beforeskip}{\@tcbeqnlist@skipsize@cmd}{}%%
         %\ifboolkey{beforeskip}{\par\smallskip}{}%%
         \ifdefempty{\@tcbeqnlist@title}{\def\@@emptytitle{}}{\def\@@emptytitle{|\@tcbeqnlist@title|}}%
-        \setboolkeyarg{numbers/\@nil/{*},goldtrim/\@nil/{-}}%
+        \setboolkeyarg{numbers/\@@nil/{*},goldtrim/\@@nil/{-}}%
         \def\@@constant@args{'\@tcbeqnlist@color@scheme'"\@tcbeqnlist@colfill"}
         \xp@nyyy\tcbeqnlistbox\@@boolargs\@@constant@args\@@emptytitle%
 }{\endtcbeqnlistbox}
@@ -472,7 +544,8 @@
                 \bookmarkX@hypertarget[0pt]{\@@tcbcode@type}%
                 \tcbset{phantom={\csuse{cft\@@tcbcode@type @contentsline}[10pt]{\@tcb@title@sep\@@the@@title}}}%
                 \gdef\@the@title{\tcbhyperlink[black]{\cft@hyperaddress{\@@tcbcode@type}}{\@@the@@title}}%
-                \csuse{cft\@@tcbcode@type @bookmark}%
+                \csuse{cft\@@tcbcode@type @bookmark}(\@tcb@title@sep\@@the@@title)%
+
         \fi
         \ifcommandkey{colorscheme}%
                 {\edef\@the@color@scheme{\commandkey{colorscheme}}}%

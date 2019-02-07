@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-graphics}
+\ProvidesPackage{my-graphics}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -122,8 +121,8 @@
 {%\fillednumshape[*<counter on>][shape](counter print format){color style}{character/text or counter}(min size)<inner sep>
         \@set@current@tcb@colors{#4}
         \IfBooleanTF{#1}
-                {\edef\shapecontents{#3{#6}}}
-                {\edef\shapecontents{#6}}
+                {\def\shapecontents{#3{#6}}}    %was edef before \$ issue
+                {\def\shapecontents{#6}}        %was edef before \$ issue
         \IfValueTF{#5}
                 {\edef\@line@color{#5}}
                 {\edef\@line@color{#4-colfillborder}}
@@ -541,14 +540,14 @@
         \xdef\@@spanline@label@color{#7!75!black}%
         \IfBooleanTF{#1}{\def\@@shift@dist{2.75}}{\def\@@shift@dist{2}}%
         \cswrapped@args@cmd\@set@node@span@dims{@mark@#3@node@dims}
-        \IfBooleanTF{#1}{\gdef\@@label@xshift{0.0}\gdef\@@label@yshift{0.0}}{}
+        \IfBooleanT{#1}{\gdef\@@label@xshift{0.0}\gdef\@@label@yshift{0.0}}
         \coordinate (LTspan) at ([xshift=\@spanline@LT@xshift,yshift=\@spanline@LT@yshift]#4);
         \coordinate (RBspan) at ([xshift=\@spanline@BR@xshift,yshift=\@spanline@BR@yshift]#5);
         \coordinate (#4#5-Cspan) at ($0.5*(LTspan)+0.5*(RBspan)$);
         %\filldraw (#4#5-Cspan) circle (\@tikzgrid@minor@marker@size) node (Cspancorner) {};
         \draw[#7,thick] (#4) -- (#5) node [#3, midway, no sep, autoshift spanline] {};
         \draw[span line=#7] (LTspan) -- (RBspan) node [#3,midway, no sep]{}; %
-        \IfBooleanTF{#2}{}{\node [auto labeling,text=\@@spanline@label@color] at ([autoshift label] #4#5-Cspan) (#4#5-span) {#6};}
+        \IfBooleanF{#2}{\node [auto labeling,text=\@@spanline@label@color] at ([autoshift label] #4#5-Cspan) (#4#5-span) {#6};}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@tikzgrid@label@major@marker}{m d() m D<>{0,0}}
@@ -723,11 +722,11 @@
 {%*<NA>{ul type to set}[additional key/value pair settings]
         \def\@extension@line@prefix{line}%
         \IfBooleanTF{#1}{\def\@@xextension{#6}}{\def\@@xextension{0}}
-        \IfBooleanTF{#2}{\preto{\@@xextension}{-}}{}
+        \IfBooleanT{#2}{\preto{\@@xextension}{-}}
         \IfBooleanTF{#3}{\def\@@yextension{#6}}{\def\@@yextension{0}}
-        \IfBooleanTF{#4}{\preto{\@@yextension}{-}}{}
-        \IfBooleanTF{#1}{\preto{\@extension@line@prefix}{\@tikzgrid@hline@prefix}}{}
-        \IfBooleanTF{#3}{\preto{\@extension@line@prefix}{\@tikzgrid@vline@prefix}}{}
+        \IfBooleanT{#4}{\preto{\@@yextension}{-}}
+        \IfBooleanT{#1}{\preto{\@extension@line@prefix}{\@tikzgrid@hline@prefix}}
+        \IfBooleanT{#3}{\preto{\@extension@line@prefix}{\@tikzgrid@vline@prefix}}
         \coordinate (#5-\@extension@line@prefix) at ($(#5)+(\@@xextension,\@@yextension)$);
         \coordinate (#5extension) at ($(#5)+(\@@xextension,\@@yextension)$);
 }
@@ -836,7 +835,7 @@
                  \drawyaxis%
                  \drawxaxis%
         \end{tcbenclosure}
-	%\setxsvnumnames{#1}
+        %\setxsvnumnames{#1}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
@@ -845,7 +844,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\@header@tikzpicture@pagenum@node}{s O{current page.south} G{}}%
+\DeclareDocumentCommand{\@header@tikzpicture@pagenum@node}{s D<>{0mm} O{current page.south} G{}}%
 {%<*=NA>[node position]{Chapter title}
         \begin{tikzpicture}[remember picture,overlay]%
                 \node%
@@ -857,12 +856,12 @@
                         %fill opacity=1.0,
                         fill opacity=0.9,
                         minimum size=\@docsection@pagenum@node@size,
-                        xshift=\dimexpr 0mm\relax,
-                        yshift=\dimexpr\@cfoot@yshift + \f@halfsize\relax,%\f@size\p@ 5pt
+                        xshift=\dimexpr #2\relax,
+                        yshift=\dimexpr\@cfoot@yshift + \@landscape@pgnum@yshift\relax,%\@landscape@margin@yshift - \f@halfsize\relax,%+ \f@halfsize\p@\relax,%\f@size\p@ 5pt, \@tikzheading@linewidth
                         line width=\@tikzheading@title@linewidth,
                         font=\footnotesize
-                ] at (#2)%%
-                {#3};
+                ] at (#3)%%
+                {#4};
         \end{tikzpicture}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -870,7 +869,8 @@
 \DeclareDocumentCommand{\@header@tikzpicture@rect@node}{s O{}}
 {%{Chapter title}
         \draw[fill=majorSectionHeading-colback, line width=\@tikzheading@linewidth, draw=black]
-                (0,0) rectangle (0.9\@tikzheading@width, \@tikzheading@height);%
+                %(0,0) rectangle (0.9\@tikzheading@width, \@tikzheading@height);%
+                (0,0) rectangle (\@tikzheading@width, \@tikzheading@height);%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                                       1 2   3
@@ -893,7 +893,7 @@
 {%{Chapter title}
         \begin{tikzpicture}[#2]%[remember picture]%%[remember picture]%
                 \@header@tikzpicture@rect@node[#2]%
-                \IfBooleanTF{#1}{}{\@header@tikzpicture@titlenode[#2]{#3}}%
+                \IfBooleanF{#1}{\@header@tikzpicture@titlenode[#2]{#3}}%
         \end{tikzpicture}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%

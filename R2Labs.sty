@@ -16,8 +16,13 @@
 %******************************** Define provided package name and LaTeX/package dependencies **********************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{R2Labs}
+\def\needsTeXformat{2005/12/01}
+\def\pkgversion{1.1.0}
+\def\pkgdate{2019/02/02}
+\def\pkgsummary{R2Labs composite ``super'' package}
+\xdef\pkginfo{\pkgdate\space\pkgversion\space-\space\pkgsummary}
+\NeedsTeXFormat{LaTeX2e}[\needsTeXformat]
+\ProvidesPackage{R2Labs}[\pkginfo]
 \RequirePackage[abspath]{currfile}                       % Adds file name and path information of current input file as LATEX macros
 \RequirePackage{pkgbase}%{texmf-local/tex/latex/R2Labs/pkgbase}%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -44,14 +49,17 @@
 \DeclareBoolOption{article}%
 \DeclareBoolOption{isorot}
 \DeclareBoolOption[false]{countinchaps}
+\DeclareBoolOption[true]{bibpubnames}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareComplementaryOption{libpkg}{localpkg}
 \DeclareComplementaryOption{consoledefs}{logdefs}
 \DeclareComplementaryOption{rotating}{isorot}
+\DeclareComplementaryOption{bibpubabrvs}{bibpubnames}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareBoolOptionPair[false]{pkgtest}
 \DeclareBoolOptionPair[true]{standalone}
 \DeclareBoolOptionPair[false]{landscape}
+\DeclareBoolOptionPair[false]{a4paper}
 \DeclareBoolOptionPair[false]{twocolumn}
 \DeclareBoolOptionPair[false]{crop}
 \DeclareBoolOptionPair[true]{coverpage}
@@ -73,15 +81,25 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareStringOption[\jobname.tex]{recorder}[\jobname.tex]
 \DeclareStringOption[]{pkgdir}[]
+\DeclareStringOption[C:/Users/Blake/Documents/LaTeX/Documentation/]{exampleDir}[C:/Users/Blake/Documents/LaTeX/Documentation/]
 \DeclareStringOption{dropbox}
 \DeclareStringOption[glsentries]{glsdefsfile}[glsentries]
+%\DeclareStringOption[]{glsdefsfile}[]
+\DeclareStringOption[]{glsdefspath}[]
+\DeclareStringOption[]{FBMstylespath}[]
+\DeclareStringOption[IEEEtran]{bibstyle}[IEEEtran]
+\DeclareStringOption[]{bibdir}[]
+%\DeclareStringOption[C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/]{bibdir}[C:/Users/Blake/Documents/GitHub/pCT-Collaboration/pCT_Documentation/Publications/PublicationTools/]
+\DeclareStringOption[]{bibfiles}[]
 \DeclareStringOption{documentclass}[report]
+\DeclareStringOption[]{docopts}[]
 \DeclareStringOption{showcslist}
 \DeclareStringOption{font}
 \DeclareStringOption[10]{fontsize}[10]
 %\DeclareStringOption{fontfamily}[cmr]
 %\DeclareStringOption[(OT1,cmr,m,n,10)]{font}[(OT1,cmr,m,n,10)]
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareChoiceOption{paper}[letter]{\@supported@papersizes}
 \DeclareChoiceOption{sizeXclo}[10]{\@known@size@clo@defs}
 \DeclareChoiceOption{fontencoding}[OT1]{\@supported@font@encodings}
 \DeclareChoiceOption{fontseries}[m]{\@known@font@series}
@@ -92,9 +110,10 @@
 \DeclareChoiceOption{footpagelabeling}[thepage]{\@supported@page@labeling}
 \DeclareChoiceOption{fncychap}[Lenny]{\@supported@chaphead@styles}
 \DeclareChoiceOption{choiceopttest}[choicetwo]{\choicetestoptions}
+\DeclareChoiceOption{ttbold}[cmttb]{\@supported@ttbold@options}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareChoiceArrayOption{1}{fontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}%Latin Modern Roman
-\DeclareChoiceArrayOption{2}{fontfamily}[cmr]{\@known@fontname@fontcode@pairs}
+\DeclareChoiceArrayOption{1}{fontname}[\@default@fontname@ChoiceArrayOption]{\@known@fontname@fontcode@pairs}%Latin Modern Roman
+\DeclareChoiceArrayOption{2}{fontfamily}[\@default@fontfamily@ChoiceArrayOption]{\@known@fontname@fontcode@pairs}
 %\DeclareChoiceArrayOption{mathfontname}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
 %\DeclareChoiceArrayOption{mathfontfamily}[Computer Modern Roman]{\@known@fontname@fontcode@pairs}
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -122,11 +141,12 @@
 \RequirePkg{my-commands}                        % Lower-level tools/helper cmds used directly & in composite cm construction
 \RequirePkg{my-patches}                         % Modifies/adds reg variables + control sequences/environments to existing packages
 \RequirePkg{imakeidx-patched}                   % options: xindy
-\RequirePkg{my-fonts}                           % Custom assignment of fonts and math alphabets to established and new font names
-\RequirePkg{my-symbols}                         % Custom assignment of fonts and math alphabets to established and new font names
+%\RequirePkg{my-fonts}                           % Custom assignment of fonts and math alphabets to established and new font names
+%\RequirePkg{my-symbols}                         % Custom assignment of fonts and math alphabets to established and new font names
 \RequirePkg{arrowsnew}                          % Custom color definition/naming and visual settings
 \RequirePkg{my-styles}                          % Custom color definition/naming and visual settings
 \RequirePkg[acronym,symbols,toc]{my-glossaries}% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
+%\RequirePkg[acronym,symbols,toc,automake,makeindex]{my-glossaries}% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
 %\RequirePackage[acronym,symbols,toc]{my-glossaries}% Adapts 'glossaries' for glossary/acronym/symbol entry lists w/ links to occurences
 \RequirePkg[intoc]{my-nomencl}                  % Nomenclature/abbreviations list similar to acronms/glossary
 \RequirePkg{mainmatter}                         %
@@ -138,6 +158,8 @@
 %\RequirePkg{my-minted}                         % Adapted 'minted' package configuring code listing languages/settings/appearance
 \RequirePkg{my-macros}                          % Higher-level composite commands/environments combining lower-level components
 \RequirePkg{my-keyvals}                         % Custom key/value commands/environments
+\RequirePkg{my-fonts}                           % Custom assignment of fonts and math alphabets to established and new font names
+\RequirePkg{my-symbols}                         % Custom assignment of fonts and math alphabets to established and new font names
 \RequirePkg{my-graphics}                        % Custom Tikz/PGF/etc. graphics commands/environments
 \RequirePkg{my-latex-development}               % Test/development content maintained separately
 \RequirePkg{my-config}                          % Set doc & package opts/settings, define preamble/doc/page/auxout hooks & patches

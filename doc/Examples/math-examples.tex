@@ -1,0 +1,343 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%**************************************************** `math-examples.tex' ******************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\NeedsTeXFormat{LaTeX2e}[2005/12/01]
+\ProvidesFile{math-examples.tex}                 %
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************* Package options and corresponding Boolean variables *************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%************************************************ Processing of package options ************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter                                     % Change @ -> catcode'@=11 (letter) for use in macro names/definition
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "Math Off"  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\mathoff
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%$\xmatrix{Agra & Agra & Agra\\B & B & B\\C & C & C}$
+%collectMMBODY:\\
+%\begin{collectMMBODY}%{nmatrix}%{3}%
+%    AX & AX & AX\\BX & BX & BX\\CX & CX & CX
+%\end{collectMMBODY}
+\@PKGTESTING@SUBHEADING{Xmatrix (outside align)}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\begin{Xmatrix}%{nmatrix}%{3}%
+    AAA & AAA & AAA\\B & B & B\\C & C & C
+\end{Xmatrix}
+%\\
+\begin{Xmatrix}(BMatrix)[[c](p)]%{}%
+    AAA & AAA & AAA\\B & B & B\\C & C & C
+\end{Xmatrix}%
+%\\
+\begin{Xmatrix}(BMatrix)[[l]]%{}%
+    AAA & AAA & AAA\\B & B & B\\C & C & C
+\end{Xmatrix}%
+%\\
+\begin{Xmatrix}(BMatrix)[[r]]%{}%
+    AAA & AAA & AAA\\B & B & B\\C & C & C
+\end{Xmatrix}%
+%\\%
+\begin{collectMATHBODYTEXT}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXT}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%    \begin{genmatrix}{nmatrix}%[nmatrix]%{3}%
+%      Ag & Ag & Ag\\Bg & Bg & Bg\\Cg & Cg & Cg
+%    \end{genmatrix}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@PKGTESTING@SUBHEADING{Xmatrix (inside align)}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\begin{align*}
+%\protect{\collectMATHBODYTEXT AAA & AAA & AAA\\B & B & B\\C & C & C\endcollectMATHBODYTEXT\relax}\\
+\protect{\begin{collectMATHBODYTEXT}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXT}}%\\
+%    \begin{genmatrix}%{nmatrix}
+%      Ag & Ag & Ag\\Bg & Bg & Bg\\Cg & Cg & Cg
+%    \end{genmatrix}\\
+%\protect\begin{collectMATHBODYTEXT}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXT}\\
+%\begin{collectMATHBODYTEXTB}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXTB}\\
+%\begin{collectMATHBODYTEXTC}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXTC}\\
+%\noalign{\begin{collectMATHBODYTEXT}AAA & AAA & AAA\\B & B & B\\C & C & C\end{collectMATHBODYTEXT}}\\
+%	%\text%
+%	%{%
+%		%\begin{Xmatrix}(BMatrix)[[c](p)]%{}%
+%	    %\begin{collectMATHBODYTEXT}%(BMatrix)[[c](p)]%{}%
+%        \collectMATHBODYTEXT%(BMatrix)[[c](p)]%{}%
+%        	AAA & AAA & AAA\\B & B & B\\C & C & C
+%		\endcollectMATHBODYTEXT%
+%        %\end{collectMATHBODYTEXT}%
+%        %\end{Xmatrix}%
+%	%}%
+%	\\
+	\xmatrix{Agra & Agra & Agra\\B & B & B\\C & C & C}%\\
+	\begin{nmatrix}{3}%
+	  An & An & An\\Bn & Bn & Bn\\Cn & Cn & Cn
+	\end{nmatrix}\\
+	%\begin{Xmatrix}%{3}%
+	%%\Xmatrix%{{\c@array@column@count}[v]}
+	%    A & A & A\\B & B & B\\C & C & C
+	%%\endXmatrix
+	%\end{Xmatrix}
+	%\begin{Xmatrix}%{3}%
+	%%\Xmatrix%{{\c@array@column@count}[v]}
+	%    A & A & A\\B & B & B\\C & C & C
+	%%\endXmatrix
+	%\end{Xmatrix}
+	%%\\
+	%\begin{Xmatrix}[BMatrix]{![c]}%{}%
+	%    A & A & A\\B & B & B\\C & C & C
+	%\end{Xmatrix}%
+	\det A &=
+	\begin{rmatrix}{4}
+	 *) & 1 & 3 &  2 & -6 \\
+	-1) & 1 & 2 & -2 & -5 \\
+	-2) & 2 & 4 & -2 & -9 \\
+	-2) & 2 & 4 & -6 & -9
+	\end{rmatrix}%\\
+	\begin{BMatrix}
+	    1 &  0 & 0 \\
+	    0 & -1 & 0 \\
+	    0 &  0 & 1
+	\end{BMatrix}
+\end{align*}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\definecollection{gra}
+%\begin{collect}{gra}{\relax\protect\bgroup\noexpand}{\egroup\relax}
+%%\begin{collectMATHBODY}
+%    A & A & A\\B & B & B\\C & C & C
+%%\end{collectMATHBODY}
+%\end{collect}
+%\begin{collectinmacro}{\collectedtext}{\begin{Xmatrix}}{\end{Xmatrix}}%{\text\bgroup}{\egroup}
+%%\begin{collectin gra macro}{\collectedtext}{\savebox{\@macro@savebox}\bgroup}{\egroup}%{\text\bgroup}{\egroup}
+%%\begin{collectinmacro}{\collectedtext}{}{}%{\text\bgroup}{\egroup}
+%    Agra & Agra & Agra\\B & B & B\\C & C & C
+%%\end{collectinmacro}%]%
+\begin{collectinmacro}{\collectedtext}{\begin{Xmatrix}}{\end{Xmatrix}}%{\text\bgroup}{\egroup}
+%\begin{collectin gra macro}{\collectedtext}{\savebox{\@macro@savebox}\bgroup}{\egroup}%{\text\bgroup}{\egroup}
+%\begin{collectinmacro}{\collectedtext}{}{}%{\text\bgroup}{\egroup}
+    Agra & Agra & Agra\\B & B & B\\C & C & C
+\end{collectinmacro}%]%
+\collectedtext\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ "Math On"  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%$\mathbbm{\@lcase@alphabet\@ucase@alphabet}$\\
+%\mathversion{script}
+Math Mode Line Spacing: \the\jot\\
+$\pdf{F}{x}$\\
+$\comb_{I}{x}$\\
+%\mathversion{normal}
+%\setlength{\jot}{20pt}
+\mathon
+%\setlength{\jot}{40pt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\begin{flalign*}
+&\loga_2{x}&\\
+&\blog{x}&\\
+&\loga_{10}{x}&\\
+&\dlog{x}&\\
+&\elog{x}&\\
+&\displaystyle\erf_{2}^{4}{x}&\\
+&\displaystyle\numset{P}&\\
+&\displaystyle\lim{P}&\\
+&\displaystyle\Lim_{x \in X}{P}&\\
+&\displaystyle\prod_{x \in X}A_{x}&
+\end{flalign*}
+The formula is
+\begin{flalign*}
+a &= b+c &\\
+  &= 1+1 &\\
+  &= 2  &
+\end{flalign*}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Operators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{script}
+%\begin{align*}
+%   &\ft{x}\quad\ft{\dfrac{x}{y}}\ft*{x}\ft*{\dfrac{x}{y}}\ft[\parenthesized]{x}\ft[\parenthesized]{\dfrac{x}{y}}\\
+%   &\ift{x}\quad\ift{\dfrac{x}{y}}\ift*{x}\ift*{\dfrac{x}{y}}\ift[\parenthesized]{x}\ift[\parenthesized]{\dfrac{x}{y}}\\
+%   %&\dft{x}\quad\dft{\dfrac{x}{y}}\dft*{x}\dft*{\dfrac{x}{y}}\dft[\parenthesized]{x}\dft[\parenthesized]{\dfrac{x}{y}}\\
+%   %%&\zt{x}\quad\zt{\dfrac{x}{y}}\zt*{x}\zt*{\dfrac{x}{y}}\zt[\parenthesized]{x}\zt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\lt{x}\quad\lt{\dfrac{x}{y}}\lt*{x}\lt*{\dfrac{x}{y}}\lt[\parenthesized]{x}\lt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\ilt{x}\quad\ilt{\dfrac{x}{y}}\ilt*{x}\ilt*{\dfrac{x}{y}}\ilt[\parenthesized]{x}\lt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\zt{x}\quad\zt{\dfrac{x}{y}}\zt*{x}\zt*{\dfrac{x}{y}}\zt[\parenthesized]{x}\zt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\izt{x}\quad\izt{\dfrac{x}{y}}\izt*{x}\izt*{\dfrac{x}{y}}\izt[\parenthesized]{x}\izt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\rt{x}\quad\rt{\dfrac{x}{y}}\rt*{x}\rt*{\dfrac{x}{y}}\rt[\parenthesized]{x}\rt[\parenthesized]{\dfrac{x}{y}}\\
+%   &\irt{x}\quad\irt{\dfrac{x}{y}}\irt*{x}\irt*{\dfrac{x}{y}}\irt[\parenthesized]{x}\rt[\parenthesized]{\dfrac{x}{y}}\\
+%%&\DFourier\DTFourier\tDFourier\tDTFourier\FTpairSym\\
+%   %&\bra*{x}\quad\bra*{\dfrac{x}{y}}
+%\end{align*}
+%\mathversion{bbold}
+%\begin{align*}
+%   %&\ft{x}\quad\ft{\dfrac{x}{y}}\ft*{x}\ft*{\dfrac{x}{y}}\ft[\parenthesized]{x}\ft[\parenthesized]{\dfrac{x}{y}}\\
+%   %&\ift{x}\quad\ift{\dfrac{x}{y}}\ift*{x}\ift*{\dfrac{x}{y}}\ift[\parenthesized]{x}\ift[\parenthesized]{\dfrac{x}{y}}\\
+%   &\dft{x}\quad\dft{\dfrac{x}{y}}\dft*{x}\dft*{\dfrac{x}{y}}\dft[\parenthesized]{x}\dft[\parenthesized]{\dfrac{x}{y}}\\
+%   &\idft{x}\quad\idft{\dfrac{x}{y}}\idft*{x}\idft*{\dfrac{x}{y}}\idft[\parenthesized]{x}\idft[\parenthesized]{\dfrac{x}{y}}\\
+%   &\dtft{x}\quad\dtft{\dfrac{x}{y}}\dtft*{x}\dtft*{\dfrac{x}{y}}\dtft[\parenthesized]{x}\dtft[\parenthesized]{\dfrac{x}{y}}\\
+%   &\idtft{x}\quad\idtft{\dfrac{x}{y}}\idtft*{x}\idtft*{\dfrac{x}{y}}\idtft[\parenthesized]{x}\idtft[\parenthesized]{\dfrac{x}{y}}\\
+%   %&\zt{x}\quad\zt{\dfrac{x}{y}}\zt*{x}\zt*{\dfrac{x}{y}}\zt[\parenthesized]{x}\zt[\parenthesized]{\dfrac{x}{y}}\\
+%   %&\izt{x}\quad\izt{\dfrac{x}{y}}\izt*{x}\izt*{\dfrac{x}{y}}\izt[\parenthesized]{x}\izt[\parenthesized]{\dfrac{x}{y}}\\
+%   %&\lt{x}\quad\lt{\dfrac{x}{y}}\lt*{x}\lt*{\dfrac{x}{y}}\lt[\parenthesized]{x}\lt[\parenthesized]{\dfrac{x}{y}}\\
+%%&\DFourier\DTFourier\tDFourier\tDTFourier\FTpairSym\\
+%   %&\bra*{x}\quad\bra*{\dfrac{x}{y}}
+%\end{align*}
+%\mathversion{calligraphy}
+%$\pnorm{x}[2]\pnorm{\dfrac{x}{y}}\pnorm{\dfrac{x}{y}}[2]$
+%\begin{align*}
+%   &\text{Here isd}\E{x}\quad\text{Here isd}\E{\dfrac{x}{y}}\\
+%   &\text{Here isd}\Eb{x}\quad\text{Here isd}\Eb{\dfrac{x}{y}}\\
+%   &\text{Here isd}\Ec{x}\quad\text{Here isd}\Ec{\dfrac{x}{y}}\\
+%   &\text{Here isd}\varb{x}\quad\text{Here isd}\varb{\dfrac{x}{y}}\\
+%   &\text{Here isd var}\\
+%   &\text{Here isd}\varc{x}\quad\text{Here isd}\varc{\dfrac{x}{y}}\\
+%   &\text{Here isd}\dblverted{x}\text{Here isd}\dblverted{\dfrac{x}{y}}\\
+%   &\text{Here isd}\abs{x}\quad\text{Here isd}\var{\dfrac{x}{y}}\\
+%   &\text{Here isd}\pnorm{x}\quad\text{Here isd}\pnorm{\dfrac{x}{y}}\\
+%   &\text{Here isd}\pnorm{\dfrac{x}{y}}\text{Here isd}\pnorm{x}[2]\quad\text{Here isd}\pnorm{\dfrac{x}{y}}[2]\\
+%   &\text{Here isd}\var{x}\quad\text{Here isd}\var{\dfrac{x}{y}}\\
+%   &\text{Here isd}\timeavg{x}\quad\text{Here isd}\timeavg{\dfrac{x}{y}}\\
+%   &\text{Here isd}\erf{x}\quad\text{Here isd}\erf{\dfrac{x}{y}}\\
+%   &\text{Here isd}\erfi{x}\quad\text{Here isd}\erfi{\dfrac{x}{y}}\\
+%   &\text{Here isd}\inprod{x}{y}\quad\text{Here isd}\inprod{\dfrac{x}{y}}{y}\\
+%   &\text{Here isd}\Tr{x}\quad\text{Here isd}\Tr{\dfrac{x}{y}}\\
+%   %\longdiv{12345}{5}
+%\end{align*}
+%\mathversion{extended}
+%\begin{align*}
+%   &\Herm{A}\quad\tpose{A}\quad\dagmatx{A}\Language\\
+%   &\Arrowvert\lgroup\lmoustache\\%\\llbracketrbrbrak\lBrace\lBrack\rParen\rsem\ldbrack\llbracket\ranglebar
+%   &\complement[\![\d{x}\measuredangle\matx{A}\sup(x)\inf(x)\Longleftrightarrow\\
+%   %&\varkappa\digamma\Xi\gammaup\Upsilon\upsilon\upsilonup\upsilonB\\
+%   %&\bbGamma\bbDelta\bbTheta\bbLambda\bbXi\bbPi\bbSigma\bbUpsilon\bbPhi\bbPsi\bbOmega\\
+%   %&\lbag\rbag\boxast\circ\mathbb{H} \!\,\mathbb{P} \!\,{}^\dagger \!\,\bot \!\,\top \!\,{}^{\mathsf{T}} \!\,
+%   %&\varBbbk\varsigma\varepsilonup\varthetaup\varpiup\varrhoup\varsigmaup\varphiup\varg\vary\varv\varw
+%   %\displaybreak\\
+%   &\text{Here isd}\in\Naturals\text{Here isd}\inss\PosNaturals\text{Here is}\NegNaturals\\
+%   &\text{Here isd}\Integers\text{Here isd}\PosIntegers\text{Here is}\NegIntegers\\
+%   &\text{Here isd}\Reals\text{Here isd}\PosReals\text{Here is}\NegReals\\
+%   &\text{Here isd}\Rationals\text{Here isd}\PosRationals\text{Here is}\NegRationals\\
+%\end{align*}
+%\mathversion{normal}
+%\begin{align*}
+%   &n\in\varmathbb{R}\\
+%   &\uline{n\in\Naturals n}\quad n\in\PosNaturals\quad n\in\NegNaturals\\
+%   &n\in\Integers\quad n\in\PosIntegers\quad n\in\NegIntegers\\
+%   &n\in\Reals\quad n\in\PosReals\quad n\in\NegReals\\
+%   &n\in\Rationals\quad n\in\PosRationals\quad n\in\NegRationals\\
+%   &n\inss\Naturals\quad n\inss\PosNaturals\quad n\inss\NegNaturals\\
+%   &n\inss\Integers\quad n\inss\PosIntegers\quad n\inss\NegIntegers\\
+%   &n\inss\Reals\quad n\inss\PosReals\quad n\inss\NegReals\\
+%   &n\inss\Rationals\quad n\inss\PosRationals\quad n\inss\NegRationals
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\end{align*}
+%%\begin{boldAMS}*{alignat}{2}
+%%ax=b
+%%\end{boldAMS}
+%%\begin{boldalign}
+%%  \matx{c}_k = \matx{c}_{k-1} - \mu \matx{R}^{-1} P(\matx{c}_{k-1})
+%%\end{boldalign}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Hello
+%\section{sec1}
+%%$\dagger\ddagger\invlazys\smallin\smallni\QED\fracslash\measuredangle$
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************** End of 'math-examples.tex' file ***********************************************%
+%*******************************************************************************************************************************%
+\mathoff
+% Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
+\makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput 
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\definecollection{gra}
+\begin{collectinmacro}{\collectedtext}{\begin{Xmatrix}}{\end{Xmatrix}}%{\text\bgroup}{\egroup}
+%\begin{collectin gra macro}{\collectedtext}{\savebox{\@macro@savebox}\bgroup}{\egroup}%{\text\bgroup}{\egroup}
+%\begin{collectinmacro}{\collectedtext}{}{}%{\text\bgroup}{\egroup}
+    Agra & Agra & Agra\\B & B & B\\C & C & C
+\end{collectinmacro}%]%
+\collectedtext
+%\begin{Xmatrix}%{3}%
+%%\Xmatrix%{{\c@array@column@count}[v]}
+%    %\collectedtext
+%    %\@macro@savebox
+%%\endXmatrix
+%\end{Xmatrix}
+%\begin{collectinmacro}{\collectedtext}{}{}
+%%\begin{collectMATHBODY}
+%    A & A & A\\B & B & B\\C & C & C
+%%\end{collectMATHBODY}
+%\end{collectinmacro}
+%&
+%%\ensuremath{
+%\begin{collectMATHBODY}
+%%\collectBODY
+%   A & A & A\\B & B & B\\C & C & C
+%%\endcollectBODY
+%\end{collectMATHBODY}
+%%}
+%\begin{collectinmacro}{\collectedtext}{\text\bgroup\savebox{\@macro@savebox}\bgroup}{\egroup\egroup}%{\text\bgroup}{\egroup}
+%%\begin{collectinmacro}{\collectedtext}{\savebox{\@macro@savebox}\bgroup}{\egroup}%{\text\bgroup}{\egroup}
+%%\begin{collectinmacro}{\collectedtext}{}{}%{\text\bgroup}{\egroup}
+%    A & A & A\\B & B & B\\C & C & C
+%\end{collectinmacro}%]%
+%%\begin{collectinmacro}{\collectedtext}{\savebox{\@macro@savebox}\bgroup}{\egroup}%{\text\bgroup}{\egroup}
+%%\begin{collect}{gra}{\text\bgroup}{\egroup}%{}{}%
+%\savebox{\@macro@savebox}{%
+%%\begin{collectinmacro}{\collectedtext}{\text\bgroup}{\egroup}%{}{}%
+%    A & A & A\\B & B & B\\C & C & C
+%}
+%%\end{collectinmacro}%]%
+%%\end{collect}%]%
+%\definecollection{gra}
+%\begin{collectinmacro}{\collectedtext}{}{}
+%\begin{collect}{gra}{\relax\protect\bgroup\noexpand}{\egroup\relax}
+%%\begin{collectMATHBODY}
+%    A & A & A\\B & B & B\\C & C & C
+%%\end{collectMATHBODY}
+%\end{collect}
+%\end{collectinmacro}
+%\Xmatrix
+%\collectBODY
+%\ensuremath{
+%\text{%
+%\begin{collectBODY}%{\c@array@column@count}%{3}%
+%\text{%
+%\begin{collectinmacro}{\collectedtext}{\text{}{}}
+%%\begin{collectinmacro}{\collectedtext}{\text{\begin{Xmatrix}}{\end{Xmatrix}}}
+%%\begin{collectMATHBODY}
+%%\Xmatrix%{{\c@array@column@count}[v]}
+%    %ABC
+%    A & A & A\\B & B & B\\C & C & C
+%    %\noexpand{A & A & A\\B & B & B\\C & C & C}
+%%\endXmatrix
+%%\endcollectBODY
+%%\endXmatrix
+%%\end{collectMATHBODY}
+%\end{collectinmacro}%]%
+%}\\
+%\end{collectBODY}
+%}\\

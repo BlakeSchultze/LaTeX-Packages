@@ -14,8 +14,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{tocloft-patch}                 % This is a patch to the `cool` package, renewing/redefining some macros
+\ProvidesPackage{tocloft-patch}[\pkginfo]                 % This is a patch to the `cool` package, renewing/redefining some macros
 %\RequirePackage{cool}                           % COntent Oriented LaTeX (LATEX2î) : standardized mathematical macros/operators/symbols/etc.
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
@@ -120,7 +119,7 @@
 {%\cftX@create(Boolean arg list){initialization arg list}{name/counter arg list}[empty arg]
         \@add@to@csvlist{#3}{\cftZ@listof@members}
         \@add@to@csvlist{#3/#4}{\@listof@list}
-        \IfBooleanTF{#1}{}{\newlistof{#2}{#3}{#5}}
+        \IfBooleanF{#1}{\newlistof{#2}{#3}{#5}}
         \cftZ@newlistof@arg@parser{#3}{#4}#6
         \@namedef{cft#3@listof@name}{#2}
         \@namedef{cft#3@listof@file}{#3}
@@ -211,7 +210,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\cftX@bookmark}{s m O{}}%
 {%\cftX@tcbtitle{list entry}[alternative counter]
-        \xp\DeclareDocumentCommand\xp{\csname cft#2@bookmark\endcsname}{s t! o}%
+        \xp\DeclareDocumentCommand\xp{\csname cft#2@bookmark\endcsname}{s t! o D(){}}%
         {%
                 \IfValueTF{##3}%
                 {\def\@rellevel{##3}}%
@@ -221,8 +220,8 @@
                                 {\def\@rellevel{\@nameuse{cft#2@rellevel}}}%
                 }%
                 \IfBooleanTF{##1}
-                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@bookmark@title}{#3}}}
-                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@tcbtitle}}}
+                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@bookmark@title}{#3##4}}}
+                {\bookmark[keeplevel, dest=\bookmark@hyperaddress{#2}, rellevel=\@rellevel]{\@nameuse{cft#2@tcbtitle}##4}}
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -272,9 +271,9 @@
         \@namedef{cft#3@contentsline@title}##1%
         {%
                 \@nameuse{cft#3@numberline}{##1}%
-                \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
+                \IfBooleanF{#1}{\@nameuse{cft#3@toctitle}}%
         }%
-        \xp\DeclareDocumentCommand\xp{\csname cft#3@contentsline\endcsname}{O{10pt} m}%
+        \xp\DeclareDocumentCommand\csname cft#3@contentsline\endcsname{O{10pt} m}%
         {%
                 \raisebox{##1}{\phantomsection}%{10pt}
                 \addcontentsline{#2}{#3}{{\csuse{cft#3@contentsline@title}{##1}}##2}%{\@nameuse{cft#3@contentsline@title}##1}%
@@ -288,7 +287,7 @@
         {%
                 \@nameuse{cft#2@toctitle@font}
                 \@nameuse{cft#2@numberline}{10pt}%
-                \IfBooleanTF{#1}{\space}{}%
+                \IfBooleanT{#1}{\space}%
                 \@nameuse{cft#2@toctitle}
                 ##1%
         }%
@@ -390,6 +389,7 @@
         \@namedef{cft#2@tcbtitle@font}{\cftX@tcbtitle@font}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%                                               1 2  3  4  5  6
 \DeclareDocumentCommand{\@cftX@parse@bool@args}{s t_ t~ t! t- m}
 {%
         \csname@ny\newif{if@cft#6@increment@toclevel@}
@@ -459,7 +459,7 @@
                 {\cftX@names{#1}{#2}}%
         \IfValueTF{#8}%
         {%
-                \IfBooleanTF{#9}{\@add@to@csvlist{#8}{\@cftX@counterwithout@list}}{}
+                \IfBooleanT{#9}{\@add@to@csvlist{#8}{\@cftX@counterwithout@list}}
                 \cftX@toctitle{#1}[#8]%
                 \cftX@tcbtitle{#1}[#8]%
         }
@@ -477,7 +477,7 @@
         \addtolength{\@nameuse{cft#1numwidth}}{\widthof{#4} + \widthof{#5}}%
         \IfValueTF{#6}%
         {%
-                \IfBooleanTF{#7}{\@add@to@csvlist{#6}{\@cftX@counterwithout@list}}{}
+                \IfBooleanT{#7}{\@add@to@csvlist{#6}{\@cftX@counterwithout@list}}
                 \@nameuse{if@cft#1@no@numberline@}%
                         \cftX@numberline*{#1}[#6]%
                         \cftX@bookmark@title*{#1}%
@@ -538,8 +538,9 @@
 \cftX@newlistentry(*_){{Chapter}{toc}{1}}{{\chaptername}}
 \cftX@newlistentry(*_){[Chapter]{Section}{toc}{2}}{{\SectionName}}
 \cftX@newlistentry(*_){[Section]{Subsection}{toc}{3}}{{\SubsectionName}}
-\cftX@newlistentry(_){{Part}{toc}{0}}{{\partname}{\partname\space}-\space:\space\textcolor{white}{\thePart}-}[\Roman{Part}]
-\cftX@newlistentry(_){[Part]{Topic}{toc}{1}}{{\TopicName}{\TopicName\space}-\space:\space\textcolor{white}{\theTopic}-}%\hspace{-5mm} \hspace{\@Topic@toctitle@shift} \textcolor{green} \hspace{-\@Part@toctitle@shift}\space
+\cftX@newlistentry(_){{Part}{toc}{0}}{{\partname}{\partname\space}-\space:\space-}[\Roman{Part}]% \textcolor{white}{\theTopic}
+\cftX@newlistentry(_){[Part]{Topic}{toc}{1}}{{\TopicName}{\TopicName\space}-\space:\space-}%\hspace{-5mm} \hspace{\@Topic@toctitle@shift} \textcolor{green} \hspace{-\@Part@toctitle@shift}\space(_~-)
+\cftX@newlistentry(_-){{Biblink}{toc}{0}}{{\bibname}{\hspace{-3.2mm}}}%{\bibname\space}{\bibname}-\space:\space-}[\Roman{Part}]% \textcolor{white}{\theTopic}
 \cftX@newlistentry(-){{backmatter}{toc}{0}}{{backmatter}}
 \cftX@newlistentry(*){{figbox}{lof}{0}}{{\figboxname}}%[\roman{Chapter}]
 \cftX@newlistentry(~){[figbox]{figboxfigure}{lof}{1}}{{\figboxfigname}/figure/!}%/figure/
@@ -547,6 +548,7 @@
 \cftX@newlistentry(*!){{IBPtable}{lot}{1}}{{\ibptablename}[\IBPtableLongName]{\space\hspace{-3.0pt}}-\space\hspace{0.0pt}-(table)!}%-\space\hspace{0pt}-
 \cftX@newlistentry(!){{LDtable}{lot}{1}}{{\longdivtablename}[\LDtableLongName]{\hspace{0.5pt}}(table)!}%-\hspace{0.75em}-{\hspace{0pt}}-\hspace{0pt}-
 \cftX@newlistentry(!){{PLDtable}{lot}{1}}{{\pldtablename}[\PLDtableLongName]{\hspace{0.5pt}}(table)!}%-\hspace{0.75em}-{\hspace{0pt}}-\hspace{0pt}-
+\cftX@newlistentry(!){{eqnlistbox}{lot}{1}}{{\EqnListBoxName}{\hspace{0.5pt}}(table)!}%-\hspace{0.75em}-{\hspace{0pt}}-\hspace{0pt}-
 \cftX@newlistentry(*~!){{Matlab}{lol}{1}}{{\lstmatlabname}{\space\space\hspace{2.5pt}}(lstlisting)!}
 \cftX@newlistentry(*~!){{Terminal}{lol}{1}}{{\lstterminalname}{\space\space\hspace{2.5pt}}(lstlisting)!}
 \cftX@newlistentry(~-){{problem}{probs}{0}}{{\problemsname}{\space\hspace{3pt}}}[\the@prob@counter]%
@@ -585,8 +587,8 @@
                 {subtable}{\gdef\@cft@nickname@short{subtab}}%
         }%
         %[\gdef\@cft@nickname@short{#2}]%
-        \IfBooleanTF{#1}{\@cft@nickname@short}{}%
-        \IfValueTF{#3}{\csxdef{#3}{\@cft@nickname@short}}{}%
+        \IfBooleanT{#1}{\@cft@nickname@short}%
+        \IfValueT{#3}{\csxdef{#3}{\@cft@nickname@short}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@expand@cft@nickname}{s m o}%
@@ -607,9 +609,9 @@
                 {subtab}{\gdef\@cft@nickname@long{subtable}}%
         }%
         %[\gdef\@cft@nickname@long{#2}]%
-        \IfBooleanTF{#1}{\@cft@nickname@long}{}%
+        \IfBooleanT{#1}{\@cft@nickname@long}%
         %\IfValueTF{#3}{\edef#3{\@cft@nickname@long}}{}%
-        \IfValueTF{#3}{\csxdef{#3}{\@cft@nickname@long}}{}%
+        \IfValueT{#3}{\csxdef{#3}{\@cft@nickname@long}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@equiv@docsection@cmds}{s m o}%
@@ -626,8 +628,8 @@
                 {Part}{\gdef\@equiv@docsection@cmd{part}}%
         }%
         [\gdef\@equiv@docsection@cmd{none}]%
-        \IfBooleanTF{#1}{\@equiv@docsection@cmd}{}%
-        \IfValueTF{#3}{\csxdef{#3}{\@equiv@docsection@cmd}}{}%
+        \IfBooleanT{#1}{\@equiv@docsection@cmd}%
+        \IfValueT{#3}{\csxdef{#3}{\@equiv@docsection@cmd}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\cftX@sectioning@settings}{s t! t> t+ m o}%\cftbeforeXskip
@@ -642,8 +644,7 @@
                 {\expandafter\setlength\csname cftbefore#5skip\endcsname{\cftbeforeXskip}}
                 {\expandafter\setlength\csname cftbefore#5skip\endcsname{\cftbeforeXsmallskip}}
         \expandafter\renewcommand\csname cft#5leader\endcsname{\nobreak\cftdotfill{\@nameuse{cft#5dotsep}}\space}
-        \IfValueTF{#6}
-                {\expandafter\setlength\csname cft#5indent\endcsname{#6}}{}
+        \IfValueT{#6}{\expandafter\setlength\csname cft#5indent\endcsname{#6}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                      1     2 3 4
@@ -659,14 +660,14 @@
         \@expand@cft@nickname{#4}[@cft@source@long]%
         \@contract@cft@nickname{#3}[@cft@target@short]%
         \@expand@cft@nickname{#3}[@cft@target@long]%
-%        \IfBooleanTF{#1}
+%        \IfBooleanT{#1}
 %        {
 %                \@contract@cft@nickname{#2}[@cft@target@short]%
 %                %\edef\@cft@target@long{\@cft@nickname}
 %                \@expand@cft@nickname{#3}[@cft@target@long]%
 %                \edef\@cft@nickname@long{\@cft@nickname}
 %                \expandafter\renewcommand\csname the\@cft@nickname@long\endcsname{\@nameuse{the\@cft@target@long}}
-%        }{}
+%        }
 %        \@expand@cft@nickname{#3}
 %        \edef\@cft@source@long{\@cft@nickname}
 %        \@expand@cft@nickname{#2}% \xp@setlength@

@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-colorsets}
+\ProvidesPackage{my-colorsets}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -44,11 +43,18 @@ SafetyOrange,SafetyOrange-BlazeOrange,SafetyYellow,Saffron,Sage,StPatricksBlue,S
         dvipsnamecolors/dvipsnames,%
         pantonecolors/{Pantone Home Packages},%
         crayolacolors/Crayola,%
-        AZcolors/{A-Z Colors}%
+        AZcolors/{A-Z Colors},%
+        clColors/{WinEdit Colors}%
 }
+%-----------------------------------------------------------------------------------------------------------------------------------------%
+\gdef\colordef@fname@ordpairs{latexcolors,colorsAZ,gvcolors,pantone,pantone-pack,crayola,svgcolors,svgnam,x11nam,dvipsnames,clColors}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\inputcolordefs{\@for\@@fname:=\colordef@fname@ordpairs\do{\input{\@pkg@dir@suffix\colordefs@dirname/\@@fname.def}}}
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ User defined colors, color mixes, and color schemes ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-----------------------------------------------------------------------------------------------------------------------------------------%
 %\usepackage{colorDefs}
 %\usepackage{my-colorsets}
 \def\@colorset@property@names%
@@ -56,41 +62,6 @@ SafetyOrange,SafetyOrange-BlazeOrange,SafetyYellow,Saffron,Sage,StPatricksBlue,S
         colback,colbackupper,colbacklower,colbacktitle,colbackinterior,colframe,colleftframe,colrightframe,
         colframeborder,colinteriorborder,coltitle,colupper,collower,coltext,coltextshadow,colboxshadow,
         coldraw,colfill,colfilltext,colfillborder,rulecolor,coldoubleline
-}
-%-----------------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                     1 2  3    4 5
-\DeclareDocumentCommand{\tcbbookmark}{s t! O{1} m O{tcbmisc}}%
-{%\tcbbookmark{list entry}[alternative counter]
-        \bookmark[keeplevel, dest=\bookmark@hyperaddress{#5}, rellevel=#3]{#4}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tcbnumberline}{s m O{tcbmisc}}%
-{%\cftX@numberline{list entry}[alternative numberline counter]
-        \protect\numberline%
-        {%
-                \raisebox{10pt}{\protect\hypertarget{\toc@hyperaddress{#3}}{}}%
-                \@nameuse{cft#2@numberline@prefix}%
-                \IfValueTF{#3}%
-                        {\@nameuse{the#3}}%
-                        {\@nameuse{the#2}}%%
-                \@nameuse{cft#2@numberline@suffix}%
-        }%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2 3
-\DeclareDocumentCommand{\tcbcontentsline}{s m m}%
-{%\cftX@contentsline<*>{file extension}{list entry}
-        \@namedef{cft#3@contentsline@title}%
-        {%
-                \@nameuse{cft#3@numberline}{10pt}%
-                \IfBooleanTF{#1}{}{\@nameuse{cft#3@toctitle}}%
-        }%
-        \@namedef{cft#3@contentsline}##1%
-        {%
-                \xp\raisebox{10pt}{\phantomsection}%
-                \xp\addcontentsline{#2}{#3}{\@nameuse{cft#3@contentsline@title}##1}%
-        }%
 }
 %-----------------------------------------------------------------------------------------------------------------------------------------%
 \newtcboxfit{\colortablebox}[3]{nobeforeafter, sharp corners, colback=#1, width=#2, height=#3, halign=center, valign=center,
@@ -164,26 +135,6 @@ boxsep=0mm, TBLR={0mm}{0mm}{0mm}{0mm}, right skip=-1pt, after=\unskipspacing}%le
                 \begin{@csv@colorset@table}{\thecolortablerow}{\@color@title}\end{@csv@colorset@table}%
         }%
 }
-%----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%*******************************************************************************************************************************%
-%*******************************************************************************************************************************%
-%*******************************************************************************************************************************%
-%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
-%\input{colors_A-Z.def}
-%\input{colors_A-F.def}
-%\input{colors_G-M.def}
-%\input{colors_N-Z.def}
-%C:/texlive/2014/texmf-dist/tex/latex/mymacros/colordefs/
-\input{colorsAZ.def}
-\input{gvcolors.def}
-\input{pantone.def}             % All PMS<XXX>/PMS<XXXX> colors, mostly 100-732 & 7401-7547 but some XXX5 e.g. 584,5845,585,...
-\input{pantone-pack.def}
-\input{crayola.def}
-\input{svgcolors.def}
-%\input{x11colors.def}
-\input{svgnam.def}
-\input{x11nam.def}
-\input{dvipsnames.def}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %********************************************** End of 'my-colorsets.sty' package **********************************************%
@@ -197,29 +148,3 @@ boxsep=0mm, TBLR={0mm}{0mm}{0mm}{0mm}, right skip=-1pt, after=\unskipspacing}%le
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%spotcolor.sty
-%\def\colornameprefix {XC@}
-%
-%\newif\ifdefinecolors \definecolorstrue
-%\def\XC@append#1#2%
-% {\ifx#1\@undefined\def#1{#2}\else\ifx#1\relax\def#1{#2}\else
-%  \toks@\xp{#1#2}\edef#1{\the\toks@}\fi\fi}
-%
-%\let\XC@@names\relax
-%\providecommand*\paperquality{1}
-%\providecommand*\colornameprefix{XC@}
-%\let\XC@@nameprefix\colornameprefix
-%\def\XC@declarenames#1#2#3%
-% {\DeclareOption{#1}{\XC@append\XC@@names
-%   {#3\definecolorstrue\input{#2.def}\definecolorstrue
-%    \let\colornameprefix\XC@@nameprefix}}
-%  \DeclareOption{#1*}{\XC@append\XC@@names
-%   {#3\definecolorsfalse\input{#2.def}\definecolorstrue
-%    \let\colornameprefix\XC@@nameprefix}}}
-%\XC@declarenames{dvipsnames}{dvipsnam}{\let\colornameprefix\@empty}
-%\XC@declarenames{svgnames}{svgnam}{}
-%\XC@declarenames{x11names}{x11nam}{}
-%\XC@declarenames{hksnames}%
-% {hks\ifcase\paperquality k\or n\or k\or z\else n\fi nam}{}
-%\XC@declarenames{pmsnames}{pmsnam}{}
-%\XC@declarenames{ralnames}{ralnam}{}

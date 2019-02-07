@@ -1,0 +1,37 @@
+%\clearpage%
+\Subsection(pCT Code Hierarchy){\texttt{pCT\_Code} Hierarchy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenvironment}|pCT\_code|
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbparbox}|\dirsep ion/local\dirsep pCT\_code\dirsep$\dots$|
+\bfdash directory on Kodiak and each Tardis compute node used to store clones of the GitHub repositories relevant to pCT and the private storage of user code.  The naming and organizational scheme is the same on Kodiak and each Tardis compute node, thereby simplifying distribution of code for execution on Tardis; the only difference is the top level parent directory on Kodiak is \docentry[constdir]{ion} and on the Tardis compute nodes it is \docentry[constdir]{local}, but their subdirectories are identical.  See the \autohyperlink[type=Section]{GitHub Accounts/Repositories} section for a list of GitHub accounts and repositories relevant to pCT.  For a visual representation of this hierarchy, see the \autohyperlink[type=Section, label=pCT\_code Hierarchy Diagram]{pCT code Hierarchy Diagram}.
+\end{tcbparbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{tcbparbox}{tcbenumeratedStyle}
+\begin{tcbenumbox}
+\begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+    \item \docentry[constdir]{ion} or \docentry[constdir]{local} : parent directory for all pCT code/data on Kodiak and the Tardis compute nodes
+        \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+            \item \docentry[constdir]{pCT\_code} : directory containing the code for all pCT programs linked to their GitHub repositories as well as subdirectories for each pCT user where they can clone and modify these repositories and store/execute their own code
+            \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+                \item \docentry[constdir]{git} : directory containing clones of the standard/common pCT programs, providing easy and immediate access to the newest version of each of these programs
+                \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+                    \item \docentry[dir]{\caratenclosed*{GitHub account}} : directories for each of the GitHub accounts containing one or more pCT programs
+                	\begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+                        \item \docentry[dir]{\caratenclosed*{GitHub repository}} : subdirectories for each pCT code repository in the associated GitHub account
+                    \end{ThinEnum}
+                \end{ThinEnum}
+            \item \docentry[constdir]{user\_code} : directory containing subdirectories for each user where they can store their personal code
+                \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+                    \item \docentry[dir]{\caratenclosed*{username}} : subdirectories for each pCT user where they can store their personal code
+                \end{ThinEnum}
+        \end{ThinEnum}
+        \end{ThinEnum}
+\end{ThinEnum}
+\end{tcbenumbox}
+%\end{tcbparbox}
+\end{tcbenvironment}
+\endinput
+%\clearpage

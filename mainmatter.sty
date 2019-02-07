@@ -6,8 +6,7 @@
 %*******************************************************************************************************************************%
 %********************************* Define provided package name and LaTeX/package dependencies *********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{mainmatter}
+\ProvidesPackage{mainmatter}[\pkginfo]
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -209,7 +208,7 @@
                         {\@lhead@font\@docsection@theX}\hskip\@docsection@lhead@theX@title@sep%\;\;%
                 \parbox[t]%
                         {\@docsection@lhead@title@width}%
-                        {\@lhead@font\@@doc@section@lhead@title\vskip\@docsection@lhead@sep}%
+                        {\@lhead@font\@@doc@section@lhead@title\vskip\@docsection@lhead@sep}%\hskip5in%
         }%
         \fancyhead[R]{\@header@image\vskip\@docsection@lhead@skip}%
 }
@@ -227,35 +226,40 @@
         }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                           1 2 3                  4   5 6 7
-\DeclareDocumentCommand{\@init@doc@section}{m m D''{tcbBlueScheme} d() m g o}
+%                                           1  2 3 4                  5   6 7 8
+\DeclareDocumentCommand{\@init@doc@section}{t+ m m D''{tcbBlueScheme} d() m g o}
 {%\@init@doc@section*<clear page><section cmd>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        \IfStrEqCase{#2}%
+        \IfStrEqCase{#3}%
         {%
-                {Part}{\IfSubBooleanTF{#1}{}{\clearpage}}%
-                {part}{\IfSubBooleanTF{#1}{}{\clearpage}}%
-                {Topic}{\IfSubBooleanTF{#1}{}{\clearpage}}%
-                {Chapter}{\IfSubBooleanTF{#1}{}{\clearpage}}%
-                {Section}{\IfSubBooleanTF{#1}{\clearpage}{}}%
-                {Subsection}{\IfSubBooleanTF{#1}{\clearpage}{}}%
+                {Part}{\IfSubBooleanTF{#2}{}{\clearpage}}%
+                {part}{\IfSubBooleanTF{#2}{}{\clearpage}}%
+                {Topic}{\IfSubBooleanTF{#2}{}{\clearpage}}%
+                {Chapter}{\IfSubBooleanTF{#2}{}{\clearpage}}%
+                {Section}{\IfSubBooleanTF{#2}{\clearpage}{}}%
+                {Subsection}{\IfSubBooleanTF{#2}{\clearpage}{}}%
         }%%
-        \csuse{@#2@before@skip}%
-        %\unskipspacing
-        \gdef\@current@doc@section{#2}%
-        \@set@BKM@context{#2}%
-        %\expandafter\gdef\csname current#2name\endcsname{#5}%
-        \csgdef{current#2name}{#5}%
-        \@set@current@tcb@colors{#3}%
-        \@doc@section@BKM@setupnext{#2}%
-        %\linespread@settings[context=doc]%
-        \doclinespacing%
-        \refstepsectioncounter{#2}%
-        \IfValueTF{#4}%
-                {\unskipspacing\docsectionX@hypertarget[0pt]{#2}{#4}}
-                {\unskipspacing\docsectionX@hypertarget[0pt]{#2}{#5}}
-        \IfValueTF{#6}%
-                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#6}}}
-                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#5}}}
+        \csuse{@#3@before@skip}%\unskipspacing
+        \gdef\@current@doc@section{#3}%
+        \@set@BKM@context{#3}%
+        \csgdef{current#3name}{#6}%
+        \@set@current@tcb@colors{#4}%
+        \@doc@section@BKM@setupnext{#3}%
+        \doclinespacing%\linespread@settings[context=doc]%
+        \refstepsectioncounter{#3}%
+        \IfValueTF{#5}%
+                {\unskipspacing\docsectionX@hypertarget[0pt]{#3}{#5}}%
+                {\unskipspacing\docsectionX@hypertarget[0pt]{#3}{#6}}%
+        \IfValueTF{#7}%
+                {\def\@@toc@title{#7}}%
+                {\def\@@toc@title{#6}}%
+        \def\@contentsline{\@nameuse{cft#3@contentsline}[10pt]{\@@toc@title}}%
+        \IfSubBooleanTF{#1}%
+        	{\edef\unprotextedarg{\@@toc@title}\xp\def\xp\@bkm@contentsline@title\xp{\xp\unprotexted\unprotextedarg;}}%
+        	{\xdef\@bkm@contentsline@title{\@@toc@title}}%
+	\xdef\@bkm@contentsline{\@nameuse{cft#3@contentsline}{\@bkm@contentsline@title}}%
+%        \IfValueTF{#6}%
+%                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#6}}}
+%                {\def\@contentsline{\@nameuse{cft#2@contentsline}[10pt]{#5}}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@docsection@after@skip}{m}%
@@ -275,53 +279,63 @@
         \@docsection@lhead{#2}{#3}%
         \zsavepos{@doc@section@abs@endpos}%
         \gdef\@prev@doc@section{#2}%
-        \IfSubBooleanTF{#1}{}{\@docsection@after@skip{#2}}%
+        \IfSubBooleanTF{#1}{}{\@docsection@after@skip{#2}}\leavevmode%
 }
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Document sectioning commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                 1 2  3                  4   5 6 7
-\DeclareDocumentCommand{\Chapter}{s t! D''{tcbBlueScheme} d() m g o}
+%                                 1  2 3  4                  5   6 7 8
+\DeclareDocumentCommand{\Chapter}{t+ s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        \@init@doc@section{#1}{Chapter}'#3'(#4){#5}{#6}[#7]%
-        \@header@tikzpicture*{Chapter}%
+        \IfBooleanTF{#1}%
+	        {\@init@doc@section+{#2}{Chapter}'#4'(#5){#6}{#7}[#8]}%
+	        {\@init@doc@section{#2}{Chapter}'#4'(#5){#6}{#7}[#8]}%
+       % \setlength\@tikzheading@node@yshift{\dimexpr\@tikzheading@baseyshift + \@tikzheading@baseheight\relax}%
+        \@header@tikzpicture*{Chapter}<\@tikzheading@baseheight><\dimexpr\@landscape@Chapter@yshift\relax>%
+        %\@header@tikzpicture*{Chapter}<\@tikzheading@baseheight><\dimexpr -\@landscape@page@yshift - \@tikzheading@linewidth\relax>%<-96mm>%%
         \toggletrue{@major@section@shift}
-        \@finish@doc@section{#2}{Chapter}{#5}%
+        \@finish@doc@section{#3}{Chapter}{#6}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                 1 2  3                  4   5 6 7
-\DeclareDocumentCommand{\Section}{s t! D''{tcbBlueScheme} d() m g o}
+%                                 1  2 3  4                  5   6 7 8
+\DeclareDocumentCommand{\Section}{t+ s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        \@init@doc@section{#1}{Section}'#3'(#4){#5}{#6}[#7]%
-        \@zsavepos@unique{@Section@abs@startpos}{@zsavepos@counter}{\@init@docsection@clearpage@threshold}%
-        \IfValueTF{#7}%
+        %\@init@doc@section{#1}{Section}'#3'(#4){#5}{#6}[#7]%
+        \IfBooleanTF{#1}%
+                {\@init@doc@section+{#2}{Section}'#4'(#5){#6}{#7}[#8]}%
+                {\@init@doc@section{#2}{Section}'#4'(#5){#6}{#7}[#8]}%
+       	\@zsavepos@unique{@Section@abs@startpos}{@zsavepos@counter}{\@init@docsection@clearpage@threshold}%
+        \IfValueTF{#8}%
         {%
                 \begin{tcbsection}%
                 [
                         type=section, contentsline={\@contentsline},
-                        title={\theSection\space:\space#5}%
+                        title={\theSection\@tcb@title@sep#6}%
                 ]
-                        #7
+                        #8
                 \end{tcbsection}
         }%
         {%
                 \begin{tcbsection}
                 [
                         type=section, contentsline={\@contentsline}, bottom=0mm,
-                        title={\theSection\space:\space#5}%
+                        title={\theSection\@tcb@title@sep#6}%
                 ]
                 \end{tcbsection}
         }%
         \togglefalse{@major@section@shift}
-        \@finish@doc@section{#2}{Section}{#5}%
+        \@finish@doc@section{#3}{Section}{#6}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                    1 2  3                  4   5 6 7
-\DeclareDocumentCommand{\Subsection}{s t! D''{tcbBlueScheme} d() m g o}
+%                                    1  2 3  4                  5   6 7 8
+\DeclareDocumentCommand{\Subsection}{t+ s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        \@init@doc@section{#1}{Subsection}'#3'(#4){#5}{#6}[#7]%
-        \begingroup%
+        %\@init@doc@section{#1}{Subsection}'#3'(#4){#5}{#6}[#7]%
+        \IfBooleanTF{#1}%
+                {\@init@doc@section+{#2}{Subsection}'#4'(#5){#6}{#7}[#8]}%
+                {\@init@doc@section{#2}{Subsection}'#4'(#5){#6}{#7}[#8]}%
+       	\begingroup%
                 \ULsettings[type=uline, depth={\@Subsection@default@depth}, thickness={\@Subsection@default@thickness}]%
         \endgroup%
         \savebox{\@frontbackmatter@savebox}%
@@ -329,7 +343,7 @@
                 \tcbhyperlink[black]{\cft@hyperaddress{Subsection}}%
                 {%
                         \setcurrfont{\cfthugefont}\theSubsection%
-                        \raisebox{1.5pt}{\space\bfseries\Large\cftmedfont\uline{#5}}%
+                        \raisebox{1.5pt}{\space\bfseries\Large\cftmedfont\uline{#6}}%
                 }%
         }%
         \@zsavepos@unique{@Subsection@abs@startpos}{@zsavepos@counter}{\@init@docsection@clearpage@threshold}%{Subsection}%
@@ -340,47 +354,35 @@
                 \usebox{\@frontbackmatter@savebox}%
         \end{tcolorbox}%
         \togglefalse{@major@section@shift}%
-        \@finish@doc@section{#2}{Subsection}{#5}%
+        \@finish@doc@section{#3}{Subsection}{#6}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                               1 2  3                  4   5 6
-\DeclareDocumentCommand{\Topic}{s t! D''{tcbBlueScheme} d() m o}
+%                               1  2 3  4                  5   6 7 8
+\DeclareDocumentCommand{\Topic}{t+ s t! D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        \@init@doc@section{#1}{Topic}'#3'(#4){#5}{#6}%
-        \@header@tikzpicture*{Topic}%
+        %\@init@doc@section{#1}{Topic}'#3'(#4){#5}{#6}%
+        \IfBooleanTF{#1}%
+                {\@init@doc@section+{#2}{Topic}'#4'(#5){#6}{#7}[#8]}%
+                {\@init@doc@section{#2}{Topic}'#4'(#5){#6}{#7}[#8]}%
+       	\@header@tikzpicture*{Topic}%
         \toggletrue{@major@section@shift}
-        \@finish@doc@section{#2}{Topic}{#5}%
+        \@finish@doc@section{#3}{Topic}{#6}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                              1 2  3  4                  5   6 7
-\DeclareDocumentCommand{\Part}{s t! t+ D''{tcbBlueScheme} d() m o}
+%                              1  2 3  4  5                  6   7 8 9
+\DeclareDocumentCommand{\Part}{t+ s t! t- D''{tcbBlueScheme} d() m g o}
 {%*<clear page>!<add vskip after>'color scheme'(hypertarget label prefix){title}{alt. toc title}[description text]
-        %\thePart
-        %\the\widthof{\thePart}%
-        %\setlength\@Part@num@width{\widthof{\thePart}}
-        %\setlength\@Part@prev@num@width{\widthof{\thePart}}     
-        %\setlength\@Part@prev@num@width{\widthof{\theTopic}}
-        %\the\@Part@prev@num@width%
-        \IfBooleanTF{#3}%
+        \IfBooleanTF{#4}%
         {%
-                \@init@doc@section{#1}{Part}'#3'(#4){#5}{#6}%
-                \@header@tikzpicture*{Part}%
-                \@finish@doc@section{#2}{Part}{#5}%
+                %\@init@doc@section{#1}{Part}'#4'(#5){#6}{#7}%
+                \IfBooleanTF{#1}%
+	                {\@init@doc@section+{#2}{Part}'#5'(#6){#7}{#8}[#9]}%
+	                {\@init@doc@section{#2}{Part}'#5'(#6){#7}{#8}[#9]}%
+       		\@header@tikzpicture*{Part}%
+                \@finish@doc@section{#3}{Part}{#7}%
         }
-        {\part{#6}}%
-        \toggletrue{@major@section@shift}
+        {\def\@bkm@contentsline{#7}\part{#7}}%
         \gdef\@prev@doc@section{Part}%
-%        %\thePart
-%        %\the\widthof{\thePart}%
-%        \setlength\@Part@num@width{\widthof{\thePart}}
-%        \setlength\@Topic@num@width{\widthof{\theTopic}}
-%        \setlength\@Part@toctitle@shift{\@Part@num@width - \@Part@prev@num@width}
-%        \setlength\@Topic@toctitle@shift{\@Topic@num@width - \@Topic@prev@num@width}
-%        \the\@Part@num@width%
-%        %\addtolength{\cftPartnumwidth}{\@Part@num@width - \@Part@prev@num@width}
-%        %\addtolength{\cftTopicnumwidth}{\@Topic@num@width - \@Topic@prev@num@width}%
-%%        \addtolength{\cftPartnumwidth}{\widthof{\thePart} - \@Part@prev@num@width}
-%%        \addtolength{\cftTopicnumwidth}{\widthof{\theTopic} - \@Part@prev@num@width}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@part[#1]#2%
@@ -416,14 +418,23 @@
         \def\@font@command{\shadowText:\@tikzheading@font:[black](white)}%
         \def\@the@title{\@font@command{\tcbhyperlink[white]{\cftPart@toc@hyperaddress}{\phantomsection\thePart}}}%
         \@set@major@section@header@colors{Part}%
-        \@tikzheading@positioning{Part}{\@tikzheading@baseheight}%
-        \setlength\@tikzheading@node@yshift{\dimexpr\@tikzheading@baseyshift-0.5\@tikzheading@baseheight\relax}%
-        \@header@tikzpicture@nodewrap{\@the@title}<1.5\@tikzheading@baseheight>%
+        %\@tikzheading@positioning{Part}{\@tikzheading@baseheight}%
+        \@header@tikzpicture@nodewrap%
+                <\@tikzheading@xshift>%
+                %<\dimexpr -\@landscape@page@yshift - \@landscape@margin@yshift + \@landscape@line@shift\relax>%
+                <\dimexpr\@landscape@Part@top@yshift\relax>%
+                [current page.north west]%
+                {\@the@title}%
+                <1.5\@tikzheading@baseheight>%
         \setlength\@tikzheading@node@yshift{\dimexpr\@tikzheading@baseyshift + \@tikzheading@baseheight\relax}%
-        \@header@tikzpicture@nodewrap*[current page.south west]{\thepart}<1.5\@tikzheading@baseheight>%
-        \setlength\@tikzheading@node@yshift{0.0mm}%
-        \@header@tikzpicture@pagenum@node%
-        %\addtocounter{Part}{-1}%
+        \@header@tikzpicture@nodewrap*%
+                <\@tikzheading@xshift>%
+                %<\dimexpr\@landscape@line@shift-\@landscape@margin@yshift/2\relax>%
+                <\dimexpr\@landscape@Part@bottom@yshift\relax>%
+                [current page.south west]%
+                {\thepart}%
+                <1.5\@tikzheading@baseheight>%
+        \@header@tikzpicture@pagenum@node<\dimexpr\@landscape@pgnum@xshift\relax>%
         \decrementcounter{Part}%
         \toggletrue{@major@section@shift}
         \secdef\@part\@spart
@@ -541,12 +552,13 @@
                         \fi
                         \IfStrEqCase{\@BKM@context}%
                         {%
-                                {part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{#2}}}
-                                {Part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{#2}}}
-                                {Topic}{\bookmark[level=#4,dest={#3}]{\cftTopic@bookmark@title{#2}}}
-                                {Chapter}{\bookmark[level=#4,dest={#3}]{\cftChapter@bookmark@title{#2}}}
-                                {Section}{\bookmark[level=#4,dest={#3}]{\cftSection@bookmark@title{#2}}}
-                                {Subsection}{\bookmark[level=#4,dest={#3}]{\cftSubsection@bookmark@title{#2}}}
+                                {Biblink}{\bookmark[level=#4,dest={#3}]{\bibname}}
+                                {part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{\@bkm@contentsline}}}
+                                {Part}{\bookmark[level=#4,dest={#3}]{\cftPart@bookmark@title{\@bkm@contentsline}}}
+                                {Topic}{\bookmark[level=#4,dest={#3}]{\cftTopic@bookmark@title{\@bkm@contentsline}}}
+                                {Chapter}{\bookmark[level=#4,dest={#3}]{\cftChapter@bookmark@title{\textendash\space\@bkm@contentsline}}}
+                                {Section}{\bookmark[level=#4,dest={#3}]{\cftSection@bookmark@title{-\space\@bkm@contentsline}}}
+                                {Subsection}{\bookmark[level=#4,dest={#3}]{\cftSubsection@bookmark@title{-\space\@bkm@contentsline}}}
                                 {default}{\bookmark[level=#4,dest={#3}]{#2}}
                         }%
                         \@set@BKM@context{default}
@@ -594,6 +606,30 @@
                 \vskip 38\p@%
         }%
 }
+%\DeclareOption{Sonny}{%
+%  \ChNameVar{\Large\sf}
+%  \ChNumVar{\Huge}
+%  \ChTitleVar{\Large\sf}
+%  \ChRuleWidth{0.5pt}
+%  \ChNameUpperCase
+%  \renewcommand{\DOCH}{%
+%    \raggedleft
+%    \CNV\FmN{\@chapapp}\space \CNoV\thechapter
+%    \par\nobreak
+%    \vskip 40\p@}
+%  \renewcommand{\DOTI}[1]{%
+%    \CTV\raggedleft\mghrulefill{\RW}\par\nobreak
+%    \vskip 5\p@
+%    \CTV\FmTi{#1}\par\nobreak
+%    \mghrulefill{\RW}\par\nobreak
+%    \vskip 40\p@}
+%  \renewcommand{\DOTIS}[1]{%
+%    \CTV\raggedleft\mghrulefill{\RW}\par\nobreak
+%    \vskip 5\p@
+%    \CTV\FmTi{#1}\par\nobreak
+%    \mghrulefill{\RW}\par\nobreak
+%    \vskip 40\p@}
+%}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************************ End of 'mainmatter.sty' package **********************************************%

@@ -5,8 +5,7 @@
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Define provided package name and LaTeX/package dependencies ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-macros}
+\ProvidesPackage{my-macros}[\pkginfo]
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Package options and corresponding Boolean variables ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -26,6 +25,28 @@
 %----------------------------------------------------- Command Definitions ----------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\filename}[1]{%
+ \begingroup
+  % \lstname seems to change hyphens into \textendash
+  %%%%?????%%%%%\def\textendash{-}% Working uncommented, can't remember why this redefined here
+  \filename@parse{#1}%
+  \edef\filename@base{\detokenize\expandafter{\filename@base}}%
+  \xdef\thefilename{\filename@base.\filename@ext}%
+%  \texttt{\filename@base.\filename@ext}%
+ \endgroup
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Insert a blank page, with (default) or without (starred version) increasing the page #
+\DeclareDocumentCommand{\Date}{s m m m}
+{%
+    %\IfBooleanTF{#1}{\decrementcounter{page}}{}%
+    #2%
+    \kern-0.75pt\dirsep\kern-0.75pt%
+    #3%
+    \kern-0.75pt\dirsep\kern-0.75pt%
+    #4
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 % Insert a blank page, with (default) or without (starred version) increasing the page #
 \DeclareDocumentCommand{\blankpage}{s}
 {
@@ -33,7 +54,7 @@
     \thispagestyle{empty}%
     \mbox{}%
     \newpage%
-    \IfBooleanTF{#1}{\decrementcounter{page}}{}
+    \IfBooleanT{#1}{\decrementcounter{page}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@section@sep}{m m}
@@ -71,9 +92,14 @@
                 \begingroup%
                 \@enforce@sizeX
                 \centering%
-                \pgfifthenelse(\@macro@width >= \linewidth)%
+                \pgfifthenelse(\@macro@width >= 2\linewidth)%
+                {\medskip\shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}\bigskip}%
+                {%
+                        \pgfifthenelse(\@macro@width >= \linewidth)%
                         {\medskip\shadowtext{\parbox{\textwidth}{\raggedright#3{#4}}}\smallskip}%
                         {\shadowtext{\raggedright#3{#4}}\\[-1em]}%
+                }
+                %{\shadowtext{\raggedright#3{#4}}\\[-1em]}%
                 \endgroup%
                 \coverpagelinespacing%
                 \@section@sep{#5}{#6}%
@@ -83,18 +109,41 @@
         \let\parindent\@par@indent%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                                     1 2  3  4  5
-\DeclareDocumentCommand{\tcbequation@parse@booleans}{s t+ t!}
+%                                                     1 2  3  4  5 6
+\DeclareDocumentCommand{\tcbequation@parse@booleans}{s t? t+ t- o t!}
 {%
+        \gdef\@tcbequation@label{}%
         \IfBooleanTF{#1}%
                 {\@set@current@tcb@colors{tcbequationColorset}}%
                 {\@set@current@tcb@colors{tcbsolutionColorset}}%
-        \IfBooleanTF{#2}{\gdef\@tcbequation@finish@skip{[0.85em]}}{\gdef\@tcbequation@finish@skip{}}%
-        \IfBooleanTF{#3}{\gdef\@tcbequation@finish{\xp\notag\xp\\\@tcbequation@finish@skip}}{\xp\gdef\xp\@tcbequation@finish\xp{\xp\\\@tcbequation@finish@skip}}%
+        \IfBooleanTF{#2}%
+        {%
+                \settowidth\@macro@shift{$\displaystyle\boldsymbol{=}$}%
+                \addtolength\@macro@shift{\dimexpr 4pt+2mm\relax}%
+                \hspace{-\@macro@shift}%
+                \settowidth\@macro@shift{$\displaystyle\boldsymbol{=}$}%
+                \gdef\@@tcbmath@arg{\@@arg@LHS}%
+                \xp\gdef\xp\@@after@tcbmath@arg\xp{\xp\hspace\xp{\@macro@shift}\@@arg@RHS}%
+                \gdef\@tcbequation@finish@skip@dist{-0.85em}
+        }%
+        {%
+                \gdef\@@tcbmath@arg{\@@arg@LHS\@@arg@RHS}%
+                \gdef\@@after@tcbmath@arg{}%
+                \setlength\@macro@shift{0pt}%
+                \gdef\@tcbequation@finish@skip@dist{0.85em}
+        }%
+        \IfBooleanTF{#3}{\gdef\@tcbequation@finish@skip{\\[\@tcbequation@finish@skip@dist]}}{\gdef\@tcbequation@finish@skip{\\}}%
+        \IfBooleanT{#4}{\gdef\@tcbequation@finish@skip{}}%
+        \IfValueTF{#5}%
+                {\gdef\@tcbequation@label{\label{#5}}}%
+                {\gdef\@tcbequation@label{}}%
+        \IfBooleanTF{#6}%
+                {\xp\gdef\xp\@tcbequation@finish\xp{\xp\@@after@tcbmath@arg\xp\notag\@tcbequation@finish@skip}}%
+                {\xp\gdef\xp\@tcbequation@finish\xp{\xp\@@after@tcbmath@arg\@tcbequation@finish@skip}}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                                          1 2  3  4
-\DeclareDocumentCommand{\tcbequation@parse@arrow@booleans}{m t- t> t^}
+%                                                          1 2  3  4  5
+\DeclareDocumentCommand{\tcbequation@parse@arrow@booleans}{m t- t> t^ o}
 {%
         \IfBooleanTF{#2}%
                 {\setcounter{@tcb@target@equationbox@counter}{\value{@tcb@equationbox@counter} - #1}}%
@@ -120,6 +169,9 @@
                 \xdef\@tcbequation@source@node{\@tcbequation@box@prefix\roman{@tcb@target@equationbox@counter}}%
                 \xdef\@tcbequation@target@node{frame}%
         }%
+        \IfValueTF{#5}%
+                {\gdef\@@arrow@edge@args{#5,bend right=\@bend@value}}%
+                {\gdef\@@arrow@edge@args{bend right=\@bend@value}}%
         % Validate target \tcbequation exists
         \ifnumgreater{\value{@tcb@target@equationbox@counter}}{\value{@tcb@equationbox@counter}}%
                 {\errmessage{ERROR: \errcmd\tcbequation \hash\arabic{@tcb@target@equationbox@counter} does not exist at this point in the document}}{}%
@@ -127,16 +179,24 @@
                 {\errmessage{ERROR: A \errcmd{\tcbequation's} reference arrows cannot point to itself}}{}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
+%                                                          1 2  3  4  5
+\DeclareDocumentCommand{\tcbequation@arrow}{G{bend right=\@bend@value}}
+{%
+        \draw[tcbequationArrows]
+                ([yshift=\@source@anchor@yshift]\@tcbequation@source)
+        to [#1] ([yshift=\@target@anchor@yshift]\@tcbequation@target);
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
 % Boxed equation maintaining alignment w/ previous equations using '&' alignment character.  Each
 %                                     1     2 3 4 5     6   7  8                 9
 \DeclareDocumentCommand{\tcbequation}{D(){} m m g D(){} d<> t| D<>{-0.1pt,0.1pt} O{equationboxStyle}}
-{%\tcbequation(*>=-){<LHS>}{<RHS>}[</tcb/.style>]|alt. remember name|(explicit ref name){ref num}<src anchor, target anchor>
+{%\tcbequation(*+!){<LHS>}{<RHS>}{explicit|ref eqn # IDing arrow target}(arrow bools ->^)(alt. remember name)(explicit ref name)(ref num)<src anchor pos, target anchor pos, bend angle><|><src anchor shift, target anchor shift>[/tcb/.style]
+        \gdef\@@arg@LHS{#2}%
+        \gdef\@@arg@RHS{#3}%
         &%
         \begingroup%
                 \settowidth\@macro@width{$\displaystyle\boldsymbol{#2}$}%
-                \addtolength\@macro@width{\dimexpr 2mm+4pt\relax}%
-                %\addtolength\@macro@width{4\fboxsep+4\fboxrule}%
-                %\addtolength\@macro@width{2mm+4pt}%
+                \addtolength\@macro@width{4pt+2mm}%
                 \hspace{-\@macro@width}%
         \endgroup%
         \tcbequation@parse@booleans#1%
@@ -152,18 +212,12 @@
                 \tcbhighmath%
                 [%
                         #9, remember as=\@tcbequation@box@name,
-                        overlay=%
-                        {%
-                                \draw[tcbequationArrows]
-                                        ([yshift=\@source@anchor@yshift]\@tcbequation@source)
-                                        to[bend right=\@bend@value]
-                                        ([yshift=\@target@anchor@yshift]\@tcbequation@target);
-                        }%
+                        overlay={\xp\tcbequation@arrow\xp{\@@arrow@edge@args}}%
                 ]%
-                {\boldsymbol{#2 #3}}%
+                {\boldsymbol{\@@tcbmath@arg}}%
         }%
-        {\tcbhighmath[#9,remember as=\@tcbequation@box@name]{\boldsymbol{#2 #3}}}%
-        \@tcbequation@finish%
+        {\tcbhighmath[#9,remember as=\@tcbequation@box@name]{\boldsymbol{\@@tcbmath@arg}}}%
+        \@tcbequation@label\@tcbequation@finish%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxlist}{>{\SplitList{\\}} m O{\@tcb@figbox@width}}
@@ -184,7 +238,7 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbfigboxfigure}{>{ \SplitList{;}} m}{\tcbfigboximage#1}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\tcbfigboximage}{m m G{\@default@fig@ref@label}}
+\DeclareDocumentCommand{\tcbfigboximage}{m m G{\figrefname}}
 {%
         \stepcounter{figboxfigure}%
         \@set@current@tcb@colors{tcbfigureColorset}%
@@ -328,8 +382,8 @@
 \newtcbtheorem[use counter=@tcbtheorems@counter,number within=section,crefname={\TheoremName}{\TheoremPluralName}]%
 {Theorem}{\TheoremName}%@tcbtheorems@counter
 {%
-        theoremStyle, colback=stdbackground, colframe=TealGreen%JungleGreen%DarkCyan%Emerald%MetallicSeaweed%%
-}{\@lemma@ref@prefix}%ViridianGreen SpanishViridian%
+        theoremStyle, colback=theoremColorset-colback, colframe=theoremColorset-colframe%JungleGreen%DarkCyan%Emerald%MetallicSeaweed%%
+}{\@theorem@ref@prefix}%ViridianGreen SpanishViridian%
 % Good:TealGreen% DarkCyan% MetallicSeaweed% Emerald~=JungleGreen
 % Med: MetallicSeaweed IlluminatingEmerald% CeladonGreen% TropicalRainForest Zomp CeladonGreen%
 % No: Viridian Skobeloff%
@@ -339,7 +393,7 @@
 \newtcbtheorem[use counter=@tcbtheorems@counter,number within=section,crefname={\CorollaryName}{\CorollaryPluralName}]%
 {Corollary}{\CorollaryName}%TartOrange SunsetOrange
 {%
-        theoremStyle, colback=stdltyellow, colframe=TerraCotta%Tomato%%
+        theoremStyle, colback=corollaryColorset-colback, colframe=corollaryColorset-colframe%Tomato%%
 }{\@corollary@ref@prefix}
 % Good: TerraCotta Tomato Orange-Crayola% OrangeSoda% SunsetOrange%
 % Med: TartOrange% Orange-Crayola%
@@ -357,7 +411,7 @@
 \newtcbtheorem[use counter=@tcbtheorems@counter,number within=section,crefname={\LemmaName}{\LemmaPluralName}]%
 {Lemma}{\LemmaName}%
 {%
-        theoremStyle, colback=stdbackground, colframe=PacificBlue%PictonBlue%Cerulean%VividCerulean%
+        theoremStyle, colback=lemmaColorset-colback, colframe=lemmaColorset-colframe%PictonBlue%Cerulean%VividCerulean%
 }{\@lemma@ref@prefix}
 % Good: PictonBlue% PacificBlue%
 % Med: RichElectricBlue% Capri%
@@ -467,16 +521,6 @@
         titleframeComboInteriorSetup, titleframeComboSetup%, colback=stdbackground,
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\newtcolorbox{tcbitembox}[2][]%
-{
-        enhanced, parbox,attach boxed title to top left={yshift=-2ex,xshift=4ex}, colframe=stddkgray, colback=white,
-        colbacktitle=white, coltitle=black, fonttitle=\large\bfmseries, boxed title style={boxrule=0pt, colframe=white},
-        segmentation empty,right=0mm,middle=1mm,bottom=0.5mm,top=1mm,%boxsep=1pt, after upper=\vspace{-3mm},
-        before lower=\vspace{-5mm}\begin{itemize}, after lower=\end{itemize},
-        %before upper=\begin{itemize}, after upper=\end{itemize},
-        title=#2, #1
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
 \newtcbox{\tcbinlinetextbox}[1][inlineboxgray]%
 {%reset,
         enhanced, arc=2pt, boxrule=0.5pt, boxsep=1pt, top=2.5pt, bottom=1.5pt, left=4pt, right=4pt,
@@ -492,6 +536,16 @@
                         --([xshift=-2pt, yshift =2pt]interior.south east)
                         -- cycle;
         }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newtcolorbox{tcbitembox}[2][]%
+{
+        enhanced, parbox,attach boxed title to top left={yshift=-2ex,xshift=4ex}, colframe=stddkgray, colback=white,
+        colbacktitle=white, coltitle=black, fonttitle=\large\bfmseries, boxed title style={boxrule=0pt, colframe=white},
+        segmentation empty,right=0mm,middle=1mm,bottom=0.5mm,top=1mm,%boxsep=1pt, after upper=\vspace{-3mm},
+        before lower=\vspace{-5mm}\begin{itemize}, after lower=\end{itemize},
+        %before upper=\begin{itemize}, after upper=\end{itemize},
+        title=#2, #1
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareTotalTCBox{\tcboxVerb}{O{red} v O{}}
@@ -519,12 +573,38 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[use counter=@num@tcbalgorithms]{tcbalgorithm}{ O{} m O{alg:alg\the@num@tcbalgorithms}}
+%\DeclareTColorBox{tcbitembox}{O{} m}
+%{
+%        enhanced, parbox,attach boxed title to top left={yshift=-2ex,xshift=4ex}, colframe=stddkgray, colback=white,
+%        colbacktitle=white, coltitle=black, fonttitle=\large\bfmseries, boxed title style={boxrule=0pt, colframe=white},
+%        segmentation empty,right=0mm,middle=1mm,bottom=0.5mm,top=1mm,%boxsep=1pt, after upper=\vspace{-3mm},
+%        before lower=\vspace{-5mm}\begin{itemize}, after lower=\end{itemize},
+%        %before upper=\begin{itemize}, after upper=\end{itemize},
+%        title=#2, #1
+%}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox{tcbitemized}{O{} m}
+{
+        enhanced, parbox,attach boxed title to top left={yshift=-2ex,xshift=4ex}, colframe=stddkgray, colback=white,
+        colbacktitle=white, coltitle=black, fonttitle=\large\bfmseries, boxed title style={boxrule=0pt, colframe=white},
+        left=0mm,right=0mm,middle=1mm,bottom=1.5mm,top=3mm,%segmentation empty,%boxsep=1pt, after upper=\vspace{-3mm},
+        %before lower=\vspace{-5mm}\begin{itemize}, after lower=\end{itemize},
+        before upper=\begin{itemize}, after upper=\end{itemize},
+        title=#2, #1
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareTColorBox[use counter=@num@tcbalgorithms]{tcbalgorithm}{ O{definition} m O{alg:alg\the@num@tcbalgorithms}}
 {
         enhanced,
-        fonttitle=\large\bfmseries,
+        breakable=unlimited, enforce breakable, fonttitle=\large\bfmseries,
+        before=
+        {
+                \@zsavepos@unique!{@tcbparbox}{@parbox@counter}{\@init@docsection@clearpage@threshold}%
+                \setlength\@tcbox@startpos{\@zsavepos@startpos}%
+        },
+        height fixed for=first and middle,
         title={#2},
-        boxrule=3pt, colback=stdltbackground, colframe=NavyBlue, toptitle=0.5mm, bottomtitle=-0.5mm,
+        boxrule=3pt, colback=#1Colorset-colback, colframe=#1Colorset-colframe, toptitle=0.5mm, bottomtitle=-0.5mm,
         %borderline={1pt}{-1.25pt}{draw=black},
         @tcb@outline@frame
         %interiorborderline={1pt}{green}{\@tcb@interior@corner@radius}{0pt},
@@ -535,7 +615,7 @@
         %,leftrule=0pt,rightrule=0pt]
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox{figbox}{ O{} m O{fig:fig\thefigure}}
+\DeclareTColorBox{figbox}{ O{} m O{\figrefname}}%fig:fig\thefigure
 {
         tcbfigboxStyle=
                 {\@tcb@boxrule@linewidth}
@@ -562,7 +642,7 @@
         #1
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ O{} m O{fig:fig\thefigure}}
+\DeclareTColorBox[blend into=figures, number within=figbox]{figboxfigure}{ O{} m O{\figrefname}}%fig:fig\thefigure
 {
         reset, tcbfigureStyle, #1, capture=hbox, label={#3}, every float=\centering,
         code=
@@ -609,7 +689,7 @@
         extrude left by=\@tcb@mathbox@leftright@skip,
         extrude right by=\@tcb@mathbox@leftright@skip,
         every float=\centering,
-        label={tab:tab\thetable},
+        label={\tabrefname},%{tab:tab\thetable},
         blend before title code=
         {%
                 \bookmarkX@hypertarget{IBPtable}%
@@ -627,7 +707,7 @@
 %\DeclareTColorBox{PLDtable}{m G{} O{}}%O{} D(){} m O{}
 \DeclareTColorBox[blend into=tables]{PLDtable}{r[] r() m m O{}}
 {
-        label={tab:tab\thetable},
+        label={\tabrefname},%{tab:tab\thetable},
         code=
         {%
                 \xp\tcbset\xp{#5}
@@ -653,10 +733,10 @@
         %#5
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=figures]{boxedfigure}{o m m O{fig:fig\thefigure}}
+\DeclareTColorBox[blend into=figures]{boxedfigure}{o m m O{\figrefname}}%fig:fig\thefigure
         {#1, capture=hbox, label={#4}, title={#2}, list text={\normalsize\bfseries#3}, every float=\centering}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareTColorBox[blend into=tables]{boxedtable}{o m m O{h!} O{tab:tab\thetable}}
+\DeclareTColorBox[blend into=tables]{boxedtable}{o m m O{h!} O{\tabrefname}}%tab:tab\thefigure
 {%boxedtable[tcb settings]{tcb title text}{toc title text}[table placement][alternative reference label]
         #1, float=#4, every float=\centering, capture=hbox, label={#5},
         code=
@@ -828,7 +908,7 @@
                                         width=#2
         }%
         \IfValueTF{#7}{\tcbsetforeverylayer{#7}}{}%
-        \IfBooleanTF{#1}{\tcbset{sidebyside, segmentation empty, sidebyside gap=0mm, sidebyside align=bottom seam}}{}%
+        \IfBooleanT{#1}{\tcbset{sidebyside, segmentation empty, sidebyside gap=0mm, sidebyside align=bottom seam}}%
         \@zsavepos@unique!{@tcbenclosure}{@tcbenclosure@counter}{\@init@docsection@clearpage@threshold}%
         \setlength\@tcb@enclosure@startpos{\@zsavepos@startpos}%
         \IfValueTF{#8}%
@@ -848,22 +928,22 @@
         %\ifstrequal{#5}{tcbenumeratedStyle}%
         %{%
                 \@zsavepos@unique!{@tcbparbox}{@parbox@counter}{\@init@docsection@clearpage@threshold}%
-                \setlength\@tcb@enumbox@startpos{\@zsavepos@startpos}%
+                \setlength\@tcbox@startpos{\@zsavepos@startpos}%
         %}{}%
         \tcolorbox[#5, width=#3, title={#7}, #6]%
-        \IfBooleanTF{#2}{\setkeys[tcb]{paragraph}{indent=true}}{}%
+        \IfBooleanT{#2}{\setkeys[tcb]{paragraph}{indent=true}}%
         \@tcbparbox@font%
 }{\endtcolorbox}
 %-------------------------------------------------------------------------------------------------------------------------------%
         %                               1 2  3               4                  5   6              6   7
 \DeclareDocumentEnvironment{tcbenumbox}{s t- D<>{\linewidth} D''{tcbBlueScheme} O{} D||{}}
 {%tcbparbox[*]<box width>'color scheme'{style}[tcbset options](tcbseteverylayer options)
-        \doclinespacing%
-        \@set@current@tcb@colors{#4}%
-        \@zsavepos@unique!{@tcbparbox}{@parbox@counter}{\@init@docsection@clearpage@threshold}%
-        %\@zsavepos@unique!{@tcbenumbox@counter}{@enumbox@counter}{\@init@docsection@clearpage@threshold}%
-        \setlength\@tcb@enumbox@startpos{\@zsavepos@startpos}%
-%        \tcbparbox<#3>'tcbBlueScheme'{tcbenumeratedStyle}[#5]|#6|%
+%        \doclinespacing%
+%        \@set@current@tcb@colors{#4}%
+%        \@zsavepos@unique!{@tcbparbox}{@parbox@counter}{\@init@docsection@clearpage@threshold}%
+%        %\@zsavepos@unique!{@tcbenumbox@counter}{@enumbox@counter}{\@init@docsection@clearpage@threshold}%
+%        \setlength\@tcbox@startpos{\@zsavepos@startpos}%
+%%        \tcbparbox<#3>'tcbBlueScheme'{tcbenumeratedStyle}[#5]|#6|%
         \forwardBooleanList{\tcbparbox}%
                 {#1/*,#2/-}%
                 <#3>'tcbBlueScheme'{tcbenumeratedStyle}[#5]|#6|%
@@ -930,10 +1010,10 @@
         \problemlinespacing%
         \@set@current@tcb@colors{problemColorset}%
         \setcounter{@prob@bool@counter}{0}%
-        \IfBooleanTF{#2}{\par\bigskip}{}%
-        \IfBooleanTF{#5}{\addtocounter{@prob@bool@counter}{1}}{}%
-        \IfBooleanTF{#6}{\addtocounter{@prob@bool@counter}{2}}{}%
-        \IfBooleanTF{#7}{\addtocounter{@prob@bool@counter}{4}}{}%
+        \IfBooleanT{#2}{\par\bigskip}%
+        \IfBooleanT{#5}{\addtocounter{@prob@bool@counter}{1}}
+        \IfBooleanT{#6}{\addtocounter{@prob@bool@counter}{2}}%
+        \IfBooleanT{#7}{\addtocounter{@prob@bool@counter}{4}}%
         \ifnumequal{\value{@prob@bool@counter}}{0}%
         {%
                 \setcounters{@subproblem@counter,@prob@part@counter}{1}%
@@ -991,53 +1071,61 @@
                 {\setcounter{@tcb@eqn@list@counter}{#4}}%
                 {\setcounter{@tcb@eqn@list@counter}{1}}%
         \@set@current@tcb@colors{#5}%
-        \IfBooleanTF{#1}{\colorlet{current-colfillborder}{stdyellow}}{}%
-        \IfValueTF{#6}{\@set@tcb@listbox@fill@colors{#6}}{}%
+        \IfBooleanT{#1}{\colorlet{current-colfillborder}{stdyellow}}%
+        \IfValueT{#6}{\@set@tcb@listbox@fill@colors{#6}}%
         \IfBooleanTF{#1}%
-                {\tcbsetforeverylayer{tcblistboxStyle={0pt}{stdyellow}{current-colfill}, width=#2, colframe=stdyellow, colbacktitle=current-colfill}}%
-                {\tcbsetforeverylayer{tcblistboxStyle, width=#2}}%
+                {\tcbsetforeverylayer{tcblistboxStyle={0pt}{stdyellow}{current-colfill}, center,width=#2, colframe=stdyellow, colbacktitle=current-colfill}}%
+                {\tcbsetforeverylayer{tcblistboxStyle, center,width=#2}}%
         \IfValueTF{#7}%
                 {\tcolorbox[title={#7}]}%
                 {\tcolorbox}%
 }{\endtcolorbox}
 %-------------------------------------------------------------------------------------------------------------------------------%
-%                                         1   2 3 4          5   6
-\DeclareDocumentCommand{\tcblistboxentry}{d() m m O{\arabic} d() O{}}
+%                                         1 2   3 4 5          6   7
+\DeclareDocumentCommand{\tcblistboxentry}{s d() m m O{\arabic} d() O{}}
 {%\tcblistboxentry(set count){text}{math}[counter format](counter prepend text)[count append text]
-        \IfValueTF{#1}{\setcounter{@tcb@eqn@list@counter}{#1}}{}%
-        \setlength{\@macro@height}{\heightof{$\displaystyle #3$}}%
+        \IfValueTF{#2}{\setcounter{@tcb@eqn@list@counter}{#2}}{}%
+        %\setlength{\@macro@height}%
+        %{%
+                %\heightof%
+                %\savebox{\@macro@savebox}%
+                \setbox\@Sbox=\vbox%
+                {%
+                        \bfmseries%
+                        \begin{alignat*}{2}
+                                #4
+                        \end{alignat*}%
+                }%
+        %}%
+        \setlength\@macro@height{\ht\@Sbox}%{\ht\@macro@savebox}%
         \tcbsubtitle%
         [
-                before skip = \dimexpr\@macro@height - 8.5mm\relax,
-                after skip = \dimexpr\@macro@height /3 - 3.5mm\relax, %left=0pt, %halign=flush left, flush left,
-                colback=tcblistboxColorset-colbacksubtitle,
-                TBLR={0.0mm}{0.0mm}{1.5mm}{}, TBLRtitle={-3mm}{-2mm}{}{},
+                before skip = -0.75mm, after skip = -1.5mm, colback=tcblistboxColorset-colbacksubtitle,
+                %before skip = \dimexpr\@macro@height - 8.5mm\relax, %after skip = \dimexpr\@macro@height /3 - 3.5mm\relax,
+                TBLR={0.0mm}{0.0mm}{1.5mm}{}, TBLRtitle={-3mm}{-2mm}{}{}, %halign=flush left, flush left,
                 @tcbox@font={\normalsize\bfmseries}{\normalsize\bfmseries}{}
-                %fonttitle=\normalsize\bfmseries, fontupper=\normalsize\bfmseries
         ]%
         {%
-                \IfValueTF{#5}%
-                        {\tcblistboxentrylabel(#4){#5}\quad #2}%
-                        {\tcblistboxentrylabel*(#4){@tcb@eqn@list@counter}\quad #2}%
+                \IfValueTF{#6}%
+                        {\tcblistboxentrylabel(#5){#6}\quad #3}%
+                        {\tcblistboxentrylabel*(#5){@tcb@eqn@list@counter}\quad #3}%
         }%
-        \bfmseries%
-        \begin{alignat*}{2}%
-                #3
-        \end{alignat*}
+        %\bfmseries%
+        \IfBooleanTF{#1}%
+                {\begin{alignat*}{2}#4\end{alignat*}}%
+                {\begin{alignat}{2}#4\end{alignat}}%
         \addtocounter{@tcb@eqn@list@counter}{1}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                              1 2         3            4            5   6 7        8
 \DeclareDocumentCommand{\tcblistboxentrylabel}{s O{circle} D(){\arabic} D''{current} d"" m D(){6mm} D<>{0.5pt}}
-{%\tcblistboxentrylabel[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
+{%\tcblistboxentrylabel[*<counter on>][shape](counter print format)'color style'"spec. color"{character/text or counter}(min size)<inner sep>
         \@set@current@tcb@colors{#4}
         \IfValueTF{#5}%
                 {\edef\@@numshape@colborder{#5}}%
                 {\edef\@@numshape@colborder{#4-colfillborder}}%
         %\fillednumshape[*<counter on>][shape](counter print format)(color style){character/text or counter}(min size)<inner sep>
         \IfBooleanTF{#1}%%
-%                {\raggedright\fillednumshape*[#2](#3)'#4'{#6}(#7)<#8>}%
-%                {\raggedright\fillednumshape[#2](#3)'#4'{#6}(#7)<#8>}%
                 {\raggedright\fillednumshape*[#2](#3)'#4'"\@@numshape@colborder"{#6}(#7)<#8>}%
                 {\raggedright\fillednumshape[#2](#3)'#4'"\@@numshape@colborder"{#6}(#7)<#8>}%
 }
@@ -1050,9 +1138,9 @@
         \IfValueTF{#4}
                 {\setcounter{@tcb@eqn@list@counter}{#4}}
                 {\setcounter{@tcb@eqn@list@counter}{1}}
-        \IfValueTF{#6}{\@set@tcb@listbox@fill@colors{#6}}{}
-        \IfBooleanTF{#2}{}{\tcbsetforeverylayer{colframe=stdyellow, colbacktitle=current-colfill}}
-        \IfValueTF{#7}{\tcbsetforeverylayer{title={#7}}}{}
+        \IfValueT{#6}{\@set@tcb@listbox@fill@colors{#6}}
+        \IfBooleanF{#2}{\tcbsetforeverylayer{colframe=stdyellow, colbacktitle=current-colfill}}
+        \IfValueT{#7}{\tcbsetforeverylayer{title={#7}}}
         \normalfont\IfBooleanTF{#1}
                 {\vspace{-5mm}\empheq[box=\tcboxmath]{alignat*=2}}
                 {\vspace{-5mm}\empheq[box=\tcboxmath]{alignat=2}}
@@ -1061,7 +1149,7 @@
 %                                            1 2   3          4 5 6 7                     8   9
 \DeclareDocumentCommand{\tcbeqnlistboxentry}{s d() O{\arabic} m m s O{tcbeqnlistboxStyle} d() O{}}
 {%\printcounter{\tcbeqnlistboxentrynumbering}{@tcb@eqn@list@counter}
-        \IfValueTF{#2}{\setcounter{@tcb@eqn@list@counter}{#2}}{}%
+        \IfValueT{#2}{\setcounter{@tcb@eqn@list@counter}{#2}}%
         \IfBooleanTF{#1}
         {%
                 \IfValueTF{#8}%
@@ -1086,18 +1174,21 @@
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\DeclareDocumentCommand{\functionargB}{s d() m o}%
-\DeclareDocumentCommand{\functionarg}{s d() m o}%
+\DeclareDocumentCommand{\functionarg}{s t! d() m o}%
 {%
-    \IfValueTF{#2}%
+    \IfBooleanTF{#2}%
+            {\def\@@flag@prefix{\$}}
+            {\def\@@flag@prefix{--}}
+    \IfValueTF{#3}%
     {%
-        \IfValueTF{#4}%
-                {\gdef\@@functionarg{\nobreak{\lbrack--#2 \caratenclosed{#4}\rbrack}}}%
-                {\gdef\@@functionarg{\nobreak{\lbrack--#2\rbrack}}}%
+        \IfValueTF{#5}%
+                {\gdef\@@functionarg{\nobreak{\lbrack\@@flag@prefix#3 \caratenclosed{#5}\rbrack}}}%
+                {\gdef\@@functionarg{\nobreak{\lbrack\@@flag@prefix#3\rbrack}}}%
     }%
     {%
-        \IfValueTF{#4}%
-                {\gdef\@@functionarg{\nobreak{\lbrack--#3 \caratenclosed{#4}\rbrack}}}%
-                {\gdef\@@functionarg{\nobreak{\lbrack--#3\rbrack}}}%
+        \IfValueTF{#5}%
+                {\gdef\@@functionarg{\nobreak{\lbrack\@@flag@prefix#4 \caratenclosed{#5}\rbrack}}}%
+                {\gdef\@@functionarg{\nobreak{\lbrack\@@flag@prefix#4\rbrack}}}%
     }%
     \IfBooleanTF{#1}%
     {%
@@ -1133,8 +1224,8 @@
         %\gdef\@tcbcode@title@line{\@tcbcode@contentsline\@tcb@funcdefbox@Title@command{\@tcbcode@title}\@tcbcode@title@content}%
         \xdef\@tcbcode@title@text{\@tcb@funcdefbox@Title@command{\@tcbcode@title}\@@usage@list}%
         \gdef\@tcbcode@title@line{\@tcbcode@contentsline\@tcbcode@title@text}%
-        \xp\gdef\xp\@bookmark@title\xp{\csname cft\@tcbcode@primary@counter @toctitle\endcsname\space:\space\@tcbcode@title}
-        \xp\@swap\xp{\@tcbcode@BKM@rellevel}{\csuse{cft\@tcbcode@primary@counter @bookmark}}%
+        %\xp\gdef\xp\@bookmark@title\xp{\csname cft\@tcbcode@primary@counter @toctitle\endcsname\@tcb@title@sep\@tcbcode@title}
+        \xp\@swap\xp{\@tcbcode@BKM@rellevel(\@tcb@title@sep\@tcbcode@title)}{\csuse{cft\@tcbcode@primary@counter @bookmark}}%
         \@set@tcbcode@text@hskip{\@tcbcode@type}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -1145,8 +1236,8 @@
                 \@the@hypertitle%
                 \IfBooleanTF{#1}%
                 {%
-                        \settowidth{\@macro@length}{\Large\shadowText*:\Large:[black]{USAGE\space:\space\shadowText*:\large:[black]{#3}}}%
-                        \\[\@tcb@code@newusageline@vkip]\Large\shadowText*:\Large:[black]{USAGE\space:\space}%
+                        \settowidth{\@macro@length}{\Large\shadowText*:\Large:[black]{USAGE\@tcb@title@sep\shadowText*:\large:[black]{#3}}}%
+                        \\[\@tcb@code@newusageline@vskip]\Large\shadowText*:\Large:[black]{USAGE\@tcb@title@sep}%
                 }%
                 {%
                         \settowidth{\@macro@length}{\@the@hypertitle\space\shadowText*:\large:[black]{#3}}%
@@ -1166,7 +1257,7 @@
                 <\@filledenumshape@min@size,\@filledenumshape@inner@sep>%
                 =<#8>%
         \@set@current@tcb@colors{\@current@tcb@coloring}%
-        \IfValueTF{#7}{\setcounter{@tcb@functions@counter}{#7}}{}%
+        \IfValueT{#7}{\setcounter{@tcb@functions@counter}{#7}}%
         \IfBooleanTF{#1}%
         {%
                 \@tcbcode@text@font%
@@ -1208,6 +1299,15 @@
         &%
         \hspace{\@current@listbox@column@sep}%
         \parbox[#2]{#8}{\@tcbcode@text@font\@description@prefix#6}\\[\@function@desc@crskip]%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%1  2      3                           4                 5                            6 7                                   8                                    9                                    9
+\DeclareDocumentCommand{\tcbfunctioncomments}
+{s D''{t!} O{\usefont{T1}{cmr}{bx}{n}} D(){Comments:} D<>{\usefont{T1}{cmr}{m}{n}} m D<>{\@current@listbox@first@column} D<>{\@current@listbox@second@column} O{0.6em}}
+{%\tcbfunctiondesc[text formatting]{lst col label}(last col text) <1st col width><last col width>
+        \IfBooleanTF{#1}%
+                {\tcbfunctiondesc*'#2'[#3](#4)<#5>{#6}<#7><#8>[#9]}%
+                {\tcbfunctiondesc'#2'[#3](#4)<#5>{#6}<#7><#8>[#9]}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %                                        1      2                                 3                4                         5                                    6                                     7

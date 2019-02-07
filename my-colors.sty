@@ -8,7 +8,8 @@
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\ProvidesPackage{my-colors}
+\ProvidesPackage{my-colors}[\pkginfo]
+\inputcolordefs
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
@@ -43,27 +44,27 @@
 \DeclareDocumentCommand{\customcolordef}{m m m}%
 {%{TF value/variable}{True code}{False code}
         \definecolor{#1}{#2}{#3}%
-        \@uniquely@add@to@csvlist{#1}{\@defined@colordefs}%
+        \@unique@add@to@csvlist{#1}{\@defined@colordefs}%
         \stepcounter{@num@colordefs}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\colormixdef}{m m}%
 {%{TF value/variable}{True code}{False code}
         \colorlet{#1}{#2}%
-        \@uniquely@add@to@csvlist{#1}{\@defined@colormixes}%
+        \@unique@add@to@csvlist{#1}{\@defined@colormixes}%
         \stepcounter{@num@colormixes}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\colorsetdef}{m m m}%
 {%{TF value/variable}{True code}{False code}
         \colorlet{#1-#2}{#3}%
-        \@uniquely@add@to@csvlist{#1}{\@defined@colorsets}%
+        \@unique@add@to@csvlist{#1}{\@defined@colorsets}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\tcbcolorsetdef}{m m m}%
 {%{TF value/variable}{True code}{False code}
         \colorlet{#1Colorset-#2}{#3}%
-        \@uniquely@add@to@csvlist{#1}{\@defined@tcbcolorsets}%
+        \@unique@add@to@csvlist{#1}{\@defined@tcbcolorsets}%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
@@ -172,13 +173,31 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \colormixdef{TintedSlateGray}{DarkSlateGray!10!white}
-\colormixdef{diagram-background}{stdblue!1!white}
 \colormixdef{inlineboxgray}{grey85}
 \colormixdef{inlineboxblue}{azure2!75!grey85}
 \colormixdef{inlineboxltblue}{stddkblue-hightint}
 \colormixdef{hyperlinkcolor}{blue!33!green}
-\colormixdef{Matlab-autohighlight-shade}{Matlab-autohighlight!75!black}
+\colormixdef{urllinkcolor}{dodgerblue3}%{cyan4}%{teal}%{darkcyan}%{SkyBlue4}
+\colormixdef{emaillinkcolor}{HeliotropeMagenta!75!Indigo-Web}%{Fuchsia}%{DarkRaspberry}%{SunsetOrange}%{Mauevewood}%{tomato2}%{coral2}
+\colormixdef{descriptorcolor}{clOlive}%
+\colormixdef{citecscolor}{clBlueViolet}%clBlueViolet
+\colormixdef{texcscolor}{clSienna}%clBlueViolet
+\colormixdef{texcsargcolor}{clOlive}%
+\colormixdef{texanglecolor}{blue}%
+\colormixdef{bibesccolor}{clMaroon}%
+\colormixdef{bibcscolor}{clLightSlateBlue}%
+\colormixdef{bibkeycolor}{clDarkCyan}
+\colormixdef{bibanglecolor}{black}
 \colormixdef{listboxgray}{black!62!white}
+\colormixdef{diagram-background}{stdblue!1!white}
+\colormixdef{Matlab-autohighlight-shade}{Matlab-autohighlight!75!black}
+\colormixdef{enum-type}{Cyan1}
+\colormixdef{enum-param}{Cyan1}
+\colormixdef{enum-member}{Magenta1}
+\colormixdef{src-code-fname}{Matlab-stringcolor}%{Magenta1}
+\colormixdef{src-code-identifier}{Matlab-keywordcolor}%{DodgerBlue}%{royalblue1}%{UltramarineBlue}%{PictonBlue}{blue}%
+\colormixdef{src-code-var}{ElectricCyan}%{Cyan1}%{seagreen2}%{springgreen2}%{GuppieGreen}%{ElectricGreen}%{green2}%
+%{Lime-Web-X11}%{NeonGreen}%{ChlorophyllGreen}%{BrightGreen}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/Universal Color Property Value Containers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
@@ -236,6 +255,30 @@
 %*******************************************************************************************************************************%
 %************************************ Application Specific Color Property Value Containers *************************************%
 %*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{corollary}{colback}{stdltyellow}
+\tcbcolorsetdef{corollary}{colbackupper}{stdltyellow}
+\tcbcolorsetdef{corollary}{colbacklower}{stdltyellow}
+\tcbcolorsetdef{corollary}{colbacktitle}{TerraCotta}%Tomato Orange-Crayola% OrangeSoda% SunsetOrange%
+\tcbcolorsetdef{corollary}{colbacksubtitle}{stddkgray}
+\tcbcolorsetdef{corollary}{colbackinterior}{stdltyellow}
+\tcbcolorsetdef{corollary}{colframe}{TerraCotta}
+\tcbcolorsetdef{corollary}{colleftframe}{TerraCotta}
+\tcbcolorsetdef{corollary}{colrightframe}{TerraCotta}
+\tcbcolorsetdef{corollary}{colframeborder}{TerraCotta}
+\tcbcolorsetdef{corollary}{colinteriorborder}{black}
+\tcbcolorsetdef{corollary}{coltitle}{white}
+\tcbcolorsetdef{corollary}{colupper}{black}
+\tcbcolorsetdef{corollary}{collower}{black}
+\tcbcolorsetdef{corollary}{coltext}{black}
+\tcbcolorsetdef{corollary}{coltextshadow}{TerraCotta}
+\tcbcolorsetdef{corollary}{colboxshadow}{stdgray}
+\tcbcolorsetdef{corollary}{coldraw}{TerraCotta}
+\tcbcolorsetdef{corollary}{colfill}{TerraCotta}
+\tcbcolorsetdef{corollary}{colfilltext}{white}
+\tcbcolorsetdef{corollary}{colfillborder}{black}
+\tcbcolorsetdef{corollary}{rulecolor}{TerraCotta}
+\tcbcolorsetdef{corollary}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \tcbcolorsetdef{definition}{colback}{stdbackground}
 \tcbcolorsetdef{definition}{colbackupper}{stdbackground}
@@ -312,6 +355,29 @@
 \tcbcolorsetdef{LD}{colfillborder}{black}
 \tcbcolorsetdef{LD}{rulecolor}{stdblue}
 \tcbcolorsetdef{LD}{coldoubleline}{cyan}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{lemma}{colback}{stdbackground}
+\tcbcolorsetdef{lemma}{colbackupper}{stdbackground}
+\tcbcolorsetdef{lemma}{colbacklower}{stdbackground}
+\tcbcolorsetdef{lemma}{colbacktitle}{PacificBlue}%PictonBlue
+\tcbcolorsetdef{lemma}{colbacksubtitle}{stddkgray}
+\tcbcolorsetdef{lemma}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{lemma}{colframe}{PacificBlue}
+\tcbcolorsetdef{lemma}{colleftframe}{PacificBlue}
+\tcbcolorsetdef{lemma}{colrightframe}{PacificBlue}
+\tcbcolorsetdef{lemma}{colframeborder}{PacificBlue}
+\tcbcolorsetdef{lemma}{coltitle}{white}
+\tcbcolorsetdef{lemma}{colupper}{black}
+\tcbcolorsetdef{lemma}{collower}{black}
+\tcbcolorsetdef{lemma}{coltext}{black}
+\tcbcolorsetdef{lemma}{coltextshadow}{PacificBlue}
+\tcbcolorsetdef{lemma}{colboxshadow}{stdgray}
+\tcbcolorsetdef{lemma}{coldraw}{PacificBlue}
+\tcbcolorsetdef{lemma}{colfill}{PacificBlue}
+\tcbcolorsetdef{lemma}{colfilltext}{white}
+\tcbcolorsetdef{lemma}{colfillborder}{black}
+\tcbcolorsetdef{lemma}{rulecolor}{PacificBlue}
+\tcbcolorsetdef{lemma}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \tcbcolorsetdef{Matlab}{colback}{Matlab-figcolback}
 \tcbcolorsetdef{Matlab}{colbackupper}{Matlab-figcolback}
@@ -409,6 +475,30 @@
 \tcbcolorsetdef{solution}{rulecolor}{stdltred}
 \tcbcolorsetdef{solution}{coldoubleline}{stdyellow}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{theorem}{colback}{stdbackground}
+\tcbcolorsetdef{theorem}{colbackupper}{stdbackground}
+\tcbcolorsetdef{theorem}{colbacklower}{stdbackground}
+\tcbcolorsetdef{theorem}{colbacktitle}{TealGreen}%DarkCyan% MetallicSeaweed% Emerald~=JungleGreen
+\tcbcolorsetdef{theorem}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{theorem}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{theorem}{colframe}{TealGreen}
+\tcbcolorsetdef{theorem}{colleftframe}{TealGreen}
+\tcbcolorsetdef{theorem}{colrightframe}{TealGreen}
+\tcbcolorsetdef{theorem}{colframeborder}{TealGreen}
+\tcbcolorsetdef{theorem}{colinteriorborder}{black}
+\tcbcolorsetdef{theorem}{coltitle}{white}
+\tcbcolorsetdef{theorem}{colupper}{black}
+\tcbcolorsetdef{theorem}{collower}{black}
+\tcbcolorsetdef{theorem}{coltext}{black}
+\tcbcolorsetdef{theorem}{coltextshadow}{TealGreen}
+\tcbcolorsetdef{theorem}{colboxshadow}{stdgray}
+\tcbcolorsetdef{theorem}{coldraw}{TealGreen}
+\tcbcolorsetdef{theorem}{colfill}{TealGreen}
+\tcbcolorsetdef{theorem}{colfilltext}{white}
+\tcbcolorsetdef{theorem}{colfillborder}{black}
+\tcbcolorsetdef{theorem}{rulecolor}{TealGreen}
+\tcbcolorsetdef{theorem}{coldoubleline}{stdgreen}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \tcbcolorsetdef{tcbbashbox}{colback}{black}
 \tcbcolorsetdef{tcbbashbox}{colbackupper}{black}
 \tcbcolorsetdef{tcbbashbox}{colbacklower}{stdbackground}
@@ -505,6 +595,30 @@
 \tcbcolorsetdef{tcbequation}{colfillborder}{black}
 \tcbcolorsetdef{tcbequation}{rulecolor}{stdred}
 \tcbcolorsetdef{tcbequation}{coldoubleline}{stdltred}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\tcbcolorsetdef{tcbsolution}{colback}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbackupper}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbacklower}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colbacktitle}{stdgray}
+\tcbcolorsetdef{tcbsolution}{colbacksubtitle}{stdgray}
+\tcbcolorsetdef{tcbsolution}{colbackinterior}{stdbackground}
+\tcbcolorsetdef{tcbsolution}{colupper}{black}
+\tcbcolorsetdef{tcbsolution}{collower}{black}
+\tcbcolorsetdef{tcbsolution}{colframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colleftframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colrightframe}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colframeborder}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colinteriorborder}{black}
+\tcbcolorsetdef{tcbsolution}{coltitle}{stdltgreen}
+\tcbcolorsetdef{tcbsolution}{coltext}{black}
+\tcbcolorsetdef{tcbsolution}{coltextshadow}{green}
+\tcbcolorsetdef{tcbsolution}{colboxshadow}{stdgray}
+\tcbcolorsetdef{tcbsolution}{coldraw}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colfill}{stdgreen}
+\tcbcolorsetdef{tcbsolution}{colfilltext}{white}
+\tcbcolorsetdef{tcbsolution}{colfillborder}{black}
+\tcbcolorsetdef{tcbsolution}{rulecolor}{stddkgreen}
+\tcbcolorsetdef{tcbsolution}{coldoubleline}{green}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \tcbcolorsetdef{tcbeqnlistbox}{colback}{stdbackground}
 \tcbcolorsetdef{tcbeqnlistbox}{colbackupper}{stdbackground}
@@ -1075,6 +1189,7 @@
 \colorsetdef{documentation}{fileset}{blue}
 \colorsetdef{documentation}{subcategory}{stdSeaGreen}
 \colorsetdef{documentation}{script}{stddeepskyblue}
+\colorsetdef{documentation}{texfile}{blue}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Color definition/manipulation/selection commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%

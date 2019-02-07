@@ -1,0 +1,80 @@
+%*******************************************************************************************************************************%
+%**************************************************** `R2Labs-fontcmds.def' ****************************************************%
+%*******************************************************************************************************************************%
+% Provides font encoding, family, and shape definitions, loads/configures font/symbol alphabets, defines text/math symbols, and provides text/math definitions, macros, and commands including shortcut commands used to perform local font/style changes.
+%*******************************************************************************************************************************%
+%********************************** Define provided package name and LaTeX/package dependencies ********************************%
+%*******************************************************************************************************************************%
+\ProvidesFile{R2Labs-textcmds.def}[\pkginfo]
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%******************************************************** Package Body *********************************************************%
+%*******************************************************************************************************************************%
+\def\usernamelabel{$<$\emph{user name}$>$}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand\Bibkeystr{\@ifnextstar{\Bibkeystr@withstar}{\Bibkeystr@withoutstar}}%
+\DeclareRobustCommand{\Bibkeystr@withstar*}[2][\paramcdots]{\textttup{\textcolor{bibkeycolor}{#2}}}%
+\DeclareRobustCommand\Bibkeystr@withoutstar[2][\paramcdots]{\textcolor{bibkeycolor}{#2}}%
+\DeclarePairedDelimiterX\@descriptor[2]{\color{#1}\langle}{\color{#1}\rangle}{\mathop{{#2}}\mathopen{}}% Enclose argument in colored angle brackets
+\DeclareDocumentCommand{\descriptor}{s O{blue} m m}{%
+        \ensuremath{\IfBooleanTF{#1}%
+                {\@descriptor{#2}{\textcolor{#3}{\textttup{#4}}}}%
+                {\textcolor{#3}{\@descriptor{#2}{\textttup{#4}}}%
+        }}%
+}
+%\DeclareTextFontCommand{\textttup}{\ttfamily}%\upshape\fontseries{\f@series}\selectfont
+%\DeclareRobustCommand\textttup[1]{\texttt{\bfseries#1}}%\upshape\fontseries{\f@series}\selectfont
+%\DeclareRobustCommand\textttup[1]{\textbf{#1}}%\upshape\fontseries{\f@series}\selectfont
+\def\paramstr#1{\{#1\}}
+%\def\paramstr#1{\textbraceleft#1\textbraceright}
+%\def\paramstr#1{\textlbrace#1\textrbrace}
+\def\caratext#1{\caratenclosed*{\textttup{#1}}}
+\DeclarePairedDelimiterX\@TeXgroupstr[2]{\color{#1}\lbrace}{\color{#1}\rbrace}{\mathop{{#2}}\mathopen{}}% Enclose argument in colored braces
+\DeclareDocumentCommand{\@@TeXgroupstr}{s t! O{texcsargcolor} G{\paramcdots}}{%
+        %\IfBooleanT{#1}{\ensuremath\bgroup}%
+        %\textttup{\textcolor{black}{\<}}%
+        \textbraceleft\textlbrace\textcolor{black}{\textlbrace}%\upshape
+        %\IfBooleanT{#1}{\egroup}%
+        #4%
+        %\IfBooleanT{#1}{\ensuremath\bgroup}%
+        %\textttup{\textcolor{black}{\>}}%
+        \textbraceright\begingroup\textbraceright\textcolor{black}{\text{\textrbrace}}\endgroup%\textttup{
+        %\IfBooleanT{#1}{\egroup}%
+}
+\def\csgroupstr{\@@TeXgroupstr[black]}
+\def\TeXesc@str#1{\textcolor{Sienna}{\textttup{\textbackslash#1}}}
+\def\BibTeXesc@str#1{\textcolor{bibcscolor}{\textttup{@#1}}}
+\def\BibTeXkey@str#1{\textcolor{bibkeycolor}{\textttup{@#1}}}
+\DeclareDocumentCommand{\TeXgroupstr}{s t! O{texcsargcolor} m O{\textrm} G{\paramcdots}}{%
+        \TeXesc@str{#4}%%\IfBooleanF{#1}{\TeXcmdstr{#4}}%
+        %\ensuremath{            %
+                \IfBooleanTF{#1}{%
+                        \@@TeXgroupstr{\@descriptor{blue}{\textcolor{#3}{#5{#6}}}}%
+                }{%
+                        \@@TeXgroupstr{\textcolor{#3}{#5{#6}}}%
+                }%
+        %}%
+}
+\DeclareDocumentCommand{\BibTeXgroupstr}{s t! O{clOlive} m O{\textrm} G{\paramcdots}}{%
+                \IfBooleanTF{#1}{%
+                        \BibTeXesc@str{}%
+                        %\ensuremath{%
+                                \@descriptor{black}{\textcolor{bibcscolor}{#5{#4}}}%
+                                \IfBooleanF{#2}{\@@TeXgroupstr{\textcolor{#3}{#5{#6}}}}%
+                        %}%
+                }{%
+                        \BibTeXesc@str{#4}%
+                        \IfBooleanF{#2}{%\ensuremath{%
+                                \@@TeXgroupstr{\textcolor{#3}{#5{#6}}}%}%
+                        }%
+                }%
+}
+%*******************************************************************************************************************************%
+%********************************************** End of 'R2Labs-fontcmds' package ***********************************************%
+%*******************************************************************************************************************************%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

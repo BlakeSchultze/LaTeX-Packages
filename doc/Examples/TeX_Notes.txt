@@ -1,0 +1,97 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def
+\edef
+\gdef = \global\def
+\xdef = \global\edef
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\string - 
+\escapechar - The value of \escapechar is normally TEX's internal code for backslash1 but it can be changed if another convention is desired.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\number<number>. When TeX expands \number, it reads the <number> that
+follows (expanding tokens as it goes); the final expansion consists of the decimal representation of that number, preceded by '-' if negative.
+• \romannumeral<number>. This is like \number, but the expansion consists of
+lowercase roman numerals. For example, '\romannumeral 1984' produces 'mcmlxxxiv'.
+The expansion is empty if the number is zero or negative.
+• \string<token>. TeX first reads the <token> without expansion. If a control
+sequence token appears, its \string expansion consists of the control sequence name
+(including \escapechar as an escape character, if the control sequence isn't simply an
+active character). Otherwise the <token> is a character token, and its character code is
+retained as the expanded result.
+• \jobname. The expansion is the name that TeX has chosen for this job. For
+example, if TeX is putting its output on files paper .dvi and paper .log, then \jobname
+expands to 'paper'.
+• \fontname<font>. The expansion is the external file name corresponding to the
+given font; e.g., '\fontname\tenrm' might expand to 'cmr10' (five tokens). If the font is
+not being used at its design size, the "at size" also appears in the expansion. A <font>
+is either an identifier defined by \font; or \textfont<number>, \scriptfont<number>,
+or \scriptscriptfont<number>; or \font, which denotes the current font.
+• \meaning<token>. TeX expands this to the sequence of characters that would
+be displayed on your terminal by the commands '\let\test=<token> \show\ test'.
+For example, '\meaning A' usually expands to 'the letter A'; '\meaning\A' after
+'\def\A#1B{\C}' expands to 'macro:#1B->\C '.
+• \csname ... \endcsname. When TeX expands \csname it reads to the matching
+\endcsname, expanding tokens as it goes; only character tokens should remain after this
+expansion has taken place. Then the "expansion!' of the entire \csname ... \endcsname
+text will be a single control sequence token, defined to be like \relax if its meaning is
+currently undefined.
+• \expandafter<token>. TeX first reads the token that comes immediately after
+\expandafter, without expanding it; let's call this token t. Then TeX reads the token
+that comes after t (and possibly more tokens, if that token has an argument), replacing
+it by its expansion. Finally TeX puts t back in front of that expansion.
+• \noexpand<token>. The expansion is the token itself; but that token is interpreted as if its meaning were '\relax' if it is a control sequence that would ordinarily
+be expanded by TeX's expansion rules.
+• \topmark, \firstmark, \botmark, \splitfirstmark, and \splitbotmark. The
+expansion is the token list in the corresponding "mark" register (see Chapter 23).
+• \input<file name>. The expansion is null; but TeX prepares to read from the
+specified file before looking at any more tokens from its current source.
+• \endinput. The expansion is null. The next time TeX gets to the end of an
+\input line, it will stop reading from the file containing that line.
+• \the<internal quantity>. The expansion is a list of tokens representing the
+current value of one of TeX's variables, as explained below. For example, '\the\skip5'
+might expand into '5.0pt plus 2.0fil' (17 tokens).
+The powerful \the operation has many subcases, so we shall discuss them one
+at a time. A variety of internal numeric quantities can be brought up front:
+• \the<parameter>, where <parameter> is the name of one of TeX's integer parameters (e.g., \the\widowpenalty), dimension parameters (e.g., \the\parindent),
+glue parameters (e.g., \the\leftskip), or muglue parameters (e.g., \the\thinmuskip).
+• \the<register>, where <register> is the name of one of TeX's integer registers
+(e.g., \the\count 0', dimension registers (e.g., \the\dimen169), glue registers (e.g., \the\skip255), or muglue registers (e.g., \the\muskip\count2).
+• \the<codename><8-bit number>, where <codename> stands for either \catcode,
+\mathcode, \lccode, \uccode, \sfcode, or \del code. For example, \the\mathcode' I
+produces the current (integer) math code value fOr a slash.
+• \the<special register>, where <special register> is one of the integer quantities
+\prevgraf, \deadcycles, \insertpenalties, \inputlineno, \badness, or \parshape
+(denoting only the number of lines of \par shape); or one of the dimensions \pagetotal,
+\pagegoal, \pagestretch, \pagefilstretch, \pagefillstretch, \pagefilllstretch,
+\pageshrink, \pagedepth. In horimntal modes you can also refer to a special integer,
+\the\spacefactor; in vertical modes there's a special dimension, \the\prevdepth.
+• \the\fontdimen<parameter number><font>. This produces a dimension; for
+example, parameter 6 of a font is its "em" value, so '\the\fontdimen6\tenrm' yields
+'10.0pt' (six tokens).
+• \the \hyphenchar<font>, \the \skewchar<font>. These produce the corresponding integer values defined for the specified font.
+• \the\lastpenalty, \the\lastkern, \the\lastskip. These yield the amount
+of penalty, kerning, glue, or muglue in the final item on the current list, provided that
+the item is a penalty, kern, or glue, respectively; otherwise they yield '0' or 'O.Opt'.
+• \the<defined character>, where <defined character> is a control sequence that
+has been given an integer value with \chardef or \mathchardef; the result is that
+integer value, in decimal notation.
+~~ In all of the cases listed so far, \the produces a result that is a sequence of ASCII character tokens. Category code 12 ("other") is assigned to each token,
+except that character code 32 gets category 10 ("space"). The same rule is used to
+assign category codes to the tokens produced by \number, \romannumeral, \string,
+\meaning, \jobname, and \fontname.
+There also are cases in which \the produces non-character tokens, either a
+font identifier like \tenrm, or an arbitrary token list:
+• \the<font> produces a font identifier that selects the specified font. For example, '\the\font' is a control sequence corresponding to the current font.
+• \the<token variable> produces a copy of the token list that is the current value
+of the variable. For example, you can expand '\the\everypar' and '\the\toks5'.
+• \showthe<token variable> TeX primitive that will display on your terminal exactly what
+"\the" would produce in an expanded definition; the expansion is preceded by '>' and followed by a period. For example: '\showthe\parindent' will display 
+
+> 20.0pt.
+
+if the plain TEX paragraph indentation is being used.

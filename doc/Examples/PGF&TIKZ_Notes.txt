@@ -1,0 +1,78 @@
+\pgfkeysvalueof{hfull keyi}  - Inserts the value stored in hfull keyi at the current position into the text.
+\pgfkeyssetvalue{/my family/my key}{Hello, world!}
+\pgfkeysvalueof{/my family/my key}
+-->>Hello, world! 
+
+\pgfkeyssetvalue{/my family/my key}{Hello, world!}
+\pgfkeysgetvalue{/my family/my key}{\helloworld}
+\helloworld
+
+\newif\iftheworldisflat
+\pgfkeys{/flat world/.is if=theworldisflat}
+\pgfkeys{/flat world=false}
+\iftheworldisflat
+Flat
+\else
+Round?
+\fi
+
+clip title/.is choice,
+clip title/true/.code={\let\tcb@tdraw@title=\tcb@tdraw@title@clip},
+clip title/false/.code={\let\tcb@tdraw@title=\tcb@tdraw@title@core},
+clip title/.default=true,
+
+  
+
+shad@w app/.code={\appto\kvtcb@shadow{#1}},%
+  shadow/.style args={#1#2#3#4}{shad@w app={\csuse{tcb@shadow@\tcb@shapeofskin}{#1}{#2}{#3}{#4}}},%
+  no shadow/.code={\def\kvtcb@shadow{}},%
+  fuzzy shadow/.style args={#1#2#3#4#5}{shad@w app={%
+    \begin{scope}[#5]%
+      \letcs\tcb@shadow{tcb@shadow@\tcb@shapeofskin}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3-4\dimexpr#4\relax}{opacity=0.01}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3-3\dimexpr#4\relax}{opacity=0.02}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3-2\dimexpr#4\relax}{opacity=0.04}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3-#4\relax}{opacity=0.07}%
+      \tcb@shadow{#1}{#2}{#3}{opacity=0.11}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3+#4\relax}{opacity=0.11}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3+2\dimexpr#4\relax}{opacity=0.07}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3+3\dimexpr#4\relax}{opacity=0.04}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3+4\dimexpr#4\relax}{opacity=0.02}%
+      \tcb@shadow{#1}{#2}{\the\dimexpr#3+5\dimexpr#4\relax}{opacity=0.01}%
+  \end{scope}}},%
+  %
+ 
+ 
+
+listing file/.store in=\kvtcb@listingfile,%
+comment/.store in=\kvtcb@listingcomment,%
+listing@process@inside/.code 2 args={%
+    \let\tcb@inputlisting\tcb@inputlisting@inside%
+    \let\tcb@listing@process=#1%
+    \let\tcb@use@listing@other=#2},%
+listing@process@outside/.code 2 args={%
+    \let\tcb@inputlisting=#1%
+    \let\tcb@use@listing@other=#2},%
+listing engine/.is choice,% 
+image comment/.style 2 args={comment={\includegraphics[#1]{#2}}},%
+pdf comment/.style={ comment={\let\tcb@trans@commentstyle\kvtcb@commentstyle\filename@parse{#1}\edef\tcb@trans@commentfile{\filename@area\filename@base.\kvtcb@pdf@extension}%
+    \begin{tcbraster}[raster halign=center,sharp corners,size=tight,colback=white,code={\pgfkeysalsofrom\tcb@trans@commentstyle}]\tcbincludepdf{\tcb@trans@commentfile}\end{tcbraster}}},
+pdf comment/.default={\kvtcb@listingfile},
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+% Newly added packages which have not been fiully vetted as of 07/01/2016
+\RequirePackage{alltt}				
+\RequirePackage{embedfile}             		
+\RequirePackage{eqparbox}					
+%\RequirePackage{etextools}
+%\RequirePackage{letltxmacro}				
+%\RequirePackage{ltablex}
+\RequirePackage{ltxdockit}           		
+\RequirePackage{ltxtable}
+\RequirePackage{setspace}				% Change line spacing locally
+\RequirePackage{dashrule}

@@ -5,8 +5,7 @@
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-config} %*******************************************************************************************************************************%
+\ProvidesPackage{my-config}[\pkginfo] %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -44,16 +43,18 @@
 \hypersetup
 {
         anchorcolor=hyperlinkcolor,
+        %backref=true,
         %bookmarks=true,
         %breaklinks=true,
         %citebordercolor=green,
-        citecolor=green,
+        citecolor=hyperlinkcolor,
         colorlinks=true,% hyperlinks will be coloured
         %filebordercolor=magenta,
         filecolor=magenta,
         %hyperfigures=true,
         hyperfootnotes=true,
         hyperindex=true,
+        %hypertexnames=true,
         linkbordercolor=hyperlinkcolor,
         linkcolor=hyperlinkcolor,
         pageanchor=true,
@@ -74,7 +75,7 @@
         runcolor=hyperlinkcolor,
         unicode=true,
         %urlbordercolor=cyan,
-        urlcolor=cyan
+        urlcolor=urllinkcolor%cyan
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\bookmarksetup{}
@@ -120,33 +121,56 @@
 \captionsetup[subfloat]{labelfont={bf,small},textfont={it,small}}
 %\captiontitlefont{\small\itshape}
 %\captionnamefont{\small\bfseries}
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create new styles/settings/configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create new geometries & set document/paper settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newgeometry%
 {
-        paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
-        top=0.5in, bottom=0.5in, left=1.0in, right=1.0in,
-        headheight=0.5in, headsep=2pt, footskip=.5cm,
+        %paperwidth=\toc@paperwidth, paperheight=\toc@paperheight,
+        layouthoffset=0.0in,
+        top=\toc@top, bottom=\toc@bottom, left=\toc@left, right=\toc@right,
+        headheight=\toc@headheight, headsep=\toc@headsep, footskip=\toc@footskip,\geometry@args
 }
 \savegeometry{toc@geometry}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newgeometry%
 {
-        paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
-        top=0.6in, bottom=0.5in, left=1.0in, right=1.0in,
-        headheight=0.5in, headsep=8pt, footskip=0.5cm,
+        %paperwidth=\doc@paperwidth, paperheight=\doc@paperheight,
+        layouthoffset=0.0in,
+        top=\doc@top, bottom=\doc@bottom, left=\doc@left, right=\doc@right,
+        headheight=\doc@headheight, headsep=\doc@headsep, footskip=\doc@footskip,\geometry@args
 }
 \savegeometry{doc@geometry}
+%-------------------------------------------------------------------------------------------------------------------------------%
 \newgeometry%
 {
-        paperwidth=11in, paperheight=8.5in, layouthoffset=0.0in,
-        left=1.0in, right=1.0in, top=0.25in, bottom=0.25in
+        %paperwidth=\coverpage@paperwidth, paperheight=\coverpage@paperheight,
+        layouthoffset=0.0in,
+        top=\coverpage@top, bottom=\coverpage@bottom, left=\coverpage@left, right=\coverpage@right,\geometry@args
 }
 \savegeometry{coverpage@geometry}
-\loadgeometry{doc@geometry}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newgeometry{layout=a0paper, layouthoffset=0.0in, top=\doc@top, bottom=\doc@bottom, left=\doc@left, right=\doc@right,\geometry@args}
+\savegeometry{a0paper@geometry}%paper=a0paper,
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newgeometry{layout=a4paper, textwidth=\aIVpaper@textwidth, textheight=\aIVpaper@textheight, layouthoffset=0.0in, top=\doc@top, bottom=\doc@bottom, left=\doc@left, right=\doc@right,\geometry@args}
+\savegeometry{a4paper@geometry}%paper=a4paper,
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newgeometry{layout=a5paper, textwidth=\aVpaper@textwidth, textheight=\aVpaper@textheight, layouthoffset=0.0in, top=\doc@top, bottom=\doc@bottom, left=\doc@left, right=\doc@right,\geometry@args}
+\savegeometry{a5paper@geometry}%paper=a5paper,
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newgeometry{layout=b5paper, textwidth=\bVpaper@textwidth, textheight=\bVpaper@textheight, layouthoffset=0.0in,top=\doc@top, bottom=\doc@bottom, left=\doc@left, right=\doc@right,\geometry@args}
+\savegeometry{b5paper@geometry}%paper=b5paper,
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\initPaper\current@geometry%
+\loadgeometry{\current@geometry}%
+%\loadgeometry{doc@geometry}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Create new math/table styles/settings/configurations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \newtheoremstyle{defi}{\topsep}{\topsep}{\normalfont}{}{\bfseries}{:}{.5em}{\thmname{#1}\thmnote{~(#3)}}%
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -166,12 +190,6 @@
 %------------------------------------------------------ Preamble hooks/patches ------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%\mylatex@fontfamily
-\define@key{mathfonts}{letters}[\mylatex@fontfamily]{\def\mathfonts@letters{#1}}
-\define@key{mathfonts}{operators}[\mylatex@fontfamily]{\def\mathfonts@operators{#1}}
-\define@key{mathfonts}{symbols}[cmsy]{\def\mathfonts@symbols{#1}}
-\define@key{mathfonts}{largesymbols}[cmex]{\def\mathfonts@largesymbols{#1}}
-%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\macrosettings}{s m m m}
@@ -189,6 +207,7 @@
                 {equation}{\renewcommand{\theequation}{\arabic{equation}}}%
                 {problems}{\renewcommand{\theequation}{\the@prob@counter-\arabic{equation}}}%
                 {sections}{\renewcommand{\theequation}{\thesection.\arabic{equation}}}%
+                %{chapters}{\renewcommand{\theequation}{\thechapter.\thesection.\arabic{equation}}}%
         }%
         []%
         \IfValueTF{#3}{\renewcommand{\theequation}{#3}}{}
@@ -197,16 +216,37 @@
 \DeclareDocumentCommand{\@init@math@settings}{s}%
 {%
         %\setlength{\jot}{\@doc@fontsize}%
-        \formattheequation{problems}%
+        %\formattheequation{problems}%
         \counterwithin@nonzero{@prob@counter}{@chap@counter}%
         \counterwithin{equation}{@prob@counter}%
+        \formattheequation{sections}%
+        \DeclareMathSizes{10}{8}{6}{6}   % For size 10 text
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\initfonts}{O{letters,operators,symbols,largesymbols}}
+{%
+        %-------------------------------------------------------------------------------------------------------------------------------%
+        \def@inuse@text@encodings
+        \def@inuse@text@encoding@pairs
+        \@init@family@text@encodings
+        \def@fontfamily@cmds
+%       %------------------------------------------------------------------------------------------------------------------------%
+        \setkeys{mathfonts}{#1}%={OT1}
+        \SetSymbolFont{operators}{normal}{OT1}{\mathfonts@letters}{m}{n}
+        \SetSymbolFont{letters}{normal}{OML}{\mathfonts@operators}{m}{n}
+        \SetSymbolFont{symbols}{normal}{OMS}{\mathfonts@symbols}{m}{n}
+        \SetSymbolFont{largesymbols}{normal}{OMX}{\mathfonts@largesymbols}{m}{n}
+        %\setkeys{mymacro}{first={FIRST arg},second={SECOND arg},third={THIRD arg},last={LAST arg},#1}%
+        %\define@cmdkey[prefix]{family}[mp]{key}[default]{function}-This has the effect of defining a key macro of the form \prefix@family@key
+        %\setkeys[prefix]{families}[na]{keys} This macro sets keys of the form \prefix@family@key
+        %\define@key{mathfonts}{letters}[\mylatex@fontfamily]{\xdef\mathfonts@letters{#1}}
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@init@font@settings}{s}%
 {%
-        \edef\cf@series{\f@series}
-        \def\primarycolor{white}
-        \def\secondarycolor{black}
+        \xdef\cf@series{\f@series}
+        \gdef\primarycolor{white}
+        \gdef\secondarycolor{black}
         \shadowoffset{0.5pt}%
         \shadowoffsetx{0.65pt}%
         \shadowoffsety{-0.2pt}%
@@ -216,12 +256,22 @@
         \doubleshadowoffset{0.5pt}%
         \doubleshadowoffsetx{1.20pt}%
         \doubleshadowoffsety{-0.0pt}%
+	%\hyphenation{supercalifragilisticexpialidocious}
+	%\tolerance=1000
+	%\hyphenpenalty=1000
+	%%\slash\fshyp
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \DeclareDocumentCommand{\@init@doc@settings}{s}%
 {%
-        \blindrandomtrue%
+        %\blindrandomtrue%
         \doclinespacing%
+	\uchyphenoff
+	%\hyphenoff
+%	\exhyphenoff
+%	\lhyphenoff
+%	\rhyphenoff
+%	\hyphencharoff
         \setulsettings[init=true]%
         \preto{\chapter}{\bookmarksetupnext{level=2}}%
         \preto{\section}{\bookmarksetupnext{level=3}}%
@@ -229,6 +279,7 @@
         \pagenumbering{\mylatex@docpagenumbering}%
         %\fancyheadfoot%
         \@format@counters%
+        %\formattheequation{sections}%
         %\formattheequation{problems}%
 %        \counterwithin@nonzero{@prob@counter}{@chap@counter}%
 %        \counterwithin{equation}{@prob@counter}%
@@ -251,23 +302,21 @@
         \SetMathVar%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareDocumentCommand{\setmathfonts}{O{}}
-{%
-        %\setkeys{mymacro}{first={FIRST arg},second={SECOND arg},third={THIRD arg},last={LAST arg},#1}%
-        \setkeys{mathfonts}{#1}%
-        \SetSymbolFont{operators}{normal}{OT1}{\mathfonts@letters}{m}{n}
-        \SetSymbolFont{letters}{normal}{OML}{\mathfonts@operators}{m}{n}
-        \SetSymbolFont{symbols}{normal}{OMS}{\mathfonts@symbols}{m}{n}
-        \SetSymbolFont{largesymbols}{normal}{OMX}{\mathfonts@largesymbols}{m}{n}
-
-}
+%\DeclareOption*{%
+%  \begingroup
+%  \edef\x{\endgroup
+%    \noexpand\setkeys{mathalfa}{\CurrentOption}}%
+%  \x}
 %-------------------------------------------------------------------------------------------------------------------------------%
 \AtEndPreamble
 {
+	\Hy@backreftrue
         \@define@linespace@commands%
         \@init@doc@settings%
         \@init@csdefs%
+        \initfonts\relax
         \ifmylatex@frontbackmatter\makeFrontbackMatter\fi%
+	\cfgBibliography
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 \def\@math@OML@letter@fonts{cmr,lmr,pxr,txr,cmbr,,,,}
@@ -275,16 +324,7 @@
 \def\@math@OML@symbols@fonts{hlcy,lmsy,pxsy,,}
 \def\@math@OML@operators@fonts{pzc,augie,..., lmex,pcr,phv,,,,}
 \AfterPreamble%
-{
-        %\renewcommand\encodingdefault{OT1}
-        %\renewcommand{\familydefault}{\sfdefault}
-        %\renewcommand{\sfdefault}{cmbr}
-        %\renewcommand{\ttdefault}{cmtl}
-        %\renewcommand\familydefault{qpl}
-        %\renewcommand{\rmdefault}{qpl}%         lmr
-        %\renewcommand{\sfdefault}{cmss}%        lmss
-        %\renewcommand{\ttdefault}{cmtt}%        lmtt
-%-------------------------------------------------------------------------------------------------------------------------------%
+{%-------------------------------------------------------------------------------------------------------------------------------%
         %\def\mathfonts@default@rm{txr}%cmpica
 %        \def\mathfonts@default@ss{pxss}%cmpica
 %        \def\mathfonts@default@tt{pxtt}%cmpica
@@ -336,6 +376,7 @@
 %%       \SetSymbolFont{symbols}     {normal}{OMS}{lmsy}{m}{n}
 %%       \SetSymbolFont{largesymbols}{normal}{OMX}{lmex}{m}{n}
 %        %\fontencoding{OT1}\fontfamily{cmr}\selectfont
+%        \initfonts%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------ Document hooks/patches ------------------------------------------------%
@@ -343,23 +384,25 @@
 \AtBeginDocument
 {%
         \@config@cft@content%
-        \formattheequation{problems}%
-        %%-------------------------------------------------------------------------------------------------------------------------------%
-	\let\glsDefsFile\mylatex@glsdefsfile%
-        \xdef\theglsdefsfile{\mylatex@glsdefsfile.def}%
-        %\xdef\theglsdefsfile{./\mylatex@glsdefsfile.def}%
-        %\xp\input\xp{\theglsdefsfile}%                  % Import the master list of glossary/acronym/symbol terms
-        %\xp\input\xp{WalkerProject-Terms.def}%                  % Import the master list of glossary/acronym/symbol terms
-        %\input{C:/Users/Blake/Documents/Education/Research/ReminderWalker/WalkerProject-Terms.def}%
-        %\input{"C:/Users/Blake/Documents/Education/Research/Reminder Walker/WalkerProject-Terms.def"}%
-        %\input{./WalkerProject-Terms.def}%
-        \xp\input\xp{./\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
-        \ifmylatex@pkgtest
-        	%\xp\input\xp{\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
-                %\input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
-	\fi
+%        \formattheequation{problems}%
+%        %%-------------------------------------------------------------------------------------------------------------------------------%
+%        \let\glsDefsFile\mylatex@glsdefsfile%
+%        \xdef\theglsdefsfile{\mylatex@glsdefsfile.def}%
+%        %\xdef\theglsdefsfile{./\mylatex@glsdefsfile.def}%
+%        %\xp\input\xp{\theglsdefsfile}%                  % Import the master list of glossary/acronym/symbol terms
+%        %\xp\input\xp{WalkerProject-Terms.def}%                  % Import the master list of glossary/acronym/symbol terms
+%        %\input{C:/Users/Blake/Documents/Education/Research/ReminderWalker/WalkerProject-Terms.def}%
+%        %\input{"C:/Users/Blake/Documents/Education/Research/Reminder Walker/WalkerProject-Terms.def"}%
+%        %\input{./WalkerProject-Terms.def}%
+%        \xp\input\xp{./\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
+%        \ifmylatex@pkgtest
+%                %\xp\input\xp{\mylatex@glsdefsfile.def}%                  % Import the master list of glossary/acronym/symbol terms
+%                %\input{glsentries.def}%                                 % Import the master list of glossary/acronym/symbol terms
+%        \fi
+        \xp\input\xp{\glsDefsPath}%                             % Import the master list of glossary/acronym/symbol terms
 }                                                        %-------------------------------------------------------------------------------------------------------------------------------%
-\AtEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
+\AtEndDocument{\printFrontbackMatter}
+%\AfterEndDocument{\ifmylatex@frontbackmatter\printFrontbackMatter\fi}
 %-------------------------------------------------------------------------------------------------------------------------------%
 %------------------------------------------------------ Environment hooks/patches ---------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%

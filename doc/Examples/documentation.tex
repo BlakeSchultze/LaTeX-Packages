@@ -1,0 +1,511 @@
+%---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------%
+\documentclass[class = report, landscape,crop = false]{standalone}
+%\documentclass[class=report,lanscape,crop=false]{standalone}
+%\documentclass[class=article,crop=false]{standalone}
+\RequirePackage[frontbackmatter]{my-latex}
+%\setmainfont{Computer Modern}
+%\setmainfont{Times New Roman}	
+\makeFrontMatter
+\begin{documentation}
+%[]
+{pCT\_Tools Documentation}
+{Description and Usage of Repository Contents}  	
+%\begin{document}
+\addFrontMatter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bash scripts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\chapter{bash scripts}
+\begin{tcbsection}'tcbDarkGreenStyle'{pCT\_Tools Documentation:}
+	The following documentation describes each bash function/script and outlines their options and usage.
+\end{tcbsection}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% .bash\_profile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenvironment}'tcbDarkGreenStyle'[title=\shadowText{bash scripts}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% info box %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbContentsBox}
+\anttmcap14pt Description of bash scripts supplied in pCT\_Tools repository and their usage
+\end{tcbContentsBox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bash scripts %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[.bash\_profile]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$  Generic bash profile pCT users can use for shell sessions on Kodiak/Tardis.  This sources the \texttt{load\_pct\_functions.sh} script and loads its bash functions, variables, and aliases/shortcuts so (1) these can be used to perform the host dependent and session setup tasks during user login and (2) they are made available to the pCT user during their shell session}\\[-3.0em]
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% load\_pct\_functions.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[load\_pct\_functions.sh]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$  Loads the bash functions, variables, and aliases/shortcuts useful to pCT users on Kodiak/Tardis.  This is then sourced by the \texttt{.bash\_profile} (provided separately) so (1) these can be used to perform the host dependent and session setup tasks during user login and (2) they are made available to the pCT user during their shell session}\\[-3.0em]
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% link\_raw\_data.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%\vspace{6mm}
+%\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[link\_raw\_data.sh\\[0.5em]%
+%\fontsize{12}{2.5mm}\selectfont USAGE: %
+%\functionOptionsEntry{h}%
+%\functionOptionsEntry{g}%
+%{\functionOptionsEntry{p}[$<$data path$>$]}%
+%{\functionOptionsEntry{i}[$<$angle interval$>$]}%
+%]%<3.0cm><16.0cm>
+%	\tcbfunctiondesc
+%	{$-$ Generates soft data links to raw data files (\texttt{/ion/pCT\_data/raw\_data/$<$run\_date$>$)} for a particular run date and organizes these in the \texttt{/ion/pCT\_data/organized\_data} directory by phantom name according to the standardized naming/organizational scheme}
+%	\tcbfunctionsep%[\tcblistbox\bfseries]{\ul{Options}:}(\ul{Option Details}:)
+%	\tcbfunctionentry{-h}{print help to terminal}
+%	\tcbfunctionentry{-p}{path to source raw data (DEFAULT: current working directory}
+%	\tcbfunctionentry{-i}{set angle interval [$\si{\degree}$] between data files (DEFAULT: 4 [$\si{\degree}]$)}
+%\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% link\_projection\_data.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[link\_projection\_data.sh\\[0.5em]%
+\fontsize{12}{2.5mm}\selectfont USAGE: %
+\functionOptionsEntry{h}%
+\functionOptionsEntry{EGT}%
+\functionOptionsEntry{g}%
+{\functionOptionsEntry{p}[$<$data path$>$]}%
+{\functionOptionsEntry{i}[$<$angle interval$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ Generates soft data links to preprocessed data files (\texttt{/ion/pCT\_data/preprocessed\_data/$<$run\_date$>$}) for a particular run date and organizes these in the \texttt{/ion/pCT\_data/organized\_data} directory by phantom name according to the standardized naming/organizational scheme}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-p}{path to source preprocessed data (DEFAULT: current working directory}
+	\tcbfunctionentry{-i}{set angle interval [$\si{\degree}$] between data files (DEFAULT: 4 [$\si{\degree}]$)}
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% stage\_preprocessed\_data.sh
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[stage\_preprocessed\_data.sh\\[0.5em]%
+\fontsize{12}{2.5mm}\selectfont USAGE: %
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{O}%
+{\functionOptionsEntry{p}[$<$\texttt{readme}/data path$>$]}%
+{\functionOptionsEntry{f}[$<$\texttt{readme.txt} filename$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ Used to stage preprocessed data with naming/organization appropriate for immediate sharing by specifying location of \texttt{preprocessed\_data} and corresponding \texttt{readme.txt} file from which the phantom name, run \#/tag(s), and projection angle can be parsed}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose flag: terminal output 'on' (DEFAULT: \$verbose\_flag)}
+	\tcbfunctionentry{-d}{date of preprocessing (DEFAULT: \$preprocessed\_date (today))}
+	\tcbfunctionentry{-p}{path to data and \texttt{readme.txt} text file (DEFAULT: \$preprocessed\_path)}
+	\tcbfunctionentry{-f}{filename of \texttt{readme.txt} text file (DEFAULT: \$filename)}
+	\tcbfunctionentry{-O}{specifies old date format MMDDYYYY is used (DEFAULT: 'YY-MM-DD' format)}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% rename-files.sh %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbDarkGreenStyle'[rename-files.sh\\[0.5em]%
+\fontsize{12}{2.5mm}\selectfont USAGE: %
+\functionOptionsEntry{h}%
+{\functionOptionsEntry{\$1}[$<$angle interval$>$]}%
+]%%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ Rename preprocessed data files in current folder, changing each file with \texttt{.dat.root.reco.root.bin} extension to ``\coloredtext*{documentation-fileset}{\textit{projection\_xxx.bin}}'' for each angle \texttt{xxx}}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-i}{angle interval between preprocessed data files (DEFAULT: 4 [$\si{\degree}$])}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% .bash\_profile %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{tcbenvironment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bash functions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\chapter{bash functions}
+%\vspace{3mm}
+\begin{tcbenvironment}'tcbBlueStyle'[title=\shadowText{bash functions}]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% info box %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbContentsBox}
+\anttmcap14pt Description of bash functions supplied in pCT\_Tools repository and their\\ optional/required parameters and usage
+\end{tcbContentsBox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% add\_rcode\_repo %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[add\_rcode\_repo %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{h}%
+\functionOptionsEntry{-IO}%
+{\functionOptionsEntry{a}[$<$git account$>$]}%
+{\functionOptionsEntry{r}[$<$git repo$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ add GitHub repository to a user's code directory on Tardis}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal}
+	\tcbfunctionentry{-u}{username (DEFAULT: \${username})}
+	\tcbfunctionentry{-a}{git account (DEFAULT: \${account})}
+	\tcbfunctionentry{-r}{git repository (DEFAULT: \${repo})}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% set_rcode %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[set\_rcode %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{h}%
+\functionOptionsEntry{G}%
+\functionOptionsEntry{g}%
+\functionOptionsEntry{-IO}%
+{\functionOptionsEntry{a}[$<$git account$>$]}%
+{\functionOptionsEntry{r}[$<$git repo$>$]}%
+\nobreak{\functionOptionsEntry{b}[$<$git branch$>$]}%
+\nobreak{\functionOptionsEntry{u}[$<$username$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ select the GitHub repository corresponding to the code that the user currently wishes to work with and compile/run, if a user copy should be cloned or the code is to be taken directly from the primary clone to a user's code directory on Tardis}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-a}{git account (DEFAULT: \${account})}
+	\tcbfunctionentry{-r}{git repository (DEFAULT: \${repo})}
+	\tcbfunctionentry{-b}{git branch (DEFAULT: \$branch)}
+	\tcbfunctionentry{-u}{username, if applicable (DEFAULT: \$username)}
+	\tcbfunctionentry{-G}{reconstruction group username flag (DEFAULT: \${username})}
+	\tcbfunctionentry{-g}{global git code repositories flag (DEFAULT: user git code directories)}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% nvccgen %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[nvccgen %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{h}%
+\functionOptionsEntry{\$1}%
+\functionOptionsEntry{\$2}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc{$-$ compile pCT\_Reconstruction code with argument \#1/\#2 used to set architecture/code}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal}
+	\tcbfunctionentry{\$1}{NVCC architecture specification \# (\texttt{35} used in \texttt{compute\_35}}
+	\tcbfunctionentry{\$2}{NVCC code specification \#(i.e. \texttt{35} used in \texttt{sm\_35})}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% runrecon %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[runrecon %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{h}%
+\functionOptionsEntry{\$1}%
+\functionOptionsEntry{\$2}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc{$-$ compile and run pCT\_Reconstruction code with argument \#1/\#2 used to set architecture/code}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal}
+	\tcbfunctionentry{\$1}{NVCC architecture specification \# (\texttt{35} used in \texttt{compute\_35}}
+	\tcbfunctionentry{\$2}{NVCC code specification \#(i.e. \texttt{35} used in \texttt{sm\_35})}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct\_recon\_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[construct\_recon\_path %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{EGT}%
+\functionOptionsEntry{IO}%
+{\functionOptionsEntry{o}[$<$Phantom$>$]}%
+{\functionOptionsEntry{r}[$<$run date$>$]}%
+\nobreak{\functionOptionsEntry{n}[$<$run \# + tag(s)$>$]}%
+{\functionOptionsEntry{d}[$<$preprocess date$>$]}%
+{\functionOptionsEntry{D}[$<$recon date$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ construct input or output data path for appropriately organized reconstruction data}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-D}{reconstruction date, if applicable (DEFAULT: today) }
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct_preprocessing_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[construct\_preprocessing\_path %
+\fontsize{12}{2.5mm}\selectfont%
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{EGT}%
+\functionOptionsEntry{IO}%
+{\functionOptionsEntry{o}[$<$Phantom$>$]}%
+{\functionOptionsEntry{r}[$<$run date$>$]}%
+\nobreak{\functionOptionsEntry{n}[$<$run \# + tag(s)$>$]}%
+{\functionOptionsEntry{d}[$<$preprocess date$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ construct input or output data path for appropriately organized reconstruction data}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% construct_pct_path %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[construct\_pct\_path %
+\fontsize{12}{4.5mm}\selectfont%
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{PR}%
+\functionOptionsEntry{EGT}%
+\functionOptionsEntry{IO}%
+{\functionOptionsEntry{o}[$<$Phantom$>$]}%
+{\functionOptionsEntry{r}[$<$run date$>$]}%
+\nobreak{\functionOptionsEntry{n}[$<$run \# + tag(s)$>$]} %
+{\functionOptionsEntry{d}[$<$preprocess date$>$]}%
+{\functionOptionsEntry{D}[$<$recon date$>$]}%
+]%<3.0cm><16.0cm>
+	\tcbfunctiondesc
+	{$-$ construct input or output data path for appropriately organized preprocessing or reconstruction data}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-R}{reconstruction data flag (DEFAULT)}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-D}{reconstruction date, if applicable (DEFAULT: today) }
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% organize\_data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[organize\_data \fontsize{12}{5.5mm}\selectfont%
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{R}%%
+\functionOptionsEntry{M}%%
+\functionOptionsEntry{GT}%
+\functionOptionsEntry{I}%
+\functionOptionsEntry{p}[$<$data path$>$]%
+\functionOptionsEntry{t}[$<$destination$>$]%
+\functionOptionsEntry{o}[$<$Phantom$>$]%
+\functionOptionsEntry{r}[$<$run date$>$]%
+\functionOptionsEntry{n}[$<$run \#/tag(s)$>$]%
+\functionOptionsEntry{d}[$<$preprocess date$>$]%
+\functionOptionsEntry{D}[$<$recon date$>$]%
+]%<3.0cm><16.0cm>
+\tcbfunctiondesc
+{%
+	$-$ construct input or output data path for appropriately organized reconstruction data
+}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal}
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-R}{reconstruction data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-M}{move data (DEFAULT: copy)}
+	%\pagebreak
+	\tcbfunctionentry{-C}{copy data (DEFAULT: copy)}
+	\tcbfunctionentry{-p}{path to data (DEFAULT: current working directory)}
+	\tcbfunctionentry{-t}{write output hierarchy to (DEFAULT: current working directory)}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}\pagebreak
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-D}{reconstruction date, if applicable (DEFAULT: today) }
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}\pagebreak
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% add\_tardis\_data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\vspace{6mm}
+%\clearpage
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[add\_tardis\_data\fontsize{12}{5.5mm}\selectfont%
+\functionOptionsEntry{hv}%
+\functionOptionsEntry{PR}%
+\functionOptionsEntry{MC}%
+\functionOptionsEntry{F}%
+\functionOptionsEntry{UH}%
+\functionOptionsEntry{EGT}%
+\functionOptionsEntry{IO}%
+\functionOptionsEntry{p}[$<$path$>$]%
+\functionOptionsEntry{t}[$<$path$>$]%
+\functionOptionsEntry{o}[$<$Phantom$>$]%
+\functionOptionsEntry{r}[$<$run date$>$]%
+\functionOptionsEntry{n}[$<$run \#/tags$>$]%
+\functionOptionsEntry{d}[$<$preprocess date$>$]%
+\functionOptionsEntry{D}[$<$recon date$>$]%
+\functionOptionsEntry{N}[$<$node \#$>$]%
+]%<3.0cm><16.0cm>
+%\tcbfunctionlistboxTitle{add\_tardis\_data}%
+\tcbfunctiondesc
+{%
+	$-$ construct input or output data path for appropriately organized reconstruction data
+}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-R}{reconstruction data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-M}{move data (DEFAULT: copy)}
+	%\tcbfunctionentry{-C}{copy data (DEFAULT: copy)}
+	\tcbfunctionentry{-p}{path to data (DEFAULT: current working directory)}
+	\tcbfunctionentry{-t}{pre-organized Kodiak OR unorganized Tardis data destination (DEFAULT: \$PWD)}
+	\tcbfunctionentry{-F}{organize data before transfer (DEFAULT: false)}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-D}{reconstruction date, if applicable (DEFAULT: today) }
+	%\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	%\tabularnewline\pagebreak\parfillskip=0pt \tabularnewline
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}
+	\tcbfunctionentry{-U}{unorganized data flag (DEFAULT: organized)}
+	%\tcbfunctionentry{-H}{organized data heirarchy flag (DEFAULT)}
+	\tcbfunctionentry{-N}{destination Tardis node number (3-5) (DEFAULT: '3')}
+\end{tcbfunctionlistbox}
+%\clearpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% stage_preprocessed_data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbfunctionlistbox}*'tcbBlueStyle'[stage\_preprocessed\_data.sh [-hv][-O][-p $<$\texttt{readme}/data path$>$] [-f $<$\texttt{readme.txt} filename$>$]]%<3.0cm><16.0cm>
+\tcbfunctiondesc
+{%
+	$-$ Used to stage preprocessed data with naming/organization appropriate for immediate sharing by specifying location of \texttt{preprocessed\_data} and corresponding \texttt{readme.txt} file from which the phantom name, run \#/tag(s), and projection angle can be parsed
+}
+	\tcbfunctionsep
+	\tcbfunctionentry{-h}{print help to terminal }
+	\tcbfunctionentry{-v}{verbose flag: terminal output 'on' (DEFAULT: \$verbose\_flag)}
+	\tcbfunctionentry{-d}{date of preprocessing (DEFAULT: \$preprocessed\_date (today))}\pagebreak
+	\tcbfunctionentry{-p}{path to data and \texttt{readme.txt} text file (DEFAULT: \$preprocessed\_path)}
+	\tcbfunctionentry{-f}{filename of \texttt{readme.txt} text file (DEFAULT: \$filename)}
+	\tcbfunctionentry{-O}{specifies old date format MMDDYYYY is used (DEFAULT: 'YY-MM-DD' format)}
+\end{tcbfunctionlistbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%END BASH FUNCTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{tcbenvironment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% stage_preprocessed_data %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\clearpage
+\chapter{bash function details}
+\begin{tcbfunctiondetailbox}[\texttt{add\_tardis\_data} details:]%<4.0cm><16.0cm>
+\tcbfunctiondesc(Ubiquitous Usage:)
+	{%
+		\large\bfseries Use these options to specify the path to the data to be copied to Tardis, the destination Tardis node, and if its organized/unorganized.
+	}%<4.0cm><15.5cm>%\\[1.0em]
+	\tcbfunctionsep%(4.0cm)(15.5cm)
+	\tcbfunctionentry{-h}{print help to terminal}
+	\tcbfunctionentry{-v}{verbose console output on (DEFAULT: 'off')}
+	\tcbfunctionentry{-p}{path to data (DEFAULT: current working directory)}
+	\tcbfunctionentry{-U}{unorganized data flag (DEFAULT: organized)}
+	\tcbfunctionentry{-H}{organized data heirarchy flag (DEFAULT)}
+	\tcbfunctionentry{-N}{destination Tardis node number (3-5) (DEFAULT: '3')}\\[-0.25em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%\hdashrule[0.5ex]{4.5cm}{1pt}{3mm} &
+%\hdashrule[0.5ex]{19.5cm}{1pt}{3mm}&\\
+%\hrule&\hrule\\
+\midrule\midrule\\[-3.4em]
+%\hline\\
+%\\\Xhline{\arrayrulewidth}\\%\\[-0.2em]
+%\tcbline&\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\tcbfunctiondesc(Organized Data:)
+	{%
+		$-$ The default option values are set such that when organized data is specified, this organized data is automatically copied to the corresponding organized data directory on Tardis without additional user input
+	}\\[-1.0em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\tcbline*\\
+\midrule\midrule\\[-3.2em]
+%\\\hdashrule[0.5ex]{4.5cm}{1pt}{3mm} &\hdashrule[0.5ex]{15.5cm}{1pt}{3mm}\\
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\tcbfunctiondesc(Unorganized Data:)
+	{%
+		$-$ Specify if the unorganized data should be organized first or copied to a user's unorganized data directory on Tardis
+	}%(4.0cm)(15.5cm)%\\[1.0em]
+	\tcbfunctionsep%(4.0cm)(15.5cm)%[definitionStyle]
+	\tcbfunctionentry{-F}{organize data before transfer (DEFAULT: false)}\\[-0.8em]
+	%\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\tcbfunctiondesc($\boldsymbol{(i)}$ Organize First:)
+	{%
+		$-$ Organize data first and copy to organized data directory on Tardis (requires path to data and specification of information needed to organize the data)
+	}%(4.0cm)(15.5cm)\\[-2.8em]
+	\tcbfunctionsep%(4.0cm)(15.5cm)%[definitionStyle]
+	\tcbfunctionentry{-P}{preprocessed data flag (DEFAULT: preprocessing)}
+	\tcbfunctionentry{-R}{reconstruction data flag (DEFAULT)}%\newpage
+	\tcbfunctionentry{-M}{move data (DEFAULT: copy)}
+	\tcbfunctionentry{-C}{copy data (DEFAULT: copy)}
+	\tcbfunctionentry{-t}{destination Kodiak path for pre-organized data (DEFAULT: \$PWD)}
+	\tcbfunctionentry{-o}{object name (REQUIRED)}
+	\tcbfunctionentry{-r}{run date (REQUIRED)}
+	\tcbfunctionentry{-n}{run \# + tag(s) (REQUIRED)}
+	\tcbfunctionentry{-d}{preprocessed date (DEFAULT: today)}
+	\tcbfunctionentry{-D}{reconstruction date, if applicable (DEFAULT: today)}
+	\tcbfunctionentry{-E}{Experimental data flag (DEFAULT)}
+	\tcbfunctionentry{-G}{GEANT4 data flag}
+	\tcbfunctionentry{-T}{TOPAS data flag}
+	\tcbfunctionentry{-I}{input data flag}
+	\tcbfunctionentry{-O}{output data flag}\\[-1.5em]
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\tcbfunctiondesc($\boldsymbol{(ii)}$ Copy Direct:)
+	{%
+		$-$ Copy unorganized data to user's unorganized data directory on Tardis in a subdirectory specified by the user (requires path to data, specify desired subdirectory of user\_data on Tardis)
+	}%(4.0cm)(15.5cm)\\[-2.8em]
+	\tcbfunctionsep%(4.0cm)(15.5cm)%[definitionStyle]
+	\tcbfunctionentry{-t}{subdirectory of unorganized data on Tardis (DEFAULT: \$PWD)}%(4.0cm)(15.5cm)%\\[1.0em]
+%	%\toprule
+	%\midrule
+	%%\endhead
+	%\bottomrule
+\end{tcbfunctiondetailbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% mymacros.sty %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\end{document}
+\printFrontMatter
+\end{documentation}

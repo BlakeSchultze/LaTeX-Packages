@@ -1,0 +1,24 @@
+%\clearpage%
+%\par\bigskip\bigskip%
+\Subsection(Raw Data Hierarchy){\texttt{raw\_data} Hierarchy}
+%\Subsection*(Raw Data Hierarchy){\texttt{raw\_data} Hierarchy}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbenvironment}|raw\_data|
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbparbox}|\dirsep ion\dirsep pCT\_data\dirsep raw\_data|%
+\bfdash directory where all raw experimental data files from a particular scan are stored in separate directories according to the scan date prior to creation of soft symbolic links named \docentry![fileset]{projection\_xxx.bin} and organized according to the naming/organizational scheme.
+\end{tcbparbox}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{tcbparbox}{tcbenumeratedStyle}
+\begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+    \item \docentry[dir]{YY-MM-DD} : Folder containing all raw experimental data acquired from the scan beginning on \docentry![subcategory]{YY-MM-DD}
+    \begin{ThinEnum}[labelindent=1pt, leftmargin=*]
+        \item \docentry[fileset]{$<$Phantom$>$\_XXXX[\_AAA]\_xxx.dat} : raw experimental data for the object named \docentry![subcategory]{$<$Phantom$>$}, from run \# \docentry![subcategory]{XXXX[\_AAA]}, where \docentry![subcategory]{XXXX} is a 4 digit \# with leading zeros, \docentry![subcategory]{\_AAA} are optional ``\emph{subcategory tag(s)}'' indicating, e.g., a continuous scan (\docentry![subcategory]{\_Cont}), phantom position/section (inferior (\docentry![subcategory]{\_Inf}) or superior (\docentry![subcategory]{\_Sup}), top (\docentry![subcategory]{\_Top}) or bottom (\docentry![subcategory]{\_Bot}), etc.), and \docentry![subcategory]{xxx} is the gantry angle at which the data was acquired.
+    \end{ThinEnum}
+\end{ThinEnum}
+\end{tcbparbox}
+\end{tcbenvironment}
+\endinput
+%\clearpage 

@@ -1,0 +1,878 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%**************************************************** `R2Labs-fontcfgs.def' ****************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Provides definitions of font version, family+encoding, series, shape, and appearance (color/shadow/style) configuration commands
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************** Define provided file name/version/date and dependencies ***********************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\ProvidesFile{R2Labs-fontcfgs.def}[\pkginfo]%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************** Font version, family+encoding, series, shape, appearance configuration commands ***********************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font version configuration command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@stix@fontnames%
+{%
+        mathrmst/stixbold,
+        mathsfst/stixbold,
+        mathbbst/stixbbold,
+        mathbbitst/stixbbold,
+        mathfrakst/stixextbold,
+        mathscript/stixextbold,
+        mathitst/stixitbold,
+        mathsfitst/stixitbold%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\stixboldmath{\@nomath\stixboldmath\mathversion{stixbold}}
+\def\stixbboldmath{\@nomath\stixbboldmath\mathversion{stixbbold}}
+\def\resetmath{\@nomath\stixbboldmath\mathversion{normal}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\csxdef{math@prev@version}{normal}
+\csxdef{math@defaultversion}{normal}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\preto{\mathversion}%
+{%
+    \ifdefunequal{\math@prev@version}{\math@version}%
+                {\csxdef{math@prev@version}{\math@version}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\prevmathversion}{\xp\mathversion\xp{\math@prev@version}\glb@settings}
+\DeclareRobustCommand{\resetmathversion}{\xp\mathversion\xp{\math@defaultversion}\glb@settings}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand*{\stixbf}[1]{\stixbold#1\aftergroup\prevmathversion}
+\DeclareRobustCommand*{\stixbold}{\mathversion{stixbold}\glb@settings}
+\DeclareRobustCommand*{\stixbbf}[1]{\stixbbold#1\aftergroup\prevmathversion}
+\DeclareRobustCommand*{\stixbbold}{\mathversion{stixbbold}\glb@settings}
+\DeclareRobustCommand*{\stixitbf}[1]{\stixitbold#1\aftergroup\prevmathversion}
+\DeclareRobustCommand*{\stixitbold}{\mathversion{stixitbold}\glb@settings}
+\DeclareRobustCommand*{\stixextbf}[1]{\stixextbold#1\aftergroup\prevmathversion}
+\DeclareRobustCommand*{\stixextbold}{\mathversion{stixextbold}\glb@settings}
+\DeclareRobustCommand*{\stixscbf}[1]{\stixscbold#1\aftergroup\prevmathversion}
+\DeclareRobustCommand*{\stixscbold}{\mathversion{stixscbold}\glb@settings}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand*{\boldstix}[2]%
+{%
+    \foreach \@stix@fontname/\@bold@math@version in \@stix@fontnames%
+        {%
+                \ifcsequal{\thecsname{#1}}{\@stix@fontname}%
+                    {\xdef\math@newversion{\@bold@math@version}}{}%
+        }%
+    \mathversion{\math@newversion}\glb@settings%
+    #1{#2}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font family+encoding configuration command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@sffamily@id{sf}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%Ultra Light       ul      Ultra Condensed     uc
+%Extra Light       el      Extra Condensed     ec
+%Light             l       Condensed            c
+%Semi Light        sl      Semi Condensed      sc
+%Medium (normal)   m
+%Semi Bold         sb      Semi Expanded       sx
+%Bold              b       Expanded             x
+%Extra Bold        eb      Extra Expanded      ex
+%Ultra Bold        ub      Ultra Expanded      ux
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@m@series@id{m}                                                    % Medium (normal)
+\def\@l@series@id{l}                                                    % Light
+\def\@b@series@id{b}                                                    % Bold
+\def\@c@series@id{c}                                                    % Condensed
+\def\@x@series@id{x}                                                    % Expanded
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@s@subseries@id{s}                                                 % Semi
+\def\@@subseries@id{}                                                   % <empty>
+\def\@e@subseries@id{e}                                                 % Extra
+\def\@u@subseries@id{u}                                                 % Ultra
+%-------------------------------------------------------------------------------------------------------------------------------%
+\edef\@bfseries@id{\@@subseries@id\@b@series@id}%{b}                    % Bold
+\edef\@bxseries@id{\@b@series@id\@x@series@id}%{bx}                     % Extra Bold
+\edef\@mdseries@id{\@@subseries@id\@m@series@id}                        % Medium (normal)
+%-------------------------------------------------------------------------------------------------------------------------------%
+\edef\@slseries@id{\@s@subseries@id\@l@series@id}                       % Semi Light
+\edef\@lseries@id{\@@subseries@id\@l@series@id}                         % Light
+\edef\@elseries@id{\@e@subseries@id\@l@series@id}                       % Extra Light
+\edef\@ulseries@id{\@u@subseries@id\@l@series@id}                       % Ultra Light
+\edef\@mseries@id{\@@subseries@id\@m@series@id}                         % Medium (normal)
+\edef\@sbseries@id{\@s@subseries@id\@b@series@id}                       % Semi Bold
+\edef\@bseries@id{\@@subseries@id\@b@series@id}                         % Bold
+\edef\@ebseries@id{\@e@subseries@id\@b@series@id}                       % Extra Bold
+\edef\@ubseries@id{\@u@subseries@id\@b@series@id}                       % Ultra Bold
+\edef\@scseries@id{\@s@subseries@id\@c@series@id}                       % Semi Condensed
+\edef\@cseries@id{\@@subseries@id\@c@series@id}                         % Condensed
+\edef\@ecseries@id{\@e@subseries@id\@c@series@id}                       % Extra Condensed
+\edef\@ucseries@id{\@u@subseries@id\@c@series@id}                       % Ultra Condensed
+\edef\@sxseries@id{\@s@subseries@id\@x@series@id}                       % Semi Expanded
+\edef\@xseries@id{\@@subseries@id\@x@series@id}                         % Expanded
+\edef\@exseries@id{\@e@subseries@id\@x@series@id}                       % Extra Expanded
+\edef\@uxseries@id{\@u@subseries@id\@x@series@id}                       % Ultra Expanded
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@nshape@id{n}
+\def\@itshape@id{it}
+\def\@slshape@id{sc}
+\def\@scshape@id{sl}
+\def\@uishape@id{ui}                            % upright italic
+\def\@olshape@id{ol}                            % outline
+%-------------------------------------------------------------------------------------------------------------------------------%
+%%\rmdefault{cmr}\fontfamily
+%%\sfdefault{cmss}\fontfamily
+%%\ttdefault{cmtt}\fontfamily
+%%\bfdefault{bx}\fontseries
+%%\mddefault{m}\fontseries
+%\renewcommand{\rmdefault}{cmr}%         lmr
+%\renewcommand{\sfdefault}{cmss}%        lmss
+%\renewcommand{\ttdefault}{cmtt}%        lmtt
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\renewcommand\encodingdefault{T1}
+%\renewcommand\familydefault{cmr}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\txmathof{tx-math-of}%
+\def\pxmathds{px-math-ds}%
+\def\BOONDOXds{BOONDOX-ds}%
+\def\BOONDOXcal{BOONDOX-cal}%
+\def\BOONDOXcalo{BOONDOX-calo}%
+\def\BOONDOXfrak{BOONDOX-frak}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\BOONDOXdsfamily@encodings{U,U}
+\def\BOONDOXdsfamily@encoding{U}
+\def\fmmfamily@encodings{T1,T2A,X2,T2B,T2C,T5,QX,OT1,LGR}%
+\def\uzcfamily@encodings{8r,OML,OMS,OT1,T1,TS1}%
+\def\anttfamily@encodings{OML}%
+\def\hlcffamily@encodings{U,U}
+\def\mmamfrakfamily@encodings{U,U}
+\def\yfrakfamily@encodings{LY}
+\def\yinitasfamily@encodings{U,U}
+\def\ygothfamily@encodings{LYG}
+\def\ysmfrakfamily@encodings{LY}
+\def\yswabfamily@encodings{LY}
+\def\msbfamily@encodings{U,U}
+\def\euffamily@encodings{U,U}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\bbmssfamily@encodings{U}
+\def\bbmttfamily@encodings{U}
+\def\bboldfamily@encodings{U}
+\def\dsromfamily@encodings{U}
+\def\mathbfamily@encodings{U}
+\def\mbbfamily@encodings{OT1}
+\def\pxsybfamily@encodings{U,U}
+\def\pzcfamily@encodings{OT1}
+\def\stixexfamily@encodings{LS2}
+\def\stixbbfamily@encodings{LS1}
+\def\stixttfamily@encodings{LS2}
+\def\txmiafamily@encodings{U}
+\def\txsyfamily@encodings{OMS}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\anttfamily@encoding{OML}
+\def\fmmfamily@encoding{OT1}
+\def\hlcffamily@encoding{U}
+\def\mmamfrakfamily@encoding{U}
+\def\uzcfamily@encoding{8r}
+\def\yfrakfamily@encoding{LY}
+\def\ygothfamily@encoding{LYG}
+\def\yinitasfamily@encoding{U}
+\def\ysmfrakfamily@encoding{LY}
+\def\yswabfamily@encoding{LY}
+\def\msbfamily@encoding{U}
+\def\euffamily@encoding{U}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\bboldfamily@encoding{U}
+\def\mathbfamily@encoding{U}
+\def\mbbfamily@encoding{OT1}
+\def\bbmssfamily@encoding{U}
+\def\bbmttfamily@encoding{U}
+\def\pxsybfamily@encoding{U}
+\def\stixexfamily@encoding{LS2}
+\def\stixbbfamily@encoding{LS1}
+\def\stixttfamily@encoding{LS2}
+\def\txmiafamily@encoding{U}
+\def\txsyfamily@encoding{OMS}
+\def\dsromfamily@encoding{U}
+\def\pzcfamily@encoding{OT1}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\usefont{LYG}{\gothdefault}{m}{n}}
+\def\gothdefault{ygoth}
+\def\bbdefault{pxsyb}
+\def\swabdefault{yswab}
+\def\frakdefault{yfrak}
+\def\initdefault{yinitas}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\fontencoding/\f@encoding,\fontfamily/\f@family,\fontseries/\f@series,\fontshape/\f@shape
+%\@doc@fontencoding,\@doc@fontfamily,\@doc@fontseries,\@doc@fontshape
+%\@doc@fontsize/\f@size,\dimgdef->\f@halfsize,regtok=\f@halfheight,\@doc@font@default
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\gdef\@inuse@font@encodings{8r,LGR,LY,LYG,OML,OMS,OMX,OT1,QX,T1,T2A,T2B,T2C,TS1,U,X2}%,LCY,LY1,LV1,OT2,OT3,OT4,OT5,OT6,PD1,PU,T3,T4,T5,T6,T7,TS3
+%\gdef\@configured@font@families{antt,bbmss,bbmtt,bbold,dsrom,hlcf,mathb,mmamfrak,msb,pxsyb,pzc,stixex,stixbb,stixtt,txmia,txsy,yfrak,ygoth,yinitas,ysmfrak,yswab,mathb}
+% antt,bbmss,bbmtt,bbold,dsrom,hlcf,mathb,mmamfrak,msb,pxsyb,pzc,stixex,stixbb,stixtt,txmia,txsy,yfrak,ygoth,yinitas,ysmfrak,yswab,
+% mathb,,,
+%\gdef\@inuse@font@families{fmm,uzc,antt,yfrak,ygoth,yswab,ysmfrak,mbb,mmamfrak,hlcf,msb,euf}%,yinitas,hlcf,mmamfrak
+%\gdef\@supported@font@families{fmm,uzc,antt,yfrak,ygoth,yswab,ysmfrak,mbb,msb,euf}
+%\gdef\@unsupported@font@families{uag,yinitas,hlcf,mmamfrak}%\@malfunctioning@font@families
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\def\anttfamily{\changefont{OML}{antt}}
+\def\bboldfamily{\changefont{U}{bbold}}
+\def\mathbfamily{\changefont{U}{mathb}}
+%\def\mbbfamily{\changefont{OT1}{mbb}}
+\def\bbmssfamily{\changefont{U}{bbmss}}
+\def\bbmttfamily{\changefont{U}{bbmtt}}
+\def\pxsybfamily{\changefont{U}{pxsyb}}
+\def\stixexfamily{\changefont{LS2}{stixex}}
+\def\stixbbfamily{\changefont{LS1}{stixbb}}
+\def\stixttfamily{\changefont{LS2}{stixtt}}
+\def\txmiafamily{\changefont{U}{txmia}}
+\def\txsyfamily{\changefont{OMS}{txsy}}
+\def\dsromfamily{\changefont{U}{dsrom}}
+\def\pzcfamily{\changefont{OT1}{pzc}}
+%\def\yfrakfamily@LY{\changefont{LY}{yfrak}}
+%\def\ygothfamily{\changefont{LYG}{ygoth}}
+%\def\yswabfamily{\changefont{LY}{yswab}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\gothfamily{\changefont{LYG}{\gothdefault}}
+\def\swabfamily{\changefont{LY}{\swabdefault}}
+\def\frakfamily{\changefont{LY}{\frakdefault}}
+\def\wasyfamily{\fontencoding{U}\fontfamily{wasy}\selectfont}
+%\DeclareSymbolFont{wasy}{U}{wasy}{m}{n}
+%\SetSymbolFont{wasy}{bold}{U}{wasy}{b}{n}
+%\def\wasy@over#1#2{{\setbox0\hbox{$#2$}\hbox to \wd0{\hss
+%    $#1$\hss}\kern-\wd0\box0}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\@select@tipx{\fontencoding{U}\fontfamily{tipx}\selectfont}
+\newcommand\@select@xipx{\fontencoding{U}\fontfamily{xipx}\selectfont}
+\newcommand\@select@tipxss{\fontencoding{U}\fontfamily{tipxss}\selectfont}
+\newcommand\@select@xipxss{\fontencoding{U}\fontfamily{xipxss}\selectfont}
+\let\@tipx\@select@tipx
+\let\@tipxss\@select@tipxss
+\let\@sffamilyorg\sffamily
+\begingroup
+        \newcommand\@@ptm@@{ptm}
+        \ifx\rmdefault\@@ptm@@\global\let\@tipx\@select@xipx\fi
+        \newcommand\@@phv@@{phv}
+        \ifx\sfdefault\@@phv@@\global\let\@tipxss\@select@xipxss\fi
+\endgroup
+\renewcommand\sffamily{\let\@tipx\@tipxss\@sffamilyorg}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Generic/universal context font command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font style/format/size commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\lookup@text@encoding}{m}%
+{%type=text,ordinal,roman,Roman
+        \xdef\@@text@encoding{}%
+        \foreach \@@encoding@raw/\@@encoding@text in \inuse@text@encoding@pairs%
+        {%
+                \IffStrEq{\@@encoding@raw}{#1}%
+                {%
+                        \xdef\@@text@encoding{\@@encoding@text}%
+                        \breakforeach%
+                }%
+        }%
+        \iffdefempty{\@@text@encoding}{\@latex@error{Unknown font encoding #1}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Strip '-' characters from font family name and define macros containing the names of macros defined/accessed elsewhere
+\DeclareDocumentCommand{\lookup@family@text@names}{m}%
+{%{(raw)font}
+        \xdef\@family@text@name{}%
+        \xp\@tfor\xp\nextfamchar\xp:\xp=#1\do%
+        {%
+                \IfStrEq{\nextfamchar}{-}{}%
+                        {\xdef\@family@text@name{\@family@text@name\nextfamchar}}%
+        }%
+        \xdef\@family@text@prefix{\@family@text@name family}%
+        \xdef\@family@encoding@text@names{\@family@text@name family@encodings}%
+        \xdef\@family@encoding@text@name{\@family@text@name family@encoding}%
+        \xdef\@family@text@encoding@name{\@family@text@name family@text@encoding}%
+        \xdef\@family@text@encoding@cmdname{\@family@text@name family@\csuse{\@family@text@encoding@name}}%
+        %\csuse{\@family@text@encoding@name}
+        %\xdef\@@the@encoding{\csuse{\@family@text@encoding@name}}%
+        %\csuse{\@family@text@name family@\@@the@encoding}%
+}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\setfamilyencoding}{m m}%
+{%{(raw)family}{(raw)encoding}
+        \lookup@family@text@names{#1}%
+        \letcs\@@match@encodings{\@family@encoding@text@names}%
+        \ifcsvmatch{#2}{\@@match@encodings}%
+                {\csxdef{\@family@encoding@text@name}{#2}}%
+                {\@latex@error{Encoding #2 undefined for #1 font family}}%
+        \lookup@text@encoding{\csuse{\@family@encoding@text@name}}%
+        \csxdef{\@family@text@encoding@name}{\@@text@encoding}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@init@family@text@encodings}{o}%
+{%
+        \foreach \@@@family [count=\@@count] in \@inuse@font@families%
+        {%
+                \lookup@family@text@names{\@@@family}%
+                \setfamilyencoding{\@@@family}{\csuse{\@family@encoding@text@name}}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@inuse@text@encodings}{O{text}}%
+{%type=text(default),ordinal,roman,Roman
+        \numtextwords[type=#1,print=false,csvpair=false]{\@inuse@font@encodings}%
+        \xdef\inuse@text@encodings{\@@thecsvlist}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@inuse@text@encoding@pairs}{O{text}}%
+{%type=text(default),ordinal,roman,Roman
+        \numtextwords[type=#1,print=false,csvpair=true]{\@inuse@font@encodings}%
+        \xdef\inuse@text@encoding@pairs{\@@thecsvlist}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@family@encoding@cmd}{m m m}%
+{%{family+encoding macro name}{(raw)encoding}{(raw)family}
+        \iffcsundef{#1}%
+        {%
+                \def@csvadd*{\csxdef}{#1}%
+                        {\noexpand\changefont{#2}{#3}}%
+                        {\@font@familyenc@macros}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@family@encoding@cmds}{O{text} m}%
+{%[numToText type=text(default),ordinal,roman,Roman]{(raw)family}
+        \lookup@family@text@names{#2}%
+        \csxdef{\@family@text@name family@enc@numtext@type}{text}%
+        \numtextwords[type=#1,print=false,csvpair=true]{\csuse{\@family@encoding@text@names}}%
+        \foreach \@@encoding@raw/\@@encoding@text [count=\@@count] in \@@thecsvlist%
+                {\def@family@encoding@cmd{\@family@text@name family@\@@encoding@text}{\@@encoding@raw}{#2}}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\@beginfontfamily}{o m}%
+{%[(raw)encoding]{(raw)family}
+        \lookup@family@text@names{#2}%
+        \IfValueT{#1}{\setfamilyencoding{#2}{#1}}%
+        \xdef\@@the@encoding{\csuse{\@family@text@encoding@name}}%
+        \csuse{\@family@text@name family@\@@the@encoding}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@fontfamily@cmd}{m O{init}}%
+{%{(raw)family}[NA]
+        \lookup@family@text@names{#1}%
+        \csname@nY\NewDocumentCommand{#1family}{o}%\csname@nY\NewDocumentCommand
+                {\forwardValueTF\@beginfontfamily{##1}{#1}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\def@fontfamily@cmds}{o}%
+{%
+        \resettoks{cmdtoks}%
+        \foreach \@@@family [count=\@@count] in \@inuse@font@families%
+        {%
+                \xp\lookup@family@text@names\xp{\@@@family}%
+                \xp\def@family@encoding@cmds\xp{\@@@family}%
+                \xp\xp\xp\apptotoks\xp\xp\xp{\xp\def@fontfamily@cmd\xp{\@family@text@name}[#1]}{cmdtoks}%
+                %\@unique@add@to@csvlist{\@family@text@name}{\@font@familyenc@cmds}%
+                \xp\@add@to@csvlist\xp{\@family@text@prefix}{\@font@familyenc@cmds}%
+        }%
+        \printtoks{cmdtoks}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\@onlypreamble\@init@family@text@encodings
+\@onlypreamble\def@inuse@text@encodings
+\@onlypreamble\def@inuse@text@encoding@pairs
+\@onlypreamble\def@family@encoding@cmd
+\@onlypreamble\def@family@encoding@cmds
+\@onlypreamble\def@fontfamily@cmd
+\@onlypreamble\def@fontfamily@cmds
+%%-------------------------------------------------------------------------------------------------------------------------------%
+\def\@EachCharacter%
+{%
+        \DoFutureLet{\ifx}%
+                {\@EndEachCharacter}%
+                {\@EachCharacterDone}%
+                {\@PickUpTheCharacter}%
+}
+\def\m@keCharacter#1{\csname\F@ntPrefix#1\endcsname}
+\def\m@keCharacter#1{\csname\F@ntPrefix#1\endcsname}
+\def\@PickUpTheCharacter#1{\m@keCharacter{#1}\@EachCharacter}
+\def\@EachCharacterDone \@EndEachCharacter{}
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareRobustCommand*{\mathmbb}[1]{\gdef\F@ntPrefix{mbbchar@}\@EachCharacter #1\@EndEachCharacter}
+%\def\mbbchar@zero{\text{\mbbfamily 0}}
+%\def\mbbchar@one{\text{\mbbfamily 1}}
+%\def\mbbchar@two{\text{\mbbfamily 2}}
+%\def\mbbchar@dot{\text{\mbbfamily .}}
+%\def\mbbchar@comma{\text{\mbbfamily ,}}
+%\def\mbbchar@qmark{\text{\mbbfamily ?}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\@EachCharacter #1\@EndEachCharacter}
+%\DeclareRobustCommand*{\varmathbb}[1]{\gdef\F@ntPrefix{m@thbbch@r}\DoFutureLet #1\@@nil}
+\DeclareRobustCommand*{\mathbbold}[1]{\gdef\F@ntPrefix{bboldchar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathmbb}[1]{\gdef\F@ntPrefix{mbbchar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathpxsyb}[1]{\gdef\F@ntPrefix{pxsybchar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathbbmss}[1]{\gdef\F@ntPrefix{bbmsschar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathbbmtt}[1]{\gdef\F@ntPrefix{bbmttchar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathdsrom}[1]{\gdef\F@ntPrefix{dsromchar@}\@EachCharacter #1\@EndEachCharacter}
+\DeclareRobustCommand*{\mathfmm}[1]{\gdef\F@ntPrefix{fmmchar@}\@EachCharacter #1\@EndEachCharacter}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\mathrsfs}[1]{\slantbox[0.3]{\ensuremath{\mathrsfso{#1}}}}
+\DeclareRobustCommand{\mathbickx}[1]{\boldsymbol{\mathbick{#1}}}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font series configuration command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\textbfit#1{\textbf{\textit{#1}}}
+\def\textbfsf#1{\textsf{\textbf{#1}}}
+\def\textbfmit#1{\textbfm{\textit{#1}}}
+\def\textbfmsf#1{\textsf{\textbfm{#1}}}
+\def\bfarabic@fmt#1#2{\textbf{#1\arabic*#2}}
+\def\bfalph@fmt{\textbf{(\alph*)}}
+\def\bfroman@fmt{\textbf{(\roman*)}}
+\def\@label@fmt#1#2{\textbf{#1\arabic*#2}}
+\def\stdemph#1{\normalem{\emph{#1}}}                                            %
+\def\fakebold#1{\setbox0=\hbox{$#1$}#1\kern-\wd0\kern\bshift#1\kern-\wd0\kern\bshift#1}
+\def\protextbf#1{\noexpand\textbf{#1}}
+\def\protextsf#1{\noexpand\textsf{#1}}
+\def\protexttt#1{\noexpand\texttt{#1}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\renewcommand{\bfseries}{\toggletrue{bxon}\bfseries}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\bfmseries}
+{%
+        \not@math@alphabet\bfseries\mathbf%
+        \fontseries\bfdefault\selectfont%
+        \boldmath%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\mdmseries}
+{%
+        \not@math@alphabet\mdseries\relax%
+        \fontseries\mddefault\selectfont%
+        %\boldmath%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareRobustCommand\bboardfamily
+%        {\not@math@alphabet\bboardfamily\mathbboard
+%        \fontfamily{mbb}\selectfont}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\setbold}{\ifmmode\boldmath\else\bfseries\fi}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font shape configuration command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\updefault{n}\fontshape
+%\itdefault{it}\fontshape
+%\scdefault{sc}\fontshape
+%\sldefault{sl}\fontshape
+%\renewcommand{\sldefault}{cmsl}%       lmsl
+%\renewcommand{\scshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont}
+\newcommand{\scslshape}{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont}
+%\renewcommand{\textsc}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sc}\selectfont#1}}
+\newcommand{\textscsl}[1]{{\fontfamily{txrc}\fontseries{m}\fontshape{sco}\selectfont#1}}
+\def\textcmrsc#1{\fontencoding{T1}\fontfamily{cmr}\selectfont\textsc{#1}}%\fontshape{sc}\selectfont#1
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font size configuration command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%----------------------------------- Set/record current font/size/color command definitions ------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\selectfont%
+%\def\textsize{\dimexpr\f@size pt\relax}
+\dimdef\cftminfont@size{6pt}
+\dimdef\cftsmfont@size{8pt}
+\dimdef\cftregfont@size{10pt}
+\dimdef\cftmidfont@size{12pt}
+\dimdef\cftmedfont@size{14pt}
+\dimdef\cftbigfont@size{18pt}
+\xdef\cf@size{\f@size}
+\gdef\thetextsize#1{\the\fontdimen6#1}
+\gdef\@enforce@sizeX{\@setfontsize\normalsize\@xpt\@xiipt}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\pgfmathsetmacro\@doc@fontsize@unitless{\@doc@fontsize}
+%\newcommand\LARGE{\@setfontsize\LARGE\@xviipt{22}}
+%\newcommand\huge{\@setfontsize\huge\@xxpt{25}}
+%\newcommand\Huge{\@setfontsize\Huge\@xxvpt{30}}
+\newcommand\midlarge@size{\numexpr\@doc@sizeX + 1\relax}
+\newcommand\large@size{\numexpr\@doc@sizeX + 2\relax}
+\newcommand\midLarge@size{\numexpr\@doc@sizeX + 3\relax}
+\newcommand\Large@size{\numexpr\@doc@sizeX + 4\relax}
+\newcommand\midLARGE@size{\numexpr\@doc@sizeX + 5\relax}
+\newcommand\LARGE@size{\numexpr\@doc@sizeX + 6\relax}
+\newcommand\midhuge@size{\numexpr\@doc@sizeX + 7\relax}
+\newcommand\huge@size{\numexpr\@doc@sizeX + 8\relax}
+\newcommand\midHuge@size{\numexpr\@doc@sizeX + 9\relax}
+\newcommand\Huge@size{\numexpr\@doc@sizeX + 10\relax}
+\newcommand\midHUGE@size{\numexpr\@doc@sizeX + 11\relax}
+\newcommand\HUGE@size{\numexpr\@doc@sizeX + 12\relax}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\default@fsize{\fontsize{\f@size}{\baselinestretch}}
+\newcommand\midlarge{\fontsize{\midlarge@size}{\baselinestretch}\selectfont}
+\renewcommand\large{\fontsize{\large@size}{\baselinestretch}\selectfont}
+\newcommand\midLarge{\fontsize{\midLarge@size}{\baselinestretch}\selectfont}
+\renewcommand\Large{\fontsize{\Large@size}{\baselinestretch}\selectfont}
+\newcommand\midLARGE{\fontsize{\midLARGE@size}{\baselinestretch}\selectfont}
+\renewcommand\LARGE{\fontsize{\LARGE@size}{\baselinestretch}\selectfont}
+\newcommand\midhuge{\fontsize{\midhuge@size}{\baselinestretch}\selectfont}
+\renewcommand\huge{\fontsize{\huge@size}{\baselinestretch}\selectfont}
+\newcommand\midHuge{\fontsize{\midHuge@size}{\baselinestretch}\selectfont}
+\renewcommand\Huge{\fontsize{\Huge@size}{\baselinestretch}\selectfont}
+\newcommand{\midHUGE}{\fontsize{\midHUGE@size}{\baselinestretch}\selectfont}
+\renewcommand{\HUGE}{\fontsize{\HUGE@size}{\baselinestretch}\selectfont}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\WithSuffix\newcommand\tiny*{\@setfontsize\tiny\@vpt\@vipt}
+\WithSuffix\newcommand\scriptsize*{\@setfontsize\scriptsize\@viipt\@viiipt}
+\WithSuffix\newcommand\footnotesize*{%
+   \@setfontsize\footnotesize\@viiipt{9.5}%
+   \abovedisplayskip 6\p@ \@plus2\p@ \@minus4\p@
+   \abovedisplayshortskip \z@ \@plus\p@
+   \belowdisplayshortskip 3\p@ \@plus\p@ \@minus2\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 3\p@ \@plus\p@ \@minus\p@
+               \parsep 2\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\WithSuffix\newcommand\small*{%
+   \@setfontsize\small\@ixpt{11}%
+   \abovedisplayskip 8.5\p@ \@plus3\p@ \@minus4\p@
+   \abovedisplayshortskip \z@ \@plus2\p@
+   \belowdisplayshortskip 4\p@ \@plus2\p@ \@minus2\p@
+   \def\@listi{\leftmargin\leftmargini
+               \topsep 4\p@ \@plus2\p@ \@minus2\p@
+               \parsep 2\p@ \@plus\p@ \@minus\p@
+               \itemsep \parsep}%
+   \belowdisplayskip \abovedisplayskip
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\WithSuffix\newcommand\normalsize*{%
+   \@setfontsize\normalsize\@xpt\@xiipt
+   \abovedisplayskip 10\p@ \@plus2\p@ \@minus5\p@
+   \abovedisplayshortskip \z@ \@plus3\p@
+   \belowdisplayshortskip 6\p@ \@plus3\p@ \@minus3\p@
+   \belowdisplayskip \abovedisplayskip
+   \let\@listi\@listI}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\WithSuffix\newcommand\normalsize*{\fontsize{10}{\baselinestretch}}
+\WithSuffix\newcommand\default@fsize*{\fontsize{\f@size}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midlarge*{\fontsize{11}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\large*{\fontsize{12}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midLarge*{\fontsize{13}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\Large*{\fontsize{14}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midLARGE*{\fontsize{15}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\LARGE*{\fontsize{16}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midhuge*{\fontsize{17}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\huge*{\fontsize{18}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midHuge*{\fontsize{19}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\Huge*{\fontsize{20}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\midHUGE*{\fontsize{21}{\baselinestretch\baselineskip}}
+\WithSuffix\newcommand\HUGE*{\fontsize{22}{\baselinestretch\baselineskip}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************** Font color/shadow/style configuration command definitions **********************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Font color command definitions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\set@cf@color{\color{\cf@color}}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\fontcolor}{s t! m g}
+{%
+        \IfBooleanTF{#1}{}{\def\cf@color{#3}}%
+        \IfBooleanTF{#2}{}{\color{\cf@color}}%
+        \IfValueTF{#4}{\textcolor{\cf@color}{#4}}{}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\coloredtext}{s t! m m}
+{%
+        %\begingroup%
+        \IfBooleanTF{#1}
+        {%
+                \IfBooleanTF{#2}
+                        {\ignorespaces\textcolor{#3}{\textbf{\textit{#4}}}\unskipspacing}
+                        {\ignorespaces\textcolor{#3}{\textbf{#4}}\unskipspacing}
+        }
+        {%
+                \IfBooleanTF{#2}
+                        {\ignorespaces\textcolor{#3}{\textit{#4}}\unskipspacing}
+                        {\ignorespaces\textcolor{#3}{#4}\unskipspacing}
+        }
+        %\endgroup%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Shadow text/math commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowfypars#1\par#2\relax%
+{%
+        \ifstrempty{#1} {}{\shadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}{}{\par\shadowfypars#2\relax}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowfywords#1 #2\relax%
+{%
+        \ifstrempty{#1}{}{\shadowfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\ \shadowfywords#2\relax}%
+        \unskip%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowfyletters#1#2\relax%
+{%
+        \shadow{#1}%
+        \ifx\relax#2\else\shadowfyletters#2\relax\fi\unskip%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfypars#1\par#2\relax%
+{%
+        \unskipspacing\ifstrempty{#1}{\unskipspacing\noindent}{\unskipspacing\noindent\shadowmathfymathparse#1 $$\relax\noindent}%
+        \ifstrempty{#2}{\unskipspacing\noindent}{\unskipspacing\noindent\shadowmathfypars#2\relax\noindent}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfylines#1\\#2\relax%
+{%
+        \ifstrempty{#1}{}{\unskipspacing\noindent\shadowmathfymathparse#1 $$\relax}%
+        \ifstrempty{#2}{}{\unskipspacing\noindent\\\shadowmathfylines#2\relax\unskipspacing}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfymathparse#1 $#2$#3\relax%
+{%
+        \ifstrempty{#1}{}{\shadowfypars#1\par\relax\relax\noindent}%
+        \ifstrempty{#2}{}{\noindent\space\mathshadow{#2}\space}%
+        \ifstrempty{#3}{}{\noindent\shadowmathfywords#3\relax}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfywords#1 #2\relax%
+{%
+        \ifstrempty{#1}{}{\shadowmathfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\shadowmathfymathparse #2\relax}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadowmathfyletters#1#2\relax%
+{%
+        \shadow{#1}%
+        \ifx\relax#2\else\shadowmathfyletters#2\relax\fi%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadowfypars#1\par#2\relax%
+{%
+        \ifstrempty{#1}{}{\noindent\doubleshadowfywords#1 \relax\relax}%
+        \ifstrempty{#2}{}{\unskipspacing\par\noindent\doubleshadowfypars#2\relax}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadowfywords#1 #2\relax%
+{%
+        \ifstrempty{#1}{}{\doubleshadowfyletters#1\relax\relax}%
+        \ifstrempty{#2}{}{\ \doubleshadowfywords#2\relax}%
+        \unskip\ignorespaces%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadowfyletters#1#2\relax%
+{%
+        \kern\st@shadowoffsetx\doubleshadow{#1}%
+        \ifx\relax#2\else\doubleshadowfyletters#2\relax\fi\unskip%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\shadow#1%
+{%
+        \kern\st@shadowoffsetx%
+        \raisebox{\st@shadowoffsety}%
+        {%
+                \stackinset{c}{-\st@shadowoffsetx}{c}{-\st@shadowoffsety}%
+                        {\fontcolor{\st@textcolor}{#1}}%
+                        {\fontcolor{\st@shadowcolor}{#1}}%
+        }%
+        \kern-\st@shadowoffsetx%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\mathshadow#1{\shadow{\ensuremath{#1}}}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\long\def\doubleshadow#1%
+{%
+        \kern\st@doubleshadowoffsetx%
+        \raisebox{\st@doubleshadowoffsety}%
+        {%
+                \stackinset{c}{\st@doubleshadowoffsetx}{c}{-\st@doubleshadowoffsety}%
+                        {\shadow{#1}}%
+                        {\fontcolor{\st@doubleshadowcolor}{#1}}%
+        }%
+        \kern-\st@doubleshadowoffsetx%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\shadowfy[1]{\xp\shadowfypars#1\par\relax\relax}
+\newcommand\shadowmathfy[1]{\unskipspacing\xp\shadowmathfypars#1\par\relax\relax\relax\noindent}
+\newcommand\doubleshadowfy[1]{\xp\doubleshadowfypars#1\par\relax\relax}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                            1 2          3         4        5          6
+\DeclareDocumentCommand{\setshadowTextProps}{s D<>{0.5pt} O{0.75pt} O{0.2pt} D''{white} D(){black}}
+{%\setshadowTextProps<offset>[offset x][offset y]{shadow color}
+        \shadowoffset{#2}%
+        \shadowoffsetx{#3}%
+        \shadowoffsety{#4}%
+        \shadowbasecolor{#5}%
+        \shadowcolor{#6}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2                  3            4         5            6 7   8
+\DeclareDocumentCommand{\shadowText}{s D::{\anttmcap16pt} D<>{0.75pt} D<>{0.2pt} D''{current} o d() m}
+{%\shadowText|title font|'color style'{title text}
+        \ignorespaces\unskip\setshadowTextProps[#3][#4]'#5-coltext'(#5-coltextshadow)%
+        \IfBooleanTF{#1}
+                {\ignorespaces\unskip\shadowbasecolor{#5-coltitle}}%
+                {\ignorespaces\unskip\shadowbasecolor{#5-coltext}}%
+        \IfValueTF{#6}%
+                {\ignorespaces\unskip\shadowcolor{#6}}%
+                {}%
+        \IfValueTF{#7}%
+                {\ignorespaces\unskip#2\shadowbasecolor{#7}}%
+                {}%
+        \ignorespaces\unskip\fontcolor{\st@textcolor}#2\shadowtext{#8}\ignorespaces\unskip%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                             1 2  3                        4                 5            6 7   8   9
+\DeclareDocumentCommand{\BreakableShadowText}{s t! D::{\tcbX@title@fontdef} D<>{0.75pt,0.1pt} D''{current} o d() d|| m}
+{%\BreakableShadowText[*]'font format'<horizontal offset><vertical offset>[text color](shadow color)|double shadow color|{text}
+        \unskipspacing%
+        \@parse@split@csv@args{setlength}%
+                <\st@shadowoffsetx,\st@shadowoffsety>%
+                =<#4>%
+        %\unskipspacing%
+        \IfBooleanTF{#1}%
+                {\shadowbasecolor{#5-coltitle}}%
+                {\shadowbasecolor{#5-coltext}}%
+        %\unskipspacing%
+        \shadowcolor{#5-coltextshadow}%
+        %\unskipspacing%
+        \IfValueTF{#6}{\shadowbasecolor{#6}}{}%
+        %\unskipspacing%
+        \IfValueTF{#7}{\shadowcolor{#7}}{}%
+        \unskipspacing%
+        \IfBooleanTF{#2}%
+        {%
+                %\unskipspacing%
+                \IfValueTF{#8}%
+                {#3\doubleshadowcolor{#8}\underline{\kern-2\st@doubleshadowoffsetx\doubleshadowfy{#9}\kern2\st@doubleshadowoffsetx}}%
+                {#3\uline{\shadowmathfy{#9}}}%
+        }%
+        {%
+                %\unskipspacing%
+                \IfValueTF{#8}%
+                {#3\doubleshadowcolor{#8}\doubleshadowfy{#9}}%
+                {#3\shadowmathfy{#9}}%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                    1 2  3          4   5   6
+\DeclareDocumentCommand{\shadowmath}{s t! O{current} d'' d() m}
+{%
+        \IfBooleanTF{#1}%
+                {\shadowbasecolor{#3-coltitle}}%
+                {\shadowbasecolor{#3-coltext}}%
+        \shadowcolor{#3-coltextshadow}%
+        \IfValueTF{#4}{\shadowbasecolor{#4}}{}%
+        \IfBooleanTF{#5}{\shadowbasecolor{#5}}{}%
+        \IfBooleanTF{#2}%
+                {\mathshadow{\bmath{#6}}}%
+                {\mathshadow{#6}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%                                       1       2              3       4        5      6
+\DeclareDocumentCommand{\useshadowfont}{O{navy} D<>{\doctextsize} D(){T1} D(){pag} D(){b} m}
+{%
+        \shadowoffset{2pt}%
+        \shadowtext%
+        {%
+                \textcolor{#1}%
+                \fontencoding{#3}%
+                \fontfamily{#4}%
+                \fontseries{#5}%
+                \fontsize{#2}{#2}%
+                \selectfont%
+                #6%
+        }%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Text style/property configuration commands ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\@unslant[1]%
+{%
+        \def\@slant@val{-0.25}%
+        \ifdefequal{#1}{\delta}{\def\@slant@val{-0.15}}{}%
+        \ifdefequal{#1}{\epsilon}{\def\@slant@val{-0.1}}{}%
+        \ifdefequal{#1}{\xi}{\def\@slant@val{-0.15}}{}%
+        \ifdefequal{#1}{\zeta}{\def\@slant@val{-0.15}}{}%
+        \slantbox[\@slant@val]{\ensuremath{#1}}%
+        %\unslant[\@slant@val]{#1}%
+        %\slantbox[\@slant@val]{#1}
+        %\slantbox[\@slant@val]{$\csname #1\endcsname$}
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\newcommand\unslant[1]{\trim@spaces{\@unslant{#1}}}%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\RaisedText}{m}
+{%
+        \begingroup
+                \leavevmode
+                \rlap{\kern-.4pt\raise.2pt\hbox{\fontcolor{white}#1}}%
+                \rlap{\kern.4pt\raise-.2pt\hbox{\fontcolor{DarkSlateGrey!70!}#1}}%
+                \hbox{#1}%
+        \endgroup
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\BeveledText}{m}
+{%
+        \begingroup
+                \leavevmode
+                \rlap%
+                {%
+                        \kern-.3pt\raise.15pt%
+                        \hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=white}#1}%
+                }%
+                \rlap%
+                {%
+                        \kern.3pt\raise-.15pt%
+                        \hbox{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=black}#1}
+                }%
+                \rlap{\pdfrender{TextRenderingMode=Stroke, LineWidth=.2pt, StrokeColor=DarkSlateGrey}#1}%
+                \hbox{#1}%
+        \endgroup
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Delay expansion of text cmds, allowing passing in args of commands and titles, e.g. section/figure/header/etc. titles
+%-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareDocumentCommand{\protexterm}{s m}{\noexpand\noexpand#1}
+\DeclareDocumentCommand{\protexted}{s m m}
+{%
+        \IfBooleanTF{#1}%
+                {\xp\noexpand\xp\noexpand\csname #2\endcsname{#3}}%
+                {\xp\noexpand\xp\noexpand\csname text#2\endcsname{#3}}%
+}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%********************************************** End of 'R2Labs-fontcfgs.def' file **********************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%

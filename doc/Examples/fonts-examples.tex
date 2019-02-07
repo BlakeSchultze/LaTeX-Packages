@@ -1,0 +1,190 @@
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+% Provides example document text/math/symbol font initializations and configurations performed at the end of the preamble and at the beginning of the document to set the default font encoding/family/size/color.  The default text font family/size/encoding are set based on the value of the corresponding 'my-latex' package options as provided by the user or automatically defined by their default value.  The package options associated with font and document class/settings have explicit option value parsing commands used to define the initialization/configuration commands.  The commands associated with math fonts provide user control of the font used for math letters, symbols, large symbols, and operators individually.
+% 
+% The remaining examples are on font related command usage inside the document body itself, such as (1) shearing the box containing each character by a specified angle to create slanted characters or to create upright characters from characters that are already slanted by default and (2) adding a colored shadow to each character.  The final examples print the upper/lower case letters, digits, and 'other' standard text symbols (e.g. '?', '%',...) in each font from the list of known fonts (some of which apply also to math contexts) and in each math font defined in the standard LaTeX kernel and the font/symbol alphabets defined in the 'my-fonts' subpackage of the 'my-latex' package.  The font/symbol alphabets defined by the 'my-latex' package has recently been modified and reduced, either by simple removal or replacement of symbol fonts/alphabets with \def implementations, to free up as many of the extremely limited maximum of 16 math font/alphabet slots available.  Increasing the number of available slots also increased the number of math fonts that can be used simultaneously within a single \mathversion{...} context, but to increase the maximum number of math fonts that can be used within a single document, several new \mathversion contexts were also created, particularly for usage of the numerous 'stix' family fonts defined.
+%
+% The details of how the math font/alphabet slots are consumed and its effect on font usage in each \mathversion context is still not completely clear and further investigations into this and additional techniques for avoiding slot consumption are necessary.  There are also additional tests that need to be performed to complete the table in the Excel file 'LaTeX-fontcodes.xlsx' recording the applicability of each font to math font letters, operators, and/or (large)symbols.  Although many of the fonts have already been tested, some fonts identified as having no applicability were later discovered to be applicable for other font encoding(s) and the results (somewhat haphazardly) recorded while developing the math font initialization/configuration commands may be incorrect/incomplete and need to be performed again.  Unfortunately, the lack of a clear understanding of the font/alphabet slot consumption and its connection to \mathversion contexts complicates the font init/config command development since these and all other commands/tasks related to defining/setting/configuring font encoding/shape/family/style are all interrelated, making it difficult to identify a proper implementation of individual components and leading to invalid results/conclusions.  Hence, all font related development is often modified or even completely repeated/redesigned from scratch as previously unknown or misunderstood dependencies are identified.  Future development and investigations must focus on obtaining a clearer understanding of font property/configuration dependencies and connections, which will only be fully understood once the following topics are understood (in order of importance/necessity) font/alphabet slot consumption, \mathversion contexts, font encoding/shape/family/style selection,
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatletter
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Section{Document Font/Symbol Initializations/Configurations}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\phaseang\bbpsi\bbomega--$\bbpsi\bbomega$\\
+$\left[ax=b\right]$\\
+\mathversion{more}
+$\left[ax=b\quad\mathnormal{ax=b}\quad\mathrm{ax=b}\quad\mathit{ax=b}\quad\mathsf{ax=b}\quad\mathbf{ax=b}\right]$\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\mathversion{extended}
+$\mathnormal{\sin{\pi/2-\alpha}=\log 1+\cos{\alpha}\qquad ax=b}$\\
+%\fontencoding{OT1}\fontfamily{pzc}\selectfont
+$\left[\sin{\pi/2-\alpha}=\log 1+\cos{\alpha}\qquad ax=b \mathnormal{ax=b}\right]$\\
+$\operator@font\@alphanumeric@characters$\\
+math:$\@alphanumeric@characters$\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\mathversion{normal}
+$\sin{\pi/2-\alpha}=\log 1+\cos{\alpha}\qquad ax=b$\\
+$\operator@font\@alphanumeric@characters$\\
+math:$\@alphanumeric@characters$\\
+text:\@alphanumeric@characters\\
+\@mbb@symbolsTest\\%
+%$\phaseang$\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+%mathrm(\mathfonts@letters)=$\mathrm{\@alphanumeric@characters}$\\
+%mathmd(\mathfonts@letters)=$\mathmd{\@alphanumeric@characters}$\\
+%mathbf(\mathfonts@letters)=$\mathbf{\@alphanumeric@characters}$\\
+%mathit(\mathfonts@letters)=$\mathit{ax=b}$\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Section{Font/Character/Symbol Modifier/Manipulator Examples}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%Slant/Unslant Characters:\\
+%\unslant\alpha$\alpha$%
+%\unslanted{alpha}%
+%\unslanted{beta}%
+%\unslanted{delta}%
+%\unslanted{epsilon}%
+%\unslanted{xi}%
+%\unslanted{zeta}%
+$\alpha$\space\unslant\alpha%
+\unslant\beta%
+\unslant\delta%
+\unslant\epsilon%
+\unslant\xi%
+\unslant\zeta%
+%\mathparse{hello}!ax=b!\\
+%\shadowfy{Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf !ax=b! fsfs sfsf add}
+%\shadowfy{Plots of Dolph-Chebyshev windo for $ax=b$ ad fsfsf sfsfsfsf $ax=b$ fsfs sfsf add\\asda asdasf}
+%\shadowfy{Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf fsfs sfsf add\\asda asdasf}
+%\shadowfy{Plots of Dolph-Chebyshev windo for $ax=b$ ad fsfsf sfsfsfsf $ax=b$ fsfs sfsf add}
+%\shadowmathfy{!ax=b! Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf !ax=b! fsfs sfsf add}\\
+%\shadowmathfy{Plots of Dolph-Chebyshev windo for $ax=b$ ad fsfsf sfsfsfsf $ax=b$ fsfs sfsf add\\asda asdasf}
+%\shadowmathfy{Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf fsfs sfsf add\\asda asdasf}
+%\shadowmathfy{Plots of Dolph-Chebyshev windo for $ax=b$ ad fsfsf sfsfsfsf $ax=b$ fsfs sfsf add}
+%\shadowmathfy{Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf fsfs sfsf add}
+%\mathparse Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf !ax=b! fsfs sfsf add\relax\\
+%\mathparse Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf fsfs sfsf add\relax
+%\shadowmathfywords Plots of Dolph-Chebyshev windo for ad fsfsf sfsfsfsf fsfs sfsf add\relax
+%\sfvarfhash\sfvarhash\par
+%\ooalign{z\sfvarhash x\cr z\sfvarfhash x} overlaid\par
+%\varfhash\varhash\par
+%\ooalign{z\varhash x\cr z\varfhash x} overlaid\par
+%\par \# for comparison
+%\end{document}
+%\begin{document}
+%$\varfhash\varhash$\par
+%$x\varfhash y\varhash z$\par
+%\ooalign{z\varhash x\cr z\varfhash x} overlaid\par
+%\par \# for comparison
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Section{Available Fonts}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\gdef\@supported@font@encodings{OT1,OT2,OT3,OT4,OT6,T1,T2A,T2B,T2C,TS1,TS3,X2,OML,OMS,OMX,LY1,LV1,LG3,PD1,PU,U}
+\print@fonts
+%\print@fonts[T1]
+%\print@fonts[OML]
+%\print@fonts[OMS]
+%\print@fonts[OMX]
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Section{Supplemental Math/Symbol Fonts mathversions Font Supplemental Math/Symbol Fonts}
+%\Subsection{Package Testing: Supplemental Math/Symbol Fonts}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\clearpage
+\par\noindent
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{blackboard}
+%\textbf{Blackboard bold math fonts:}\\
+%varmathbb=$\varmathbb{ABCDEFGHIJKLMNOPQRSTUVWXYZ\@ucase@alphabet}$\\
+%mathbb=$\mathbb{\@alphanumeric@characters}$\\
+%mathbbm=$\mathbbm{\@alphanumeric@characters}$\\
+%mathrsfso=$\mathrsfso{\@alphanumeric@characters}$\\%\@alphanumeric@characters
+%mathcal=$\mathcal{\@alphanumeric@characters}$\\
+%mathtxsy=$\mathtxsy{\@alphanumeric@characters}$\\
+%%mathpxsyb=$\mathpxsyb{\@alphanumeric@characters}$\\
+%%mathds=$\mathds{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{doublestruck}
+%\textbf{Doublestruck math fonts:}\\
+%mathbbst=$\mathbbst{\@alphanumeric@characters}$\\
+%mathbbst(bold)=$\stixbbold\mathbbst{\@alphanumeric@characters}$\\
+%mathbbitst=$\mathbbitst{\@alphanumeric@characters}$\\
+%mathbbitst(bold)=$\stixbbold\mathbbitst{\@alphanumeric@characters}$\\
+%%mathbold=$\mathbold{\@alphanumeric@characters}$\\
+%%mathbbs=$\mathbbs{\@alphanumeric@characters}$\\
+%%mathbbt=$\mathbbt{\@alphanumeric@characters}$\\
+%%mathbboard=$\mathbboard{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{calligraphy}
+%\textbf{Calligraphy math fonts:}\\
+%mathcal=$\mathcal{\@alphanumeric@characters}$\\
+%%mathcalst=$\mathcalst{\@alphanumeric@characters}$\\
+%%mathcalst(bold)=$\stixextbold\mathcalst{\@alphanumeric@characters}$\\
+%%mathpzc=$\mathpzc{\@alphanumeric@characters}$\\
+%mathtxsy=$\mathtxsy{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{script}
+%\textbf{Script math fonts:}\\
+%mathscript=$\mathscript{\@alphanumeric@characters}$\\
+%mathscript(bold)=$\stixextbold\mathscript{\@alphanumeric@characters}$\\
+%mathrsfso=$\mathrsfso{\@alphanumeric@characters}$\\%\@alphanumeric@characters
+%%mathrsfs=$\mathrsfs{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{fraktur}
+%\textbf{Fraktur math fonts:}\\
+%mathfrak=$\mathfrak{\@alphanumeric@characters}$\\
+%mathfrakst=$\mathfrakst{\@alphanumeric@characters}$\\
+%mathfrakst(bold)=$\stixextbold\mathfrakst{\@alphanumeric@characters}$\\
+%%mathtxmia=$\mathtxmia{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\textbf{Stix math fonts:}\\
+%\mathversion{stix}
+%mathrmst=$\mathrmst{\@alphanumeric@characters}$\\%\mathversion{stix}
+%mathrmst(bold)=$\boldstix\mathrmst{\@alphanumeric@characters}$\\
+%mathsfst=$\mathsfst{\@alphanumeric@characters}$\\
+%mathsfst(bold)=$\boldstix\mathsfst{\@alphanumeric@characters}$\\
+%%-------------------------------------------------------------------------------------------------------------------------------%
+%\mathversion{stixext}
+%mathitst=$\mathitst{\@alphanumeric@characters}$\\
+%mathitst(bold)=$\boldstix\mathitst{\@alphanumeric@characters}$\\
+%mathsfitst=$\mathsfitst{\@alphanumeric@characters}$\\
+%mathsfitst(bold)=$\boldstix\mathsfitst{\@alphanumeric@characters}$\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatother
+\endinput
+%-------------------------------------------------------------------------------------------------------------------------------%
+%*******************************************************************************************************************************%
+%*********************************************************** NOTES *************************************************************%
+%*******************************************************************************************************************************%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\newcommand\unslant[2][-.25]{\slantbox[#1]{$#2$}}
+%$\alpha\beta\gamma\delta\epsilon\eta\mu\phi\sigma\tau\omega\xi\psi\zeta$\par
+%\unslant\alpha\unslant\beta\unslant\gamma\unslant[-.1]\delta\unslant[-.1]\epsilon%
+%\unslant\eta\unslant\mu\unslant\phi\unslant\sigma\unslant\tau\unslant\omega%
+%\unslant[-.15]\xi\unslant\psi\unslant[-.15]\zeta
+%        %\slantbox[\@slant@val]{$\csname #1\endcsname$}
+%}

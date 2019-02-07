@@ -1,13 +1,11 @@
 %*******************************************************************************************************************************%
 %****************************************************** `my-symbols.sty' *******************************************************%
 %*******************************************************************************************************************************%
-% Defines text/math mode symbols
+% Declare/redeclare text/math mode commands, symbols, delimiters/radicals, and accents, import font family+encoding character definitions, and import definitions of various symbol macros.
 %*******************************************************************************************************************************%
 %********************************** Define provided package name and LaTeX/package dependencies ********************************%
 %*******************************************************************************************************************************%
-\NeedsTeXFormat{LaTeX2e}[2005/12/01]
-\ProvidesPackage{my-symbols}                    % Provides text/math mode symbols
-\RequirePackage{wasy-symboldefs}
+\ProvidesPackage{my-symbols}[\pkginfo]                    % Provides text/math mode symbols
 %*******************************************************************************************************************************%
 %************************************* Package options and corresponding Boolean variables *************************************%
 %*******************************************************************************************************************************%
@@ -24,608 +22,66 @@
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
-\edef\hash{\string#}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\anttfamily{\fontencoding{OML}\fontfamily{antt}\selectfont}
-\def\bboldfamily{\fontencoding{U}\fontfamily{bbold}\selectfont}
-\def\mathbfamily{\fontencoding{U}\fontfamily{mathb}\selectfont}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\phaseang   {\text{\mathbfamily\char"3E}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\bbGamma   {\text{\bboldfamily\char0}}
-\def\bbDelta  {\text{\bboldfamily\char1}}
-\def\bbTheta{\text{\bboldfamily\char2}}
-\def\bbLambda{\text{\bboldfamily\char3}}
-\def\bbXi{\text{\bboldfamily\char4}}
-\def\bbPi{\text{\bboldfamily\char5}}
-\def\bbSigma{\text{\bboldfamily\char6}}
-\def\bbUpsilon{\text{\bboldfamily\char7}}
-\def\bbPhi{\text{\bboldfamily\char8}}
-\def\bbPsi{\text{\bboldfamily\char9}}
-\def\bbOmega{\text{\bboldfamily\char10}}
-\def\bbalpha{\text{\bboldfamily\char11}}
-\def\bbbeta{\text{\bboldfamily\char12}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\bbgamma{\text{\bboldfamily\char13}}
-\def\bbdelta{\text{\bboldfamily\char14}}
-\def\bbespilon{\text{\bboldfamily\char15}}
-\def\bbzeta{\text{\bboldfamily\char16}}
-\def\bbeta{\text{\bboldfamily\char17}}
-\def\bbtheta{\text{\bboldfamily\char18}}
-\def\bbiota{\text{\bboldfamily\char19}}
-\def\bbkappa{\text{\bboldfamily\char20}}
-\def\bblambda{\text{\bboldfamily\char21}}
-\def\bbmu{\text{\bboldfamily\char2}}
-\def\bbnu{\text{\bboldfamily\char23}}
-\def\bbxi{\text{\bboldfamily\char24}}
-\def\bbpi{\text{\bboldfamily\char25}}
-\def\bbrho{\text{\bboldfamily\char26}}
-\def\bbsigma{\text{\bboldfamily\char27}}
-\def\bbtau{\text{\bboldfamily\char28}}
-\def\bbupsilon{\text{\bboldfamily\char29}}
-\def\bbphi{\text{\bboldfamily\char30}}
-\def\bbchi{\text{\bboldfamily\char31}}
-\def\bbpsi{\text{\bboldfamily\char32}}
-\def\bbomega{\text{\bboldfamily\char"7F}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\GammaBB   {\text{\anttfamily\char0}}
-\def\DeltaBB   {\text{\anttfamily\char1}}
-%------------------------------------------------------------------------
-%------------------------------------------------------------------------
-%------------------------------------------------------------------------
-\def\Bbbsum{\DOTSI\Bbbsumop\slimits@}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathRadical{\longdivision}      {largesymbols}{"FA}{largesymbols}{"FA}
-\DeclareMathDelimiter{\lBrack}          {\mathopen} {largesymbols}{"E0}{largesymbols}{"06}
-\DeclareMathDelimiter{\rBrack}          {\mathclose}{largesymbols}{"E1}{largesymbols}{"07}
-\DeclareMathSymbol{\Bbbsumop}           {\mathop}{largesymbols}{"B0}
-%\DeclareMathSymbol{\phaseang}          {\mathop}{mathb}{"3E} {U}{mathb}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareMathSymbol{\bbGamma}            {\mathord}{bbold}{"00}
-%\DeclareMathSymbol{\bbDelta}            {\mathord}{bbold}{"01}
-%\DeclareMathSymbol{\bbTheta}            {\mathord}{bbold}{"02}
-%\DeclareMathSymbol{\bbLambda}           {\mathord}{bbold}{"03}
-%\DeclareMathSymbol{\bbXi}               {\mathord}{bbold}{"04}
-%\DeclareMathSymbol{\bbPi}               {\mathord}{bbold}{"05}
-%\DeclareMathSymbol{\bbSigma}            {\mathord}{bbold}{"06}
-%\DeclareMathSymbol{\bbUpsilon}          {\mathord}{bbold}{"07}
-%\DeclareMathSymbol{\bbPhi}              {\mathord}{bbold}{"08}
-%\DeclareMathSymbol{\bbPsi}              {\mathord}{bbold}{"09}
-%\DeclareMathSymbol{\bbOmega}            {\mathord}{bbold}{"0A}
 %%-------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareMathSymbol{\bbalpha}            {\mathord}{bbold}{"0B}
-%\DeclareMathSymbol{\bbbeta}             {\mathord}{bbold}{"0C}
-%\DeclareMathSymbol{\bbgamma}            {\mathord}{bbold}{"0D}
-%\DeclareMathSymbol{\bbdelta}            {\mathord}{bbold}{"0E}
-%\DeclareMathSymbol{\bbespilon}          {\mathord}{bbold}{"0F}
-%\DeclareMathSymbol{\bbzeta}             {\mathord}{bbold}{"10}
-%\DeclareMathSymbol{\bbeta}              {\mathord}{bbold}{"11}
-%\DeclareMathSymbol{\bbtheta}            {\mathord}{bbold}{"12}
-%\DeclareMathSymbol{\bbiota}             {\mathord}{bbold}{"13}
-%\DeclareMathSymbol{\bbkappa}            {\mathord}{bbold}{"14}
-%\DeclareMathSymbol{\bblambda}           {\mathord}{bbold}{"15}
-%\DeclareMathSymbol{\bbmu}               {\mathord}{bbold}{"16}
-%\DeclareMathSymbol{\bbnu}               {\mathord}{bbold}{"17}
-%\DeclareMathSymbol{\bbxi}               {\mathord}{bbold}{"18}
-%\DeclareMathSymbol{\bbpi}               {\mathord}{bbold}{"19}
-%\DeclareMathSymbol{\bbrho}              {\mathord}{bbold}{"1A}
-%\DeclareMathSymbol{\bbsigma}            {\mathord}{bbold}{"1B}
-%\DeclareMathSymbol{\bbtau}              {\mathord}{bbold}{"1C}
-%\DeclareMathSymbol{\bbupsilon}          {\mathord}{bbold}{"1D}
-%\DeclareMathSymbol{\bbphi}              {\mathord}{bbold}{"1E}
-%\DeclareMathSymbol{\bbchi}              {\mathord}{bbold}{"1F}
-%\DeclareMathSymbol{\bbpsi}              {\mathord}{bbold}{"20}
-%\DeclareMathSymbol{\bbomega}            {\mathord}{bbold}{"7F}
+%%*******************************************************************************************************************************%
+%%************************************** Math font family+encoding character definitions ****************************************%
+%%*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
+\input{fontdefs/R2Labs-fontfam.def}
+\input{fontdefs/R2Labs-mathsyms.def}
+\input{fontdefs/R2Labs-textsyms.def}
+\input{fontdefs/R2Labs-famsyms.def}
+\input{fontdefs/R2Labs-symbols.def}
 %-------------------------------------------------------------------------------------------------------------------------------%
+\DeclareRobustCommand{\$}{\ifmmode\mathdollar\else\textdollar\fi}
+\DeclareRobustCommand{\{}{\ifmmode\lbrace\else\textbraceleft\fi}
+\DeclareRobustCommand{\}}{\ifmmode\rbrace\else\textbraceright\fi}
+\DeclareRobustCommand{\<}{\ifmmode\langle\else\textlangle\fi}
+\DeclareRobustCommand{\>}{\ifmmode\rangle\else\textrangle\fi}
+\DeclareRobustCommand{\P}{\ifmmode\mathparagraph\else\textparagraph\fi}
+\DeclareRobustCommand{\S}{\ifmmode\mathsection\else\textsection\fi}
+\DeclareRobustCommand{\dag}{\ifmmode{\dagger}\else\textdagger\fi}
+\DeclareRobustCommand{\ddag}{\ifmmode{\ddagger}\else\textdaggerdbl\fi}
+\DeclareRobustCommand{\_}{\ifmmode\nfss@text{\textunderscore}\else\textunderscore\fi}
+\DeclareRobustCommand{\copyright}{\ifmmode{\nfss@text{\textcopyright}}\else\textcopyright\fi}
+\DeclareRobustCommand{\pounds}{\ifmmode\mathsterling\else\textsterling\fi}
+\DeclareRobustCommand{\dots}{\ifmmode\mathellipsis\else\textellipsis\fi}
 %-------------------------------------------------------------------------------------------------------------------------------%
-\DeclareMathSymbol{\GammaB}             {\mathord}{lettersP}{00}
-\DeclareMathSymbol{\DeltaB}             {\mathord}{lettersP}{01}
-\DeclareMathSymbol{\ThetaB}             {\mathord}{lettersP}{02}
-\DeclareMathSymbol{\LambdaB}            {\mathord}{lettersP}{03}
-\DeclareMathSymbol{\XiB}                {\mathord}{lettersP}{04}
-\DeclareMathSymbol{\PiB}                {\mathord}{lettersP}{05}
-\DeclareMathSymbol{\SigmaB}             {\mathord}{lettersP}{06}
-\DeclareMathSymbol{\UpsilonB}           {\mathord}{lettersP}{07}
-\DeclareMathSymbol{\PhiB}               {\mathord}{lettersP}{08}
-\DeclareMathSymbol{\PsiB}               {\mathord}{lettersP}{09}
-\DeclareMathSymbol{\OmegaB}             {\mathord}{lettersP}{10}
-\DeclareMathSymbol{\alphaB}             {\mathord}{lettersP}{11}
-\DeclareMathSymbol{\betaB}              {\mathord}{lettersP}{12}
-\DeclareMathSymbol{\gammaB}             {\mathord}{lettersP}{13}
-\DeclareMathSymbol{\deltaB}             {\mathord}{lettersP}{14}
-\DeclareMathSymbol{\epsilonB}           {\mathord}{lettersP}{15}
-\DeclareMathSymbol{\zetaB}              {\mathord}{lettersP}{16}
-\DeclareMathSymbol{\etaB}               {\mathord}{lettersP}{17}
-\DeclareMathSymbol{\thetaB}             {\mathord}{lettersP}{18}
-\DeclareMathSymbol{\iotaB}              {\mathord}{lettersP}{19}
-\DeclareMathSymbol{\kappaB}             {\mathord}{lettersP}{20}
-\DeclareMathSymbol{\lambdaB}            {\mathord}{lettersP}{21}
-\DeclareMathSymbol{\muB}                {\mathord}{lettersP}{22}
-\DeclareMathSymbol{\nuB}                {\mathord}{lettersP}{23}
-\DeclareMathSymbol{\xiB}                {\mathord}{lettersP}{24}
-\DeclareMathSymbol{\piB}                {\mathord}{lettersP}{25}
-\DeclareMathSymbol{\rhoB}               {\mathord}{lettersP}{26}
-\DeclareMathSymbol{\sigmaB}             {\mathord}{lettersP}{27}
-\DeclareMathSymbol{\tauB}               {\mathord}{lettersP}{28}
-\DeclareMathSymbol{\upsilonB}           {\mathord}{lettersP}{29}
-\DeclareMathSymbol{\phiB}               {\mathord}{lettersP}{30}
-\DeclareMathSymbol{\chiB}               {\mathord}{lettersP}{31}
-\DeclareMathSymbol{\psiB}               {\mathord}{lettersP}{32}
-\DeclareMathSymbol{\omegaB}             {\mathord}{lettersP}{33}
-\DeclareMathSymbol{\varepsilonB}        {\mathord}{lettersP}{34}
-\DeclareMathSymbol{\varthetaB}          {\mathord}{lettersP}{35}
-\DeclareMathSymbol{\varpiB}             {\mathord}{lettersP}{36}
-\DeclareMathSymbol{\varrhoB}            {\mathord}{lettersP}{37}
-\DeclareMathSymbol{\varsigmaB}          {\mathord}{lettersP}{38}
-\DeclareMathSymbol{\varphiB}            {\mathord}{lettersP}{39}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%"01-"0A: upright uppercase Greek (= operators pxr)
-\DeclareMathSymbol{\alphaup}            {\mathord}{lettersA}{11}
-\DeclareMathSymbol{\betaup}             {\mathord}{lettersA}{12}
-\DeclareMathSymbol{\gammaup}            {\mathord}{lettersA}{13}
-\DeclareMathSymbol{\deltaup}            {\mathord}{lettersA}{14}
-\DeclareMathSymbol{\epsilonup}          {\mathord}{lettersA}{15}
-\DeclareMathSymbol{\zetaup}             {\mathord}{lettersA}{16}
-\DeclareMathSymbol{\etaup}              {\mathord}{lettersA}{17}
-\DeclareMathSymbol{\thetaup}            {\mathord}{lettersA}{18}
-\DeclareMathSymbol{\iotaup}             {\mathord}{lettersA}{19}
-\DeclareMathSymbol{\kappaup}            {\mathord}{lettersA}{20}
-\DeclareMathSymbol{\lambdaup}           {\mathord}{lettersA}{21}
-\DeclareMathSymbol{\muup}               {\mathord}{lettersA}{22}
-\DeclareMathSymbol{\nuup}               {\mathord}{lettersA}{23}
-\DeclareMathSymbol{\xiup}               {\mathord}{lettersA}{24}
-\DeclareMathSymbol{\piup}               {\mathord}{lettersA}{25}
-\DeclareMathSymbol{\rhoup}              {\mathord}{lettersA}{26}
-\DeclareMathSymbol{\sigmaup}            {\mathord}{lettersA}{27}
-\DeclareMathSymbol{\tauup}              {\mathord}{lettersA}{28}
-\DeclareMathSymbol{\upsilonup}          {\mathord}{lettersA}{29}
-\DeclareMathSymbol{\phiup}              {\mathord}{lettersA}{30}
-\DeclareMathSymbol{\chiup}              {\mathord}{lettersA}{31}
-\DeclareMathSymbol{\psiup}              {\mathord}{lettersA}{32}
-\DeclareMathSymbol{\omegaup}            {\mathord}{lettersA}{33}
-\DeclareMathSymbol{\varepsilonup}       {\mathord}{lettersA}{34}
-\DeclareMathSymbol{\varthetaup}         {\mathord}{lettersA}{35}
-\DeclareMathSymbol{\varpiup}            {\mathord}{lettersA}{36}
-\DeclareMathSymbol{\varrhoup}           {\mathord}{lettersA}{37}
-\DeclareMathSymbol{\varsigmaup}         {\mathord}{lettersA}{38}
-\DeclareMathSymbol{\varphiup}           {\mathord}{lettersA}{39}
-\DeclareMathSymbol{\varg}               {\mathord}{lettersA}{49}
-\DeclareMathSymbol{\vary}               {\mathord}{lettersA}{50}
-\DeclareMathSymbol{\varv}               {\mathord}{lettersA}{51}
-\DeclareMathSymbol{\varw}               {\mathord}{lettersA}{52}
-\DeclareMathSymbol{\m@thbbch@rA}        {\mathord}{lettersA}{129}
-\DeclareMathSymbol{\m@thbbch@rB}        {\mathord}{lettersA}{130}
-\DeclareMathSymbol{\m@thbbch@rC}        {\mathord}{lettersA}{131}
-\DeclareMathSymbol{\m@thbbch@rD}        {\mathord}{lettersA}{132}
-\DeclareMathSymbol{\m@thbbch@rE}        {\mathord}{lettersA}{133}
-\DeclareMathSymbol{\m@thbbch@rF}        {\mathord}{lettersA}{134}
-\DeclareMathSymbol{\m@thbbch@rG}        {\mathord}{lettersA}{135}
-\DeclareMathSymbol{\m@thbbch@rH}        {\mathord}{lettersA}{136}
-\DeclareMathSymbol{\m@thbbch@rI}        {\mathord}{lettersA}{137}
-\DeclareMathSymbol{\m@thbbch@rJ}        {\mathord}{lettersA}{138}
-\DeclareMathSymbol{\m@thbbch@rK}        {\mathord}{lettersA}{139}
-\DeclareMathSymbol{\m@thbbch@rL}        {\mathord}{lettersA}{140}
-\DeclareMathSymbol{\m@thbbch@rM}        {\mathord}{lettersA}{141}
-\DeclareMathSymbol{\m@thbbch@rN}        {\mathord}{lettersA}{142}
-\DeclareMathSymbol{\m@thbbch@rO}        {\mathord}{lettersA}{143}
-\DeclareMathSymbol{\m@thbbch@rP}        {\mathord}{lettersA}{144}
-\DeclareMathSymbol{\m@thbbch@rQ}        {\mathord}{lettersA}{145}
-\DeclareMathSymbol{\m@thbbch@rR}        {\mathord}{lettersA}{146}
-\DeclareMathSymbol{\m@thbbch@rS}        {\mathord}{lettersA}{147}
-\DeclareMathSymbol{\m@thbbch@rT}        {\mathord}{lettersA}{148}
-\DeclareMathSymbol{\m@thbbch@rU}        {\mathord}{lettersA}{149}
-\DeclareMathSymbol{\m@thbbch@rV}        {\mathord}{lettersA}{150}
-\DeclareMathSymbol{\m@thbbch@rW}        {\mathord}{lettersA}{151}
-\DeclareMathSymbol{\m@thbbch@rX}        {\mathord}{lettersA}{152}
-\DeclareMathSymbol{\m@thbbch@rY}        {\mathord}{lettersA}{153}
-\DeclareMathSymbol{\m@thbbch@rZ}        {\mathord}{lettersA}{154}
-\DeclareMathSymbol{\varBbbk}            {\mathord}{lettersA}{171}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\re@DeclareMathSymbol{\boxplus}{\mathbin}{AMSa}{1}
-\re@DeclareMathSymbol{\boxtimes}{\mathbin}{AMSa}{2}
-\re@DeclareMathSymbol{\square}{\mathord}{AMSa}{3}
-\re@DeclareMathSymbol{\blacksquare}{\mathord}{AMSa}{4}
-\re@DeclareMathSymbol{\centerdot}{\mathbin}{AMSa}{5}
-\re@DeclareMathSymbol{\lozenge}{\mathord}{AMSa}{6}
-\re@DeclareMathSymbol{\blacklozenge}{\mathord}{AMSa}{7}
-\re@DeclareMathSymbol{\circlearrowright}{\mathrel}{AMSa}{8}
-\re@DeclareMathSymbol{\circlearrowleft}{\mathrel}{AMSa}{9}
-\re@DeclareMathSymbol{\rightleftharpoons}{\mathrel}{AMSa}{10}
-\re@DeclareMathSymbol{\leftrightharpoons}{\mathrel}{AMSa}{11}
-\re@DeclareMathSymbol{\boxminus}{\mathbin}{AMSa}{12}
-\re@DeclareMathSymbol{\Vdash}{\mathrel}{AMSa}{13}
-\re@DeclareMathSymbol{\Vvdash}{\mathrel}{AMSa}{14}
-\re@DeclareMathSymbol{\vDash}{\mathrel}{AMSa}{15}
-\re@DeclareMathSymbol{\twoheadrightarrow}{\mathrel}{AMSa}{16}
-\re@DeclareMathSymbol{\twoheadleftarrow}{\mathrel}{AMSa}{17}
-\re@DeclareMathSymbol{\leftleftarrows}{\mathrel}{AMSa}{18}
-\re@DeclareMathSymbol{\rightrightarrows}{\mathrel}{AMSa}{19}
-\re@DeclareMathSymbol{\upuparrows}{\mathrel}{AMSa}{20}
-\re@DeclareMathSymbol{\downdownarrows}{\mathrel}{AMSa}{21}
-\re@DeclareMathSymbol{\upharpoonright}{\mathrel}{AMSa}{22}
-\re@DeclareMathSymbol{\downharpoonright}{\mathrel}{AMSa}{23}
-\re@DeclareMathSymbol{\upharpoonleft}{\mathrel}{AMSa}{24}
-\re@DeclareMathSymbol{\downharpoonleft}{\mathrel}{AMSa}{25}
-\re@DeclareMathSymbol{\rightarrowtail}{\mathrel}{AMSa}{26}
-\re@DeclareMathSymbol{\leftarrowtail}{\mathrel}{AMSa}{27}
-\re@DeclareMathSymbol{\leftrightarrows}{\mathrel}{AMSa}{28}
-\re@DeclareMathSymbol{\rightleftarrows}{\mathrel}{AMSa}{29}
-\re@DeclareMathSymbol{\Lsh}{\mathrel}{AMSa}{30}
-\re@DeclareMathSymbol{\Rsh}{\mathrel}{AMSa}{31}
-\re@DeclareMathSymbol{\rightsquigarrow}{\mathrel}{AMSa}{32}
-\re@DeclareMathSymbol{\leftrightsquigarrow}{\mathrel}{AMSa}{33}
-\re@DeclareMathSymbol{\looparrowleft}{\mathrel}{AMSa}{34}
-\re@DeclareMathSymbol{\looparrowright}{\mathrel}{AMSa}{35}
-\re@DeclareMathSymbol{\circeq}{\mathrel}{AMSa}{36}
-\re@DeclareMathSymbol{\succsim}{\mathrel}{AMSa}{37}
-\re@DeclareMathSymbol{\gtrsim}{\mathrel}{AMSa}{38}
-\re@DeclareMathSymbol{\gtrapprox}{\mathrel}{AMSa}{39}
-\re@DeclareMathSymbol{\multimap}{\mathrel}{AMSa}{40}
-\re@DeclareMathSymbol{\therefore}{\mathrel}{AMSa}{41}
-\re@DeclareMathSymbol{\because}{\mathrel}{AMSa}{42}
-\re@DeclareMathSymbol{\doteqdot}{\mathrel}{AMSa}{43}
-\re@DeclareMathSymbol{\triangleq}{\mathrel}{AMSa}{44}
-\re@DeclareMathSymbol{\precsim}{\mathrel}{AMSa}{45}
-\re@DeclareMathSymbol{\lesssim}{\mathrel}{AMSa}{46}
-\re@DeclareMathSymbol{\lessapprox}{\mathrel}{AMSa}{47}
-\re@DeclareMathSymbol{\eqslantless}{\mathrel}{AMSa}{48}
-\re@DeclareMathSymbol{\eqslantgtr}{\mathrel}{AMSa}{49}
-\re@DeclareMathSymbol{\curlyeqprec}{\mathrel}{AMSa}{50}
-\re@DeclareMathSymbol{\curlyeqsucc}{\mathrel}{AMSa}{51}
-\re@DeclareMathSymbol{\preccurlyeq}{\mathrel}{AMSa}{52}
-\re@DeclareMathSymbol{\leqq}{\mathrel}{AMSa}{53}
-\re@DeclareMathSymbol{\leqslant}{\mathrel}{AMSa}{54}
-\re@DeclareMathSymbol{\lessgtr}{\mathrel}{AMSa}{55}
-\re@DeclareMathSymbol{\backprime}{\mathord}{AMSa}{56}
-\re@DeclareMathSymbol{\risingdotseq}{\mathrel}{AMSa}{58}
-\re@DeclareMathSymbol{\fallingdotseq}{\mathrel}{AMSa}{59}
-\re@DeclareMathSymbol{\succcurlyeq}{\mathrel}{AMSa}{60}
-\re@DeclareMathSymbol{\geqq}{\mathrel}{AMSa}{61}
-\re@DeclareMathSymbol{\geqslant}{\mathrel}{AMSa}{62}
-\re@DeclareMathSymbol{\gtrless}{\mathrel}{AMSa}{63}
-\re@DeclareMathSymbol{\sqsubset}{\mathrel}{AMSa}{64}
-\re@DeclareMathSymbol{\sqsupset}{\mathrel}{AMSa}{65}
-\re@DeclareMathSymbol{\vartriangleright}{\mathrel}{AMSa}{66}
-\re@DeclareMathSymbol{\vartriangleleft}{\mathrel}{AMSa}{67}
-\re@DeclareMathSymbol{\trianglerighteq}{\mathrel}{AMSa}{68}
-\re@DeclareMathSymbol{\trianglelefteq}{\mathrel}{AMSa}{69}
-\re@DeclareMathSymbol{\bigstar}{\mathord}{AMSa}{70}
-\re@DeclareMathSymbol{\between}{\mathrel}{AMSa}{71}
-\re@DeclareMathSymbol{\blacktriangledown}{\mathord}{AMSa}{72}
-\re@DeclareMathSymbol{\blacktriangleright}{\mathrel}{AMSa}{73}
-\re@DeclareMathSymbol{\blacktriangleleft}{\mathrel}{AMSa}{74}
-\re@DeclareMathSymbol{\vartriangle}{\mathrel}{AMSa}{77}
-\re@DeclareMathSymbol{\blacktriangle}{\mathord}{AMSa}{78}
-\re@DeclareMathSymbol{\triangledown}{\mathord}{AMSa}{79}
-\re@DeclareMathSymbol{\eqcirc}{\mathrel}{AMSa}{80}
-\re@DeclareMathSymbol{\lesseqgtr}{\mathrel}{AMSa}{81}
-\re@DeclareMathSymbol{\gtreqless}{\mathrel}{AMSa}{82}
-\re@DeclareMathSymbol{\lesseqqgtr}{\mathrel}{AMSa}{83}
-\re@DeclareMathSymbol{\gtreqqless}{\mathrel}{AMSa}{84}
-\re@DeclareMathSymbol{\Rrightarrow}{\mathrel}{AMSa}{86}
-\re@DeclareMathSymbol{\Lleftarrow}{\mathrel}{AMSa}{87}
-\re@DeclareMathSymbol{\veebar}{\mathbin}{AMSa}{89}
-\re@DeclareMathSymbol{\barwedge}{\mathbin}{AMSa}{90}
-\re@DeclareMathSymbol{\doublebarwedge}{\mathbin}{AMSa}{91}
-\re@DeclareMathSymbol{\angle}{\mathord}{AMSa}{92}
-\re@DeclareMathSymbol{\measuredangle}{\mathord}{AMSa}{93}
-\re@DeclareMathSymbol{\sphericalangle}{\mathord}{AMSa}{94}
-\re@DeclareMathSymbol{\varpropto}{\mathrel}{AMSa}{95}
-\re@DeclareMathSymbol{\smallsmile}{\mathrel}{AMSa}{96}
-\re@DeclareMathSymbol{\smallfrown}{\mathrel}{AMSa}{97}
-\re@DeclareMathSymbol{\Subset}{\mathrel}{AMSa}{98}
-\re@DeclareMathSymbol{\Supset}{\mathrel}{AMSa}{99}
-\re@DeclareMathSymbol{\Cup}{\mathbin}{AMSa}{100}
-\re@DeclareMathSymbol{\Cap}{\mathbin}{AMSa}{101}
-\re@DeclareMathSymbol{\curlywedge}{\mathbin}{AMSa}{102}
-\re@DeclareMathSymbol{\curlyvee}{\mathbin}{AMSa}{103}
-\re@DeclareMathSymbol{\leftthreetimes}{\mathbin}{AMSa}{104}
-\re@DeclareMathSymbol{\rightthreetimes}{\mathbin}{AMSa}{105}
-\re@DeclareMathSymbol{\subseteqq}{\mathrel}{AMSa}{106}
-\re@DeclareMathSymbol{\supseteqq}{\mathrel}{AMSa}{107}
-\re@DeclareMathSymbol{\bumpeq}{\mathrel}{AMSa}{108}
-\re@DeclareMathSymbol{\Bumpeq}{\mathrel}{AMSa}{109}
-\re@DeclareMathSymbol{\lll}{\mathrel}{AMSa}{110}
-\re@DeclareMathSymbol{\ggg}{\mathrel}{AMSa}{111}
-\re@DeclareMathSymbol{\circledS}{\mathord}{AMSa}{115}
-\re@DeclareMathSymbol{\pitchfork}{\mathrel}{AMSa}{116}
-\re@DeclareMathSymbol{\dotplus}{\mathbin}{AMSa}{117}
-\re@DeclareMathSymbol{\backsim}{\mathrel}{AMSa}{118}
-\re@DeclareMathSymbol{\backsimeq}{\mathrel}{AMSa}{119}
-\re@DeclareMathSymbol{\complement}{\mathord}{AMSa}{123}
-\re@DeclareMathSymbol{\intercal}{\mathbin}{AMSa}{124}
-\re@DeclareMathSymbol{\circledcirc}{\mathbin}{AMSa}{125}
-\re@DeclareMathSymbol{\circledast}{\mathbin}{AMSa}{126}
-\re@DeclareMathSymbol{\circleddash}{\mathbin}{AMSa}{127}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\re@DeclareMathDelimiter\ulcorner{\mathopen}{AMSa}{112}{AMSa}{112}
-\re@DeclareMathDelimiter\urcorner{\mathclose}{AMSa}{113}{AMSa}{113}
-\re@DeclareMathDelimiter\llcorner{\mathopen}{AMSa}{120}{AMSa}{120}
-\re@DeclareMathDelimiter\lrcorner{\mathclose}{AMSa}{121}{AMSa}{121}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------ Alternative symbol definitions name/mode -------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\re@DeclareMathSymbol{\rhd}{\mathbin}{AMSa}{66}
-\re@DeclareMathSymbol{\lhd}{\mathbin}{AMSa}{67}
-\re@DeclareMathSymbol{\unrhd}{\mathbin}{AMSa}{68}
-\re@DeclareMathSymbol{\unlhd}{\mathbin}{AMSa}{69}
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%\DeclareSymbolFont{mdputsymbols}{OMS}{mdput}{m}{n}
-%\DeclareSymbolFont{mdputlargesymbols}{OMX}{mdput}{m}{n}
-%\DeclareMathRadical{\sqrtsign}{mdputsymbols}{"70}{mdputlargesymbols}{"70}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\let\Box=\square                                                % AMSa 3
-\let\restriction\upharpoonright
-\let\Doteq\doteqdot
-\let\doublecup\Cup                                              % AMSa 100
-\let\doublecap\Cap
-\let\llless\lll
-\let\gggtr\ggg
-%-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%*******************************************************************************************************************************%
-%*************************************** Text/math symbol and setting definitions ***************************************%
-%*******************************************************************************************************************************%
-%-------------------------------------------------------------------------------------------------------------------------------%
-%------------------------------------------------ Universal Symbol/Text Macros ------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\bfdash{$\boldsymbol{-}$\xspace}
-\def\textbfendash{\textbf{\textendash}}
-\def\textmathdash{\ensuremath{-}}
-\def\widetextbar{\hstretch{2.5}{\text{\textbar}}}
-\gdef\dirsep{\scaleobj{1.25}{/}}
-%\gdef\dirsep{/}
-\def\tinyvdots{\vstretch{0.65}{\ensuremath{\vdots}}}%\vstretch{0.65}{}}
-\def\usernamelabel{$<$\emph{user name}$>$}
-\def\Bbbsum{\DOTSI\Bbbsumop\slimits@}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\victorysym%
-{%
-        \sffamily
-        %Save the T's top bar in a \savestack
-        \savestack{\tbar}{%
-        \scalebox{2.8}[1]{\slantbox[.14]{$\rhd$}%
-        \kern-5pt%
-        \rule[1.28pt]{5pt}{2.55pt}%
-        \kern-5pt%
-        \slantbox[-.14]{$\lhd$}}}
-        %
-        \scalebox{5}{%
-        \stackinset{c}{4.3pt}{b}{-.3pt}{\slantbox[-.3]{\scalebox{1.2}[.18]{\reflectbox{$\int$}}}}{%
-        \stackinset{c}{-.25pt}{t}{-0.8pt}{\rmfamily.}{%
-        \stackinset{c}{-2.1pt}{b}{3.2pt}{\scalebox{1.1}[1.3]{\slantbox[-.4]{\tiny o}}}{%
-        \stackinset{c}{-1.1pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[-.6]{\scriptsize C}}}{%
-        \stackinset{c}{2.05pt}{b}{1.5pt}{\scalebox{1.5}[1.2]{\slantbox[.6]{\reflectbox{\scriptsize C}}}}{%
-        \stackinset{c}{-.23pt}{c}{3.2pt}{\scalebox{1}[1.3]{%
-          \Large \stackon[-1.25pt]{I}{\scalebox{.3}{\tbar}}}}{%
-        \scalebox{1.5}[1.1]{\reflectbox{\large\rmfamily V}}}%
-}}}}}}
+\DeclareRobustCommand{\@@LaTeXe}[2][\kern-0.05em]{%
+        \mbox{%
+                \m@th\ifx\f@series\@bseries@id\boldmath\fi%\if b\xp\@car\f@series\@nil
+                \LaTeX\kern-0.1em\raisebox{-.12em}{$2_{#1#2}$}%
+        }%
 }
 %-------------------------------------------------------------------------------------------------------------------------------%
-\def\tikzvictorysym%
-{
-        \begin{tikzpicture}
-                \fill[red!30!black] svg[scale=.3pt]
-                {%
-                        m 322.4,45.2 c -0.8,0.8 -1.6,2.3 -1.6,3.3 0,0.9 -0.5,1.7 -1.1,1.7
-                        -0.6,0 -1.9,1.8 -2.8,4 -0.9,2.2 -2.1,4 -2.6,4 -0.5,0 -1.6,1.6
-                        -2.4,3.6 -1.5,3.9 -8.2,16.4 -10.3,19.2 -0.7,0.9 -3.3,6.1 -5.7,11.6
-                        -2.4,5.4 -7.0,14.3 -10.2,19.7 -3.1,5.3 -5.7,10.0 -5.7,10.4 0,0.3
-                        -1.7,4.5 -3.9,9.2 -5.3,11.5 -9.3,15.3 -15.9,15.3 -6.4,0 -22.5,3.9
-                        -37.3,9.1 -6.2,2.1 -14.3,4.9 -18,6.2 -12.2,4.0 -26.5,10.5 -37.4,16.7
-                        -10.7,6.1 -31.2,19.5 -32.5,21.2 -0.3,0.4 -4.8,4.0 -10,8.0 -5.1,3.9
-                        -12.5,10.4 -16.5,14.5 -6.6,6.8 -22.8,27.2 -22.8,28.8 0,0.3 -1.6,3.1
-                        -3.6,6.2 -3.9,6.1 -4.4,6.7 -8.3,11.5 -1.4,1.7 -2.6,4.0 -2.6,5.0
-                        0,1.0 -2.0,5.8 -4.5,10.7 -4.7,9.3 -14.1,33.1 -14.1,35.9 0,0.8
-                        -0.9,4.3 -2.0,7.7 -2.3,6.9 -2.7,29.4 -0.6,40.1 0.6,3.5 1.9,10.3
-                        2.8,15.1 1.6,8.5 8.2,30.1 10.8,35.3 10.2,20.2 22.4,34.2 38.4,44.1
-                        4.3,2.6 7.9,5.1 7.9,5.5 0,0.3 -3.4,7.6 -7.6,16.1 -7.0,14.1 -8.7,16.5
-                        -20.9,28.5 -11.8,11.6 -14.8,13.8 -27.3,19.8 -19.7,9.4 -20.7,10.0
-                        -20.7,12.0 0,1.4 7.7,1.7 39.3,1.7 46.8,0 62.6,-0.4 62.6,-1.9 0,-0.5
-                        -2.8,-1.7 -6.3,-2.6 -10.7,-2.6 -16.8,-6.4 -20.9,-13.0 -3.3,-5.3
-                        -3.9,-7.7 -4.4,-18.0 -0.3,-6.5 -0.0,-12.3 0.6,-12.7 0.6,-0.4
-                        4.0,-6.7 7.5,-13.8 5.5,-11.4 6.6,-12.9 9.3,-12.4 4.9,0.9 17.4,7.0
-                        21.1,10.3 3.1,2.8 8.4,14.1 9.4,20.3 0.7,4.6 3.7,4.0 3.6,-0.7
-                        -0.2,-17.0 -4.3,-48.4 -6.6,-51.2 -2.3,-2.8 -4.0,0.1 -3.1,5.4 0.5,2.8
-                        -0.1,5.3 -2.3,8.6 -3.9,5.8 -9.6,6.7 -16.2,2.7 l -4.4,-2.7 2.9,-8.3 c
-                        5.4,-15.6 6.8,-16.6 20.6,-15.1 6.0,0.6 9.2,0.2 14.9,-1.8 13.5,-5.0
-                        37.0,-22.7 39.1,-29.4 0.4,-1.4 1.2,-2.6 1.8,-2.6 1.2,0 7.9,-10.3
-                        11.9,-18.3 4.1,-8.3 11.6,-29.5 12.8,-36.3 0.5,-3.2 1.8,-8.3
-                        2.9,-11.3 1.2,-3.4 1.9,-11.2 2.0,-22.0 l 0.1,-16.7 -5.3,-11.2 c
-                        -2.9,-6.2 -6.6,-12.4 -8.1,-13.8 -3.6,-3.2 -3.6,-6.2 0.2,-11.8
-                        2.7,-4.0 25.3,-48.9 33.6,-66.9 14.5,-31.3 19.4,-40.5 21.4,-39.7
-                        1.8,0.7 1.9,5.7 1.2,46.9 -0.4,25.3 -1.1,83.6 -1.4,129.4 -1.2,193.4
-                        -2.7,339.3 -3.8,365.3 -0.2,6.4 -0.6,7.3 -3.3,7.7 -3.7,0.5 -26.2,-3.2
-                        -33.8,-5.6 -3.0,-0.9 -13.6,-4.3 -23.5,-7.4 -21.3,-6.6 -44.7,-15.1
-                        -54,-19.4 -6.5,-3.0 -9.3,-4.7 -25.9,-16.1 -4.5,-3.1 -9.1,-5.6
-                        -10.1,-5.6 -2.4,0 -2.4,3.9 -0.0,7.3 0.9,1.4 4.2,10.1 7.3,19.2
-                        3.0,9.1 6.0,17.6 6.7,18.8 0.6,1.1 1.9,4.7 2.7,8 0.8,3.2 2.3,7.6
-                        3.2,9.8 5.0,12.0 10.0,25.5 10.0,27.0 -0.0,2.4 10.5,24.2 11.6,24.2
-                        0.5,-0.0 1.9,-1.7 3.1,-3.8 5.8,-10.3 45.3,-20.9 100.0,-26.7
-                        25.4,-2.7 59.0,-0.6 97.2,5.9 16.1,2.7 35.6,8.1 41.4,11.4 1.2,0.7
-                        2.8,1.2 3.6,1.2 3.6,0 19.9,9.2 25.1,14.2 3.2,3.1 6.3,5.4 6.9,5.0
-                        0.9,-0.6 2.0,-7.0 5.5,-33.0 0.8,-6.0 1.7,-12.5 2.0,-14.3 0.3,-1.8
-                        1.1,-6.9 1.8,-11.3 0.6,-4.4 3.1,-16.7 5.4,-27.3 2.3,-10.6 4.6,-22.9
-                        5.2,-27.3 0.5,-4.4 1.5,-9.9 2.0,-12.3 1.5,-7.0 -2.4,-5.4 -12.4,4.8
-                        -12.2,12.6 -24.8,20.5 -63.3,39.6 -12.8,6.3 -28.6,11.2 -46.8,14.4
-                        -10.2,1.8 -18.8,3.2 -19.0,3.2 -0.6,0 1.8,-127.1 3.0,-154.6 0.3,-8.4
-                        1.0,-51.9 1.4,-96.6 0.4,-44.7 0.9,-92.4 1.1,-106 0.1,-13.5 0.7,-57.9
-                        1.2,-98.6 0.9,-79.7 1.6,-99.0 3.7,-98.3 1.9,0.6 10.7,18.3 21.7,43.7
-                        2.3,5.5 7.0,15.7 10.3,22.6 3.3,6.9 6.7,14.7 7.7,17.3 0.9,2.5
-                        5.1,11.5 9.3,20 10.4,20.7 17.8,36.5 21.2,45.2 1.5,4.0 3.6,8.8
-                        4.6,10.6 1.7,3.3 5.3,11.2 10.0,22.1 3.4,8.0 8.8,19.6 15.2,33.1
-                        14.6,30.7 19.3,40.6 22.6,48.6 1.9,4.7 4.0,9.2 4.6,9.9 0.5,0.7
-                        1.7,3.7 2.7,6.6 0.9,2.9 4.9,12.0 8.8,20.2 8.0,16.8 14.6,37.0
-                        15.8,49.0 0.7,7.5 0.5,8.4 -3.6,14.6 -4.8,7.2 -12.6,12.2 -24.8,16.1
-                        -13.2,4.1 -8.0,5.2 23.8,4.7 16.4,-0.2 48.1,-0.6 70.5,-0.8 51.3,-0.5
-                        47.4,-0.4 55.6,-1.3 8.9,-1.0 9.1,-3.6 0.5,-6.5 -12.6,-4.2
-                        -33.8,-16.2 -43.5,-24.7 -16.5,-14.4 -30.8,-31.6 -28.4,-34.0 0.3,-0.3
-                        4.2,-1.3 8.5,-2.0 16.2,-2.9 39.0,-11.5 44.2,-16.7 1.0,-1.0 2.4,-1.8
-                        3.2,-1.8 0.7,0 5.1,-3.7 9.7,-8.4 8.2,-8.3 18.0,-22.0 24.9,-34.9
-                        4.9,-9.2 8.7,-29.6 9.6,-52.7 0.7,-17.4 0.4,-21.0 -2.4,-34.6
-                        -3.9,-18.6 -10.0,-36.8 -17.2,-51.8 -4.4,-9.1 -7.6,-13.5 -16.8,-22.6
-                        -20.6,-20.5 -36.0,-31.9 -57.3,-42.3 -11.8,-5.7 -21.0,-9.3
-                        -55.7,-21.7 -4.6,-1.6 -8.6,-3.5 -9.0,-4.1 -0.7,-1.1 4.4,-3.6
-                        9.8,-4.6 3.9,-0.7 16.5,-5.7 18.4,-7.2 0.8,-0.6 1.7,-0.9 2.1,-0.5
-                        1.2,1.2 14.0,-13.4 16.9,-19.3 1.5,-3.1 4.3,-12.1 6.3,-19.8 1.9,-7.7
-                        4.1,-15.3 4.9,-16.7 0.8,-1.4 1.5,-2.9 1.5,-3.3 0.3,-2.2 4.9,-9.2
-                        8.2,-12.2 2.0,-1.9 8.8,-5.7 15.1,-8.3 6.2,-2.6 12.3,-5.3 13.6,-6.0
-                        1.2,-0.7 3.2,-1.2 4.4,-1.2 1.1,0 6.4,-1.4 11.6,-3.2 5.2,-1.7
-                        17.3,-4.5 26.8,-6.1 9.5,-1.5 19.1,-3.1 21.3,-3.6 5.8,-1.0 42.0,-1.0
-                        46.3,0.0 2.7,0.6 3.6,0.4 3.6,-0.9 0,-1.0 -1.3,-2.2 -3.0,-2.6
-                        -5.0,-1.2 -30.9,-3.3 -55.6,-4.4 -54.7,-2.4 -84.5,1.1 -104.6,12.5
-                        -23.1,13.1 -24.2,13.9 -41.3,30.5 -6.5,6.3 -9.1,13.3 -11.0,29.1
-                        -0.7,6.6 -1.9,13.5 -2.6,15.3 -0.7,1.8 -1.3,3.7 -1.4,4.3 -0.5,4.1
-                        -4.9,9.1 -10.4,11.7 -11.2,5.4 -24.3,4.5 -53.1,-3.5 -3.7,-1.0
-                        -7.6,-1.9 -8.6,-1.9 -4.9,-0.0 -11.5,-2.9 -12.8,-5.6 -3.9,-8.1
-                        -17.1,-38.0 -25.1,-56.9 -2.0,-4.7 -4.3,-9.5 -5.1,-10.6 -0.8,-1.1
-                        -2.6,-4.7 -4.0,-8 -3.7,-8.9 -15.3,-30.9 -17.6,-33.6 -2.4,-2.7
-                        -4.4,-2.9 -6.7,-0.7 z m -58.9,112.5 c 0,1.0 -1.5,4.2 -3.3,7.1
-                        -1.8,2.9 -3.3,5.5 -3.3,5.9 0,0.3 -8.3,17.6 -18.4,38.3 -10.1,20.7
-                        -21.0,43.0 -24.0,49.5 -5.3,11.2 -5.7,11.7 -9.1,11.0 -19.7,-4.3
-                        -25.4,-4.2 -37.1,1.1 -14.9,6.8 -29.5,20.1 -45.8,41.7 -15.1,20.0
-                        -24.4,47.2 -24.4,71.6 -0.0,20.3 4.6,31.6 19.2,46.7 7.9,8.2 8.4,9.0
-                        6.7,11.7 -0.9,1.5 -3.5,6.3 -5.7,10.5 -2.1,4.2 -4.4,7.6 -5.1,7.6
-                        -0.6,0 -2.2,-1.8 -3.5,-4.0 -1.2,-2.2 -3.8,-5.8 -5.8,-8.1 -1.9,-2.2
-                        -4.2,-5.9 -5.1,-8.2 -0.8,-2.3 -3.5,-8.4 -5.9,-13.5 -5.7,-12.2
-                        -6.7,-15.2 -9.4,-28.6 -3.8,-18.8 -2.5,-64.6 2.1,-76.4 2.4,-6.0
-                        3.1,-8.3 3.6,-11.5 0.4,-2.9 4.8,-12.4 10.3,-22.6 2.7,-5.0 5.5,-10.8
-                        7.5,-15.6 0.9,-2.3 2.2,-4.3 2.8,-4.3 0.5,0 1.0,-0.8 1.0,-1.9 0,-2.5
-                        7.0,-13.4 16.2,-25.3 10.3,-13.3 47.1,-50.7 53.6,-54.5 10.7,-6.2
-                        37.5,-19.1 41.7,-20.0 2.3,-0.5 4.6,-1.4 5.0,-2.1 0.4,-0.6 2.1,-1.2
-                        3.7,-1.2 1.6,0 3.5,-0.6 4.3,-1.3 1.7,-1.7 23.2,-6.3 26.1,-5.6
-                        1.2,0.3 2.3,1.4 2.3,2.4 z m 142.8,18.6 c 6.8,2.6 17.5,6.5 23.7,8.7
-                        6.2,2.2 11.9,4.5 12.6,5.2 0.6,0.6 2.1,1.1 3.3,1.1 1.9,-0.0 52.4,24.6
-                        55.4,27.0 4.8,3.9 19.4,14.8 23.3,17.4 3.9,2.6 15.5,13.8 30.6,29.4
-                        5.2,5.4 15.8,21.2 18.7,28.0 4.0,9.4 9.4,31.6 9.9,41.3 0.0,0.7
-                        0.4,1.9 0.8,2.6 1.7,2.9 0.0,45.3 -2.1,54 -1.2,4.7 -2.6,11.6
-                        -3.2,15.3 -1.2,7.9 -1.6,9.1 -7.8,22 -5.2,10.8 -12.6,22.0 -16.9,25.5
-                        -1.4,1.2 -4.1,3.4 -5.9,5.0 -3.6,3.2 -14.6,6.7 -20.8,6.7 -3.8,0
-                        -4.5,-0.7 -8.4,-8.7 -2.3,-4.8 -5.3,-11.5 -6.7,-15 -1.3,-3.4
-                        -4.3,-10.2 -6.6,-15.2 -2.2,-4.9 -6.8,-15.4 -10.1,-23.3 -3.3,-7.9
-                        -7.3,-16.4 -8.9,-19.0 -1.6,-2.5 -3.6,-6.1 -4.5,-8 -6.8,-14.7
-                        -9.7,-21.4 -9.7,-22.0 0,-0.3 -1.7,-4.4 -3.8,-8.9 -8.7,-18.8
-                        -13.4,-29.1 -13.4,-29.6 0,-0.2 -2.1,-4.8 -4.6,-10.1 -2.5,-5.2
-                        -4.6,-10.1 -4.6,-10.7 0,-0.6 -1.4,-3.3 -3.1,-6.1 -1.7,-2.7 -3.5,-6.5
-                        -4.0,-8.5 -0.4,-1.9 -4.5,-11.2 -9.0,-20.6 -13.1,-27.6 -16.8,-35.5
-                        -17.7,-38.7 -0.5,-1.6 -1.4,-3 -2.1,-3 -0.6,0 -1.2,-0.8 -1.2,-1.8
-                        0,-0.9 -4.2,-10.6 -9.3,-21.4 -5.1,-10.7 -9.3,-20.4 -9.3,-21.5 0,-2.8
-                        2.5,-2.3 16.2,2.8 z m -207.1,109.0 c 1.9,1.9 1.9,2.3 -0.1,4.5
-                        -1.2,1.3 -2.2,2.8 -2.2,3.3 0,0.8 -31.2,64.1 -34.3,69.5 -0.8,1.4
-                        -5.1,10.4 -9.6,20 -16.4,35.0 -18.9,39.4 -21.7,39.0 -1.5,-0.2
-                        -4.2,-3.4 -6.7,-7.7 -3.9,-7.0 -4.1,-7.8 -3.9,-22 0.1,-11.8 1.0,-17.8
-                        4.5,-31.3 8.2,-31.4 16.2,-44.2 43.9,-70.1 5.8,-5.4 17.0,-9.5
-                        23.0,-8.4 2.8,0.5 6.1,1.9 7.3,3.0 z m 11.5,14.7 c 2.9,10.2 2.5,22.0
-                        -1.2,38.1 -3.4,14.1 -9.5,31.5 -11.5,32.8 -0.6,0.3 -1.0,1.7 -1.0,2.9
-                        0,6.4 -17.2,30.5 -28.6,39.9 -4.8,4.0 -17.2,9.5 -21.5,9.5 -6.5,0
-                        -6.2,-1.3 5.8,-24.7 0.7,-1.3 2.9,-5.8 4.9,-9.8 1.9,-4.0 9.5,-19.0
-                        16.7,-33.3 19.1,-37.9 29.3,-59.1 29.3,-61 0,-0.9 1.1,-1.6 2.5,-1.6
-                        1.9,0 3.0,1.7 4.6,7.2 z m 72.0,454.3 c -4.7,1.7 -11.3,6.0 -13.6,8.9
-                        -1.7,2.1 -2.2,14.3 -0.8,18.1 0.4,1.1 4.0,4.2 8.0,6.7 7.9,5.0
-                        14.6,5.8 23.4,2.8 8.2,-2.8 14.3,-10.2 14.3,-17.3 0,-3.5 -5.0,-11.8
-                        -10.3,-16.8 -3.9,-3.7 -14.3,-5.0 -21.0,-2.5 z%
-                };
-                \begin{pgfonlayer}{background}
-                        \fill[orange!50!white]
-                        (current bounding box.south west)
-                        rectangle
-                        (current bounding box.north east);
-                \end{pgfonlayer}%
-        \end{tikzpicture}
-}
+\DeclareRobustCommand{\LaTeXe}{\@@LaTeXe{\textstyle\varepsilon}}%
+\DeclareRobustCommand{\LaTeXevar}{\if@robustar{\@@LaTeXe{\scriptscriptstyle\text{\textepsilon}}}{\@@LaTeXe{\varepsilon}}}%\if@robustchar*
+\DeclareRobustCommand\BibTeX{\mbox{B\protexted{cmrsc}{ib}\kern-0.1em\TeX}\xspace}
+\DeclareRobustCommand\BibLaTeX{\mbox{B{ib}\kern-0.1em\LaTeX}}%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Front/Back Matter List/TOC/Header/Caption Names ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~%
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\varhash@rule@thickness{.13ex}
-\def\varuphash@rule@thickness{.16ex}
-\def\varinthash@rule@thickness{.16ex}
-\def\sfvarhash@rule@thickness{.17ex}
-\def\varhashrule{\rule[-.33ex]{\varhash@rule@thickness}{1.8ex}}
-\def\varuphashrule{\rule[-.23ex]{\varuphash@rule@thickness}{1.6ex}}
-\def\sfvarhashrule{\rule{\sfvarhash@rule@thickness}{1.4ex}}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\varhash{%                                  RM ITSHAPE VERSION
-  \kern-.5pt%
-  \stackinset{c}{}{c}{-1.7pt}{\kern1pt\rule{1.7ex}{\varhash@rule@thickness}}{%
-  \stackinset{c}{}{c}{1.7pt}{\kern1pt\rule{1.7ex}{\varhash@rule@thickness}}{%
-    \kern2pt\kern.2pt\slantbox[.2]{\varhashrule\kern2.4pt\varhashrule}\kern.2pt\kern2pt%
-  }}%
-  \kern1pt%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\varuphash{%                                RM UPSHAPE VERSION
-  \kern-.7pt%
-  \stackinset{c}{}{c}{-1.4pt}{\kern.5pt\rule{1.6ex}{\varuphash@rule@thickness}}{%
-  \stackinset{c}{}{c}{1.4pt}{\kern.5pt\rule{1.6ex}{\varuphash@rule@thickness}}{%
-    \kern2.4pt\slantbox[.09]{\varuphashrule\kern2.1pt\varuphashrule}\kern2.4pt%
-  }}%
-  \kern.6pt%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\sfvarhash{%                                SF ITSHAPE VERSION
-  \kern1pt%
-  \stackinset{c}{}{b}{1.5pt}{\rule{1.45ex}{\sfvarhash@rule@thickness}\kern1pt}{%
-  \stackinset{c}{}{b}{3.7pt}{\rule{1.45ex}{\sfvarhash@rule@thickness}\kern1pt}{%
-    \slantbox[.2]{\sfvarhashrule\kern2pt\sfvarhashrule\kern2.3pt}%
-  }}%
-  \kern1pt%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\varfhash{%                         SF ITSHAPE "f" VERSION
-  \kern -1.5pt%
-  \stackinset{c}{}{c}{-1.7pt}{\kern1pt\rule{1.7ex}{\varhash@rule@thickness}}{%
-  \stackinset{c}{}{c}{1.7pt}{\kern1pt\rule{1.7ex}{\varhash@rule@thickness}}{%
-    \kern2pt\itshape ff\kern2pt%
-  }}%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\varinthash{%                       RM ITSHAPE "\int" INTEGRAL SIGN VERSION
-  \kern-4.1pt%
-  \stackinset{c}{}{c}{-1.4pt}{\kern1pt\rule{1.6ex}{\varinthash@rule@thickness}}{%
-  \stackinset{c}{}{c}{1.4pt}{\kern1pt\rule{1.6ex}{\varinthash@rule@thickness}}{%
-    \kern3.1pt${\int}\kern-4pt{\int}$\kern2.1pt%
-  }}%
-  \kern-2.2pt%
-}
-%-------------------------------------------------------------------------------------------------------------------------------%
-\def\sfvarfhash{%                       SF ITSHAPE "\int" INTEGRAL SIGN VERSION
-  \stackinset{c}{}{b}{1.5pt}{\rule{1.45ex}{\sfvarhash@rule@thickness}\kern1pt}{%
-  \stackinset{c}{}{b}{3.7pt}{\rule{1.45ex}{\sfvarhash@rule@thickness}\kern1pt}{%
-    \textsf{\itshape ff}%
-  }}%
-}
 %*******************************************************************************************************************************%
 %********************************************* Unicode character/symbol definitions ********************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
-%-------------------------------------------------------------------------------------------------------------------------------%
+%\DeclareUnicodeCharacter{003C}{\matholon}
 %\DeclareUnicodeCharacter{00A0}{\dashb}
 %\DeclareUnicodeCharacter{211D}{\mathexclamb}%
 %\DeclareUnicodeCharacter{2713}{\checkmarkup}%
 %-------------------------------------------------------------------------------------------------------------------------------%
 %\UnicodeMathSymbol{"00024}{\mathdollar}{\mathord}{dollar sign}%
+%\UnicodeMathSymbol{"00024}{\mathdollar}{\mathord}{dollar sign}%
 %\newunicodechar{ℝ}{\mathbb{R}}
 %\newunicodechar{∗}{\myast}
 %\newunicodechar{§}{\mymath}
+%-------------------------------------------------------------------------------------------------------------------------------%
 %*******************************************************************************************************************************%
-%********************************************** End of 'my-symbols.sty' package ************************************************%
+%*********************************************** End of 'my-symbols.sty' package ***********************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
 % Restore @ -> \catcode'@=12 (active), peventing user access to macro names containing @ character
 \makeatother
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
 %-------------------------------------------------------------------------------------------------------------------------------%
 \endinput
 %-------------------------------------------------------------------------------------------------------------------------------%
@@ -633,3 +89,49 @@
 %*********************************************************** NOTES *************************************************************%
 %*******************************************************************************************************************************%
 %-------------------------------------------------------------------------------------------------------------------------------%
+%%%%
+%%%% Modification of T1 and LY1 encoding related stuff
+%%%%
+%
+%\def\T@n@@nc@d@ng{T1}
+%\def\T@n@@nc@d@ngM@cr@M@d{%
+%\DeclareTextCommand{\k}{T1}[1]{\ooalign{\hidewidth\char12\crcr##1}}%
+%}
+%
+%\def\LY@n@@nc@d@ng{LY1}
+%\def\LY@n@@nc@d@ngM@cr@M@d{%
+%\DeclareTextCommand{\k}{LY1}[1]{\ooalign{\hidewidth\char7\crcr##1}}%
+%}
+%
+%\AtBeginDocument{%
+%\ifx\encodingdefault\T@n@@nc@d@ng\T@n@@nc@d@ngM@cr@M@d\fi%
+%\ifx\encodingdefault\LY@n@@nc@d@ng\LY@n@@nc@d@ngM@cr@M@d\fi%
+%}
+%U+1D55C\Bbbk
+%Angstrom
+%\rightangle
+%U+2220 \angle
+%U+2221 \measuredangle
+%U+2222 \sphericalangle
+%U+03F0 \varkappa
+%U+03F6 \backepsilon
+%U+03F6 \upbackepsilon
+%\measuredangleleft
+% U+299C \rightanglesqr
+% U+299D \rightanglemdot
+% U+299E \angles
+% U+299F \angdnr
+% U+29A0 \gtlpar
+% U+29A1 \sphericalangleup
+% U+29A2 \turnangle
+% U+29A3 \revangle
+% U+29A4 \angleubar
+% U+29A5 \revangleubar
+% U+29A6 \wideangledown
+% U+29A7 \wideangleup
+% U+29A8 \measanglerutone
+% U+29A9 \measanglelutonw
+% U+29AA \measanglerdtose
+% U+29AB \measangleldtosw
+% U+29AC \measangleurtone
+% U+29AD \measangleultonw

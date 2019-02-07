@@ -1,0 +1,153 @@
+\makeatletter
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Subsection{Misc: Register Variables}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\theSection\\
+\thetable\\
+\thefigure\\
+\thefigboxfigure\\
+\theIBPtable\\
+\theproblems\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\theSection\\
+\thetable\\
+\thefigure\\
+\thefigboxfigure\\
+\theIBPtable\\
+\setcounter{@macro@counter}{4}
+\arabic{@macro@counter}\\
+\resetcounter{@macro@counter}
+\arabic{@macro@counter}\\
+\resetcounter*{@macro@counter}
+\arabic{@macro@counter}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\booltrue{@macro@if}
+\toggletrue{@macro@toggle}
+\@print@bool@value{@macro@if}\\
+\@print@toggle@value{@macro@toggle}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+\begingroup%
+%\global\boolfalse{@macro@if}
+%\global\togglefalse{@macro@toggle}
+\g@boolfalse{@macro@if}%
+\g@togglefalse{@macro@toggle}%
+\@print@bool@value{@macro@if}\\
+\@print@toggle@value{@macro@toggle}\\
+\endgroup
+\@print@bool@value{@macro@if}\\
+\@print@toggle@value{@macro@toggle}\\
+abcd-\hspace{3mm}\iftoggle{@macro@toggle}{\hspace{3mm}-T-}{\hspace{3mm}-F-}\hspace{3mm}--abcd\hspace{3mm}\\
+\toggletrue{@macro@toggle}
+abcd-\hspace{3mm}\iftoggle{@macro@toggle}{\hspace{3mm}-T-}{\hspace{3mm}-F-}\hspace{3mm}--abcd\hspace{3mm}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Subsection{Misc: Links/Bookmarks}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\cftPart@numberline
+%\@currentHref
+%\bookmark@part\BKM@HookNext
+%\@globcheck
+%\listofprinttest\\
+%\hypertarget{page.\thepage}{}\noexpand
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Subsection{Misc: Text/Paragraphs}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\meaning\errmessage
+\meaning\mainmatter\\
+myulB:\\
+\varuline{Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\varuline{jumping quickly}\\
+%\varuline{\sffamily Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\sffamily\varuline{\sffamily jumping quickly}\\
+%\varuline{1.25pt}{.5pt}{1.25}{Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\varuline{1.25pt}{.5pt}{1.25}{jumping quickly}\\
+%\varuline{1.25pt}{.5pt}{1.25}{\sffamily Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\sffamily\varuline{1.25pt}{.5pt}{1.25}{\sffamily jumping quickly}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+varul:\\
+\varul[1pt][1pt]:\Huge:{jumping quickly}\\
+\sffamily\Huge\varul[1pt][1pt]{jumping quickly}\\
+\sffamily\varul[1pt][1pt]:\large:{jumping quickly}\\
+\sffamily\large\varul[1pt][1pt]{jumping quickly}\\
+\varul[1pt][1pt]{jumping quickly}\\
+\varul:\normalsize:{jumping quickly}\par\smallskip
+%-------------------------------------------------------------------------------------------------------------------------------%
+uline=\uline{sdsdsd}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+varul:\\
+\varul[1pt][1pt]:\Huge:{jumping quickly}\\
+\sffamily\Huge\varul[1pt][1pt]{jumping quickly}\\
+\sffamily\varul[1pt][1pt]:\large:{jumping quickly}\\
+\sffamily\large\varul[1pt][1pt]{jumping quickly}\\
+\varul[1pt][1pt]{jumping quickly}\\
+\varul:\normalsize:{jumping quickly}\par\smallskip
+%-------------------------------------------------------------------------------------------------------------------------------%
+\underline{underline}\\
+\tikzUL{tikzUL}\\
+\ul{ul}\\
+uline=\uline{uline}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+varul:\\
+\Huge\varul{jumping quickly}\par\smallskip
+\Huge\varul[1pt][1pt]{jumping quickly}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+myulB:\\
+%\varuline{Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\varuline{jumping quickly}\\
+%\varuline{\sffamily Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\sffamily\varuline{1.25pt}{.5pt}{1.25}{\sffamily jumping quickly}\\
+%\varuline{1.25pt}{.5pt}{1.25}{Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\varuline{1.25pt}{.5pt}{1.25}{jumping quickly}\\
+%\varuline{1.25pt}{.5pt}{1.25}{\sffamily Blupp of (that's \emph{of}, not \emph{off}, of course) a great Synopsis}\\
+%\sffamily\varuline{1.25pt}{.5pt}{1.25}{\sffamily jumping quickly}\\
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Subsection{Misc: Math/Equations}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\def\setme{\afterassignment\setmeA\count255}
+\def\setmeA{$\number\count255\advance\count255 by 10
++10=\number\count255$}
+Some arithmetic: \setme = 27
+\def\myarray{7,-3,4,-9,11}
+\pgfmathparse{{\myarray}[3]} \pgfmathresult
+\def\myarray{{"a","b","c","d","e"}}
+\pgfmathparse{\myarray[3]} \pgfmathresult
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\Subsection{Misc: Images/Graphics}
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\directionSymbol[shape=arrow,scale=1.0, colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue, outline=black, thedirection={up}]\\
+\directionSymbol[shape=arrow,scale=1.0, colorscheme=problemColorset, linewidth=0.5pt, outline=black, thedirection={down}]\\
+\directionSymbol[shape=arrow,scale=0.5, colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue, outline=black, thedirection={left}]\\
+\directionSymbol[shape=arrow,scale=0.5, colorscheme=problemColorset, linewidth=0.5pt, outline=black, thedirection={right}]\\
+\directionSymbol[shape=arrow, scale=0.4, outline=black, thedirection={up}]\\%\centering%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%\directionSymbol[shape=arrow,scale=1.0, colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue, outline=black]
+%\directionSymbol[shape=dart,scale=1.0, colorscheme=problemColorset, linewidth=0.5pt, outline=black]
+%\directionSymbol[shape=arrow,scale=0.5, colorscheme=tcbBlueScheme, draw=stdblue, fill=stdblue, outline=black]
+%\directionSymbol[shape=dart,scale=0.5, colorscheme=problemColorset, linewidth=0.5pt, outline=black]
+%\directionSymbol[shape=arrow, scale=0.4, outline=black]%\centering%
+\@upload@button%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+%-------------------------------------------------------------------------------------------------------------------------------%
+\makeatother
+\endinput
